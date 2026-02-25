@@ -1,0 +1,149 @@
+import { mockBookings } from '@/mock/data/bookings';
+import { Booking } from '@/types';
+import {
+    MapPin,
+    Calendar,
+    Users,
+    ChevronRight,
+    ArrowRight,
+} from 'lucide-react';
+
+function formatThaiDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
+function formatThaiDateTime(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function StatusBadge({ status }: { status: Booking['status'] }) {
+    const config = {
+        PENDING: { label: 'รอพิจารณา', className: 'bg-amber-100 text-amber-700' },
+        APPROVED: { label: 'อนุมัติแล้ว', className: 'bg-emerald-100 text-emerald-700' },
+        REJECTED: { label: 'ปฏิเสธแล้ว', className: 'bg-rose-100 text-rose-700' },
+        IN_USE: { label: 'กำลังใช้งาน', className: 'bg-blue-100 text-blue-700' },
+        COMPLETED: { label: 'เสร็จสิ้น', className: 'bg-slate-100 text-slate-600' },
+    };
+
+    const { label, className } = config[status];
+
+    return (
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${className}`}>
+            {label}
+        </span>
+    );
+}
+
+function BookingRow({ booking }: { booking: Booking }) {
+    return (
+        <div className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group">
+
+            {/* Col 1: เลขที่คำขอ + วันที่ขอ */}
+            <div className="w-40 shrink-0">
+                <p className="text-sm font-semibold text-slate-800">{booking.id}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{formatThaiDate(booking.requestDate)}</p>
+            </div>
+
+            {/* Col 2: ต้นทาง → ปลายทาง */}
+            <div className="w-60 shrink-0 flex items-center gap-2">
+                <MapPin size={14} className="text-slate-400 shrink-0" />
+                <span className="text-sm text-slate-600 truncate">{booking.origin}</span>
+                <ArrowRight size={14} className="text-slate-400 shrink-0" />
+                <span className="text-sm font-medium text-slate-800 truncate">{booking.destination}</span>
+            </div>
+
+            {/* Col 3: วันเวลาเดินทาง */}
+            <div className="w-44 shrink-0">
+                <div className="flex items-center gap-2">
+                    <Calendar size={14} className="text-slate-400 shrink-0" />
+                    <span className="text-xs text-slate-600">
+                        {formatThaiDateTime(booking.startDateTime)}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                    <Calendar size={14} className="text-transparent shrink-0" /> {/* spacer */}
+                    <span className="text-xs text-slate-600">
+                        ถึง {formatThaiDateTime(booking.endDateTime)}
+                    </span>
+                </div>
+            </div>
+
+            {/* Col 4: ชื่อผู้ขอ + แผนก */}
+            <div className="w-40 shrink-0">
+                <p className="text-sm font-medium text-slate-700">{booking.requesterName}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{booking.department}</p>
+            </div>
+
+            {/* Col 5: จำนวนผู้โดยสาร */}
+            <div className="w-20 shrink-0 flex items-center gap-2">
+                <Users size={14} className="text-slate-400" />
+                <span className="text-sm text-slate-600">{booking.passengerCount} คน</span>
+            </div>
+
+            {/* Col 6: Status */}
+            <div className="w-28 shrink-0 flex justify-center">
+                <StatusBadge status={booking.status} />
+            </div>
+
+            {/* Col 7: Arrow */}
+            <ChevronRight size={16} className="text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" />
+        </div>
+    );
+}
+
+export default function ApproverRequestsPage() {
+    const pendingCount = mockBookings.filter((b) => b.status === 'PENDING').length;
+
+    return (
+        <div className="space-y-6">
+
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-xl font-bold text-slate-800">ตรวจสอบและอนุมัติ</h1>
+                    <p className="text-sm text-slate-500 mt-1">
+                        รอพิจารณา <span className="font-semibold text-amber-600">{pendingCount} รายการ</span>
+                    </p>
+                </div>
+            </div>
+
+            {/* List */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+
+                {/* Column Header */}
+                <div className="flex items-center gap-4 px-6 py-3 bg-slate-50 border-b border-slate-200">
+                    <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">เลขที่คำขอ</div>
+                    <div className="w-60 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide ">เส้นทาง</div>
+                    <div className="w-44 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">วันเวลาเดินทาง</div>
+                    <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้ขอ</div>
+                    <div className="w-20 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้โดยสาร</div>
+                    <div className="w-28 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">สถานะ</div>
+                    <div className="w-4 shrink-0" />
+                </div>
+
+                {/* Rows */}
+                {mockBookings.length > 0 ? (
+                    mockBookings.map((booking) => (
+                        <BookingRow key={booking.id} booking={booking} />
+                    ))
+                ) : (
+                    <div className="py-16 text-center text-slate-400 text-sm">
+                        ไม่พบรายการที่ค้นหา
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
