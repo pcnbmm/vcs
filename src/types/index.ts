@@ -20,11 +20,16 @@ export interface Vehicle {
 export interface Booking {
     id: string;
     requesterName: string;
+    department: string;
     objective: string;
+    origin: string;
     destination: string;
+    requestDate: string;
     startDateTime: string;
     endDateTime: string;
+    passengerCount: number;
     status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_USE' | 'COMPLETED';
+    rejectReason?: string;
     vehicleId?: string;
     driverId?: string;
 }
