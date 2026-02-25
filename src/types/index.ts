@@ -28,3 +28,11 @@ export interface Booking {
     vehicleId?: string;
     driverId?: string;
 }
+
+export interface Driver {
+    id: string;
+    name: string;
+    licenseNumber: string;
+    phone: string;
+    status: 'AVAILABLE' | 'BUSY' | 'ON_LEAVE';
+}
