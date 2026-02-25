@@ -9,7 +9,7 @@ import {
 const menuItems = [
   { title: 'Dashboard', href: '/workspace/dashboard', icon: LayoutDashboard },
   { title: 'ขอใช้รถ', href: '/workspace/booking', icon: ClipboardList },
-  { title: 'ติดตามคำขอ', href: '/workspace/my-requests', icon: Navigation },
+  { title: 'ติดตามคำขอ', href: '/workspace/pending', icon: Navigation },
   { title: 'ประวัติคำขอ', href: '/workspace/history', icon: History },
   { title: 'อนุมัติคำขอ', href: '/workspace/approver-requests', icon: CheckCircle2 },
   { title: 'จัดรถและคนขับ', href: '/workspace/assign', icon: UserCog },
