@@ -24,3 +24,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Custom Sidebar Scrollbar */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155; /* slate-700 */
+  border-radius: 20px;
+}
+.sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #475569; /* slate-600 */
+}
