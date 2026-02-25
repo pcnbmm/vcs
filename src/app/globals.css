@@ -26,16 +26,22 @@ body {
 }
 
 /* Custom Sidebar Scrollbar */
+.sidebar-scrollbar {
+  scrollbar-width: thin !important;
+  scrollbar-color: #334155 transparent !important;
+}
 .sidebar-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 6px !important;
+  height: 6px !important;
 }
 .sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #334155; /* slate-700 */
-  border-radius: 20px;
+  background-color: #334155 !important;
+  border-radius: 20px !important;
 }
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover,
 .sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: #475569; /* slate-600 */
+  background-color: #475569 !important;
 }
