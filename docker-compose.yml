@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:18-alpine3.22
+    container_name: vcs_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev1234
+      POSTGRES_DB: vcs_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
