@@ -8,7 +8,20 @@ datasource db {
 }
 
 model User {
-    id      Int     @id @default(autoincrement())
-    email   String  @unique
-    name    String?
+  id        String    @id @default(cuid())
+  username  String    @unique // ใช้รหัสพนักงานสำหรับ Login
+  email     String    @unique // เก็บ Email ไว้เหมือนเดิม
+  name      String?
+  password  String // เก็บ Hash รหัสผ่าน
+  role      String    @default("USER")
+  sessions  Session[]
+  createdAt DateTime  @default(now())
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
