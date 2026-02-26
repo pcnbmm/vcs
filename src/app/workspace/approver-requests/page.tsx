@@ -1,5 +1,8 @@
+'use client';
+import { useState } from 'react';
 import { mockBookings } from '@/mock/data/bookings';
 import { Booking } from '@/types';
+import BookingDetailModal from '@/components/features/approver/BookingDetailModal';
 import {
     MapPin,
     Calendar,
@@ -46,9 +49,17 @@ function StatusBadge({ status }: { status: Booking['status'] }) {
     );
 }
 
-function BookingRow({ booking }: { booking: Booking }) {
+function BookingRow({ 
+    booking,
+    onClick, 
+}: { 
+    booking: Booking;
+    onClick: ()=> void; 
+}) {
     return (
-        <div className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group">
+        <div 
+        onClick={onClick}
+        className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group">
 
             {/* Col 1: เลขที่คำขอ + วันที่ขอ */}
             <div className="w-40 shrink-0">
@@ -65,7 +76,7 @@ function BookingRow({ booking }: { booking: Booking }) {
             </div>
 
             {/* Col 3: วันเวลาเดินทาง */}
-            <div className="w-44 shrink-0">
+            <div className="w-40 shrink-0">
                 <div className="flex items-center gap-2">
                     <Calendar size={14} className="text-slate-400 shrink-0" />
                     <span className="text-xs text-slate-600">
@@ -93,23 +104,32 @@ function BookingRow({ booking }: { booking: Booking }) {
             </div>
 
             {/* Col 6: Status */}
-            <div className="w-28 shrink-0 flex justify-center">
+            <div className="w-30 shrink-0 flex justify-center">
                 <StatusBadge status={booking.status} />
             </div>
 
             {/* Col 7: Arrow */}
-            <ChevronRight size={16} className="text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" />
+            <ChevronRight size={15} className="text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" />
         </div>
     );
 }
 
 export default function ApproverRequestsPage() {
-    const pendingCount = mockBookings.filter((b) => b.status === 'PENDING').length;
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+     const pendingCount = mockBookings.filter((b) => b.status === 'PENDING').length;
+    const handleApprove = (id: string) => {
+        console.log('Approved:', id);
+        setSelectedBooking(null);
+    };
+
+    const handleReject = (id: string) => {
+        console.log('Rejected:', id);
+        setSelectedBooking(null);
+    };
 
     return (
         <div className="space-y-6">
-
-            {/* Header */}
+            {/* ... Header เหมือนเดิม */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl font-bold text-slate-800">ตรวจสอบและอนุมัติ</h1>
@@ -119,24 +139,25 @@ export default function ApproverRequestsPage() {
                 </div>
             </div>
 
-            {/* List */}
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-
-                {/* Column Header */}
+                {/* ... Column Header เหมือนเดิม */}
                 <div className="flex items-center gap-4 px-6 py-3 bg-slate-50 border-b border-slate-200">
                     <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">เลขที่คำขอ</div>
                     <div className="w-60 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide ">เส้นทาง</div>
-                    <div className="w-44 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">วันเวลาเดินทาง</div>
+                    <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">วันเวลาเดินทาง</div>
                     <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้ขอ</div>
                     <div className="w-20 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้โดยสาร</div>
-                    <div className="w-28 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">สถานะ</div>
-                    <div className="w-4 shrink-0" />
+                    <div className="w-30 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">สถานะ</div>
+                    <div className="w-5 shrink-0" />
                 </div>
 
-                {/* Rows */}
                 {mockBookings.length > 0 ? (
                     mockBookings.map((booking) => (
-                        <BookingRow key={booking.id} booking={booking} />
+                        <BookingRow
+                            key={booking.id}
+                            booking={booking}
+                            onClick={() => setSelectedBooking(booking)} // ← เพิ่ม
+                        />
                     ))
                 ) : (
                     <div className="py-16 text-center text-slate-400 text-sm">
@@ -144,6 +165,16 @@ export default function ApproverRequestsPage() {
                     </div>
                 )}
             </div>
+
+            {/* Modal */}
+            {selectedBooking && (
+                <BookingDetailModal
+                    booking={selectedBooking}
+                    onClose={() => setSelectedBooking(null)}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                />
+            )}
         </div>
     );
 }
