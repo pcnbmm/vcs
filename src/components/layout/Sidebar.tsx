@@ -9,16 +9,16 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', href: '/workspace/dashboard', icon: LayoutDashboard },
-  { title: 'ขอใช้รถ', href: '/workspace/booking', icon: ClipboardList },
-  { title: 'ติดตามคำขอ', href: '/workspace/pending', icon: Navigation },
-  { title: 'ประวัติคำขอ', href: '/workspace/history', icon: History },
-  { title: 'อนุมัติคำขอ', href: '/workspace/approver-requests', icon: CheckCircle2 },
-  { title: 'จัดรถและคนขับ', href: '/workspace/assign', icon: UserCog },
-  { title: 'บันทึกการคืนรถ', href: '/workspace/returns', icon: Key },
-  { title: 'รายงาน', href: '/workspace/reports', icon: FileBarChart },
-  { title: 'จัดการสิทธิ์', href: '/workspace/permissions', icon: Settings },
-  { title: 'ข้อมูลรถ/คนขับ', href: '/workspace/registry', icon: Car },
+  { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { title: 'ขอใช้รถ', href: '/booking', icon: ClipboardList },
+  { title: 'ติดตามคำขอ', href: '/pending', icon: Navigation },
+  { title: 'ประวัติคำขอ', href: '/history', icon: History },
+  { title: 'อนุมัติคำขอ', href: '/approver-requests', icon: CheckCircle2 },
+  { title: 'จัดรถและคนขับ', href: '/assign', icon: UserCog },
+  { title: 'บันทึกการคืนรถ', href: '/returns', icon: Key },
+  { title: 'รายงาน', href: '/reports', icon: FileBarChart },
+  { title: 'จัดการสิทธิ์', href: '/permissions', icon: Settings },
+  { title: 'ข้อมูลรถ/คนขับ', href: '/registry', icon: Car },
 ];
 
 export default function Sidebar() {
