@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../../generated/prisma"
 }
 
 datasource db {
@@ -9,13 +9,13 @@ datasource db {
 
 model User {
   id        String    @id @default(cuid())
-  username  String    @unique // ใช้รหัสพนักงานสำหรับ Login
-  email     String    @unique // เก็บ Email ไว้เหมือนเดิม
   name      String?
-  password  String // เก็บ Hash รหัสผ่าน
+  email     String    @unique
+  password  String
   role      String    @default("USER")
-  sessions  Session[]
   createdAt DateTime  @default(now())
+  username  String    @unique
+  sessions  Session[]
 }
 
 model Session {
