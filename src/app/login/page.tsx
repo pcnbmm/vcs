@@ -1,9 +1,41 @@
 "use client";
 import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Car, User, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const res = await signIn("credentials", {
+        username,
+        password,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        setError("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch (err) {
+      setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full flex bg-slate-50">
@@ -38,7 +70,13 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          {error && (
+            <div className="bg-red-50 text-red-500 p-3 flex justify-center rounded-xl text-sm font-medium">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Username */}
             <div className="space-y-2">
               <label className="block text-sm font-extrabold text-slate-700">
@@ -50,7 +88,10 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="กรอกชื่อผู้ใช้งาน"
+                  required
                   className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
                 />
               </div>
@@ -67,7 +108,10 @@ export default function LoginPage() {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="กรอกรหัสผ่าน"
+                  required
                   className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
                 />
                 <button
@@ -106,10 +150,11 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-[0.98]"
+              disabled={isLoading}
+              className={`w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-[0.98] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
             >
               <LogIn size={20} />
-              เข้าสู่ระบบ (LOGIN)
+              {isLoading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ (LOGIN)"}
             </button>
           </form>
         </div>
