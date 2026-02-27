@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 import { useRouter } from 'next/navigation';
-import LongdoMapBox from '@/components/LongdoMapBox';
+import LongdoMapBox from '@/components/ui/LongdoMapBox';
 
 export default function VehicleRequestPage() {
     const router = useRouter();
