@@ -14,7 +14,7 @@ async function main() {
 
   const users = [
     {
-      username: "DEV",
+      username: "dev",
       email: "",
       name: "Dev",
       password: hashedPassword,

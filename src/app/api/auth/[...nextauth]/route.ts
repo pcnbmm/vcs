@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
   session: {
-    strategy: "database", // เก็บ Session ลง PostgreSQL
+    strategy: "jwt", // CredentialsProvider requires JWT strategy
   },
   providers: [
     CredentialsProvider({
@@ -34,23 +34,28 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordValid) return null;
 
-        // คืนค่าข้อมูล User (NextAuth จะเอาไปใส่ใน Session table อัตโนมัติ)
         return {
           id: user.id,
           name: user.name,
-          email: user.email,     // เก็บ Email ลง Session ด้วย
+          email: user.email,
           username: user.username,
         };
       }
     })
   ],
   callbacks: {
-    // ใน Database Strategy, 'user' คือข้อมูลที่ดึงมาจาก DB โดยตรง
-    async session({ session, user }) {
+    async jwt({ token, user }) {
+      // ถ้ามีการล็อกอินใหม่ (user จะมีค่า) ให้เก็บข้อมูลลง JWT
+      if (user) {
+        token.id = user.id;
+        token.username = (user as any).username;
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = user.id;
-        session.user.username = (user as any).username;
-        session.user.email = user.email; // ยืนยันว่ามี email ใน session
+        session.user.id = token.id as string;
+        session.user.username = token.username as string;
       }
       return session;
     },
