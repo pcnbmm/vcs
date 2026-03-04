@@ -68,7 +68,7 @@ function BookingRow({
             </div>
 
             {/* Col 2: ต้นทาง → ปลายทาง */}
-            <div className="w-60 shrink-0 flex items-center gap-2">
+            <div className="w-80 shrink-0 flex items-center gap-2">
                 <MapPin size={14} className="text-slate-400 shrink-0" />
                 <span className="text-sm text-slate-600 truncate">{booking.origin}</span>
                 <ArrowRight size={14} className="text-slate-400 shrink-0" />
@@ -122,8 +122,8 @@ export default function ApproverRequestsPage() {
         setSelectedBooking(null);
     };
 
-    const handleReject = (id: string) => {
-        console.log('Rejected:', id);
+    const handleReject = (id: string, reason: string) => {
+        console.log('Rejected:', id, 'Reason', reason);
         setSelectedBooking(null);
     };
 
@@ -143,7 +143,7 @@ export default function ApproverRequestsPage() {
                 {/* ... Column Header เหมือนเดิม */}
                 <div className="flex items-center gap-4 px-6 py-3 bg-slate-50 border-b border-slate-200">
                     <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">เลขที่คำขอ</div>
-                    <div className="w-60 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide ">เส้นทาง</div>
+                    <div className="w-80 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide ">เส้นทาง</div>
                     <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">วันเวลาเดินทาง</div>
                     <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้ขอ</div>
                     <div className="w-20 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">ผู้โดยสาร</div>

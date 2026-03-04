@@ -1,6 +1,6 @@
 'use server';
 
-const LONGDO_MAP_KEY = '8292430c8689ff87e9f8d20a29cbd4f9';
+const LONGDO_MAP_KEY = process.env.NEXT_PUBLIC_LONGDO_MAP_KEY;
 
 export async function searchLocation(keyword: string) {
     if (!keyword) return null;

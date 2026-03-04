@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Search as SearchIcon, MapPin, Crosshair, Loader2, Maximize2 } from 'lucide-react';
 import { searchLocation, suggestLocation } from '@/app/actions/mapActions';
 
-const LONGDO_MAP_KEY = '8292430c8689ff87e9f8d20a29cbd4f9';
+const LONGDO_MAP_KEY = process.env.NEXT_PUBLIC_LONGDO_MAP_KEY;
 
 interface LongdoMapBoxProps {
     onLocationSelect: (loc: { name: string; lat: number; lon: number }) => void;
