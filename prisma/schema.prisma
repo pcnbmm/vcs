@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../../generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -9,12 +9,13 @@ datasource db {
 
 model User {
   id        String    @id @default(cuid())
-  name      String?
   email     String    @unique
+  name      String?
+  createdAt DateTime  @default(now())
   password  String
   role      String    @default("USER")
-  createdAt DateTime  @default(now())
   username  String    @unique
+  Booking   Booking[]
   sessions  Session[]
 }
 
@@ -24,4 +25,94 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id             String        @id
+  requesterId    String
+  department     String
+  objective      String
+  origin         String
+  destination    String
+  requestDate    DateTime      @default(now())
+  startDateTime  DateTime
+  endDateTime    DateTime
+  passengerCount Int
+  status         BookingStatus @default(PENDING)
+  rejectReason   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime
+  bookingNo      String?       @unique
+  User           User          @relation(fields: [requesterId], references: [id])
+}
+
+model vc_order_item {
+  request_id       Int       @id @default(autoincrement())
+  use_div_code     String?   @db.VarChar(100)
+  userid           String?   @db.Char(8)
+  user_mobile      String?   @db.VarChar(20)
+  journey_date     DateTime? @db.Date
+  return_date      DateTime? @db.Date
+  start_place      String?   @db.VarChar(200)
+  journey_place    String?   @db.VarChar(500)
+  journey_province String?   @db.VarChar(100)
+  journey_causes   String?
+  journer_time     String?   @db.VarChar(10)
+  return_time      String?   @db.VarChar(10)
+  car_spec_id      String?   @db.VarChar(100)
+  passenger_amount Int?
+  approve_id       String?   @db.Char(8)
+  status_use_id    Int?
+  self_drive       Boolean?
+  journey_lat      Float?
+  journey_long     Float?
+  cre_by           String?   @db.VarChar(20)
+  cre_date         DateTime?
+  upd_by           String?   @db.VarChar(20)
+  upd_date         DateTime?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_car_master {
+  car_id             Int?
+  car_number         String? @db.VarChar(50)
+  car_province_id    Int?
+  car_type_id        Int?
+  car_spec_id        Int?
+  car_brand_id       Int?
+  car_type_regis_id  Int?
+  color_id           Int?
+  oil_type_id        Int?
+  own_div_code       Int?
+  fiscal_year        Int?
+  start_date         String? @db.VarChar(50)
+  end_date           String? @db.VarChar(50)
+  regis_date         String? @db.VarChar(50)
+  car_status_id      Int?
+  machine_no         String? @db.VarChar(50)
+  body_no            String? @db.VarChar(50)
+  cylinder_capacityp String? @db.VarChar(50)
+  oil_expense        Float?  @db.Real
+  refund_vat         Int?
+  flag               String? @db.VarChar(50)
+  cre_by             Int?
+  cre_date           String? @db.VarChar(50)
+  upd_by             Int?
+  upd_date           String? @db.VarChar(50)
+  ref_car            String? @db.VarChar(50)
+  horse_power        String? @db.VarChar(50)
+  weight             String? @db.VarChar(50)
+  machine_id         String? @db.VarChar(50)
+  purchase_id        Int?
+  fleetcard_no       BigInt?
+
+  @@ignore
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  IN_USE
+  COMPLETED
 }

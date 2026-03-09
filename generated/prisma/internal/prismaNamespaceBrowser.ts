@@ -52,7 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Session: 'Session'
+  Session: 'Session',
+  Booking: 'Booking',
+  vc_order_item: 'vc_order_item'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -73,12 +75,12 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  username: 'username',
   email: 'email',
   name: 'name',
+  createdAt: 'createdAt',
   password: 'password',
   role: 'role',
-  createdAt: 'createdAt'
+  username: 'username'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -92,6 +94,55 @@ export const SessionScalarFieldEnum = {
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  requesterId: 'requesterId',
+  department: 'department',
+  objective: 'objective',
+  origin: 'origin',
+  destination: 'destination',
+  requestDate: 'requestDate',
+  startDateTime: 'startDateTime',
+  endDateTime: 'endDateTime',
+  passengerCount: 'passengerCount',
+  status: 'status',
+  rejectReason: 'rejectReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const Vc_order_itemScalarFieldEnum = {
+  request_id: 'request_id',
+  use_div_code: 'use_div_code',
+  userid: 'userid',
+  user_mobile: 'user_mobile',
+  journey_date: 'journey_date',
+  return_date: 'return_date',
+  start_place: 'start_place',
+  journey_place: 'journey_place',
+  journey_province: 'journey_province',
+  journey_causes: 'journey_causes',
+  journer_time: 'journer_time',
+  return_time: 'return_time',
+  car_spec_id: 'car_spec_id',
+  passenger_amount: 'passenger_amount',
+  approve_id: 'approve_id',
+  status_use_id: 'status_use_id',
+  self_drive: 'self_drive',
+  journey_lat: 'journey_lat',
+  journey_long: 'journey_long',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
 
 
 export const SortOrder = {
