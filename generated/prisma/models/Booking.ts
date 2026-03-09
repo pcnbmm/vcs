@@ -49,7 +49,6 @@ export type BookingMinAggregateOutputType = {
   rejectReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  bookingNo: string | null
 }
 
 export type BookingMaxAggregateOutputType = {
@@ -67,7 +66,6 @@ export type BookingMaxAggregateOutputType = {
   rejectReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  bookingNo: string | null
 }
 
 export type BookingCountAggregateOutputType = {
@@ -85,7 +83,6 @@ export type BookingCountAggregateOutputType = {
   rejectReason: number
   createdAt: number
   updatedAt: number
-  bookingNo: number
   _all: number
 }
 
@@ -113,7 +110,6 @@ export type BookingMinAggregateInputType = {
   rejectReason?: true
   createdAt?: true
   updatedAt?: true
-  bookingNo?: true
 }
 
 export type BookingMaxAggregateInputType = {
@@ -131,7 +127,6 @@ export type BookingMaxAggregateInputType = {
   rejectReason?: true
   createdAt?: true
   updatedAt?: true
-  bookingNo?: true
 }
 
 export type BookingCountAggregateInputType = {
@@ -149,7 +144,6 @@ export type BookingCountAggregateInputType = {
   rejectReason?: true
   createdAt?: true
   updatedAt?: true
-  bookingNo?: true
   _all?: true
 }
 
@@ -254,7 +248,6 @@ export type BookingGroupByOutputType = {
   rejectReason: string | null
   createdAt: Date
   updatedAt: Date
-  bookingNo: string
   _count: BookingCountAggregateOutputType | null
   _avg: BookingAvgAggregateOutputType | null
   _sum: BookingSumAggregateOutputType | null
@@ -295,7 +288,6 @@ export type BookingWhereInput = {
   rejectReason?: Prisma.StringNullableFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  bookingNo?: Prisma.StringFilter<"Booking"> | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -314,13 +306,11 @@ export type BookingOrderByWithRelationInput = {
   rejectReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  bookingNo?: Prisma.SortOrder
   User?: Prisma.UserOrderByWithRelationInput
 }
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  bookingNo?: string
   AND?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
@@ -338,7 +328,7 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "bookingNo">
+}, "id">
 
 export type BookingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -355,7 +345,6 @@ export type BookingOrderByWithAggregationInput = {
   rejectReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  bookingNo?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
   _avg?: Prisma.BookingAvgOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
@@ -381,7 +370,6 @@ export type BookingScalarWhereWithAggregatesInput = {
   rejectReason?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
-  bookingNo?: Prisma.StringWithAggregatesFilter<"Booking"> | string
 }
 
 export type BookingCreateInput = {
@@ -398,7 +386,6 @@ export type BookingCreateInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
   User: Prisma.UserCreateNestedOneWithoutBookingInput
 }
 
@@ -417,7 +404,6 @@ export type BookingUncheckedCreateInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
 }
 
 export type BookingUpdateInput = {
@@ -434,7 +420,6 @@ export type BookingUpdateInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
   User?: Prisma.UserUpdateOneRequiredWithoutBookingNestedInput
 }
 
@@ -453,7 +438,6 @@ export type BookingUncheckedUpdateInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BookingCreateManyInput = {
@@ -471,7 +455,6 @@ export type BookingCreateManyInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
 }
 
 export type BookingUpdateManyMutationInput = {
@@ -488,7 +471,6 @@ export type BookingUpdateManyMutationInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BookingUncheckedUpdateManyInput = {
@@ -506,7 +488,6 @@ export type BookingUncheckedUpdateManyInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BookingListRelationFilter = {
@@ -534,7 +515,6 @@ export type BookingCountOrderByAggregateInput = {
   rejectReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  bookingNo?: Prisma.SortOrder
 }
 
 export type BookingAvgOrderByAggregateInput = {
@@ -556,7 +536,6 @@ export type BookingMaxOrderByAggregateInput = {
   rejectReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  bookingNo?: Prisma.SortOrder
 }
 
 export type BookingMinOrderByAggregateInput = {
@@ -574,7 +553,6 @@ export type BookingMinOrderByAggregateInput = {
   rejectReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  bookingNo?: Prisma.SortOrder
 }
 
 export type BookingSumOrderByAggregateInput = {
@@ -649,7 +627,6 @@ export type BookingCreateWithoutUserInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
 }
 
 export type BookingUncheckedCreateWithoutUserInput = {
@@ -666,7 +643,6 @@ export type BookingUncheckedCreateWithoutUserInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
 }
 
 export type BookingCreateOrConnectWithoutUserInput = {
@@ -713,7 +689,6 @@ export type BookingScalarWhereInput = {
   rejectReason?: Prisma.StringNullableFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  bookingNo?: Prisma.StringFilter<"Booking"> | string
 }
 
 export type BookingCreateManyUserInput = {
@@ -730,7 +705,6 @@ export type BookingCreateManyUserInput = {
   rejectReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  bookingNo: string
 }
 
 export type BookingUpdateWithoutUserInput = {
@@ -747,7 +721,6 @@ export type BookingUpdateWithoutUserInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BookingUncheckedUpdateWithoutUserInput = {
@@ -764,7 +737,6 @@ export type BookingUncheckedUpdateWithoutUserInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BookingUncheckedUpdateManyWithoutUserInput = {
@@ -781,7 +753,6 @@ export type BookingUncheckedUpdateManyWithoutUserInput = {
   rejectReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bookingNo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -801,7 +772,6 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   rejectReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  bookingNo?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
@@ -820,7 +790,6 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   rejectReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  bookingNo?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
@@ -839,7 +808,6 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   rejectReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  bookingNo?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
@@ -858,10 +826,9 @@ export type BookingSelectScalar = {
   rejectReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  bookingNo?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requesterId" | "department" | "objective" | "origin" | "destination" | "requestDate" | "startDateTime" | "endDateTime" | "passengerCount" | "status" | "rejectReason" | "createdAt" | "updatedAt" | "bookingNo", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requesterId" | "department" | "objective" | "origin" | "destination" | "requestDate" | "startDateTime" | "endDateTime" | "passengerCount" | "status" | "rejectReason" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -892,7 +859,6 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     rejectReason: string | null
     createdAt: Date
     updatedAt: Date
-    bookingNo: string
   }, ExtArgs["result"]["booking"]>
   composites: {}
 }
@@ -1331,7 +1297,6 @@ export interface BookingFieldRefs {
   readonly rejectReason: Prisma.FieldRef<"Booking", 'String'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Booking", 'DateTime'>
-  readonly bookingNo: Prisma.FieldRef<"Booking", 'String'>
 }
     
 
