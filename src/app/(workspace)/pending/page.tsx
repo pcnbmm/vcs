@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getMyBookings } from '@/app/actions/bookingActions';
 import {
     Calendar, MapPin, Search, Clock, ChevronRight,
     RefreshCw, CheckCircle2, XCircle, AlertCircle, Users, Loader2
@@ -11,7 +12,7 @@ export default function PendingPage() {
     const [requests, setRequests] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true); // จัดการสถานะโหลดข้อมูล
     const [error, setError] = useState<string | null>(null);
-    
+
     // 2. State สำหรับการค้นหา และ Modal
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedRequest, setSelectedRequest] = useState<any>(null);
@@ -21,18 +22,37 @@ export default function PendingPage() {
         const fetchRequests = async () => {
             try {
                 setIsLoading(true);
-                // TODO: เปลี่ยน URL นี้เป็น API Endpoint จริงของคุณ
-                // const res = await fetch('/api/requests');
-                // const data = await res.json();
-                // setRequests(data);
 
-                // --- โค้ดจำลองการดึงข้อมูลสำเร็จ (ลบออกเมื่อต่อ API จริง) ---
-                setTimeout(() => {
-                    setRequests([]); // ใส่ mock data ทดสอบตรงนี้ชั่วคราวได้
-                    setIsLoading(false);
-                }, 1000);
-                // ---------------------------------------------------
+                const result = await getMyBookings();
+                if (result.success && result.data) {
+                    const formattedList = result.data.map((b: any) => ({
+                        id: String(b.request_id),
+                        requester: 'ผู้ใช้งานระบบ',
+                        department: b.use_div_code || 'ฝ่ายบริหาร',
+                        destination: b.journey_place,
+                        date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
+                            day: 'numeric', month: 'short', year: 'numeric'
+                        }) : 'N/A',
+                        time: b.journer_time || 'N/A',
+                        objective: b.journey_causes || '-',
+                        status: b.status_use_id ? String(b.status_use_id) : '1',
+                        // เพิ่ม fields สำหรับนำไปแสดงใน Modal Detail
+                        carType: b.car_spec_id,
+                        origin: b.start_place,
+                        province: b.journey_province,
+                        passengers: b.passenger_amount,
+                        phone: b.user_mobile,
+                        selfDrive: b.self_drive ? 'ใช่ (ขับเอง)' : 'ไม่ใช่ (ขอพนักงานขับ)',
+                        endDate: b.return_date ? new Date(b.return_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
+                        endTime: b.return_time || '-',
+                    }));
+                    setRequests(formattedList);
+                } else {
+                    setRequests([]);
+                    setError("ไม่สามารถโหลดข้อมูลคำขอได้ กรุณาลองใหม่อีกครั้ง");
+                }
 
+                setIsLoading(false);
             } catch (err) {
                 console.error("Failed to fetch requests", err);
                 setError("ไม่สามารถโหลดข้อมูลคำขอได้ กรุณาลองใหม่อีกครั้ง");
@@ -44,7 +64,7 @@ export default function PendingPage() {
     }, []); // <-- ลบ currentUser ออกจาก dependency array แล้ว
 
     // 4. ฟังก์ชันจัดการค้นหา (ทำงานจริง)
-    const filteredRequests = requests.filter(req => 
+    const filteredRequests = requests.filter(req =>
         req.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         req.destination?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -141,7 +161,11 @@ export default function PendingPage() {
                                             <MapPin className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                                         </div>
                                         <div>
-                                            <p className="text-base font-black text-gray-800 line-clamp-1">{req.destination}</p>
+                                            <p className="text-base font-black text-gray-800 line-clamp-1 flex items-center gap-2">
+                                                <span>{req.origin}</span>
+                                                <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                                                <span className="text-blue-600">{req.destination}</span>
+                                            </p>
                                             <p className="text-xs text-gray-400 font-medium line-clamp-1 uppercase tracking-tight">{req.objective}</p>
                                         </div>
                                     </div>
@@ -179,9 +203,69 @@ export default function PendingPage() {
 
             {/* ส่วน Detail Modal */}
             {selectedRequest && (
-               <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    {/* ⚠️ นำโค้ด Modal เดิมของคุณมาวางแทนที่คอมเมนต์นี้ได้เลยครับ */}
-               </div>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white p-8 rounded-[2rem] shadow-xl w-full max-w-2xl relative overflow-hidden">
+                        <button
+                            onClick={() => setSelectedRequest(null)}
+                            className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                            <XCircle className="w-6 h-6" />
+                        </button>
+
+                        <div className="mb-6 border-b border-gray-100 pb-6">
+                            <span className="text-xs font-black text-blue-600 uppercase tracking-widest">{selectedRequest.id}</span>
+                            <h2 className="text-2xl font-black text-gray-900 mt-1">รายละเอียดคำขอจองรถ</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mt-4">
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ชื่อผู้ขอ</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.requester}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">สังกัด</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.department}</p>
+                            </div>
+                            <div className="md:col-span-2">
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">เส้นทาง</p>
+                                <p className="text-lg font-bold text-gray-900 flex items-center gap-2 flex-wrap">
+                                    <span className="bg-gray-100 px-3 py-1 rounded-xl text-sm">{selectedRequest.origin}</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                                    <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-xl text-sm">{selectedRequest.destination}</span>
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วันเดินทางไป</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.date} - {selectedRequest.time} น.</p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วันเดินทางกลับ</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.endDate} - {selectedRequest.endTime} น.</p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ประเภทรถ / ผู้โดยสาร</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.carType} <span className="text-sm font-medium text-gray-500">({selectedRequest.passengers} คน)</span></p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ลักษณะการขับ</p>
+                                <p className="text-lg font-bold text-gray-900">{selectedRequest.selfDrive}</p>
+                            </div>
+                            <div className="md:col-span-2 bg-gray-50 p-4 rounded-xl mt-2">
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วัตถุประสงค์ / หมายเหตุ</p>
+                                <p className="text-base font-bold text-gray-800 mt-1 whitespace-pre-wrap">{selectedRequest.objective}</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex justify-end pt-6 border-t border-gray-100">
+                            <button
+                                onClick={() => setSelectedRequest(null)}
+                                className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors"
+                            >
+                                ปิดหน้าต่าง
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
@@ -197,7 +281,7 @@ export const getStatusName = (status: number | string) => {
     switch (strStatus) {
         case '1':
         case 'PENDING':
-            return 'รออนุมัติ';
+            return 'รอการอนุมัติ';
         case '2':
         case 'APPROVED':
             return 'อนุมัติแล้ว';

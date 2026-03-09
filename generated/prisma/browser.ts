@@ -27,3 +27,13 @@ export type User = Prisma.UserModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel
+/**
+ * Model VcOrderItems
+ * 
+ */
+export type VcOrderItems = Prisma.VcOrderItemsModel
