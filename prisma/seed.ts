@@ -54,10 +54,9 @@ async function main() {
         throw new Error("User not found");
     }
 
-    // ── Seed Bookings ────────────────────────────────────────
     const bookings = [
         {
-            bookingNo:'REQ-2026-0001',
+            bookingNo: 'REQ-2026-0001',
             requesterId: requester1.id,
             department: "ฝ่ายการตลาด",
             objective: "ประชุมร่วมกับลูกค้า",
@@ -70,7 +69,7 @@ async function main() {
             status: "PENDING" as const,
         },
         {
-            bookingNo:'REQ-2026-0002',
+            bookingNo: 'REQ-2026-0002',
             requesterId: requester2.id,
             department: "ฝ่ายบัญชี",
             objective: "ยื่นเอกสารกรมสรรพากร",
@@ -83,7 +82,7 @@ async function main() {
             status: "PENDING" as const,
         },
         {
-            bookingNo:'REQ-2026-0003',
+            bookingNo: 'REQ-2026-0003',
             requesterId: requester1.id,
             department: "ฝ่าย IT",
             objective: "ติดตั้งระบบสาขา",
@@ -96,7 +95,7 @@ async function main() {
             status: "APPROVED" as const,
         },
         {
-            bookingNo:'REQ-2026-0004',
+            bookingNo: 'REQ-2026-0004',
             requesterId: requester2.id,
             department: "ฝ่ายบุคคล",
             objective: "อบรมพนักงานใหม่",
@@ -110,7 +109,7 @@ async function main() {
             rejectReason: "รถไม่ว่างในช่วงเวลาดังกล่าว",
         },
         {
-            bookingNo:'REQ-2026-0005',
+            bookingNo: 'REQ-2026-0005',
             requesterId: requester1.id,
             department: "ฝ่ายขาย",
             objective: "เยี่ยมลูกค้าต่างจังหวัด",
