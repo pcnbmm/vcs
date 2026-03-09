@@ -386,8 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Session: 'Session',
-  Booking: 'Booking',
-  VcOrderItems: 'VcOrderItems'
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "booking" | "vcOrderItems"
+    modelProps: "user" | "session" | "booking"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -629,80 +628,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    VcOrderItems: {
-      payload: Prisma.$VcOrderItemsPayload<ExtArgs>
-      fields: Prisma.VcOrderItemsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.VcOrderItemsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.VcOrderItemsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        findFirst: {
-          args: Prisma.VcOrderItemsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.VcOrderItemsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        findMany: {
-          args: Prisma.VcOrderItemsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        create: {
-          args: Prisma.VcOrderItemsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        createMany: {
-          args: Prisma.VcOrderItemsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.VcOrderItemsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        delete: {
-          args: Prisma.VcOrderItemsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        update: {
-          args: Prisma.VcOrderItemsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        deleteMany: {
-          args: Prisma.VcOrderItemsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.VcOrderItemsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.VcOrderItemsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        upsert: {
-          args: Prisma.VcOrderItemsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        aggregate: {
-          args: Prisma.VcOrderItemsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVcOrderItems>
-        }
-        groupBy: {
-          args: Prisma.VcOrderItemsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VcOrderItemsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.VcOrderItemsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VcOrderItemsCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -767,6 +692,7 @@ export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeo
 
 export const BookingScalarFieldEnum = {
   id: 'id',
+  bookingNo: 'bookingNo',
   requesterId: 'requesterId',
   department: 'department',
   objective: 'objective',
@@ -784,35 +710,6 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
-
-
-export const VcOrderItemsScalarFieldEnum = {
-  request_id: 'request_id',
-  use_div_code: 'use_div_code',
-  userid: 'userid',
-  user_mobile: 'user_mobile',
-  journey_date: 'journey_date',
-  return_date: 'return_date',
-  start_place: 'start_place',
-  journey_place: 'journey_place',
-  journey_province: 'journey_province',
-  journey_causes: 'journey_causes',
-  journer_time: 'journer_time',
-  return_time: 'return_time',
-  car_spec_id: 'car_spec_id',
-  passenger_amount: 'passenger_amount',
-  approve_id: 'approve_id',
-  status_use_id: 'status_use_id',
-  self_drive: 'self_drive',
-  journey_lat: 'journey_lat',
-  journey_long: 'journey_long',
-  cre_by: 'cre_by',
-  cre_date: 'cre_date',
-  upd_by: 'upd_by',
-  upd_date: 'upd_date'
-} as const
-
-export type VcOrderItemsScalarFieldEnum = (typeof VcOrderItemsScalarFieldEnum)[keyof typeof VcOrderItemsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -898,13 +795,6 @@ export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'BookingStatus[]'
  */
 export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1019,7 +909,6 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   booking?: Prisma.BookingOmit
-  vcOrderItems?: Prisma.VcOrderItemsOmit
 }
 
 /* Types for Logging */

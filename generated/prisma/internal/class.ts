@@ -213,16 +213,6 @@ export interface PrismaClient<
     * ```
     */
   get booking(): Prisma.BookingDelegate<ExtArgs, { omit: OmitOpts }>;
-
-  /**
-   * `prisma.vcOrderItems`: Exposes CRUD operations for the **VcOrderItems** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more VcOrderItems
-    * const vcOrderItems = await prisma.vcOrderItems.findMany()
-    * ```
-    */
-  get vcOrderItems(): Prisma.VcOrderItemsDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {
