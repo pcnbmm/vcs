@@ -1,11 +1,11 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+import { createBooking, getMyBookings } from '@/app/actions/bookingActions';
 import {
     departments,
     vehicleTypes,
     provinces
-} from '@/mock/data/vehicles'; 
+} from '@/mock/data/vehicles';
 import {
     FileText,
     Car,
@@ -34,13 +34,33 @@ import LongdoMapBox from '@/components/ui/LongdoMapBox';
 
 export default function VehicleRequestPage() {
     const router = useRouter();
-    
+
     // --- ปรับแก้: ใช้ State จำลองเก็บข้อมูลแทน RoleContext ---
-    const [carRequests, setCarRequests] = useState<any[]>([]); 
+    const [carRequests, setCarRequests] = useState<any[]>([]);
     // ----------------------------------------------------
 
     const [activeTab, setActiveTab] = useState<'form' | 'list'>('form');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        async function fetchBookings() {
+            const result = await getMyBookings();
+            if (result.success && result.data) {
+                const formattedList = result.data.map((b: any) => ({
+                    id: b.request_id,
+                    destination: b.journey_place,
+                    date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    }) : 'N/A',
+                    time: b.journer_time || 'N/A', // Using the specific journer_time field
+                    objective: b.journey_causes,
+                    status: b.status_use_id ? String(b.status_use_id) : 'Pending'
+                }));
+                setCarRequests(formattedList);
+            }
+        }
+        fetchBookings();
+    }, []);
 
     // Helper to get today's date in YYYY-MM-DD format
     const getTodayDate = () => new Date().toISOString().split('T')[0];
@@ -81,49 +101,58 @@ export default function VehicleRequestPage() {
         setIsSubmitting(true);
 
         try {
-            const dateObj = new Date(formData.startDate);
-            const formattedDate = dateObj.toLocaleDateString('th-TH', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
+            // สร้าง FormData โดยใช้ชื่อฟิลด์ให้ตรงกับ Database เป๊ะๆ
+            const dataToSubmit = new FormData();
+            dataToSubmit.append('use_div_code', formData.ownerDept);
+            dataToSubmit.append('car_spec_id', formData.vehicleType);
+            dataToSubmit.append('start_place', formData.origin);
+            dataToSubmit.append('journey_province', formData.province);
+            dataToSubmit.append('journey_place', formData.destination);
+            dataToSubmit.append('journey_lat', formData.lat.toString());
+            dataToSubmit.append('journey_long', formData.lon.toString());
 
-            const payload: any = {
-                // --- ปรับแก้: ใส่ชื่อจำลองไปก่อน ---
-                requester: 'ผู้ใช้งานทดสอบ', 
-                // -----------------------------
-                department: formData.ownerDept,
-                destination: formData.destination,
-                lat: formData.lat,
-                lon: formData.lon,
-                date: formattedDate,
-                time: `${formData.startTime}${formData.endTime ? ' - ' + formData.endTime : ''}`,
-                endDate: formData.endDate,
-                endTime: formData.endTime,
-                origin: formData.origin,
-                province: formData.province,
-                passengers: formData.passengers,
-                phone: formData.phone,
-                status: 'Pending',
-                type: formData.vehicleType,
-                objective: formData.objective,
-                // --- ปรับแก้: ใส่ ID จำลองไปก่อน ---
-                userId: 'user-temp-01', 
-                // -----------------------------
-                requestDate: new Date().toLocaleDateString('th-TH'),
-                selfDrive: formData.selfDrive
-            };
+            // รวม start date และ time เพื่อให้เป็น Date string สำหรับ Prisma
+            const combinedDateTime = `${formData.startDate}T${formData.startTime}:00`;
+            dataToSubmit.append('journey_date', combinedDateTime);
+            dataToSubmit.append('journer_time', formData.startTime); // เก็บแยกด้วยตามโจทย์
 
-            // จำลองการโหลด 1 วินาที
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // รวม end date และ time
+            const combinedEndDateTime = `${formData.endDate}T${formData.endTime || '00:00'}:00`;
+            dataToSubmit.append('return_date', combinedEndDateTime);
+            dataToSubmit.append('return_time', formData.endTime || '00:00');
 
-            // อัปเดต State (ใช้ State จำลองในหน้านี้)
-            const newRequest = { ...payload, id: `REQ-${Math.floor(1000 + Math.random() * 9000)}` };
-            setCarRequests((prev: any) => [newRequest, ...prev]);
+            dataToSubmit.append('journey_causes', formData.objective);
+            dataToSubmit.append('passenger_amount', formData.passengers.toString());
+            dataToSubmit.append('user_mobile', formData.phone);
+            dataToSubmit.append('self_drive', formData.selfDrive.toString());
 
-            alert('บันทึกคำขอใช้รถเรียบร้อยแล้ว!');
-            resetForm();
-            setActiveTab('list');
+            // เรียกใช้งาน Server Action ของ Prisma
+            const result = await createBooking(dataToSubmit);
+
+            if (result.success) {
+                // สร้างรูปแบบแสดงผลชั่วคราวใน list
+                const dateObj = new Date(formData.startDate);
+                const formattedDate = dateObj.toLocaleDateString('th-TH', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+                const newRequest = {
+                    id: result.id, // ใช้ ID จริงที่ได้จาก Prisma
+                    destination: formData.destination,
+                    date: formattedDate,
+                    time: formData.startTime,
+                    objective: formData.objective,
+                    status: 'Pending'
+                };
+                setCarRequests((prev: any) => [newRequest, ...prev]);
+
+                alert('บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!');
+                resetForm();
+                setActiveTab('list');
+            } else {
+                alert(result.error || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            }
 
         } catch (error) {
             console.error("Error saving booking:", error);
@@ -454,7 +483,7 @@ export default function VehicleRequestPage() {
                                     myRequests.map((req: any) => {
                                         const statusConfig: any = {
                                             'Pending': { color: 'bg-yellow-50 text-yellow-600 border-yellow-100', text: 'รอการอนุมัติ' },
-                                            '1': { color: 'bg-yellow-50 text-yellow-600 border-yellow-100', text: 'รอการอนุมัติ' }, 
+                                            '1': { color: 'bg-yellow-50 text-yellow-600 border-yellow-100', text: 'รอการอนุมัติ' },
                                             'Approved': { color: 'bg-emerald-50 text-emerald-600 border-emerald-100', text: 'อนุมัติแล้ว' },
                                             'Rejected': { color: 'bg-red-50 text-red-600 border-red-100', text: 'ปฏิเสธคำขอ' },
                                             'Cancelled': { color: 'bg-gray-50 text-gray-400 border-gray-200', text: 'ยกเลิกแล้ว' },
@@ -468,7 +497,7 @@ export default function VehicleRequestPage() {
                                                 no={req.id}
                                                 date={req.date}
                                                 time={req.time}
-                                                dest={req.destination}
+                                                dest={`${req.origin || ''} ไป ${req.destination || ''}`}
                                                 reason={req.objective}
                                                 status={config.text}
                                                 statusColor={config.color}

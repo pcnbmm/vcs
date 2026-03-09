@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Search as SearchIcon, MapPin, Crosshair, Loader2, Maximize2 } from 'lucide-react';
-import { searchLocation, suggestLocation } from '@/app/actions/mapActions';
+import { searchLocation, suggestLocation, getAddressFromLatLon } from '@/app/actions/mapActions';
 
 const LONGDO_MAP_KEY = process.env.NEXT_PUBLIC_LONGDO_MAP_KEY;
 
@@ -49,19 +49,40 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
                 const map = new window.longdo.Map({
                     placeholder: canvas,
                     lastview: false,
-                    language: 'th'
+                    language: 'th',
+                    // @ts-ignore
+                    ui: window.longdo.UiComponent.None
                 });
                 mapRef.current = map;
 
                 map.Event.bind('ready', () => {
                     setIsMapLoaded(true);
 
+                    // --- บังคับตั้งค่าการใช้งานเมาส์ ให้เลื่อนได้ (Drag) และห้ามลากครอบ (RubberBand) ---
+                    try {
+                        // @ts-ignore
+                        map.Ui.Mouse.enableRubberBand(false);
+                        // @ts-ignore
+                        map.Ui.Mouse.enableDrag(true);
+                    } catch (e) {
+                        console.warn("Map UI Mouse config error:", e);
+                    }
+                    // -----------------------------------------------------------------------
+
                     // ปักหมุดเมื่อคลิก - ใช้พิกัดจาก Pointer ปัจจุบัน
-                    map.Event.bind('click', () => {
+                    map.Event.bind('click', async () => {
                         // @ts-ignore
                         const loc = map.location(window.longdo.LocationMode.Pointer);
                         if (loc) {
-                            updatePin(loc, "ตำแหน่งที่เลือก");
+                            try {
+                                const addrData = await getAddressFromLatLon(loc.lat, loc.lon);
+                                const placeName = addrData?.province
+                                    ? `${addrData.subdistrict ? addrData.subdistrict + ' ' : ''}${addrData.district ? addrData.district + ' ' : ''}${addrData.province}`
+                                    : "ตำแหน่งที่เลือก";
+                                updatePin(loc, placeName);
+                            } catch {
+                                updatePin(loc, "ตำแหน่งที่เลือก");
+                            }
                         }
                     });
                 });
@@ -148,9 +169,13 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
                 </button>
             </div>
 
-            {/* Map Container - ขยายสูงขึ้นเพื่อให้ลากสนุก */}
-            <div className="relative w-full h-[550px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100 ring-1 ring-slate-200">
-                <div id="map-canvas" className="w-full h-full"></div>
+            {/* Map Container - ปรับให้สูงพอดีและรองรับการเลื่อนหน้าจอบนมือถือ/แท็บเล็ต */}
+            <div className="relative w-full h-[500px] md:h-[650px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100 ring-1 ring-slate-200" style={{ touchAction: 'pan-y' }}>
+                <div
+                    id="map-canvas"
+                    className="w-full h-full"
+                    style={{ userSelect: 'none', touchAction: 'none' }}
+                ></div>
 
                 {!isMapLoaded && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-50">
@@ -167,10 +192,18 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
                         className="w-12 h-12 bg-white shadow-2xl rounded-2xl font-black text-2xl hover:text-blue-600 flex items-center justify-center border border-slate-50 transition-all active:scale-90">-</button>
                     <button onClick={() => {
                         if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(p => {
+                            navigator.geolocation.getCurrentPosition(async (p) => {
                                 const loc = { lat: p.coords.latitude, lon: p.coords.longitude };
                                 mapRef.current.location(loc, true);
-                                updatePin(loc, 'ตำแหน่งปัจจุบัน');
+                                try {
+                                    const addrData = await getAddressFromLatLon(loc.lat, loc.lon);
+                                    const placeName = addrData?.province
+                                        ? `${addrData.subdistrict ? addrData.subdistrict + ' ' : ''}${addrData.district ? addrData.district + ' ' : ''}${addrData.province}`
+                                        : "ตำแหน่งปัจจุบัน";
+                                    updatePin(loc, placeName);
+                                } catch {
+                                    updatePin(loc, 'ตำแหน่งปัจจุบัน');
+                                }
                             });
                         }
                     }} className="w-12 h-12 bg-white shadow-2xl rounded-2xl flex items-center justify-center text-slate-500 hover:text-blue-600 border border-slate-50 active:scale-90 transition-all">
