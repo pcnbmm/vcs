@@ -10,4 +10,6 @@
  */
 export type * from './models/User'
 export type * from './models/Session'
+export type * from './models/Booking'
+export type * from './models/vc_car_brand'
 export type * from './commonInputTypes'

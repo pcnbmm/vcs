@@ -52,7 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Session: 'Session'
+  Session: 'Session',
+  Booking: 'Booking',
+  vc_car_brand: 'vc_car_brand'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -73,12 +75,12 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  username: 'username',
   email: 'email',
   name: 'name',
+  createdAt: 'createdAt',
   password: 'password',
   role: 'role',
-  createdAt: 'createdAt'
+  username: 'username'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -92,6 +94,41 @@ export const SessionScalarFieldEnum = {
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  bookingNo: 'bookingNo',
+  requesterId: 'requesterId',
+  department: 'department',
+  objective: 'objective',
+  origin: 'origin',
+  destination: 'destination',
+  requestDate: 'requestDate',
+  startDateTime: 'startDateTime',
+  endDateTime: 'endDateTime',
+  passengerCount: 'passengerCount',
+  status: 'status',
+  rejectReason: 'rejectReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const Vc_car_brandScalarFieldEnum = {
+  car_brand_id: 'car_brand_id',
+  car_brand_name: 'car_brand_name',
+  car_series_name: 'car_series_name',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_car_brandScalarFieldEnum = (typeof Vc_car_brandScalarFieldEnum)[keyof typeof Vc_car_brandScalarFieldEnum]
 
 
 export const SortOrder = {
