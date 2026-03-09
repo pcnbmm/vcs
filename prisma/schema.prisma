@@ -29,6 +29,7 @@ model Session {
 
 model Booking {
   id             String        @id @default(cuid())
+  bookingNo      String?       @unique
   requesterId    String
   department     String
   objective      String

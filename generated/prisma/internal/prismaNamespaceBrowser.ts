@@ -97,6 +97,7 @@ export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeo
 
 export const BookingScalarFieldEnum = {
   id: 'id',
+  bookingNo: 'bookingNo',
   requesterId: 'requesterId',
   department: 'department',
   objective: 'objective',
