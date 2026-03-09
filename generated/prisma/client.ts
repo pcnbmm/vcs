@@ -54,8 +54,3 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Booking = Prisma.BookingModel
-/**
- * Model VcOrderItems
- * 
- */
-export type VcOrderItems = Prisma.VcOrderItemsModel

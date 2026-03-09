@@ -28,7 +28,8 @@ model Session {
 }
 
 model Booking {
-  id             String        @id
+  id             String        @id @default(cuid())
+  bookingNo      String?       @unique
   requesterId    String
   department     String
   objective      String
@@ -41,7 +42,7 @@ model Booking {
   status         BookingStatus @default(PENDING)
   rejectReason   String?
   createdAt      DateTime      @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime      @updatedAt
   User           User          @relation(fields: [requesterId], references: [id])
 }
 
@@ -57,7 +58,6 @@ model vc_car_master {
   color_id           Int?
   oil_type_id        Int?
   own_div_code       Int?
-  purchase_id        Int?
   fiscal_year        Int?
   start_date         String? @db.VarChar(50)
   end_date           String? @db.VarChar(50)
@@ -77,12 +77,13 @@ model vc_car_master {
   horse_power        String? @db.VarChar(50)
   weight             String? @db.VarChar(50)
   machine_id         String? @db.VarChar(50)
+  purchase_id        Int?
   fleetcard_no       BigInt?
 
   @@ignore
 }
 
-model VcOrderItems {
+model vc_order_item {
   request_id       Int       @id @default(autoincrement())
   use_div_code     String?   @db.VarChar(100)
   userid           String?   @db.Char(8)
@@ -103,11 +104,11 @@ model VcOrderItems {
   journey_lat      Float?
   journey_long     Float?
   cre_by           String?   @db.VarChar(20)
-  cre_date         DateTime? @db.Date
+  cre_date         DateTime?
   upd_by           String?   @db.VarChar(20)
-  upd_date         DateTime? @db.Date
+  upd_date         DateTime?
 
-  @@map("vc_order_item")
+  @@ignore
 }
 
 enum BookingStatus {

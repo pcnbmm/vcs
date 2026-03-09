@@ -11,5 +11,4 @@
 export type * from './models/User'
 export type * from './models/Session'
 export type * from './models/Booking'
-export type * from './models/VcOrderItems'
 export type * from './commonInputTypes'
