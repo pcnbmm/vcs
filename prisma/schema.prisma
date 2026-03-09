@@ -29,7 +29,6 @@ model Session {
 
 model Booking {
   id             String        @id @default(cuid())
-  bookingNo      String        @unique
   requesterId    String
   department     String
   objective      String
@@ -43,6 +42,7 @@ model Booking {
   rejectReason   String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  bookingNo      String        @unique
   User           User          @relation(fields: [requesterId], references: [id])
 }
 
@@ -120,6 +120,272 @@ model vc_car_brand {
   cre_date        String? @db.VarChar(255)
   upd_by          Int?
   upd_date        String? @db.VarChar(255)
+}
+
+model fleetcard_transactions {
+  fleetcard_trans_id Int       @id @default(autoincrement())
+  fleetcard_id       String?   @db.VarChar(50)
+  invoiceNo          String?   @db.VarChar(50)
+  transactionDate    DateTime? @db.Date
+  transactionTime    DateTime? @db.Time(6)
+  bilingDate         DateTime? @db.Date
+  merchantID         String?   @db.VarChar(50)
+  taxID              String?   @db.VarChar(50)
+  branchCode         String?   @db.VarChar(50)
+  stationName        String?   @db.VarChar(50)
+  stationAddress     String?   @db.VarChar(50)
+  fuelTypeCode       String?   @db.VarChar(50)
+  fuelTypeName       String?   @db.VarChar(50)
+  vatRefund          String?   @db.VarChar(50)
+  amountBeforeVat    Decimal?  @db.Decimal(15, 2)
+  volumeLiter        Decimal?  @db.Decimal(15, 3)
+  transactionStatus  String?   @db.VarChar(50)
+  sapPostingStatus   String?   @db.VarChar(50)
+  jvID               String?   @db.VarChar(50)
+}
+
+model fleetcards {
+  fleetcard_id   Int       @id @default(autoincrement())
+  accountNo      String?   @db.VarChar(50)
+  fleetcardNo    String?   @db.VarChar(50)
+  licensePlateNo String?   @db.VarChar(50)
+  vendorBank     String?   @db.VarChar(50)
+  validFrom      DateTime? @db.Date
+  validTo        DateTime? @db.Date
+  cardStatus     Int?      @db.SmallInt
+  costCenter     String?   @db.VarChar(50)
+  fundCenter     String?   @db.VarChar(50)
+  gl             String?   @db.VarChar(50)
+  busProcess     String?   @db.VarChar(50)
+  poimSegment    String?   @db.VarChar(50)
+  vatRefund      String?   @db.VarChar(50)
+  fuelTypeCode   String?   @db.VarChar(50)
+  fuelTypeName   String?   @db.VarChar(50)
+  stationName    String?   @db.VarChar(50)
+  carBrand       String?   @db.VarChar(50)
+  carModel       String?   @db.VarChar(50)
+  carType        String?   @db.VarChar(50)
+}
+
+model vc_car_spec {
+  car_spec_id   Int     @id @default(autoincrement())
+  car_spec_name String? @db.VarChar(256)
+  flag_del      String? @db.VarChar(50)
+  cre_by        Int?
+  cre_date      String? @db.VarChar(50)
+  upd_by        Int?
+  upd_date      String? @db.VarChar(50)
+}
+
+model vc_car_status {
+  car_status_id   Int     @id @default(autoincrement())
+  car_status_name String? @db.VarChar(50)
+  flag_del        String? @db.VarChar(50)
+  cre_by          Int?
+  cre_date        String? @db.VarChar(50)
+  upd_by          Int?
+  upd_date        String? @db.VarChar(50)
+}
+
+model vc_car_type {
+  car_type_id   Int     @id @default(autoincrement())
+  car_type_name String? @db.VarChar(50)
+  flag_del      String? @db.VarChar(50)
+  cre_by        Int?
+  cre_date      String? @db.VarChar(50)
+  upd_by        Int?
+  upd_date      String? @db.VarChar(50)
+}
+
+model vc_color {
+  color_id   Int     @id @default(autoincrement())
+  color_name String? @db.VarChar(50)
+  flag_del   String? @db.VarChar(50)
+  cre_by     Int?
+  cre_date   String? @db.VarChar(50)
+  upd_by     Int?
+  upd_date   String? @db.VarChar(50)
+}
+
+model vc_company {
+  company_id   Int       @id @default(autoincrement())
+  company_name String?   @db.VarChar(200)
+  company_tel  String?   @db.VarChar(50)
+  flag_del     String?   @db.VarChar(50)
+  cre_by       String?   @db.VarChar(50)
+  cre_date     DateTime? @db.Date
+  upd_by       String?   @db.VarChar(50)
+  upd_date     DateTime? @db.Date
+}
+
+model vc_contract_details {
+  contract_id           Int       @id @default(autoincrement())
+  rent_no               String?   @db.VarChar(50)
+  arbitrator_chair      Int?
+  arbitrator_chair_name String?   @db.VarChar(255)
+  arbitrator1           Int?
+  arbitrator1_name      String?   @db.VarChar(255)
+  arbitrator2           Int?
+  arbitrator2_name      String?   @db.VarChar(255)
+  arbitrator3           Int?
+  arbitrator3_name      String?   @db.VarChar(255)
+  start_date            DateTime? @db.Date
+  end_date              DateTime? @db.Date
+  arbitrator4           Int?
+  arbitrator4_name      String?   @db.VarChar(255)
+}
+
+model vc_fuel_item {
+  fuel_item_id    Int       @id @default(autoincrement())
+  car_id          Int?
+  oil_type_id     Int?
+  fuel_date       DateTime? @db.Date
+  fuel_time       DateTime? @db.Time(6)
+  driver_id       Int?
+  fuel_station_id Int?
+  mile_car        Int?
+  pay_method      String?   @db.VarChar(50)
+  pay_card_id     String?   @db.VarChar(50)
+  amount_liter    Decimal?  @db.Decimal(12, 2)
+  amount_baht     Decimal?  @db.Decimal(12, 2)
+  liter_price     Decimal?  @db.Decimal(12, 2)
+  amount_vat      Decimal?  @db.Decimal(12, 2)
+  invoice_no      String?   @db.VarChar(50)
+  cre_by          String?   @db.VarChar(50)
+  cre_date        DateTime? @db.Date
+  upd_by          String?   @db.VarChar(50)
+  upd_date        DateTime? @db.Date
+}
+
+model vc_function {
+  function_id Int       @id @default(autoincrement())
+  menu_id     Int?
+  func_name   String?   @db.VarChar(100)
+  func_code   String?   @db.VarChar(50)
+  cre_by      String?   @db.VarChar(50)
+  cre_date    DateTime? @db.Date
+  upd_by      String?   @db.VarChar(50)
+  upd_date    DateTime? @db.Date
+}
+
+model vc_menu {
+  menu_id    Int       @id @default(autoincrement())
+  menuname   String?   @db.VarChar(100)
+  route_path String?   @db.VarChar(100)
+  menu_icon  String?   @db.VarChar(50)
+  sort_order Int?
+  cre_by     String?   @db.VarChar(50)
+  cre_date   DateTime? @db.Date
+  upd_by     String?   @db.VarChar(50)
+  upd_date   DateTime? @db.Date
+}
+
+model vc_nt_car {
+  nt_car_id                  Int       @id @default(autoincrement())
+  car_id                     Int?
+  asset_no                   String?   @db.VarChar(50)
+  car_account_no_tax         String?   @db.VarChar(50)
+  car_account_no_insure      String?   @db.VarChar(50)
+  car_cost_center            String?   @db.VarChar(50)
+  car_business_process       String?   @db.VarChar(50)
+  car_functional_area        String?   @db.VarChar(50)
+  car_segment_code           String?   @db.VarChar(50)
+  car_product_code           String?   @db.VarChar(50)
+  purchase_price             Decimal?  @db.Decimal(12, 2)
+  insure_cartype             Int?
+  insure_third_party_cartype Int?
+  cre_by                     String?   @db.VarChar(50)
+  cre_date                   DateTime? @db.Date
+  upd_by                     String?   @db.VarChar(50)
+  upd_date                   DateTime? @db.Date
+}
+
+model vc_oil_type {
+  oil_type_id    Int       @id @default(autoincrement())
+  oil_type_name  String?   @db.VarChar(200)
+  oil_type_group Int?
+  flag_del       String?   @db.VarChar(50)
+  cre_by         Int?
+  cre_date       DateTime? @db.Date
+  upd_by         Int?
+  upd_date       DateTime? @db.Date
+}
+
+model vc_permission {
+  role_id     Int       @id @default(autoincrement())
+  function_id Int?
+  can_access  Boolean?
+  cre_by      String?   @db.VarChar(50)
+  cre_date    DateTime? @db.Date
+  upd_by      String?   @db.VarChar(50)
+  upd_date    DateTime? @db.Date
+}
+
+model vc_register_province {
+  regis_province_id   Int     @id @default(autoincrement())
+  regis_province_name String? @db.VarChar(50)
+  short_name          String? @db.VarChar(50)
+  region_id           Int?
+  flag_del            String? @db.VarChar(50)
+  cre_by              Int?
+  cre_date            String? @db.VarChar(50)
+  upd_by              Int?
+  upd_date            String? @db.VarChar(50)
+}
+
+model vc_rent_car {
+  rent_car_id      Int       @id @default(autoincrement())
+  rent_car_id_1    Int?
+  rent_no          String?   @db.VarChar(100)
+  company_id       Int?
+  price_per_month  Decimal?  @db.Decimal(12, 2)
+  cre_by           String?   @db.VarChar(50)
+  cre_date         DateTime? @db.Date
+  upd_by           String?   @db.VarChar(50)
+  upd_date         DateTime? @db.Date
+  replacement_flag String?   @db.VarChar(50)
+  po               String?   @db.VarChar(100)
+}
+
+model vc_replacement {
+  replacement_id     Int       @id @default(autoincrement())
+  car_id             Int?
+  replacemant_car_id Int?
+  start_date         DateTime? @db.Date
+  end_date           DateTime? @db.Date
+  cre_by             String?   @db.VarChar(50)
+  cre_date           DateTime? @db.Date
+  upd_by             String?   @db.VarChar(50)
+  upd_date           DateTime? @db.Date
+}
+
+model vc_roles {
+  roles_id    Int       @id @default(autoincrement())
+  roles_name  String?   @db.VarChar(50)
+  description String?   @db.VarChar(255)
+  cre_by      String?   @db.VarChar(50)
+  cre_date    DateTime? @db.Date
+  upd_by      String?   @db.VarChar(50)
+  upd_date    DateTime? @db.Date
+}
+
+model vc_type_regis {
+  type_regis_id   Int       @id @default(autoincrement())
+  type_regis_name String?   @db.VarChar(128)
+  flag_del        String?   @db.VarChar(50)
+  cre_by          Int?
+  cre_date        DateTime? @db.Date
+  upd_by          Int?
+  upd_date        DateTime? @db.Date
+}
+
+model vc_user_roles {
+  user_id  Int       @id @default(autoincrement())
+  roles_id Int?
+  cre_by   String?   @db.VarChar(50)
+  cre_date DateTime? @db.Date
+  upd_by   String?   @db.VarChar(50)
+  upd_date DateTime? @db.Date
 }
 
 enum BookingStatus {
