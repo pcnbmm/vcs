@@ -53,7 +53,6 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Session: 'Session',
-  Booking: 'Booking',
   vc_car_master: 'vc_car_master',
   VcOrderItems: 'VcOrderItems',
   fleetcard_transactions: 'fleetcard_transactions',
@@ -74,7 +73,14 @@ export const ModelName = {
   vc_replacement: 'vc_replacement',
   vc_roles: 'vc_roles',
   vc_type_regis: 'vc_type_regis',
-  vc_user_roles: 'vc_user_roles'
+  vc_user_roles: 'vc_user_roles',
+  vc_rent_car: 'vc_rent_car',
+  vc_use: 'vc_use',
+  fleetcards: 'fleetcards',
+  vc_driver: 'vc_driver',
+  vc_driver_license_type: 'vc_driver_license_type',
+  vc_start_place: 'vc_start_place',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -116,27 +122,6 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
-export const BookingScalarFieldEnum = {
-  id: 'id',
-  requesterId: 'requesterId',
-  department: 'department',
-  objective: 'objective',
-  origin: 'origin',
-  destination: 'destination',
-  requestDate: 'requestDate',
-  startDateTime: 'startDateTime',
-  endDateTime: 'endDateTime',
-  passengerCount: 'passengerCount',
-  status: 'status',
-  rejectReason: 'rejectReason',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  bookingNo: 'bookingNo'
-} as const
-
-export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
-
-
 export const Vc_car_masterScalarFieldEnum = {
   car_id: 'car_id',
   car_number: 'car_number',
@@ -147,7 +132,6 @@ export const Vc_car_masterScalarFieldEnum = {
   car_type_regis_id: 'car_type_regis_id',
   color_id: 'color_id',
   oil_type_id: 'oil_type_id',
-  own_div_code: 'own_div_code',
   fiscal_year: 'fiscal_year',
   start_date: 'start_date',
   end_date: 'end_date',
@@ -158,6 +142,7 @@ export const Vc_car_masterScalarFieldEnum = {
   cylinder_capacityp: 'cylinder_capacityp',
   oil_expense: 'oil_expense',
   refund_vat: 'refund_vat',
+  fleetcard_no: 'fleetcard_no',
   flag: 'flag',
   cre_by: 'cre_by',
   cre_date: 'cre_date',
@@ -166,9 +151,7 @@ export const Vc_car_masterScalarFieldEnum = {
   ref_car: 'ref_car',
   horse_power: 'horse_power',
   weight: 'weight',
-  machine_id: 'machine_id',
-  purchase_id: 'purchase_id',
-  fleetcard_no: 'fleetcard_no'
+  machine_id: 'machine_id'
 } as const
 
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
@@ -498,6 +481,141 @@ export const Vc_user_rolesScalarFieldEnum = {
 } as const
 
 export type Vc_user_rolesScalarFieldEnum = (typeof Vc_user_rolesScalarFieldEnum)[keyof typeof Vc_user_rolesScalarFieldEnum]
+
+
+export const Vc_rent_carScalarFieldEnum = {
+  rent_car_id: 'rent_car_id',
+  car_id: 'car_id',
+  rent_no: 'rent_no',
+  company_id: 'company_id',
+  price_per_month: 'price_per_month',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  replacement_flag: 'replacement_flag',
+  po: 'po'
+} as const
+
+export type Vc_rent_carScalarFieldEnum = (typeof Vc_rent_carScalarFieldEnum)[keyof typeof Vc_rent_carScalarFieldEnum]
+
+
+export const Vc_useScalarFieldEnum = {
+  use_id: 'use_id',
+  request_id: 'request_id',
+  car_id: 'car_id',
+  emp_id: 'emp_id',
+  drive_type: 'drive_type',
+  approved_by: 'approved_by',
+  journey_real_time: 'journey_real_time',
+  return_real_time: 'return_real_time',
+  return_real_date: 'return_real_date',
+  mile_begin: 'mile_begin',
+  mile_end: 'mile_end',
+  note: 'note',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_useScalarFieldEnum = (typeof Vc_useScalarFieldEnum)[keyof typeof Vc_useScalarFieldEnum]
+
+
+export const FleetcardsScalarFieldEnum = {
+  accountNo: 'accountNo',
+  fleetcardNo: 'fleetcardNo',
+  licensePlateNo: 'licensePlateNo',
+  vendorBank: 'vendorBank',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  cardStatus: 'cardStatus',
+  costCenter: 'costCenter',
+  fundCenter: 'fundCenter',
+  gl: 'gl',
+  busProcess: 'busProcess',
+  poimSegment: 'poimSegment',
+  vatRefund: 'vatRefund',
+  fuelTypeCode: 'fuelTypeCode',
+  fuelTypeName: 'fuelTypeName',
+  stationName: 'stationName',
+  carBrand: 'carBrand',
+  carModel: 'carModel',
+  carType: 'carType',
+  fleetcard_id: 'fleetcard_id'
+} as const
+
+export type FleetcardsScalarFieldEnum = (typeof FleetcardsScalarFieldEnum)[keyof typeof FleetcardsScalarFieldEnum]
+
+
+export const Vc_driverScalarFieldEnum = {
+  driver_id: 'driver_id',
+  driver_code: 'driver_code',
+  driver_status: 'driver_status',
+  div_code: 'div_code',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  licence_type: 'licence_type',
+  licence_no: 'licence_no',
+  licence_by: 'licence_by',
+  flag: 'flag',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  tel: 'tel'
+} as const
+
+export type Vc_driverScalarFieldEnum = (typeof Vc_driverScalarFieldEnum)[keyof typeof Vc_driverScalarFieldEnum]
+
+
+export const Vc_driver_license_typeScalarFieldEnum = {
+  license_type_id: 'license_type_id',
+  license_type_name: 'license_type_name',
+  license_type_desc: 'license_type_desc',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_driver_license_typeScalarFieldEnum = (typeof Vc_driver_license_typeScalarFieldEnum)[keyof typeof Vc_driver_license_typeScalarFieldEnum]
+
+
+export const Vc_start_placeScalarFieldEnum = {
+  start_place_id: 'start_place_id',
+  start_place_name: 'start_place_name',
+  own_div_prop_id: 'own_div_prop_id',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  requesterId: 'requesterId',
+  department: 'department',
+  objective: 'objective',
+  origin: 'origin',
+  destination: 'destination',
+  requestDate: 'requestDate',
+  startDateTime: 'startDateTime',
+  endDateTime: 'endDateTime',
+  passengerCount: 'passengerCount',
+  status: 'status',
+  rejectReason: 'rejectReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  bookingNo: 'bookingNo'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
 export const SortOrder = {

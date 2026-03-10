@@ -35,15 +35,12 @@ export type Vc_car_masterAvgAggregateOutputType = {
   car_type_regis_id: number | null
   color_id: number | null
   oil_type_id: number | null
-  own_div_code: number | null
   fiscal_year: number | null
   car_status_id: number | null
   oil_expense: number | null
   refund_vat: number | null
   cre_by: number | null
   upd_by: number | null
-  purchase_id: number | null
-  fleetcard_no: number | null
 }
 
 export type Vc_car_masterSumAggregateOutputType = {
@@ -55,15 +52,12 @@ export type Vc_car_masterSumAggregateOutputType = {
   car_type_regis_id: number | null
   color_id: number | null
   oil_type_id: number | null
-  own_div_code: number | null
   fiscal_year: number | null
   car_status_id: number | null
   oil_expense: number | null
   refund_vat: number | null
   cre_by: number | null
   upd_by: number | null
-  purchase_id: number | null
-  fleetcard_no: bigint | null
 }
 
 export type Vc_car_masterMinAggregateOutputType = {
@@ -76,7 +70,6 @@ export type Vc_car_masterMinAggregateOutputType = {
   car_type_regis_id: number | null
   color_id: number | null
   oil_type_id: number | null
-  own_div_code: number | null
   fiscal_year: number | null
   start_date: string | null
   end_date: string | null
@@ -87,6 +80,7 @@ export type Vc_car_masterMinAggregateOutputType = {
   cylinder_capacityp: string | null
   oil_expense: number | null
   refund_vat: number | null
+  fleetcard_no: string | null
   flag: string | null
   cre_by: number | null
   cre_date: string | null
@@ -96,8 +90,6 @@ export type Vc_car_masterMinAggregateOutputType = {
   horse_power: string | null
   weight: string | null
   machine_id: string | null
-  purchase_id: number | null
-  fleetcard_no: bigint | null
 }
 
 export type Vc_car_masterMaxAggregateOutputType = {
@@ -110,7 +102,6 @@ export type Vc_car_masterMaxAggregateOutputType = {
   car_type_regis_id: number | null
   color_id: number | null
   oil_type_id: number | null
-  own_div_code: number | null
   fiscal_year: number | null
   start_date: string | null
   end_date: string | null
@@ -121,6 +112,7 @@ export type Vc_car_masterMaxAggregateOutputType = {
   cylinder_capacityp: string | null
   oil_expense: number | null
   refund_vat: number | null
+  fleetcard_no: string | null
   flag: string | null
   cre_by: number | null
   cre_date: string | null
@@ -130,8 +122,6 @@ export type Vc_car_masterMaxAggregateOutputType = {
   horse_power: string | null
   weight: string | null
   machine_id: string | null
-  purchase_id: number | null
-  fleetcard_no: bigint | null
 }
 
 export type Vc_car_masterCountAggregateOutputType = {
@@ -144,7 +134,6 @@ export type Vc_car_masterCountAggregateOutputType = {
   car_type_regis_id: number
   color_id: number
   oil_type_id: number
-  own_div_code: number
   fiscal_year: number
   start_date: number
   end_date: number
@@ -155,6 +144,7 @@ export type Vc_car_masterCountAggregateOutputType = {
   cylinder_capacityp: number
   oil_expense: number
   refund_vat: number
+  fleetcard_no: number
   flag: number
   cre_by: number
   cre_date: number
@@ -164,8 +154,6 @@ export type Vc_car_masterCountAggregateOutputType = {
   horse_power: number
   weight: number
   machine_id: number
-  purchase_id: number
-  fleetcard_no: number
   _all: number
 }
 
@@ -179,15 +167,12 @@ export type Vc_car_masterAvgAggregateInputType = {
   car_type_regis_id?: true
   color_id?: true
   oil_type_id?: true
-  own_div_code?: true
   fiscal_year?: true
   car_status_id?: true
   oil_expense?: true
   refund_vat?: true
   cre_by?: true
   upd_by?: true
-  purchase_id?: true
-  fleetcard_no?: true
 }
 
 export type Vc_car_masterSumAggregateInputType = {
@@ -199,15 +184,12 @@ export type Vc_car_masterSumAggregateInputType = {
   car_type_regis_id?: true
   color_id?: true
   oil_type_id?: true
-  own_div_code?: true
   fiscal_year?: true
   car_status_id?: true
   oil_expense?: true
   refund_vat?: true
   cre_by?: true
   upd_by?: true
-  purchase_id?: true
-  fleetcard_no?: true
 }
 
 export type Vc_car_masterMinAggregateInputType = {
@@ -220,7 +202,6 @@ export type Vc_car_masterMinAggregateInputType = {
   car_type_regis_id?: true
   color_id?: true
   oil_type_id?: true
-  own_div_code?: true
   fiscal_year?: true
   start_date?: true
   end_date?: true
@@ -231,6 +212,7 @@ export type Vc_car_masterMinAggregateInputType = {
   cylinder_capacityp?: true
   oil_expense?: true
   refund_vat?: true
+  fleetcard_no?: true
   flag?: true
   cre_by?: true
   cre_date?: true
@@ -240,8 +222,6 @@ export type Vc_car_masterMinAggregateInputType = {
   horse_power?: true
   weight?: true
   machine_id?: true
-  purchase_id?: true
-  fleetcard_no?: true
 }
 
 export type Vc_car_masterMaxAggregateInputType = {
@@ -254,7 +234,6 @@ export type Vc_car_masterMaxAggregateInputType = {
   car_type_regis_id?: true
   color_id?: true
   oil_type_id?: true
-  own_div_code?: true
   fiscal_year?: true
   start_date?: true
   end_date?: true
@@ -265,6 +244,7 @@ export type Vc_car_masterMaxAggregateInputType = {
   cylinder_capacityp?: true
   oil_expense?: true
   refund_vat?: true
+  fleetcard_no?: true
   flag?: true
   cre_by?: true
   cre_date?: true
@@ -274,8 +254,6 @@ export type Vc_car_masterMaxAggregateInputType = {
   horse_power?: true
   weight?: true
   machine_id?: true
-  purchase_id?: true
-  fleetcard_no?: true
 }
 
 export type Vc_car_masterCountAggregateInputType = {
@@ -288,7 +266,6 @@ export type Vc_car_masterCountAggregateInputType = {
   car_type_regis_id?: true
   color_id?: true
   oil_type_id?: true
-  own_div_code?: true
   fiscal_year?: true
   start_date?: true
   end_date?: true
@@ -299,6 +276,7 @@ export type Vc_car_masterCountAggregateInputType = {
   cylinder_capacityp?: true
   oil_expense?: true
   refund_vat?: true
+  fleetcard_no?: true
   flag?: true
   cre_by?: true
   cre_date?: true
@@ -308,8 +286,6 @@ export type Vc_car_masterCountAggregateInputType = {
   horse_power?: true
   weight?: true
   machine_id?: true
-  purchase_id?: true
-  fleetcard_no?: true
   _all?: true
 }
 
@@ -409,7 +385,6 @@ export type Vc_car_masterGroupByOutputType = {
   car_type_regis_id: number | null
   color_id: number | null
   oil_type_id: number | null
-  own_div_code: number | null
   fiscal_year: number | null
   start_date: string | null
   end_date: string | null
@@ -420,6 +395,7 @@ export type Vc_car_masterGroupByOutputType = {
   cylinder_capacityp: string | null
   oil_expense: number | null
   refund_vat: number | null
+  fleetcard_no: string | null
   flag: string | null
   cre_by: number | null
   cre_date: string | null
@@ -429,8 +405,6 @@ export type Vc_car_masterGroupByOutputType = {
   horse_power: string | null
   weight: string | null
   machine_id: string | null
-  purchase_id: number | null
-  fleetcard_no: bigint | null
   _count: Vc_car_masterCountAggregateOutputType | null
   _avg: Vc_car_masterAvgAggregateOutputType | null
   _sum: Vc_car_masterSumAggregateOutputType | null
@@ -466,7 +440,6 @@ export type vc_car_masterWhereInput = {
   car_type_regis_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   color_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   oil_type_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  own_div_code?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   fiscal_year?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   start_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   end_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -477,6 +450,7 @@ export type vc_car_masterWhereInput = {
   cylinder_capacityp?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   oil_expense?: Prisma.FloatNullableFilter<"vc_car_master"> | number | null
   refund_vat?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
+  fleetcard_no?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   flag?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   cre_by?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   cre_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -486,8 +460,6 @@ export type vc_car_masterWhereInput = {
   horse_power?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   weight?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
-  purchase_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  fleetcard_no?: Prisma.BigIntNullableFilter<"vc_car_master"> | bigint | number | null
   vc_car_brand?: Prisma.XOR<Prisma.Vc_car_brandNullableScalarRelationFilter, Prisma.vc_car_brandWhereInput> | null
   vc_register_province?: Prisma.XOR<Prisma.Vc_register_provinceNullableScalarRelationFilter, Prisma.vc_register_provinceWhereInput> | null
   vc_car_spec?: Prisma.XOR<Prisma.Vc_car_specNullableScalarRelationFilter, Prisma.vc_car_specWhereInput> | null
@@ -508,7 +480,6 @@ export type vc_car_masterOrderByWithRelationInput = {
   car_type_regis_id?: Prisma.SortOrderInput | Prisma.SortOrder
   color_id?: Prisma.SortOrderInput | Prisma.SortOrder
   oil_type_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  own_div_code?: Prisma.SortOrderInput | Prisma.SortOrder
   fiscal_year?: Prisma.SortOrderInput | Prisma.SortOrder
   start_date?: Prisma.SortOrderInput | Prisma.SortOrder
   end_date?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -519,6 +490,7 @@ export type vc_car_masterOrderByWithRelationInput = {
   cylinder_capacityp?: Prisma.SortOrderInput | Prisma.SortOrder
   oil_expense?: Prisma.SortOrderInput | Prisma.SortOrder
   refund_vat?: Prisma.SortOrderInput | Prisma.SortOrder
+  fleetcard_no?: Prisma.SortOrderInput | Prisma.SortOrder
   flag?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -528,8 +500,6 @@ export type vc_car_masterOrderByWithRelationInput = {
   horse_power?: Prisma.SortOrderInput | Prisma.SortOrder
   weight?: Prisma.SortOrderInput | Prisma.SortOrder
   machine_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  purchase_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrderInput | Prisma.SortOrder
   vc_car_brand?: Prisma.vc_car_brandOrderByWithRelationInput
   vc_register_province?: Prisma.vc_register_provinceOrderByWithRelationInput
   vc_car_spec?: Prisma.vc_car_specOrderByWithRelationInput
@@ -553,7 +523,6 @@ export type vc_car_masterWhereUniqueInput = Prisma.AtLeast<{
   car_type_regis_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   color_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   oil_type_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  own_div_code?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   fiscal_year?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   start_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   end_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -564,6 +533,7 @@ export type vc_car_masterWhereUniqueInput = Prisma.AtLeast<{
   cylinder_capacityp?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   oil_expense?: Prisma.FloatNullableFilter<"vc_car_master"> | number | null
   refund_vat?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
+  fleetcard_no?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   flag?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   cre_by?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   cre_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -573,8 +543,6 @@ export type vc_car_masterWhereUniqueInput = Prisma.AtLeast<{
   horse_power?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   weight?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
-  purchase_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  fleetcard_no?: Prisma.BigIntNullableFilter<"vc_car_master"> | bigint | number | null
   vc_car_brand?: Prisma.XOR<Prisma.Vc_car_brandNullableScalarRelationFilter, Prisma.vc_car_brandWhereInput> | null
   vc_register_province?: Prisma.XOR<Prisma.Vc_register_provinceNullableScalarRelationFilter, Prisma.vc_register_provinceWhereInput> | null
   vc_car_spec?: Prisma.XOR<Prisma.Vc_car_specNullableScalarRelationFilter, Prisma.vc_car_specWhereInput> | null
@@ -595,7 +563,6 @@ export type vc_car_masterOrderByWithAggregationInput = {
   car_type_regis_id?: Prisma.SortOrderInput | Prisma.SortOrder
   color_id?: Prisma.SortOrderInput | Prisma.SortOrder
   oil_type_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  own_div_code?: Prisma.SortOrderInput | Prisma.SortOrder
   fiscal_year?: Prisma.SortOrderInput | Prisma.SortOrder
   start_date?: Prisma.SortOrderInput | Prisma.SortOrder
   end_date?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -606,6 +573,7 @@ export type vc_car_masterOrderByWithAggregationInput = {
   cylinder_capacityp?: Prisma.SortOrderInput | Prisma.SortOrder
   oil_expense?: Prisma.SortOrderInput | Prisma.SortOrder
   refund_vat?: Prisma.SortOrderInput | Prisma.SortOrder
+  fleetcard_no?: Prisma.SortOrderInput | Prisma.SortOrder
   flag?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -615,8 +583,6 @@ export type vc_car_masterOrderByWithAggregationInput = {
   horse_power?: Prisma.SortOrderInput | Prisma.SortOrder
   weight?: Prisma.SortOrderInput | Prisma.SortOrder
   machine_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  purchase_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.vc_car_masterCountOrderByAggregateInput
   _avg?: Prisma.vc_car_masterAvgOrderByAggregateInput
   _max?: Prisma.vc_car_masterMaxOrderByAggregateInput
@@ -637,7 +603,6 @@ export type vc_car_masterScalarWhereWithAggregatesInput = {
   car_type_regis_id?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
   color_id?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
   oil_type_id?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
-  own_div_code?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
   fiscal_year?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
   start_date?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   end_date?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
@@ -648,6 +613,7 @@ export type vc_car_masterScalarWhereWithAggregatesInput = {
   cylinder_capacityp?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   oil_expense?: Prisma.FloatNullableWithAggregatesFilter<"vc_car_master"> | number | null
   refund_vat?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
+  fleetcard_no?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   flag?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   cre_by?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
   cre_date?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
@@ -657,13 +623,10 @@ export type vc_car_masterScalarWhereWithAggregatesInput = {
   horse_power?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   weight?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableWithAggregatesFilter<"vc_car_master"> | string | null
-  purchase_id?: Prisma.IntNullableWithAggregatesFilter<"vc_car_master"> | number | null
-  fleetcard_no?: Prisma.BigIntNullableWithAggregatesFilter<"vc_car_master"> | bigint | number | null
 }
 
 export type vc_car_masterCreateInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -673,6 +636,7 @@ export type vc_car_masterCreateInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -682,8 +646,6 @@ export type vc_car_masterCreateInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -704,7 +666,6 @@ export type vc_car_masterUncheckedCreateInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -715,6 +676,7 @@ export type vc_car_masterUncheckedCreateInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -724,13 +686,10 @@ export type vc_car_masterUncheckedCreateInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -740,6 +699,7 @@ export type vc_car_masterUpdateInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -749,8 +709,6 @@ export type vc_car_masterUpdateInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -771,7 +729,6 @@ export type vc_car_masterUncheckedUpdateInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -782,6 +739,7 @@ export type vc_car_masterUncheckedUpdateInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -791,8 +749,6 @@ export type vc_car_masterUncheckedUpdateInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyInput = {
@@ -805,7 +761,6 @@ export type vc_car_masterCreateManyInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -816,6 +771,7 @@ export type vc_car_masterCreateManyInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -825,13 +781,10 @@ export type vc_car_masterCreateManyInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateManyMutationInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -841,6 +794,7 @@ export type vc_car_masterUpdateManyMutationInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -850,8 +804,6 @@ export type vc_car_masterUpdateManyMutationInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyInput = {
@@ -864,7 +816,6 @@ export type vc_car_masterUncheckedUpdateManyInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -875,6 +826,7 @@ export type vc_car_masterUncheckedUpdateManyInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -884,8 +836,6 @@ export type vc_car_masterUncheckedUpdateManyInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCountOrderByAggregateInput = {
@@ -898,7 +848,6 @@ export type vc_car_masterCountOrderByAggregateInput = {
   car_type_regis_id?: Prisma.SortOrder
   color_id?: Prisma.SortOrder
   oil_type_id?: Prisma.SortOrder
-  own_div_code?: Prisma.SortOrder
   fiscal_year?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
@@ -909,6 +858,7 @@ export type vc_car_masterCountOrderByAggregateInput = {
   cylinder_capacityp?: Prisma.SortOrder
   oil_expense?: Prisma.SortOrder
   refund_vat?: Prisma.SortOrder
+  fleetcard_no?: Prisma.SortOrder
   flag?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   cre_date?: Prisma.SortOrder
@@ -918,8 +868,6 @@ export type vc_car_masterCountOrderByAggregateInput = {
   horse_power?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   machine_id?: Prisma.SortOrder
-  purchase_id?: Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrder
 }
 
 export type vc_car_masterAvgOrderByAggregateInput = {
@@ -931,15 +879,12 @@ export type vc_car_masterAvgOrderByAggregateInput = {
   car_type_regis_id?: Prisma.SortOrder
   color_id?: Prisma.SortOrder
   oil_type_id?: Prisma.SortOrder
-  own_div_code?: Prisma.SortOrder
   fiscal_year?: Prisma.SortOrder
   car_status_id?: Prisma.SortOrder
   oil_expense?: Prisma.SortOrder
   refund_vat?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
-  purchase_id?: Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrder
 }
 
 export type vc_car_masterMaxOrderByAggregateInput = {
@@ -952,7 +897,6 @@ export type vc_car_masterMaxOrderByAggregateInput = {
   car_type_regis_id?: Prisma.SortOrder
   color_id?: Prisma.SortOrder
   oil_type_id?: Prisma.SortOrder
-  own_div_code?: Prisma.SortOrder
   fiscal_year?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
@@ -963,6 +907,7 @@ export type vc_car_masterMaxOrderByAggregateInput = {
   cylinder_capacityp?: Prisma.SortOrder
   oil_expense?: Prisma.SortOrder
   refund_vat?: Prisma.SortOrder
+  fleetcard_no?: Prisma.SortOrder
   flag?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   cre_date?: Prisma.SortOrder
@@ -972,8 +917,6 @@ export type vc_car_masterMaxOrderByAggregateInput = {
   horse_power?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   machine_id?: Prisma.SortOrder
-  purchase_id?: Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrder
 }
 
 export type vc_car_masterMinOrderByAggregateInput = {
@@ -986,7 +929,6 @@ export type vc_car_masterMinOrderByAggregateInput = {
   car_type_regis_id?: Prisma.SortOrder
   color_id?: Prisma.SortOrder
   oil_type_id?: Prisma.SortOrder
-  own_div_code?: Prisma.SortOrder
   fiscal_year?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
@@ -997,6 +939,7 @@ export type vc_car_masterMinOrderByAggregateInput = {
   cylinder_capacityp?: Prisma.SortOrder
   oil_expense?: Prisma.SortOrder
   refund_vat?: Prisma.SortOrder
+  fleetcard_no?: Prisma.SortOrder
   flag?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   cre_date?: Prisma.SortOrder
@@ -1006,8 +949,6 @@ export type vc_car_masterMinOrderByAggregateInput = {
   horse_power?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   machine_id?: Prisma.SortOrder
-  purchase_id?: Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrder
 }
 
 export type vc_car_masterSumOrderByAggregateInput = {
@@ -1019,15 +960,12 @@ export type vc_car_masterSumOrderByAggregateInput = {
   car_type_regis_id?: Prisma.SortOrder
   color_id?: Prisma.SortOrder
   oil_type_id?: Prisma.SortOrder
-  own_div_code?: Prisma.SortOrder
   fiscal_year?: Prisma.SortOrder
   car_status_id?: Prisma.SortOrder
   oil_expense?: Prisma.SortOrder
   refund_vat?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
-  purchase_id?: Prisma.SortOrder
-  fleetcard_no?: Prisma.SortOrder
 }
 
 export type Vc_car_masterListRelationFilter = {
@@ -1056,12 +994,12 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableBigIntFieldUpdateOperationsInput = {
-  set?: bigint | number | null
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type vc_car_masterCreateNestedManyWithoutVc_car_brandInput = {
@@ -1402,7 +1340,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisNestedInput = {
 
 export type vc_car_masterCreateWithoutVc_car_brandInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1412,6 +1349,7 @@ export type vc_car_masterCreateWithoutVc_car_brandInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1421,8 +1359,6 @@ export type vc_car_masterCreateWithoutVc_car_brandInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
@@ -1441,7 +1377,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_brandInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1452,6 +1387,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_brandInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1461,8 +1397,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_brandInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_car_brandInput = {
@@ -1504,7 +1438,6 @@ export type vc_car_masterScalarWhereInput = {
   car_type_regis_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   color_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   oil_type_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  own_div_code?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   fiscal_year?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   start_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   end_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -1515,6 +1448,7 @@ export type vc_car_masterScalarWhereInput = {
   cylinder_capacityp?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   oil_expense?: Prisma.FloatNullableFilter<"vc_car_master"> | number | null
   refund_vat?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
+  fleetcard_no?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   flag?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   cre_by?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
   cre_date?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
@@ -1524,13 +1458,10 @@ export type vc_car_masterScalarWhereInput = {
   horse_power?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   weight?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
-  purchase_id?: Prisma.IntNullableFilter<"vc_car_master"> | number | null
-  fleetcard_no?: Prisma.BigIntNullableFilter<"vc_car_master"> | bigint | number | null
 }
 
 export type vc_car_masterCreateWithoutVc_car_specInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1540,6 +1471,7 @@ export type vc_car_masterCreateWithoutVc_car_specInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1549,8 +1481,6 @@ export type vc_car_masterCreateWithoutVc_car_specInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
@@ -1569,7 +1499,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_specInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1580,6 +1509,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_specInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1589,8 +1519,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_specInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_car_specInput = {
@@ -1621,7 +1549,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_car_specInput = {
 
 export type vc_car_masterCreateWithoutVc_car_statusInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1631,6 +1558,7 @@ export type vc_car_masterCreateWithoutVc_car_statusInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1640,8 +1568,6 @@ export type vc_car_masterCreateWithoutVc_car_statusInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -1661,7 +1587,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_statusInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1671,6 +1596,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_statusInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1680,8 +1606,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_statusInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_car_statusInput = {
@@ -1712,7 +1636,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_car_statusInput = {
 
 export type vc_car_masterCreateWithoutVc_car_typeInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1722,6 +1645,7 @@ export type vc_car_masterCreateWithoutVc_car_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1731,8 +1655,6 @@ export type vc_car_masterCreateWithoutVc_car_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -1751,7 +1673,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_typeInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1762,6 +1683,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1771,8 +1693,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_car_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_car_typeInput = {
@@ -1803,7 +1723,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_car_typeInput = {
 
 export type vc_car_masterCreateWithoutVc_colorInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1813,6 +1732,7 @@ export type vc_car_masterCreateWithoutVc_colorInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1822,8 +1742,6 @@ export type vc_car_masterCreateWithoutVc_colorInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -1842,7 +1760,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_colorInput = {
   car_brand_id?: number | null
   car_type_regis_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1853,6 +1770,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_colorInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1862,8 +1780,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_colorInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_colorInput = {
@@ -1894,7 +1810,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_colorInput = {
 
 export type vc_car_masterCreateWithoutVc_oil_typeInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1904,6 +1819,7 @@ export type vc_car_masterCreateWithoutVc_oil_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1913,8 +1829,6 @@ export type vc_car_masterCreateWithoutVc_oil_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -1933,7 +1847,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_oil_typeInput = {
   car_brand_id?: number | null
   car_type_regis_id?: number | null
   color_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1944,6 +1857,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_oil_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -1953,8 +1867,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_oil_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_oil_typeInput = {
@@ -1985,7 +1897,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_oil_typeInput = {
 
 export type vc_car_masterCreateWithoutVc_register_provinceInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -1995,6 +1906,7 @@ export type vc_car_masterCreateWithoutVc_register_provinceInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2004,8 +1916,6 @@ export type vc_car_masterCreateWithoutVc_register_provinceInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
@@ -2024,7 +1934,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_register_provinceInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2035,6 +1944,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_register_provinceInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2044,8 +1954,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_register_provinceInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_register_provinceInput = {
@@ -2076,7 +1984,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput = {
 
 export type vc_car_masterCreateWithoutVc_type_regisInput = {
   car_number?: string | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2086,6 +1993,7 @@ export type vc_car_masterCreateWithoutVc_type_regisInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2095,8 +2003,6 @@ export type vc_car_masterCreateWithoutVc_type_regisInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
   vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
@@ -2115,7 +2021,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_type_regisInput = {
   car_brand_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2126,6 +2031,7 @@ export type vc_car_masterUncheckedCreateWithoutVc_type_regisInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2135,8 +2041,6 @@ export type vc_car_masterUncheckedCreateWithoutVc_type_regisInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterCreateOrConnectWithoutVc_type_regisInput = {
@@ -2174,7 +2078,6 @@ export type vc_car_masterCreateManyVc_car_brandInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2185,6 +2088,7 @@ export type vc_car_masterCreateManyVc_car_brandInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2194,13 +2098,10 @@ export type vc_car_masterCreateManyVc_car_brandInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_car_brandInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2210,6 +2111,7 @@ export type vc_car_masterUpdateWithoutVc_car_brandInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2219,8 +2121,6 @@ export type vc_car_masterUpdateWithoutVc_car_brandInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
@@ -2239,7 +2139,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_brandInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2250,6 +2149,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_brandInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2259,8 +2159,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_brandInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_car_brandInput = {
@@ -2272,7 +2170,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_brandInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2283,6 +2180,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_brandInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2292,8 +2190,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_brandInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_car_specInput = {
@@ -2305,7 +2201,6 @@ export type vc_car_masterCreateManyVc_car_specInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2316,6 +2211,7 @@ export type vc_car_masterCreateManyVc_car_specInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2325,13 +2221,10 @@ export type vc_car_masterCreateManyVc_car_specInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_car_specInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2341,6 +2234,7 @@ export type vc_car_masterUpdateWithoutVc_car_specInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2350,8 +2244,6 @@ export type vc_car_masterUpdateWithoutVc_car_specInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
@@ -2370,7 +2262,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_specInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2381,6 +2272,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_specInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2390,8 +2282,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_specInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_car_specInput = {
@@ -2403,7 +2293,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_specInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2414,6 +2303,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_specInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2423,8 +2313,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_specInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_car_statusInput = {
@@ -2437,7 +2325,6 @@ export type vc_car_masterCreateManyVc_car_statusInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2447,6 +2334,7 @@ export type vc_car_masterCreateManyVc_car_statusInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2456,13 +2344,10 @@ export type vc_car_masterCreateManyVc_car_statusInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_car_statusInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2472,6 +2357,7 @@ export type vc_car_masterUpdateWithoutVc_car_statusInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2481,8 +2367,6 @@ export type vc_car_masterUpdateWithoutVc_car_statusInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -2502,7 +2386,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_statusInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2512,6 +2395,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_statusInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2521,8 +2405,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_statusInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_car_statusInput = {
@@ -2535,7 +2417,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_statusInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2545,6 +2426,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_statusInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2554,8 +2436,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_statusInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_car_typeInput = {
@@ -2567,7 +2447,6 @@ export type vc_car_masterCreateManyVc_car_typeInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2578,6 +2457,7 @@ export type vc_car_masterCreateManyVc_car_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2587,13 +2467,10 @@ export type vc_car_masterCreateManyVc_car_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_car_typeInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2603,6 +2480,7 @@ export type vc_car_masterUpdateWithoutVc_car_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2612,8 +2490,6 @@ export type vc_car_masterUpdateWithoutVc_car_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -2632,7 +2508,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_typeInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2643,6 +2518,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2652,8 +2528,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_car_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_car_typeInput = {
@@ -2665,7 +2539,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_typeInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2676,6 +2549,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2685,8 +2559,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_car_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_colorInput = {
@@ -2698,7 +2570,6 @@ export type vc_car_masterCreateManyVc_colorInput = {
   car_brand_id?: number | null
   car_type_regis_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2709,6 +2580,7 @@ export type vc_car_masterCreateManyVc_colorInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2718,13 +2590,10 @@ export type vc_car_masterCreateManyVc_colorInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_colorInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2734,6 +2603,7 @@ export type vc_car_masterUpdateWithoutVc_colorInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2743,8 +2613,6 @@ export type vc_car_masterUpdateWithoutVc_colorInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -2763,7 +2631,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_colorInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2774,6 +2641,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_colorInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2783,8 +2651,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_colorInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_colorInput = {
@@ -2796,7 +2662,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_colorInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2807,6 +2672,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_colorInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2816,8 +2682,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_colorInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_oil_typeInput = {
@@ -2829,7 +2693,6 @@ export type vc_car_masterCreateManyVc_oil_typeInput = {
   car_brand_id?: number | null
   car_type_regis_id?: number | null
   color_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2840,6 +2703,7 @@ export type vc_car_masterCreateManyVc_oil_typeInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2849,13 +2713,10 @@ export type vc_car_masterCreateManyVc_oil_typeInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_oil_typeInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2865,6 +2726,7 @@ export type vc_car_masterUpdateWithoutVc_oil_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2874,8 +2736,6 @@ export type vc_car_masterUpdateWithoutVc_oil_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -2894,7 +2754,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_oil_typeInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2905,6 +2764,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_oil_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2914,8 +2774,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_oil_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput = {
@@ -2927,7 +2785,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2938,6 +2795,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2947,8 +2805,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_register_provinceInput = {
@@ -2960,7 +2816,6 @@ export type vc_car_masterCreateManyVc_register_provinceInput = {
   car_type_regis_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -2971,6 +2826,7 @@ export type vc_car_masterCreateManyVc_register_provinceInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -2980,13 +2836,10 @@ export type vc_car_masterCreateManyVc_register_provinceInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_register_provinceInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2996,6 +2849,7 @@ export type vc_car_masterUpdateWithoutVc_register_provinceInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3005,8 +2859,6 @@ export type vc_car_masterUpdateWithoutVc_register_provinceInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
@@ -3025,7 +2877,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_register_provinceInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3036,6 +2887,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_register_provinceInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3045,8 +2897,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_register_provinceInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput = {
@@ -3058,7 +2908,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput = {
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3069,6 +2918,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3078,8 +2928,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterCreateManyVc_type_regisInput = {
@@ -3091,7 +2939,6 @@ export type vc_car_masterCreateManyVc_type_regisInput = {
   car_brand_id?: number | null
   color_id?: number | null
   oil_type_id?: number | null
-  own_div_code?: number | null
   fiscal_year?: number | null
   start_date?: string | null
   end_date?: string | null
@@ -3102,6 +2949,7 @@ export type vc_car_masterCreateManyVc_type_regisInput = {
   cylinder_capacityp?: string | null
   oil_expense?: number | null
   refund_vat?: number | null
+  fleetcard_no?: string | null
   flag?: string | null
   cre_by?: number | null
   cre_date?: string | null
@@ -3111,13 +2959,10 @@ export type vc_car_masterCreateManyVc_type_regisInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  purchase_id?: number | null
-  fleetcard_no?: bigint | number | null
 }
 
 export type vc_car_masterUpdateWithoutVc_type_regisInput = {
   car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3127,6 +2972,7 @@ export type vc_car_masterUpdateWithoutVc_type_regisInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3136,8 +2982,6 @@ export type vc_car_masterUpdateWithoutVc_type_regisInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
   vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
@@ -3156,7 +3000,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_type_regisInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3167,6 +3010,7 @@ export type vc_car_masterUncheckedUpdateWithoutVc_type_regisInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3176,8 +3020,6 @@ export type vc_car_masterUncheckedUpdateWithoutVc_type_regisInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
@@ -3189,7 +3031,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  own_div_code?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3200,6 +3041,7 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
   cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3209,8 +3051,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchase_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
 
@@ -3225,7 +3065,6 @@ export type vc_car_masterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   car_type_regis_id?: boolean
   color_id?: boolean
   oil_type_id?: boolean
-  own_div_code?: boolean
   fiscal_year?: boolean
   start_date?: boolean
   end_date?: boolean
@@ -3236,6 +3075,7 @@ export type vc_car_masterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   cylinder_capacityp?: boolean
   oil_expense?: boolean
   refund_vat?: boolean
+  fleetcard_no?: boolean
   flag?: boolean
   cre_by?: boolean
   cre_date?: boolean
@@ -3245,8 +3085,6 @@ export type vc_car_masterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   horse_power?: boolean
   weight?: boolean
   machine_id?: boolean
-  purchase_id?: boolean
-  fleetcard_no?: boolean
   vc_car_brand?: boolean | Prisma.vc_car_master$vc_car_brandArgs<ExtArgs>
   vc_register_province?: boolean | Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>
   vc_car_spec?: boolean | Prisma.vc_car_master$vc_car_specArgs<ExtArgs>
@@ -3267,7 +3105,6 @@ export type vc_car_masterSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   car_type_regis_id?: boolean
   color_id?: boolean
   oil_type_id?: boolean
-  own_div_code?: boolean
   fiscal_year?: boolean
   start_date?: boolean
   end_date?: boolean
@@ -3278,6 +3115,7 @@ export type vc_car_masterSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   cylinder_capacityp?: boolean
   oil_expense?: boolean
   refund_vat?: boolean
+  fleetcard_no?: boolean
   flag?: boolean
   cre_by?: boolean
   cre_date?: boolean
@@ -3287,8 +3125,6 @@ export type vc_car_masterSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   horse_power?: boolean
   weight?: boolean
   machine_id?: boolean
-  purchase_id?: boolean
-  fleetcard_no?: boolean
   vc_car_brand?: boolean | Prisma.vc_car_master$vc_car_brandArgs<ExtArgs>
   vc_register_province?: boolean | Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>
   vc_car_spec?: boolean | Prisma.vc_car_master$vc_car_specArgs<ExtArgs>
@@ -3309,7 +3145,6 @@ export type vc_car_masterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   car_type_regis_id?: boolean
   color_id?: boolean
   oil_type_id?: boolean
-  own_div_code?: boolean
   fiscal_year?: boolean
   start_date?: boolean
   end_date?: boolean
@@ -3320,6 +3155,7 @@ export type vc_car_masterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   cylinder_capacityp?: boolean
   oil_expense?: boolean
   refund_vat?: boolean
+  fleetcard_no?: boolean
   flag?: boolean
   cre_by?: boolean
   cre_date?: boolean
@@ -3329,8 +3165,6 @@ export type vc_car_masterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   horse_power?: boolean
   weight?: boolean
   machine_id?: boolean
-  purchase_id?: boolean
-  fleetcard_no?: boolean
   vc_car_brand?: boolean | Prisma.vc_car_master$vc_car_brandArgs<ExtArgs>
   vc_register_province?: boolean | Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>
   vc_car_spec?: boolean | Prisma.vc_car_master$vc_car_specArgs<ExtArgs>
@@ -3351,7 +3185,6 @@ export type vc_car_masterSelectScalar = {
   car_type_regis_id?: boolean
   color_id?: boolean
   oil_type_id?: boolean
-  own_div_code?: boolean
   fiscal_year?: boolean
   start_date?: boolean
   end_date?: boolean
@@ -3362,6 +3195,7 @@ export type vc_car_masterSelectScalar = {
   cylinder_capacityp?: boolean
   oil_expense?: boolean
   refund_vat?: boolean
+  fleetcard_no?: boolean
   flag?: boolean
   cre_by?: boolean
   cre_date?: boolean
@@ -3371,11 +3205,9 @@ export type vc_car_masterSelectScalar = {
   horse_power?: boolean
   weight?: boolean
   machine_id?: boolean
-  purchase_id?: boolean
-  fleetcard_no?: boolean
 }
 
-export type vc_car_masterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"car_id" | "car_number" | "car_province_id" | "car_type_id" | "car_spec_id" | "car_brand_id" | "car_type_regis_id" | "color_id" | "oil_type_id" | "own_div_code" | "fiscal_year" | "start_date" | "end_date" | "regis_date" | "car_status_id" | "machine_no" | "body_no" | "cylinder_capacityp" | "oil_expense" | "refund_vat" | "flag" | "cre_by" | "cre_date" | "upd_by" | "upd_date" | "ref_car" | "horse_power" | "weight" | "machine_id" | "purchase_id" | "fleetcard_no", ExtArgs["result"]["vc_car_master"]>
+export type vc_car_masterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"car_id" | "car_number" | "car_province_id" | "car_type_id" | "car_spec_id" | "car_brand_id" | "car_type_regis_id" | "color_id" | "oil_type_id" | "fiscal_year" | "start_date" | "end_date" | "regis_date" | "car_status_id" | "machine_no" | "body_no" | "cylinder_capacityp" | "oil_expense" | "refund_vat" | "fleetcard_no" | "flag" | "cre_by" | "cre_date" | "upd_by" | "upd_date" | "ref_car" | "horse_power" | "weight" | "machine_id", ExtArgs["result"]["vc_car_master"]>
 export type vc_car_masterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vc_car_brand?: boolean | Prisma.vc_car_master$vc_car_brandArgs<ExtArgs>
   vc_register_province?: boolean | Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>
@@ -3429,7 +3261,6 @@ export type $vc_car_masterPayload<ExtArgs extends runtime.Types.Extensions.Inter
     car_type_regis_id: number | null
     color_id: number | null
     oil_type_id: number | null
-    own_div_code: number | null
     fiscal_year: number | null
     start_date: string | null
     end_date: string | null
@@ -3440,6 +3271,7 @@ export type $vc_car_masterPayload<ExtArgs extends runtime.Types.Extensions.Inter
     cylinder_capacityp: string | null
     oil_expense: number | null
     refund_vat: number | null
+    fleetcard_no: string | null
     flag: string | null
     cre_by: number | null
     cre_date: string | null
@@ -3449,8 +3281,6 @@ export type $vc_car_masterPayload<ExtArgs extends runtime.Types.Extensions.Inter
     horse_power: string | null
     weight: string | null
     machine_id: string | null
-    purchase_id: number | null
-    fleetcard_no: bigint | null
   }, ExtArgs["result"]["vc_car_master"]>
   composites: {}
 }
@@ -3891,7 +3721,6 @@ export interface vc_car_masterFieldRefs {
   readonly car_type_regis_id: Prisma.FieldRef<"vc_car_master", 'Int'>
   readonly color_id: Prisma.FieldRef<"vc_car_master", 'Int'>
   readonly oil_type_id: Prisma.FieldRef<"vc_car_master", 'Int'>
-  readonly own_div_code: Prisma.FieldRef<"vc_car_master", 'Int'>
   readonly fiscal_year: Prisma.FieldRef<"vc_car_master", 'Int'>
   readonly start_date: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly end_date: Prisma.FieldRef<"vc_car_master", 'String'>
@@ -3902,6 +3731,7 @@ export interface vc_car_masterFieldRefs {
   readonly cylinder_capacityp: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly oil_expense: Prisma.FieldRef<"vc_car_master", 'Float'>
   readonly refund_vat: Prisma.FieldRef<"vc_car_master", 'Int'>
+  readonly fleetcard_no: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly flag: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly cre_by: Prisma.FieldRef<"vc_car_master", 'Int'>
   readonly cre_date: Prisma.FieldRef<"vc_car_master", 'String'>
@@ -3911,8 +3741,6 @@ export interface vc_car_masterFieldRefs {
   readonly horse_power: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly weight: Prisma.FieldRef<"vc_car_master", 'String'>
   readonly machine_id: Prisma.FieldRef<"vc_car_master", 'String'>
-  readonly purchase_id: Prisma.FieldRef<"vc_car_master", 'Int'>
-  readonly fleetcard_no: Prisma.FieldRef<"vc_car_master", 'BigInt'>
 }
     
 

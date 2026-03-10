@@ -28,11 +28,6 @@ export type User = Prisma.UserModel
  */
 export type Session = Prisma.SessionModel
 /**
- * Model Booking
- * 
- */
-export type Booking = Prisma.BookingModel
-/**
  * Model vc_car_master
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
  */
@@ -137,3 +132,38 @@ export type vc_type_regis = Prisma.vc_type_regisModel
  * 
  */
 export type vc_user_roles = Prisma.vc_user_rolesModel
+/**
+ * Model vc_rent_car
+ * 
+ */
+export type vc_rent_car = Prisma.vc_rent_carModel
+/**
+ * Model vc_use
+ * 
+ */
+export type vc_use = Prisma.vc_useModel
+/**
+ * Model fleetcards
+ * 
+ */
+export type fleetcards = Prisma.fleetcardsModel
+/**
+ * Model vc_driver
+ * 
+ */
+export type vc_driver = Prisma.vc_driverModel
+/**
+ * Model vc_driver_license_type
+ * 
+ */
+export type vc_driver_license_type = Prisma.vc_driver_license_typeModel
+/**
+ * Model vc_start_place
+ * 
+ */
+export type vc_start_place = Prisma.vc_start_placeModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel

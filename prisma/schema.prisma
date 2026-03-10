@@ -27,25 +27,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Booking {
-  id             String        @id
-  requesterId    String
-  department     String
-  objective      String
-  origin         String
-  destination    String
-  requestDate    DateTime      @default(now())
-  startDateTime  DateTime
-  endDateTime    DateTime
-  passengerCount Int
-  status         BookingStatus @default(PENDING)
-  rejectReason   String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime
-  bookingNo      String?       @unique
-  User           User          @relation(fields: [requesterId], references: [id])
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_car_master {
   car_id               Int                   @id @default(autoincrement())
@@ -57,7 +38,6 @@ model vc_car_master {
   car_type_regis_id    Int?
   color_id             Int?
   oil_type_id          Int?
-  own_div_code         Int?
   fiscal_year          Int?
   start_date           String?               @db.VarChar(50)
   end_date             String?               @db.VarChar(50)
@@ -68,6 +48,7 @@ model vc_car_master {
   cylinder_capacityp   String?               @db.VarChar(50)
   oil_expense          Float?                @db.Real
   refund_vat           Int?
+  fleetcard_no         String?               @db.VarChar(255)
   flag                 String?               @db.VarChar(50)
   cre_by               Int?
   cre_date             String?               @db.VarChar(50)
@@ -77,8 +58,6 @@ model vc_car_master {
   horse_power          String?               @db.VarChar(50)
   weight               String?               @db.VarChar(50)
   machine_id           String?               @db.VarChar(50)
-  purchase_id          Int?
-  fleetcard_no         BigInt?
   vc_car_brand         vc_car_brand?         @relation(fields: [car_brand_id], references: [car_brand_id])
   vc_register_province vc_register_province? @relation(fields: [car_province_id], references: [regis_province_id])
   vc_car_spec          vc_car_spec?          @relation(fields: [car_spec_id], references: [car_spec_id])
@@ -363,6 +342,121 @@ model vc_user_roles {
   cre_date DateTime? @db.Date
   upd_by   String?   @db.VarChar(50)
   upd_date DateTime? @db.Date
+}
+
+model vc_rent_car {
+  rent_car_id      Int       @id @default(autoincrement())
+  car_id           Int?
+  rent_no          String?   @db.VarChar(100)
+  company_id       Int?
+  price_per_month  Decimal?  @db.Decimal(10, 2)
+  cre_by           String?   @db.VarChar(50)
+  cre_date         DateTime? @db.Date
+  upd_by           String?   @db.VarChar(50)
+  upd_date         DateTime? @db.Date
+  replacement_flag String?   @db.Char(1)
+  po               String?   @db.VarChar(100)
+}
+
+model vc_use {
+  use_id            Int       @id @default(autoincrement())
+  request_id        Int?
+  car_id            Int?
+  emp_id            Int?
+  drive_type        String?   @db.VarChar(50)
+  approved_by       Int?
+  journey_real_time String?   @db.VarChar(50)
+  return_real_time  String?   @db.VarChar(50)
+  return_real_date  DateTime? @db.Date
+  mile_begin        Int?
+  mile_end          Int?
+  note              String?   @db.VarChar(64)
+  cre_by            Int?
+  cre_date          DateTime? @db.Date
+  upd_by            Int?
+  upd_date          DateTime? @db.Date
+}
+
+model fleetcards {
+  accountNo      String?   @db.VarChar(50)
+  fleetcardNo    String?   @db.VarChar(50)
+  licensePlateNo String?   @db.VarChar(50)
+  vendorBank     String?   @db.VarChar(50)
+  validFrom      DateTime? @db.Date
+  validTo        DateTime? @db.Date
+  cardStatus     Int?      @db.SmallInt
+  costCenter     String?   @db.VarChar(50)
+  fundCenter     String?   @db.VarChar(50)
+  gl             String?   @db.VarChar(50)
+  busProcess     String?   @db.VarChar(50)
+  poimSegment    String?   @db.VarChar(50)
+  vatRefund      String?   @db.Char(1)
+  fuelTypeCode   String?   @db.VarChar(50)
+  fuelTypeName   String?   @db.VarChar(50)
+  stationName    String?   @db.VarChar(50)
+  carBrand       String?   @db.VarChar(50)
+  carModel       String?   @db.VarChar(50)
+  carType        String?   @db.VarChar(50)
+  fleetcard_id   Int       @id @default(autoincrement())
+}
+
+model vc_driver {
+  driver_id     Int       @id @default(autoincrement())
+  driver_code   String?   @db.VarChar(50)
+  driver_status String?   @db.Char(1)
+  div_code      String?   @db.VarChar(8)
+  start_date    DateTime? @db.Date
+  end_date      DateTime? @db.Date
+  licence_type  Int?
+  licence_no    String?   @db.VarChar(50)
+  licence_by    Int?
+  flag          String?   @db.Char(1)
+  cre_by        String?   @db.VarChar(50)
+  cre_date      DateTime? @db.Date
+  upd_by        String?   @db.VarChar(50)
+  upd_date      DateTime? @db.Date
+  tel           String?   @db.VarChar(15)
+}
+
+model vc_driver_license_type {
+  license_type_id   Int       @id @default(autoincrement())
+  license_type_name String?   @db.VarChar(200)
+  license_type_desc String?   @db.VarChar(400)
+  flag_del          String?   @db.Char(1)
+  cre_by            String?   @db.VarChar(8)
+  cre_date          DateTime? @db.Date
+  upd_by            String?   @db.VarChar(8)
+  upd_date          DateTime? @db.Date
+}
+
+model vc_start_place {
+  start_place_id   Int       @id @default(autoincrement())
+  start_place_name String?   @db.VarChar(100)
+  own_div_prop_id  String?   @db.VarChar(4)
+  flag_del         String?   @db.Char(1)
+  cre_by           String?   @db.VarChar(8)
+  cre_date         DateTime? @db.Date
+  upd_by           String?   @db.VarChar(8)
+  upd_date         DateTime? @db.Date
+}
+
+model Booking {
+  id             String        @id
+  requesterId    String
+  department     String
+  objective      String
+  origin         String
+  destination    String
+  requestDate    DateTime      @default(now())
+  startDateTime  DateTime
+  endDateTime    DateTime
+  passengerCount Int
+  status         BookingStatus @default(PENDING)
+  rejectReason   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime
+  bookingNo      String?       @unique
+  User           User          @relation(fields: [requesterId], references: [id])
 }
 
 enum BookingStatus {
