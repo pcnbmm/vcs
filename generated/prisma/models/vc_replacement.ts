@@ -14,7 +14,11 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_replacement
+<<<<<<< HEAD
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+=======
+ * 
+>>>>>>> net
  */
 export type vc_replacementModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_replacementPayload>
 

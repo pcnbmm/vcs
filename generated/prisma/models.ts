@@ -10,11 +10,22 @@
  */
 export type * from './models/User'
 export type * from './models/Session'
+<<<<<<< HEAD
 export type * from './models/Booking'
 export type * from './models/vc_order_item'
 export type * from './models/vc_car_master'
 export type * from './models/fleetcard_transactions'
 export type * from './models/vc_car_status'
+=======
+export type * from './models/vc_car_master'
+export type * from './models/VcOrderItems'
+export type * from './models/fleetcard_transactions'
+export type * from './models/vc_car_brand'
+export type * from './models/vc_car_spec'
+export type * from './models/vc_car_status'
+export type * from './models/vc_car_type'
+export type * from './models/vc_color'
+>>>>>>> net
 export type * from './models/vc_company'
 export type * from './models/vc_contract_details'
 export type * from './models/vc_fuel_item'
@@ -23,17 +34,30 @@ export type * from './models/vc_menu'
 export type * from './models/vc_nt_car'
 export type * from './models/vc_oil_type'
 export type * from './models/vc_permission'
+<<<<<<< HEAD
+=======
+export type * from './models/vc_register_province'
+>>>>>>> net
 export type * from './models/vc_replacement'
 export type * from './models/vc_roles'
 export type * from './models/vc_type_regis'
 export type * from './models/vc_user_roles'
+<<<<<<< HEAD
 export type * from './models/vc_car_brand'
 export type * from './models/vc_car_spec'
 export type * from './models/vc_car_type'
 export type * from './models/vc_color'
 export type * from './models/vc_register_province'
+=======
+export type * from './models/vc_rent_car'
+export type * from './models/vc_use'
+>>>>>>> net
 export type * from './models/fleetcards'
 export type * from './models/vc_driver'
 export type * from './models/vc_driver_license_type'
 export type * from './models/vc_start_place'
+<<<<<<< HEAD
+=======
+export type * from './models/Booking'
+>>>>>>> net
 export type * from './commonInputTypes'

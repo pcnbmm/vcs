@@ -27,26 +27,48 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Booking {
-  id             String        @id
-  requesterId    String
-  department     String
-  objective      String
-  origin         String
-  destination    String
-  requestDate    DateTime      @default(now())
-  startDateTime  DateTime
-  endDateTime    DateTime
-  passengerCount Int
-  status         BookingStatus @default(PENDING)
-  rejectReason   String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime
-  bookingNo      String?       @unique
-  User           User          @relation(fields: [requesterId], references: [id])
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_car_master {
+  car_id               Int                   @id @default(autoincrement())
+  car_number           String?               @db.VarChar(50)
+  car_province_id      Int?
+  car_type_id          Int?
+  car_spec_id          Int?
+  car_brand_id         Int?
+  car_type_regis_id    Int?
+  color_id             Int?
+  oil_type_id          Int?
+  fiscal_year          Int?
+  start_date           String?               @db.VarChar(50)
+  end_date             String?               @db.VarChar(50)
+  regis_date           String?               @db.VarChar(50)
+  car_status_id        Int?
+  machine_no           String?               @db.VarChar(50)
+  body_no              String?               @db.VarChar(50)
+  cylinder_capacityp   String?               @db.VarChar(50)
+  oil_expense          Float?                @db.Real
+  refund_vat           Int?
+  fleetcard_no         String?               @db.VarChar(255)
+  flag                 String?               @db.VarChar(50)
+  cre_by               Int?
+  cre_date             String?               @db.VarChar(50)
+  upd_by               Int?
+  upd_date             String?               @db.VarChar(50)
+  ref_car              String?               @db.VarChar(50)
+  horse_power          String?               @db.VarChar(50)
+  weight               String?               @db.VarChar(50)
+  machine_id           String?               @db.VarChar(50)
+  vc_car_brand         vc_car_brand?         @relation(fields: [car_brand_id], references: [car_brand_id])
+  vc_register_province vc_register_province? @relation(fields: [car_province_id], references: [regis_province_id])
+  vc_car_spec          vc_car_spec?          @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_car_status        vc_car_status?        @relation(fields: [car_status_id], references: [car_status_id])
+  vc_car_type          vc_car_type?          @relation(fields: [car_type_id], references: [car_type_id])
+  vc_type_regis        vc_type_regis?        @relation(fields: [car_type_regis_id], references: [type_regis_id])
+  vc_color             vc_color?             @relation(fields: [color_id], references: [color_id])
+  vc_oil_type          vc_oil_type?          @relation(fields: [oil_type_id], references: [oil_type_id])
 }
 
-model vc_order_item {
+model VcOrderItems {
   request_id       Int       @id @default(autoincrement())
   use_div_code     String?   @db.VarChar(100)
   userid           String?   @db.Char(8)
@@ -70,50 +92,10 @@ model vc_order_item {
   cre_date         DateTime?
   upd_by           String?   @db.VarChar(20)
   upd_date         DateTime?
+
+  @@map("vc_order_item")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_car_master {
-  car_id             Int                   @id @default(autoincrement())
-  car_number         String?               @db.VarChar(50)
-  car_province_id    Int?
-  car_type_id        Int?
-  car_spec_id        Int?
-  car_brand_id       Int?
-  car_type_regis_id  Int?
-  color_id           Int?
-  oil_type_id        Int?
-  fiscal_year        Int?
-  start_date         String?               @db.VarChar(50)
-  end_date           String?               @db.VarChar(50)
-  regis_date         String?               @db.VarChar(50)
-  car_status_id      Int?
-  machine_no         String?               @db.VarChar(50)
-  body_no            String?               @db.VarChar(50)
-  cylinder_capacityp String?               @db.VarChar(50)
-  oil_expense        Float?                @db.Real
-  refund_vat         Int?
-  fleetcard_no       String?               @db.VarChar(255)
-  flag               String?               @db.VarChar(50)
-  cre_by             Int?
-  cre_date           String?               @db.VarChar(50)
-  upd_by             Int?
-  upd_date           String?               @db.VarChar(50)
-  ref_car            String?               @db.VarChar(50)
-  horse_power        String?               @db.VarChar(50)
-  weight             String?               @db.VarChar(50)
-  machine_id         String?               @db.VarChar(50)
-  car_brand          vc_car_brand?         @relation(fields: [car_brand_id], references: [car_brand_id])
-  car_province       vc_register_province? @relation(fields: [car_province_id], references: [regis_province_id])
-  car_spec           vc_car_spec?          @relation(fields: [car_spec_id], references: [car_spec_id])
-  car_status         vc_car_status?        @relation(fields: [car_status_id], references: [car_status_id])
-  car_type           vc_car_type?          @relation(fields: [car_type_id], references: [car_type_id])
-  car_type_regis     vc_type_regis?        @relation(fields: [car_type_regis_id], references: [type_regis_id])
-  color              vc_color?             @relation(fields: [color_id], references: [color_id])
-  oil_type           vc_oil_type?          @relation(fields: [oil_type_id], references: [oil_type_id])
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model fleetcard_transactions {
   fleetcard_trans_id Int       @id @default(autoincrement())
   fleetcard_id       String?   @db.VarChar(50)
@@ -136,7 +118,29 @@ model fleetcard_transactions {
   jvID               String?   @db.VarChar(50)
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_car_brand {
+  car_brand_id    Int             @id @default(autoincrement())
+  car_brand_name  String?         @db.VarChar(255)
+  car_series_name String?         @db.VarChar(255)
+  flag_del        String?         @db.VarChar(255)
+  cre_by          Int?
+  cre_date        String?         @db.VarChar(255)
+  upd_by          Int?
+  upd_date        String?         @db.VarChar(255)
+  vc_car_master   vc_car_master[]
+}
+
+model vc_car_spec {
+  car_spec_id   Int             @id @default(autoincrement())
+  car_spec_name String?         @db.VarChar(256)
+  flag_del      String?         @db.VarChar(50)
+  cre_by        Int?
+  cre_date      String?         @db.VarChar(50)
+  upd_by        Int?
+  upd_date      String?         @db.VarChar(50)
+  vc_car_master vc_car_master[]
+}
+
 model vc_car_status {
   car_status_id   Int             @id @default(autoincrement())
   car_status_name String?         @db.VarChar(50)
@@ -145,10 +149,31 @@ model vc_car_status {
   cre_date        DateTime?       @db.Date
   upd_by          String?         @db.VarChar(20)
   upd_date        DateTime?       @db.Date
-  vcCarMasters    vc_car_master[]
+  vc_car_master   vc_car_master[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_car_type {
+  car_type_id   Int             @id @default(autoincrement())
+  car_type_name String?         @db.VarChar(50)
+  flag_del      String?         @db.VarChar(50)
+  cre_by        Int?
+  cre_date      String?         @db.VarChar(50)
+  upd_by        Int?
+  upd_date      String?         @db.VarChar(50)
+  vc_car_master vc_car_master[]
+}
+
+model vc_color {
+  color_id      Int             @id @default(autoincrement())
+  color_name    String?         @db.VarChar(50)
+  flag_del      String?         @db.VarChar(50)
+  cre_by        Int?
+  cre_date      String?         @db.VarChar(50)
+  upd_by        Int?
+  upd_date      String?         @db.VarChar(50)
+  vc_car_master vc_car_master[]
+}
+
 model vc_company {
   company_id   Int       @id @default(autoincrement())
   company_name String?   @db.VarChar(200)
@@ -160,7 +185,6 @@ model vc_company {
   upd_date     DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_contract_details {
   contract_id           Int       @id @default(autoincrement())
   rent_no               String?   @db.VarChar(100)
@@ -178,7 +202,6 @@ model vc_contract_details {
   arbitrator4_name      String?   @db.VarChar(255)
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_fuel_item {
   fuel_item_id    Int       @id @default(autoincrement())
   car_id          Int?
@@ -201,7 +224,6 @@ model vc_fuel_item {
   upd_date        DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_function {
   function_id Int       @id @default(autoincrement())
   menu_id     Int?
@@ -213,7 +235,6 @@ model vc_function {
   upd_date    DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_menu {
   menu_id    Int       @id @default(autoincrement())
   menuname   String?   @db.VarChar(100)
@@ -226,7 +247,6 @@ model vc_menu {
   upd_date   DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_nt_car {
   nt_car_id                  Int       @id @default(autoincrement())
   car_id                     Int?
@@ -247,7 +267,6 @@ model vc_nt_car {
   upd_date                   DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_oil_type {
   oil_type_id    Int             @id @default(autoincrement())
   oil_type_name  String?         @db.VarChar(200)
@@ -257,10 +276,9 @@ model vc_oil_type {
   cre_date       DateTime?       @db.Date
   upd_by         String?         @db.VarChar(8)
   upd_date       DateTime?       @db.Date
-  vcCarMasters   vc_car_master[]
+  vc_car_master  vc_car_master[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_permission {
   role_id     Int       @id @default(autoincrement())
   function_id Int?
@@ -271,7 +289,19 @@ model vc_permission {
   upd_date    DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_register_province {
+  regis_province_id   Int             @id @default(autoincrement())
+  regis_province_name String?         @db.VarChar(50)
+  short_name          String?         @db.VarChar(50)
+  region_id           Int?
+  flag_del            String?         @db.VarChar(50)
+  cre_by              Int?
+  cre_date            String?         @db.VarChar(50)
+  upd_by              Int?
+  upd_date            String?         @db.VarChar(50)
+  vc_car_master       vc_car_master[]
+}
+
 model vc_replacement {
   replacement_id     Int       @id @default(autoincrement())
   car_id             Int?
@@ -284,7 +314,6 @@ model vc_replacement {
   upd_date           DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_roles {
   roles_id    Int       @id @default(autoincrement())
   roles_name  String?   @db.VarChar(50)
@@ -295,7 +324,6 @@ model vc_roles {
   upd_date    DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_type_regis {
   type_regis_id   Int             @id @default(autoincrement())
   type_regis_name String?         @db.VarChar(100)
@@ -304,10 +332,9 @@ model vc_type_regis {
   cre_date        DateTime?       @db.Date
   upd_by          String?         @db.VarChar(50)
   upd_date        DateTime?       @db.Date
-  vcCarMasters    vc_car_master[]
+  vc_car_master   vc_car_master[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_user_roles {
   user_id  Int       @id @default(autoincrement())
   roles_id Int?
@@ -317,70 +344,6 @@ model vc_user_roles {
   upd_date DateTime? @db.Date
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_car_brand {
-  car_brand_id    Int             @id @default(autoincrement())
-  car_brand_name  String?         @db.VarChar(255)
-  car_series_name String?         @db.VarChar(255)
-  flag_del        String?         @db.VarChar(255)
-  cre_by          Int?
-  cre_date        String?         @db.VarChar(255)
-  upd_by          Int?
-  upd_date        String?         @db.VarChar(255)
-  vcCarMasters    vc_car_master[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_car_spec {
-  car_spec_id   Int             @id @default(autoincrement())
-  car_spec_name String?         @db.VarChar(256)
-  flag_del      String?         @db.VarChar(50)
-  cre_by        Int?
-  cre_date      String?         @db.VarChar(50)
-  upd_by        Int?
-  upd_date      String?         @db.VarChar(50)
-  vcCarMasters  vc_car_master[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_car_type {
-  car_type_id   Int             @id @default(autoincrement())
-  car_type_name String?         @db.VarChar(50)
-  flag_del      String?         @db.VarChar(50)
-  cre_by        Int?
-  cre_date      String?         @db.VarChar(50)
-  upd_by        Int?
-  upd_date      String?         @db.VarChar(50)
-  vcCarMasters  vc_car_master[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_color {
-  color_id     Int             @id @default(autoincrement())
-  color_name   String?         @db.VarChar(50)
-  flag_del     String?         @db.VarChar(50)
-  cre_by       Int?
-  cre_date     String?         @db.VarChar(50)
-  upd_by       Int?
-  upd_date     String?         @db.VarChar(50)
-  vcCarMasters vc_car_master[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_register_province {
-  regis_province_id   Int             @id @default(autoincrement())
-  regis_province_name String?         @db.VarChar(50)
-  short_name          String?         @db.VarChar(50)
-  region_id           Int?
-  flag_del            String?         @db.VarChar(50)
-  cre_by              Int?
-  cre_date            String?         @db.VarChar(50)
-  upd_by              Int?
-  upd_date            String?         @db.VarChar(50)
-  vcCarMasters        vc_car_master[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_rent_car {
   rent_car_id      Int       @id @default(autoincrement())
   car_id           Int?
@@ -395,7 +358,6 @@ model vc_rent_car {
   po               String?   @db.VarChar(100)
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_use {
   use_id            Int       @id @default(autoincrement())
   request_id        Int?
@@ -476,6 +438,25 @@ model vc_start_place {
   cre_date         DateTime? @db.Date
   upd_by           String?   @db.VarChar(8)
   upd_date         DateTime? @db.Date
+}
+
+model Booking {
+  id             String        @id
+  requesterId    String
+  department     String
+  objective      String
+  origin         String
+  destination    String
+  requestDate    DateTime      @default(now())
+  startDateTime  DateTime
+  endDateTime    DateTime
+  passengerCount Int
+  status         BookingStatus @default(PENDING)
+  rejectReason   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime
+  bookingNo      String?       @unique
+  User           User          @relation(fields: [requesterId], references: [id])
 }
 
 enum BookingStatus {
