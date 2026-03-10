@@ -14,11 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model fleetcard_transactions
-<<<<<<< HEAD
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-=======
  * 
->>>>>>> net
  */
 export type fleetcard_transactionsModel = runtime.Types.Result.DefaultSelection<Prisma.$fleetcard_transactionsPayload>
 

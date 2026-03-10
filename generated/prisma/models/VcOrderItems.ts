@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `vc_order_item` model and its related types.
+ * This file exports the `VcOrderItems` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,20 +13,20 @@ import type * as $Enums from "../enums"
 import type * as Prisma from "../internal/prismaNamespace"
 
 /**
- * Model vc_order_item
+ * Model VcOrderItems
  * 
  */
-export type vc_order_itemModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_order_itemPayload>
+export type VcOrderItemsModel = runtime.Types.Result.DefaultSelection<Prisma.$VcOrderItemsPayload>
 
-export type AggregateVc_order_item = {
-  _count: Vc_order_itemCountAggregateOutputType | null
-  _avg: Vc_order_itemAvgAggregateOutputType | null
-  _sum: Vc_order_itemSumAggregateOutputType | null
-  _min: Vc_order_itemMinAggregateOutputType | null
-  _max: Vc_order_itemMaxAggregateOutputType | null
+export type AggregateVcOrderItems = {
+  _count: VcOrderItemsCountAggregateOutputType | null
+  _avg: VcOrderItemsAvgAggregateOutputType | null
+  _sum: VcOrderItemsSumAggregateOutputType | null
+  _min: VcOrderItemsMinAggregateOutputType | null
+  _max: VcOrderItemsMaxAggregateOutputType | null
 }
 
-export type Vc_order_itemAvgAggregateOutputType = {
+export type VcOrderItemsAvgAggregateOutputType = {
   request_id: number | null
   passenger_amount: number | null
   status_use_id: number | null
@@ -34,7 +34,7 @@ export type Vc_order_itemAvgAggregateOutputType = {
   journey_long: number | null
 }
 
-export type Vc_order_itemSumAggregateOutputType = {
+export type VcOrderItemsSumAggregateOutputType = {
   request_id: number | null
   passenger_amount: number | null
   status_use_id: number | null
@@ -42,33 +42,7 @@ export type Vc_order_itemSumAggregateOutputType = {
   journey_long: number | null
 }
 
-export type Vc_order_itemMinAggregateOutputType = {
-  request_id: number | null
-  use_div_code: string | null
-  userid: string | null
-  user_mobile: string | null
-  journey_date: Date | null
-  return_date: Date | null
-  start_place: string | null
-  journey_place: string | null
-  journey_province: string | null
-  journey_causes: string | null
-  journer_time: string | null
-  return_time: string | null
-  car_spec_id: string | null
-  passenger_amount: number | null
-  approve_id: string | null
-  status_use_id: number | null
-  self_drive: boolean | null
-  journey_lat: number | null
-  journey_long: number | null
-  cre_by: string | null
-  cre_date: Date | null
-  upd_by: string | null
-  upd_date: Date | null
-}
-
-export type Vc_order_itemMaxAggregateOutputType = {
+export type VcOrderItemsMinAggregateOutputType = {
   request_id: number | null
   use_div_code: string | null
   userid: string | null
@@ -94,7 +68,33 @@ export type Vc_order_itemMaxAggregateOutputType = {
   upd_date: Date | null
 }
 
-export type Vc_order_itemCountAggregateOutputType = {
+export type VcOrderItemsMaxAggregateOutputType = {
+  request_id: number | null
+  use_div_code: string | null
+  userid: string | null
+  user_mobile: string | null
+  journey_date: Date | null
+  return_date: Date | null
+  start_place: string | null
+  journey_place: string | null
+  journey_province: string | null
+  journey_causes: string | null
+  journer_time: string | null
+  return_time: string | null
+  car_spec_id: string | null
+  passenger_amount: number | null
+  approve_id: string | null
+  status_use_id: number | null
+  self_drive: boolean | null
+  journey_lat: number | null
+  journey_long: number | null
+  cre_by: string | null
+  cre_date: Date | null
+  upd_by: string | null
+  upd_date: Date | null
+}
+
+export type VcOrderItemsCountAggregateOutputType = {
   request_id: number
   use_div_code: number
   userid: number
@@ -122,7 +122,7 @@ export type Vc_order_itemCountAggregateOutputType = {
 }
 
 
-export type Vc_order_itemAvgAggregateInputType = {
+export type VcOrderItemsAvgAggregateInputType = {
   request_id?: true
   passenger_amount?: true
   status_use_id?: true
@@ -130,7 +130,7 @@ export type Vc_order_itemAvgAggregateInputType = {
   journey_long?: true
 }
 
-export type Vc_order_itemSumAggregateInputType = {
+export type VcOrderItemsSumAggregateInputType = {
   request_id?: true
   passenger_amount?: true
   status_use_id?: true
@@ -138,33 +138,7 @@ export type Vc_order_itemSumAggregateInputType = {
   journey_long?: true
 }
 
-export type Vc_order_itemMinAggregateInputType = {
-  request_id?: true
-  use_div_code?: true
-  userid?: true
-  user_mobile?: true
-  journey_date?: true
-  return_date?: true
-  start_place?: true
-  journey_place?: true
-  journey_province?: true
-  journey_causes?: true
-  journer_time?: true
-  return_time?: true
-  car_spec_id?: true
-  passenger_amount?: true
-  approve_id?: true
-  status_use_id?: true
-  self_drive?: true
-  journey_lat?: true
-  journey_long?: true
-  cre_by?: true
-  cre_date?: true
-  upd_by?: true
-  upd_date?: true
-}
-
-export type Vc_order_itemMaxAggregateInputType = {
+export type VcOrderItemsMinAggregateInputType = {
   request_id?: true
   use_div_code?: true
   userid?: true
@@ -190,7 +164,33 @@ export type Vc_order_itemMaxAggregateInputType = {
   upd_date?: true
 }
 
-export type Vc_order_itemCountAggregateInputType = {
+export type VcOrderItemsMaxAggregateInputType = {
+  request_id?: true
+  use_div_code?: true
+  userid?: true
+  user_mobile?: true
+  journey_date?: true
+  return_date?: true
+  start_place?: true
+  journey_place?: true
+  journey_province?: true
+  journey_causes?: true
+  journer_time?: true
+  return_time?: true
+  car_spec_id?: true
+  passenger_amount?: true
+  approve_id?: true
+  status_use_id?: true
+  self_drive?: true
+  journey_lat?: true
+  journey_long?: true
+  cre_by?: true
+  cre_date?: true
+  upd_by?: true
+  upd_date?: true
+}
+
+export type VcOrderItemsCountAggregateInputType = {
   request_id?: true
   use_div_code?: true
   userid?: true
@@ -217,93 +217,93 @@ export type Vc_order_itemCountAggregateInputType = {
   _all?: true
 }
 
-export type Vc_order_itemAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which vc_order_item to aggregate.
+   * Filter which VcOrderItems to aggregate.
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of vc_order_items to fetch.
+   * Determine the order of VcOrderItems to fetch.
    */
-  orderBy?: Prisma.vc_order_itemOrderByWithRelationInput | Prisma.vc_order_itemOrderByWithRelationInput[]
+  orderBy?: Prisma.VcOrderItemsOrderByWithRelationInput | Prisma.VcOrderItemsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.vc_order_itemWhereUniqueInput
+  cursor?: Prisma.VcOrderItemsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` vc_order_items from the position of the cursor.
+   * Take `±n` VcOrderItems from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` vc_order_items.
+   * Skip the first `n` VcOrderItems.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned vc_order_items
+   * Count returned VcOrderItems
   **/
-  _count?: true | Vc_order_itemCountAggregateInputType
+  _count?: true | VcOrderItemsCountAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
    * Select which fields to average
   **/
-  _avg?: Vc_order_itemAvgAggregateInputType
+  _avg?: VcOrderItemsAvgAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
    * Select which fields to sum
   **/
-  _sum?: Vc_order_itemSumAggregateInputType
+  _sum?: VcOrderItemsSumAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
    * Select which fields to find the minimum value
   **/
-  _min?: Vc_order_itemMinAggregateInputType
+  _min?: VcOrderItemsMinAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
    * Select which fields to find the maximum value
   **/
-  _max?: Vc_order_itemMaxAggregateInputType
+  _max?: VcOrderItemsMaxAggregateInputType
 }
 
-export type GetVc_order_itemAggregateType<T extends Vc_order_itemAggregateArgs> = {
-      [P in keyof T & keyof AggregateVc_order_item]: P extends '_count' | 'count'
+export type GetVcOrderItemsAggregateType<T extends VcOrderItemsAggregateArgs> = {
+      [P in keyof T & keyof AggregateVcOrderItems]: P extends '_count' | 'count'
     ? T[P] extends true
       ? number
-      : Prisma.GetScalarType<T[P], AggregateVc_order_item[P]>
-    : Prisma.GetScalarType<T[P], AggregateVc_order_item[P]>
+      : Prisma.GetScalarType<T[P], AggregateVcOrderItems[P]>
+    : Prisma.GetScalarType<T[P], AggregateVcOrderItems[P]>
 }
 
 
 
 
-export type vc_order_itemGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.vc_order_itemWhereInput
-  orderBy?: Prisma.vc_order_itemOrderByWithAggregationInput | Prisma.vc_order_itemOrderByWithAggregationInput[]
-  by: Prisma.Vc_order_itemScalarFieldEnum[] | Prisma.Vc_order_itemScalarFieldEnum
-  having?: Prisma.vc_order_itemScalarWhereWithAggregatesInput
+export type VcOrderItemsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VcOrderItemsWhereInput
+  orderBy?: Prisma.VcOrderItemsOrderByWithAggregationInput | Prisma.VcOrderItemsOrderByWithAggregationInput[]
+  by: Prisma.VcOrderItemsScalarFieldEnum[] | Prisma.VcOrderItemsScalarFieldEnum
+  having?: Prisma.VcOrderItemsScalarWhereWithAggregatesInput
   take?: number
   skip?: number
-  _count?: Vc_order_itemCountAggregateInputType | true
-  _avg?: Vc_order_itemAvgAggregateInputType
-  _sum?: Vc_order_itemSumAggregateInputType
-  _min?: Vc_order_itemMinAggregateInputType
-  _max?: Vc_order_itemMaxAggregateInputType
+  _count?: VcOrderItemsCountAggregateInputType | true
+  _avg?: VcOrderItemsAvgAggregateInputType
+  _sum?: VcOrderItemsSumAggregateInputType
+  _min?: VcOrderItemsMinAggregateInputType
+  _max?: VcOrderItemsMaxAggregateInputType
 }
 
-export type Vc_order_itemGroupByOutputType = {
+export type VcOrderItemsGroupByOutputType = {
   request_id: number
   use_div_code: string | null
   userid: string | null
@@ -327,58 +327,58 @@ export type Vc_order_itemGroupByOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
-  _count: Vc_order_itemCountAggregateOutputType | null
-  _avg: Vc_order_itemAvgAggregateOutputType | null
-  _sum: Vc_order_itemSumAggregateOutputType | null
-  _min: Vc_order_itemMinAggregateOutputType | null
-  _max: Vc_order_itemMaxAggregateOutputType | null
+  _count: VcOrderItemsCountAggregateOutputType | null
+  _avg: VcOrderItemsAvgAggregateOutputType | null
+  _sum: VcOrderItemsSumAggregateOutputType | null
+  _min: VcOrderItemsMinAggregateOutputType | null
+  _max: VcOrderItemsMaxAggregateOutputType | null
 }
 
-type GetVc_order_itemGroupByPayload<T extends vc_order_itemGroupByArgs> = Prisma.PrismaPromise<
+type GetVcOrderItemsGroupByPayload<T extends VcOrderItemsGroupByArgs> = Prisma.PrismaPromise<
   Array<
-    Prisma.PickEnumerable<Vc_order_itemGroupByOutputType, T['by']> &
+    Prisma.PickEnumerable<VcOrderItemsGroupByOutputType, T['by']> &
       {
-        [P in ((keyof T) & (keyof Vc_order_itemGroupByOutputType))]: P extends '_count'
+        [P in ((keyof T) & (keyof VcOrderItemsGroupByOutputType))]: P extends '_count'
           ? T[P] extends boolean
             ? number
-            : Prisma.GetScalarType<T[P], Vc_order_itemGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], Vc_order_itemGroupByOutputType[P]>
+            : Prisma.GetScalarType<T[P], VcOrderItemsGroupByOutputType[P]>
+          : Prisma.GetScalarType<T[P], VcOrderItemsGroupByOutputType[P]>
       }
     >
   >
 
 
 
-export type vc_order_itemWhereInput = {
-  AND?: Prisma.vc_order_itemWhereInput | Prisma.vc_order_itemWhereInput[]
-  OR?: Prisma.vc_order_itemWhereInput[]
-  NOT?: Prisma.vc_order_itemWhereInput | Prisma.vc_order_itemWhereInput[]
-  request_id?: Prisma.IntFilter<"vc_order_item"> | number
-  use_div_code?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  userid?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  user_mobile?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  return_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  start_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_province?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_causes?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journer_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  return_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  car_spec_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  passenger_amount?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
-  approve_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  status_use_id?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
-  self_drive?: Prisma.BoolNullableFilter<"vc_order_item"> | boolean | null
-  journey_lat?: Prisma.FloatNullableFilter<"vc_order_item"> | number | null
-  journey_long?: Prisma.FloatNullableFilter<"vc_order_item"> | number | null
-  cre_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  cre_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  upd_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  upd_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
+export type VcOrderItemsWhereInput = {
+  AND?: Prisma.VcOrderItemsWhereInput | Prisma.VcOrderItemsWhereInput[]
+  OR?: Prisma.VcOrderItemsWhereInput[]
+  NOT?: Prisma.VcOrderItemsWhereInput | Prisma.VcOrderItemsWhereInput[]
+  request_id?: Prisma.IntFilter<"VcOrderItems"> | number
+  use_div_code?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  userid?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  user_mobile?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  return_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  start_place?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_place?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_province?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_causes?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journer_time?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  return_time?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  car_spec_id?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  passenger_amount?: Prisma.IntNullableFilter<"VcOrderItems"> | number | null
+  approve_id?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  status_use_id?: Prisma.IntNullableFilter<"VcOrderItems"> | number | null
+  self_drive?: Prisma.BoolNullableFilter<"VcOrderItems"> | boolean | null
+  journey_lat?: Prisma.FloatNullableFilter<"VcOrderItems"> | number | null
+  journey_long?: Prisma.FloatNullableFilter<"VcOrderItems"> | number | null
+  cre_by?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  cre_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  upd_by?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  upd_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
 }
 
-export type vc_order_itemOrderByWithRelationInput = {
+export type VcOrderItemsOrderByWithRelationInput = {
   request_id?: Prisma.SortOrder
   use_div_code?: Prisma.SortOrderInput | Prisma.SortOrder
   userid?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -404,36 +404,36 @@ export type vc_order_itemOrderByWithRelationInput = {
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
-export type vc_order_itemWhereUniqueInput = Prisma.AtLeast<{
+export type VcOrderItemsWhereUniqueInput = Prisma.AtLeast<{
   request_id?: number
-  AND?: Prisma.vc_order_itemWhereInput | Prisma.vc_order_itemWhereInput[]
-  OR?: Prisma.vc_order_itemWhereInput[]
-  NOT?: Prisma.vc_order_itemWhereInput | Prisma.vc_order_itemWhereInput[]
-  use_div_code?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  userid?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  user_mobile?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  return_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  start_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_province?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journey_causes?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  journer_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  return_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  car_spec_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  passenger_amount?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
-  approve_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  status_use_id?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
-  self_drive?: Prisma.BoolNullableFilter<"vc_order_item"> | boolean | null
-  journey_lat?: Prisma.FloatNullableFilter<"vc_order_item"> | number | null
-  journey_long?: Prisma.FloatNullableFilter<"vc_order_item"> | number | null
-  cre_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  cre_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
-  upd_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
-  upd_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
+  AND?: Prisma.VcOrderItemsWhereInput | Prisma.VcOrderItemsWhereInput[]
+  OR?: Prisma.VcOrderItemsWhereInput[]
+  NOT?: Prisma.VcOrderItemsWhereInput | Prisma.VcOrderItemsWhereInput[]
+  use_div_code?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  userid?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  user_mobile?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  return_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  start_place?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_place?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_province?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journey_causes?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  journer_time?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  return_time?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  car_spec_id?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  passenger_amount?: Prisma.IntNullableFilter<"VcOrderItems"> | number | null
+  approve_id?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  status_use_id?: Prisma.IntNullableFilter<"VcOrderItems"> | number | null
+  self_drive?: Prisma.BoolNullableFilter<"VcOrderItems"> | boolean | null
+  journey_lat?: Prisma.FloatNullableFilter<"VcOrderItems"> | number | null
+  journey_long?: Prisma.FloatNullableFilter<"VcOrderItems"> | number | null
+  cre_by?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  cre_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
+  upd_by?: Prisma.StringNullableFilter<"VcOrderItems"> | string | null
+  upd_date?: Prisma.DateTimeNullableFilter<"VcOrderItems"> | Date | string | null
 }, "request_id">
 
-export type vc_order_itemOrderByWithAggregationInput = {
+export type VcOrderItemsOrderByWithAggregationInput = {
   request_id?: Prisma.SortOrder
   use_div_code?: Prisma.SortOrderInput | Prisma.SortOrder
   userid?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -457,43 +457,43 @@ export type vc_order_itemOrderByWithAggregationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  _count?: Prisma.vc_order_itemCountOrderByAggregateInput
-  _avg?: Prisma.vc_order_itemAvgOrderByAggregateInput
-  _max?: Prisma.vc_order_itemMaxOrderByAggregateInput
-  _min?: Prisma.vc_order_itemMinOrderByAggregateInput
-  _sum?: Prisma.vc_order_itemSumOrderByAggregateInput
+  _count?: Prisma.VcOrderItemsCountOrderByAggregateInput
+  _avg?: Prisma.VcOrderItemsAvgOrderByAggregateInput
+  _max?: Prisma.VcOrderItemsMaxOrderByAggregateInput
+  _min?: Prisma.VcOrderItemsMinOrderByAggregateInput
+  _sum?: Prisma.VcOrderItemsSumOrderByAggregateInput
 }
 
-export type vc_order_itemScalarWhereWithAggregatesInput = {
-  AND?: Prisma.vc_order_itemScalarWhereWithAggregatesInput | Prisma.vc_order_itemScalarWhereWithAggregatesInput[]
-  OR?: Prisma.vc_order_itemScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.vc_order_itemScalarWhereWithAggregatesInput | Prisma.vc_order_itemScalarWhereWithAggregatesInput[]
-  request_id?: Prisma.IntWithAggregatesFilter<"vc_order_item"> | number
-  use_div_code?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  userid?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  user_mobile?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  journey_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
-  return_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
-  start_place?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  journey_place?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  journey_province?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  journey_causes?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  journer_time?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  return_time?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  car_spec_id?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  passenger_amount?: Prisma.IntNullableWithAggregatesFilter<"vc_order_item"> | number | null
-  approve_id?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  status_use_id?: Prisma.IntNullableWithAggregatesFilter<"vc_order_item"> | number | null
-  self_drive?: Prisma.BoolNullableWithAggregatesFilter<"vc_order_item"> | boolean | null
-  journey_lat?: Prisma.FloatNullableWithAggregatesFilter<"vc_order_item"> | number | null
-  journey_long?: Prisma.FloatNullableWithAggregatesFilter<"vc_order_item"> | number | null
-  cre_by?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
-  upd_by?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
-  upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
+export type VcOrderItemsScalarWhereWithAggregatesInput = {
+  AND?: Prisma.VcOrderItemsScalarWhereWithAggregatesInput | Prisma.VcOrderItemsScalarWhereWithAggregatesInput[]
+  OR?: Prisma.VcOrderItemsScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.VcOrderItemsScalarWhereWithAggregatesInput | Prisma.VcOrderItemsScalarWhereWithAggregatesInput[]
+  request_id?: Prisma.IntWithAggregatesFilter<"VcOrderItems"> | number
+  use_div_code?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  userid?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  user_mobile?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  journey_date?: Prisma.DateTimeNullableWithAggregatesFilter<"VcOrderItems"> | Date | string | null
+  return_date?: Prisma.DateTimeNullableWithAggregatesFilter<"VcOrderItems"> | Date | string | null
+  start_place?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  journey_place?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  journey_province?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  journey_causes?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  journer_time?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  return_time?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  car_spec_id?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  passenger_amount?: Prisma.IntNullableWithAggregatesFilter<"VcOrderItems"> | number | null
+  approve_id?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  status_use_id?: Prisma.IntNullableWithAggregatesFilter<"VcOrderItems"> | number | null
+  self_drive?: Prisma.BoolNullableWithAggregatesFilter<"VcOrderItems"> | boolean | null
+  journey_lat?: Prisma.FloatNullableWithAggregatesFilter<"VcOrderItems"> | number | null
+  journey_long?: Prisma.FloatNullableWithAggregatesFilter<"VcOrderItems"> | number | null
+  cre_by?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"VcOrderItems"> | Date | string | null
+  upd_by?: Prisma.StringNullableWithAggregatesFilter<"VcOrderItems"> | string | null
+  upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"VcOrderItems"> | Date | string | null
 }
 
-export type vc_order_itemCreateInput = {
+export type VcOrderItemsCreateInput = {
   use_div_code?: string | null
   userid?: string | null
   user_mobile?: string | null
@@ -518,7 +518,7 @@ export type vc_order_itemCreateInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_order_itemUncheckedCreateInput = {
+export type VcOrderItemsUncheckedCreateInput = {
   request_id?: number
   use_div_code?: string | null
   userid?: string | null
@@ -544,7 +544,7 @@ export type vc_order_itemUncheckedCreateInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_order_itemUpdateInput = {
+export type VcOrderItemsUpdateInput = {
   use_div_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -569,7 +569,7 @@ export type vc_order_itemUpdateInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_order_itemUncheckedUpdateInput = {
+export type VcOrderItemsUncheckedUpdateInput = {
   request_id?: Prisma.IntFieldUpdateOperationsInput | number
   use_div_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -595,7 +595,7 @@ export type vc_order_itemUncheckedUpdateInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_order_itemCreateManyInput = {
+export type VcOrderItemsCreateManyInput = {
   request_id?: number
   use_div_code?: string | null
   userid?: string | null
@@ -621,7 +621,7 @@ export type vc_order_itemCreateManyInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_order_itemUpdateManyMutationInput = {
+export type VcOrderItemsUpdateManyMutationInput = {
   use_div_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -646,7 +646,7 @@ export type vc_order_itemUpdateManyMutationInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_order_itemUncheckedUpdateManyInput = {
+export type VcOrderItemsUncheckedUpdateManyInput = {
   request_id?: Prisma.IntFieldUpdateOperationsInput | number
   use_div_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -672,7 +672,7 @@ export type vc_order_itemUncheckedUpdateManyInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_order_itemCountOrderByAggregateInput = {
+export type VcOrderItemsCountOrderByAggregateInput = {
   request_id?: Prisma.SortOrder
   use_div_code?: Prisma.SortOrder
   userid?: Prisma.SortOrder
@@ -698,7 +698,7 @@ export type vc_order_itemCountOrderByAggregateInput = {
   upd_date?: Prisma.SortOrder
 }
 
-export type vc_order_itemAvgOrderByAggregateInput = {
+export type VcOrderItemsAvgOrderByAggregateInput = {
   request_id?: Prisma.SortOrder
   passenger_amount?: Prisma.SortOrder
   status_use_id?: Prisma.SortOrder
@@ -706,33 +706,7 @@ export type vc_order_itemAvgOrderByAggregateInput = {
   journey_long?: Prisma.SortOrder
 }
 
-export type vc_order_itemMaxOrderByAggregateInput = {
-  request_id?: Prisma.SortOrder
-  use_div_code?: Prisma.SortOrder
-  userid?: Prisma.SortOrder
-  user_mobile?: Prisma.SortOrder
-  journey_date?: Prisma.SortOrder
-  return_date?: Prisma.SortOrder
-  start_place?: Prisma.SortOrder
-  journey_place?: Prisma.SortOrder
-  journey_province?: Prisma.SortOrder
-  journey_causes?: Prisma.SortOrder
-  journer_time?: Prisma.SortOrder
-  return_time?: Prisma.SortOrder
-  car_spec_id?: Prisma.SortOrder
-  passenger_amount?: Prisma.SortOrder
-  approve_id?: Prisma.SortOrder
-  status_use_id?: Prisma.SortOrder
-  self_drive?: Prisma.SortOrder
-  journey_lat?: Prisma.SortOrder
-  journey_long?: Prisma.SortOrder
-  cre_by?: Prisma.SortOrder
-  cre_date?: Prisma.SortOrder
-  upd_by?: Prisma.SortOrder
-  upd_date?: Prisma.SortOrder
-}
-
-export type vc_order_itemMinOrderByAggregateInput = {
+export type VcOrderItemsMaxOrderByAggregateInput = {
   request_id?: Prisma.SortOrder
   use_div_code?: Prisma.SortOrder
   userid?: Prisma.SortOrder
@@ -758,7 +732,33 @@ export type vc_order_itemMinOrderByAggregateInput = {
   upd_date?: Prisma.SortOrder
 }
 
-export type vc_order_itemSumOrderByAggregateInput = {
+export type VcOrderItemsMinOrderByAggregateInput = {
+  request_id?: Prisma.SortOrder
+  use_div_code?: Prisma.SortOrder
+  userid?: Prisma.SortOrder
+  user_mobile?: Prisma.SortOrder
+  journey_date?: Prisma.SortOrder
+  return_date?: Prisma.SortOrder
+  start_place?: Prisma.SortOrder
+  journey_place?: Prisma.SortOrder
+  journey_province?: Prisma.SortOrder
+  journey_causes?: Prisma.SortOrder
+  journer_time?: Prisma.SortOrder
+  return_time?: Prisma.SortOrder
+  car_spec_id?: Prisma.SortOrder
+  passenger_amount?: Prisma.SortOrder
+  approve_id?: Prisma.SortOrder
+  status_use_id?: Prisma.SortOrder
+  self_drive?: Prisma.SortOrder
+  journey_lat?: Prisma.SortOrder
+  journey_long?: Prisma.SortOrder
+  cre_by?: Prisma.SortOrder
+  cre_date?: Prisma.SortOrder
+  upd_by?: Prisma.SortOrder
+  upd_date?: Prisma.SortOrder
+}
+
+export type VcOrderItemsSumOrderByAggregateInput = {
   request_id?: Prisma.SortOrder
   passenger_amount?: Prisma.SortOrder
   status_use_id?: Prisma.SortOrder
@@ -776,7 +776,7 @@ export type NullableBoolFieldUpdateOperationsInput = {
 
 
 
-export type vc_order_itemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type VcOrderItemsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   request_id?: boolean
   use_div_code?: boolean
   userid?: boolean
@@ -800,9 +800,9 @@ export type vc_order_itemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-}, ExtArgs["result"]["vc_order_item"]>
+}, ExtArgs["result"]["vcOrderItems"]>
 
-export type vc_order_itemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type VcOrderItemsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   request_id?: boolean
   use_div_code?: boolean
   userid?: boolean
@@ -826,9 +826,9 @@ export type vc_order_itemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-}, ExtArgs["result"]["vc_order_item"]>
+}, ExtArgs["result"]["vcOrderItems"]>
 
-export type vc_order_itemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type VcOrderItemsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   request_id?: boolean
   use_div_code?: boolean
   userid?: boolean
@@ -852,9 +852,9 @@ export type vc_order_itemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-}, ExtArgs["result"]["vc_order_item"]>
+}, ExtArgs["result"]["vcOrderItems"]>
 
-export type vc_order_itemSelectScalar = {
+export type VcOrderItemsSelectScalar = {
   request_id?: boolean
   use_div_code?: boolean
   userid?: boolean
@@ -880,10 +880,10 @@ export type vc_order_itemSelectScalar = {
   upd_date?: boolean
 }
 
-export type vc_order_itemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"request_id" | "use_div_code" | "userid" | "user_mobile" | "journey_date" | "return_date" | "start_place" | "journey_place" | "journey_province" | "journey_causes" | "journer_time" | "return_time" | "car_spec_id" | "passenger_amount" | "approve_id" | "status_use_id" | "self_drive" | "journey_lat" | "journey_long" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_order_item"]>
+export type VcOrderItemsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"request_id" | "use_div_code" | "userid" | "user_mobile" | "journey_date" | "return_date" | "start_place" | "journey_place" | "journey_province" | "journey_causes" | "journer_time" | "return_time" | "car_spec_id" | "passenger_amount" | "approve_id" | "status_use_id" | "self_drive" | "journey_lat" | "journey_long" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vcOrderItems"]>
 
-export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "vc_order_item"
+export type $VcOrderItemsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "VcOrderItems"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     request_id: number
@@ -909,136 +909,136 @@ export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     cre_date: Date | null
     upd_by: string | null
     upd_date: Date | null
-  }, ExtArgs["result"]["vc_order_item"]>
+  }, ExtArgs["result"]["vcOrderItems"]>
   composites: {}
 }
 
-export type vc_order_itemGetPayload<S extends boolean | null | undefined | vc_order_itemDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload, S>
+export type VcOrderItemsGetPayload<S extends boolean | null | undefined | VcOrderItemsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload, S>
 
-export type vc_order_itemCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<vc_order_itemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-    select?: Vc_order_itemCountAggregateInputType | true
+export type VcOrderItemsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<VcOrderItemsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: VcOrderItemsCountAggregateInputType | true
   }
 
-export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['vc_order_item'], meta: { name: 'vc_order_item' } }
+export interface VcOrderItemsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VcOrderItems'], meta: { name: 'VcOrderItems' } }
   /**
-   * Find zero or one Vc_order_item that matches the filter.
-   * @param {vc_order_itemFindUniqueArgs} args - Arguments to find a Vc_order_item
+   * Find zero or one VcOrderItems that matches the filter.
+   * @param {VcOrderItemsFindUniqueArgs} args - Arguments to find a VcOrderItems
    * @example
-   * // Get one Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.findUnique({
+   * // Get one VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findUnique({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findUnique<T extends vc_order_itemFindUniqueArgs>(args: Prisma.SelectSubset<T, vc_order_itemFindUniqueArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends VcOrderItemsFindUniqueArgs>(args: Prisma.SelectSubset<T, VcOrderItemsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Find one Vc_order_item that matches the filter or throw an error with `error.code='P2025'`
+   * Find one VcOrderItems that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {vc_order_itemFindUniqueOrThrowArgs} args - Arguments to find a Vc_order_item
+   * @param {VcOrderItemsFindUniqueOrThrowArgs} args - Arguments to find a VcOrderItems
    * @example
-   * // Get one Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.findUniqueOrThrow({
+   * // Get one VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findUniqueOrThrow({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findUniqueOrThrow<T extends vc_order_itemFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, vc_order_itemFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends VcOrderItemsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, VcOrderItemsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Find the first Vc_order_item that matches the filter.
+   * Find the first VcOrderItems that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemFindFirstArgs} args - Arguments to find a Vc_order_item
+   * @param {VcOrderItemsFindFirstArgs} args - Arguments to find a VcOrderItems
    * @example
-   * // Get one Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.findFirst({
+   * // Get one VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findFirst({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findFirst<T extends vc_order_itemFindFirstArgs>(args?: Prisma.SelectSubset<T, vc_order_itemFindFirstArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends VcOrderItemsFindFirstArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsFindFirstArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Find the first Vc_order_item that matches the filter or
+   * Find the first VcOrderItems that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemFindFirstOrThrowArgs} args - Arguments to find a Vc_order_item
+   * @param {VcOrderItemsFindFirstOrThrowArgs} args - Arguments to find a VcOrderItems
    * @example
-   * // Get one Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.findFirstOrThrow({
+   * // Get one VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findFirstOrThrow({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findFirstOrThrow<T extends vc_order_itemFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, vc_order_itemFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends VcOrderItemsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Find zero or more Vc_order_items that matches the filter.
+   * Find zero or more VcOrderItems that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {VcOrderItemsFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
-   * // Get all Vc_order_items
-   * const vc_order_items = await prisma.vc_order_item.findMany()
+   * // Get all VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findMany()
    * 
-   * // Get first 10 Vc_order_items
-   * const vc_order_items = await prisma.vc_order_item.findMany({ take: 10 })
+   * // Get first 10 VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.findMany({ take: 10 })
    * 
    * // Only select the `request_id`
-   * const vc_order_itemWithRequest_idOnly = await prisma.vc_order_item.findMany({ select: { request_id: true } })
+   * const vcOrderItemsWithRequest_idOnly = await prisma.vcOrderItems.findMany({ select: { request_id: true } })
    * 
    */
-  findMany<T extends vc_order_itemFindManyArgs>(args?: Prisma.SelectSubset<T, vc_order_itemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends VcOrderItemsFindManyArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
-   * Create a Vc_order_item.
-   * @param {vc_order_itemCreateArgs} args - Arguments to create a Vc_order_item.
+   * Create a VcOrderItems.
+   * @param {VcOrderItemsCreateArgs} args - Arguments to create a VcOrderItems.
    * @example
-   * // Create one Vc_order_item
-   * const Vc_order_item = await prisma.vc_order_item.create({
+   * // Create one VcOrderItems
+   * const VcOrderItems = await prisma.vcOrderItems.create({
    *   data: {
-   *     // ... data to create a Vc_order_item
+   *     // ... data to create a VcOrderItems
    *   }
    * })
    * 
    */
-  create<T extends vc_order_itemCreateArgs>(args: Prisma.SelectSubset<T, vc_order_itemCreateArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends VcOrderItemsCreateArgs>(args: Prisma.SelectSubset<T, VcOrderItemsCreateArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Create many Vc_order_items.
-   * @param {vc_order_itemCreateManyArgs} args - Arguments to create many Vc_order_items.
+   * Create many VcOrderItems.
+   * @param {VcOrderItemsCreateManyArgs} args - Arguments to create many VcOrderItems.
    * @example
-   * // Create many Vc_order_items
-   * const vc_order_item = await prisma.vc_order_item.createMany({
+   * // Create many VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.createMany({
    *   data: [
    *     // ... provide data here
    *   ]
    * })
    *     
    */
-  createMany<T extends vc_order_itemCreateManyArgs>(args?: Prisma.SelectSubset<T, vc_order_itemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends VcOrderItemsCreateManyArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Vc_order_items and returns the data saved in the database.
-   * @param {vc_order_itemCreateManyAndReturnArgs} args - Arguments to create many Vc_order_items.
+   * Create many VcOrderItems and returns the data saved in the database.
+   * @param {VcOrderItemsCreateManyAndReturnArgs} args - Arguments to create many VcOrderItems.
    * @example
-   * // Create many Vc_order_items
-   * const vc_order_item = await prisma.vc_order_item.createManyAndReturn({
+   * // Create many VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.createManyAndReturn({
    *   data: [
    *     // ... provide data here
    *   ]
    * })
    * 
-   * // Create many Vc_order_items and only return the `request_id`
-   * const vc_order_itemWithRequest_idOnly = await prisma.vc_order_item.createManyAndReturn({
+   * // Create many VcOrderItems and only return the `request_id`
+   * const vcOrderItemsWithRequest_idOnly = await prisma.vcOrderItems.createManyAndReturn({
    *   select: { request_id: true },
    *   data: [
    *     // ... provide data here
@@ -1048,28 +1048,28 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  createManyAndReturn<T extends vc_order_itemCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, vc_order_itemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+  createManyAndReturn<T extends VcOrderItemsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
-   * Delete a Vc_order_item.
-   * @param {vc_order_itemDeleteArgs} args - Arguments to delete one Vc_order_item.
+   * Delete a VcOrderItems.
+   * @param {VcOrderItemsDeleteArgs} args - Arguments to delete one VcOrderItems.
    * @example
-   * // Delete one Vc_order_item
-   * const Vc_order_item = await prisma.vc_order_item.delete({
+   * // Delete one VcOrderItems
+   * const VcOrderItems = await prisma.vcOrderItems.delete({
    *   where: {
-   *     // ... filter to delete one Vc_order_item
+   *     // ... filter to delete one VcOrderItems
    *   }
    * })
    * 
    */
-  delete<T extends vc_order_itemDeleteArgs>(args: Prisma.SelectSubset<T, vc_order_itemDeleteArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends VcOrderItemsDeleteArgs>(args: Prisma.SelectSubset<T, VcOrderItemsDeleteArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Update one Vc_order_item.
-   * @param {vc_order_itemUpdateArgs} args - Arguments to update one Vc_order_item.
+   * Update one VcOrderItems.
+   * @param {VcOrderItemsUpdateArgs} args - Arguments to update one VcOrderItems.
    * @example
-   * // Update one Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.update({
+   * // Update one VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.update({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1079,30 +1079,30 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  update<T extends vc_order_itemUpdateArgs>(args: Prisma.SelectSubset<T, vc_order_itemUpdateArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends VcOrderItemsUpdateArgs>(args: Prisma.SelectSubset<T, VcOrderItemsUpdateArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Delete zero or more Vc_order_items.
-   * @param {vc_order_itemDeleteManyArgs} args - Arguments to filter Vc_order_items to delete.
+   * Delete zero or more VcOrderItems.
+   * @param {VcOrderItemsDeleteManyArgs} args - Arguments to filter VcOrderItems to delete.
    * @example
-   * // Delete a few Vc_order_items
-   * const { count } = await prisma.vc_order_item.deleteMany({
+   * // Delete a few VcOrderItems
+   * const { count } = await prisma.vcOrderItems.deleteMany({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    * 
    */
-  deleteMany<T extends vc_order_itemDeleteManyArgs>(args?: Prisma.SelectSubset<T, vc_order_itemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends VcOrderItemsDeleteManyArgs>(args?: Prisma.SelectSubset<T, VcOrderItemsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Vc_order_items.
+   * Update zero or more VcOrderItems.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {VcOrderItemsUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
-   * // Update many Vc_order_items
-   * const vc_order_item = await prisma.vc_order_item.updateMany({
+   * // Update many VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.updateMany({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1112,14 +1112,14 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  updateMany<T extends vc_order_itemUpdateManyArgs>(args: Prisma.SelectSubset<T, vc_order_itemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends VcOrderItemsUpdateManyArgs>(args: Prisma.SelectSubset<T, VcOrderItemsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Vc_order_items and returns the data updated in the database.
-   * @param {vc_order_itemUpdateManyAndReturnArgs} args - Arguments to update many Vc_order_items.
+   * Update zero or more VcOrderItems and returns the data updated in the database.
+   * @param {VcOrderItemsUpdateManyAndReturnArgs} args - Arguments to update many VcOrderItems.
    * @example
-   * // Update many Vc_order_items
-   * const vc_order_item = await prisma.vc_order_item.updateManyAndReturn({
+   * // Update many VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.updateManyAndReturn({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1128,8 +1128,8 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    *   ]
    * })
    * 
-   * // Update zero or more Vc_order_items and only return the `request_id`
-   * const vc_order_itemWithRequest_idOnly = await prisma.vc_order_item.updateManyAndReturn({
+   * // Update zero or more VcOrderItems and only return the `request_id`
+   * const vcOrderItemsWithRequest_idOnly = await prisma.vcOrderItems.updateManyAndReturn({
    *   select: { request_id: true },
    *   where: {
    *     // ... provide filter here
@@ -1142,56 +1142,56 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  updateManyAndReturn<T extends vc_order_itemUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, vc_order_itemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+  updateManyAndReturn<T extends VcOrderItemsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, VcOrderItemsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
-   * Create or update one Vc_order_item.
-   * @param {vc_order_itemUpsertArgs} args - Arguments to update or create a Vc_order_item.
+   * Create or update one VcOrderItems.
+   * @param {VcOrderItemsUpsertArgs} args - Arguments to update or create a VcOrderItems.
    * @example
-   * // Update or create a Vc_order_item
-   * const vc_order_item = await prisma.vc_order_item.upsert({
+   * // Update or create a VcOrderItems
+   * const vcOrderItems = await prisma.vcOrderItems.upsert({
    *   create: {
-   *     // ... data to create a Vc_order_item
+   *     // ... data to create a VcOrderItems
    *   },
    *   update: {
    *     // ... in case it already exists, update
    *   },
    *   where: {
-   *     // ... the filter for the Vc_order_item we want to update
+   *     // ... the filter for the VcOrderItems we want to update
    *   }
    * })
    */
-  upsert<T extends vc_order_itemUpsertArgs>(args: Prisma.SelectSubset<T, vc_order_itemUpsertArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends VcOrderItemsUpsertArgs>(args: Prisma.SelectSubset<T, VcOrderItemsUpsertArgs<ExtArgs>>): Prisma.Prisma__VcOrderItemsClient<runtime.Types.Result.GetResult<Prisma.$VcOrderItemsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
-   * Count the number of Vc_order_items.
+   * Count the number of VcOrderItems.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemCountArgs} args - Arguments to filter Vc_order_items to count.
+   * @param {VcOrderItemsCountArgs} args - Arguments to filter VcOrderItems to count.
    * @example
-   * // Count the number of Vc_order_items
-   * const count = await prisma.vc_order_item.count({
+   * // Count the number of VcOrderItems
+   * const count = await prisma.vcOrderItems.count({
    *   where: {
-   *     // ... the filter for the Vc_order_items we want to count
+   *     // ... the filter for the VcOrderItems we want to count
    *   }
    * })
   **/
-  count<T extends vc_order_itemCountArgs>(
-    args?: Prisma.Subset<T, vc_order_itemCountArgs>,
+  count<T extends VcOrderItemsCountArgs>(
+    args?: Prisma.Subset<T, VcOrderItemsCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<T['select'], Vc_order_itemCountAggregateOutputType>
+        : Prisma.GetScalarType<T['select'], VcOrderItemsCountAggregateOutputType>
       : number
   >
 
   /**
-   * Allows you to perform aggregations operations on a Vc_order_item.
+   * Allows you to perform aggregations operations on a VcOrderItems.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {Vc_order_itemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+   * @param {VcOrderItemsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
    * @example
    * // Ordered by age ascending
    * // Where email contains prisma.io
@@ -1211,13 +1211,13 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    *   take: 10,
    * })
   **/
-  aggregate<T extends Vc_order_itemAggregateArgs>(args: Prisma.Subset<T, Vc_order_itemAggregateArgs>): Prisma.PrismaPromise<GetVc_order_itemAggregateType<T>>
+  aggregate<T extends VcOrderItemsAggregateArgs>(args: Prisma.Subset<T, VcOrderItemsAggregateArgs>): Prisma.PrismaPromise<GetVcOrderItemsAggregateType<T>>
 
   /**
-   * Group by Vc_order_item.
+   * Group by VcOrderItems.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {vc_order_itemGroupByArgs} args - Group by arguments.
+   * @param {VcOrderItemsGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -1232,14 +1232,14 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
    * 
   **/
   groupBy<
-    T extends vc_order_itemGroupByArgs,
+    T extends VcOrderItemsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: vc_order_itemGroupByArgs['orderBy'] }
-      : { orderBy?: vc_order_itemGroupByArgs['orderBy'] },
+      ? { orderBy: VcOrderItemsGroupByArgs['orderBy'] }
+      : { orderBy?: VcOrderItemsGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1288,20 +1288,20 @@ export interface vc_order_itemDelegate<ExtArgs extends runtime.Types.Extensions.
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, vc_order_itemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVc_order_itemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, VcOrderItemsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVcOrderItemsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the vc_order_item model
+ * Fields of the VcOrderItems model
  */
-readonly fields: vc_order_itemFieldRefs;
+readonly fields: VcOrderItemsFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for vc_order_item.
+ * The delegate class that acts as a "Promise-like" for VcOrderItems.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__vc_order_itemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__VcOrderItemsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1329,393 +1329,393 @@ export interface Prisma__vc_order_itemClient<T, Null = never, ExtArgs extends ru
 
 
 /**
- * Fields of the vc_order_item model
+ * Fields of the VcOrderItems model
  */
-export interface vc_order_itemFieldRefs {
-  readonly request_id: Prisma.FieldRef<"vc_order_item", 'Int'>
-  readonly use_div_code: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly userid: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly user_mobile: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly journey_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
-  readonly return_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
-  readonly start_place: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly journey_place: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly journey_province: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly journey_causes: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly journer_time: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly return_time: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly car_spec_id: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly passenger_amount: Prisma.FieldRef<"vc_order_item", 'Int'>
-  readonly approve_id: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly status_use_id: Prisma.FieldRef<"vc_order_item", 'Int'>
-  readonly self_drive: Prisma.FieldRef<"vc_order_item", 'Boolean'>
-  readonly journey_lat: Prisma.FieldRef<"vc_order_item", 'Float'>
-  readonly journey_long: Prisma.FieldRef<"vc_order_item", 'Float'>
-  readonly cre_by: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly cre_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
-  readonly upd_by: Prisma.FieldRef<"vc_order_item", 'String'>
-  readonly upd_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
+export interface VcOrderItemsFieldRefs {
+  readonly request_id: Prisma.FieldRef<"VcOrderItems", 'Int'>
+  readonly use_div_code: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly userid: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly user_mobile: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly journey_date: Prisma.FieldRef<"VcOrderItems", 'DateTime'>
+  readonly return_date: Prisma.FieldRef<"VcOrderItems", 'DateTime'>
+  readonly start_place: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly journey_place: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly journey_province: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly journey_causes: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly journer_time: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly return_time: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly car_spec_id: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly passenger_amount: Prisma.FieldRef<"VcOrderItems", 'Int'>
+  readonly approve_id: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly status_use_id: Prisma.FieldRef<"VcOrderItems", 'Int'>
+  readonly self_drive: Prisma.FieldRef<"VcOrderItems", 'Boolean'>
+  readonly journey_lat: Prisma.FieldRef<"VcOrderItems", 'Float'>
+  readonly journey_long: Prisma.FieldRef<"VcOrderItems", 'Float'>
+  readonly cre_by: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly cre_date: Prisma.FieldRef<"VcOrderItems", 'DateTime'>
+  readonly upd_by: Prisma.FieldRef<"VcOrderItems", 'String'>
+  readonly upd_date: Prisma.FieldRef<"VcOrderItems", 'DateTime'>
 }
     
 
 // Custom InputTypes
 /**
- * vc_order_item findUnique
+ * VcOrderItems findUnique
  */
-export type vc_order_itemFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter, which vc_order_item to fetch.
+   * Filter, which VcOrderItems to fetch.
    */
-  where: Prisma.vc_order_itemWhereUniqueInput
+  where: Prisma.VcOrderItemsWhereUniqueInput
 }
 
 /**
- * vc_order_item findUniqueOrThrow
+ * VcOrderItems findUniqueOrThrow
  */
-export type vc_order_itemFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter, which vc_order_item to fetch.
+   * Filter, which VcOrderItems to fetch.
    */
-  where: Prisma.vc_order_itemWhereUniqueInput
+  where: Prisma.VcOrderItemsWhereUniqueInput
 }
 
 /**
- * vc_order_item findFirst
+ * VcOrderItems findFirst
  */
-export type vc_order_itemFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter, which vc_order_item to fetch.
+   * Filter, which VcOrderItems to fetch.
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of vc_order_items to fetch.
+   * Determine the order of VcOrderItems to fetch.
    */
-  orderBy?: Prisma.vc_order_itemOrderByWithRelationInput | Prisma.vc_order_itemOrderByWithRelationInput[]
+  orderBy?: Prisma.VcOrderItemsOrderByWithRelationInput | Prisma.VcOrderItemsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for vc_order_items.
+   * Sets the position for searching for VcOrderItems.
    */
-  cursor?: Prisma.vc_order_itemWhereUniqueInput
+  cursor?: Prisma.VcOrderItemsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` vc_order_items from the position of the cursor.
+   * Take `±n` VcOrderItems from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` vc_order_items.
+   * Skip the first `n` VcOrderItems.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of vc_order_items.
+   * Filter by unique combinations of VcOrderItems.
    */
-  distinct?: Prisma.Vc_order_itemScalarFieldEnum | Prisma.Vc_order_itemScalarFieldEnum[]
+  distinct?: Prisma.VcOrderItemsScalarFieldEnum | Prisma.VcOrderItemsScalarFieldEnum[]
 }
 
 /**
- * vc_order_item findFirstOrThrow
+ * VcOrderItems findFirstOrThrow
  */
-export type vc_order_itemFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter, which vc_order_item to fetch.
+   * Filter, which VcOrderItems to fetch.
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of vc_order_items to fetch.
+   * Determine the order of VcOrderItems to fetch.
    */
-  orderBy?: Prisma.vc_order_itemOrderByWithRelationInput | Prisma.vc_order_itemOrderByWithRelationInput[]
+  orderBy?: Prisma.VcOrderItemsOrderByWithRelationInput | Prisma.VcOrderItemsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for vc_order_items.
+   * Sets the position for searching for VcOrderItems.
    */
-  cursor?: Prisma.vc_order_itemWhereUniqueInput
+  cursor?: Prisma.VcOrderItemsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` vc_order_items from the position of the cursor.
+   * Take `±n` VcOrderItems from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` vc_order_items.
+   * Skip the first `n` VcOrderItems.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of vc_order_items.
+   * Filter by unique combinations of VcOrderItems.
    */
-  distinct?: Prisma.Vc_order_itemScalarFieldEnum | Prisma.Vc_order_itemScalarFieldEnum[]
+  distinct?: Prisma.VcOrderItemsScalarFieldEnum | Prisma.VcOrderItemsScalarFieldEnum[]
 }
 
 /**
- * vc_order_item findMany
+ * VcOrderItems findMany
  */
-export type vc_order_itemFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter, which vc_order_items to fetch.
+   * Filter, which VcOrderItems to fetch.
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of vc_order_items to fetch.
+   * Determine the order of VcOrderItems to fetch.
    */
-  orderBy?: Prisma.vc_order_itemOrderByWithRelationInput | Prisma.vc_order_itemOrderByWithRelationInput[]
+  orderBy?: Prisma.VcOrderItemsOrderByWithRelationInput | Prisma.VcOrderItemsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing vc_order_items.
+   * Sets the position for listing VcOrderItems.
    */
-  cursor?: Prisma.vc_order_itemWhereUniqueInput
+  cursor?: Prisma.VcOrderItemsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` vc_order_items from the position of the cursor.
+   * Take `±n` VcOrderItems from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` vc_order_items.
+   * Skip the first `n` VcOrderItems.
    */
   skip?: number
-  distinct?: Prisma.Vc_order_itemScalarFieldEnum | Prisma.Vc_order_itemScalarFieldEnum[]
+  distinct?: Prisma.VcOrderItemsScalarFieldEnum | Prisma.VcOrderItemsScalarFieldEnum[]
 }
 
 /**
- * vc_order_item create
+ * VcOrderItems create
  */
-export type vc_order_itemCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * The data needed to create a vc_order_item.
+   * The data needed to create a VcOrderItems.
    */
-  data?: Prisma.XOR<Prisma.vc_order_itemCreateInput, Prisma.vc_order_itemUncheckedCreateInput>
+  data?: Prisma.XOR<Prisma.VcOrderItemsCreateInput, Prisma.VcOrderItemsUncheckedCreateInput>
 }
 
 /**
- * vc_order_item createMany
+ * VcOrderItems createMany
  */
-export type vc_order_itemCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many vc_order_items.
+   * The data used to create many VcOrderItems.
    */
-  data: Prisma.vc_order_itemCreateManyInput | Prisma.vc_order_itemCreateManyInput[]
+  data: Prisma.VcOrderItemsCreateManyInput | Prisma.VcOrderItemsCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * vc_order_item createManyAndReturn
+ * VcOrderItems createManyAndReturn
  */
-export type vc_order_itemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelectCreateManyAndReturn<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelectCreateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * The data used to create many vc_order_items.
+   * The data used to create many VcOrderItems.
    */
-  data: Prisma.vc_order_itemCreateManyInput | Prisma.vc_order_itemCreateManyInput[]
+  data: Prisma.VcOrderItemsCreateManyInput | Prisma.VcOrderItemsCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * vc_order_item update
+ * VcOrderItems update
  */
-export type vc_order_itemUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * The data needed to update a vc_order_item.
+   * The data needed to update a VcOrderItems.
    */
-  data: Prisma.XOR<Prisma.vc_order_itemUpdateInput, Prisma.vc_order_itemUncheckedUpdateInput>
+  data: Prisma.XOR<Prisma.VcOrderItemsUpdateInput, Prisma.VcOrderItemsUncheckedUpdateInput>
   /**
-   * Choose, which vc_order_item to update.
+   * Choose, which VcOrderItems to update.
    */
-  where: Prisma.vc_order_itemWhereUniqueInput
+  where: Prisma.VcOrderItemsWhereUniqueInput
 }
 
 /**
- * vc_order_item updateMany
+ * VcOrderItems updateMany
  */
-export type vc_order_itemUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update vc_order_items.
+   * The data used to update VcOrderItems.
    */
-  data: Prisma.XOR<Prisma.vc_order_itemUpdateManyMutationInput, Prisma.vc_order_itemUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.VcOrderItemsUpdateManyMutationInput, Prisma.VcOrderItemsUncheckedUpdateManyInput>
   /**
-   * Filter which vc_order_items to update
+   * Filter which VcOrderItems to update
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
-   * Limit how many vc_order_items to update.
+   * Limit how many VcOrderItems to update.
    */
   limit?: number
 }
 
 /**
- * vc_order_item updateManyAndReturn
+ * VcOrderItems updateManyAndReturn
  */
-export type vc_order_itemUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelectUpdateManyAndReturn<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelectUpdateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * The data used to update vc_order_items.
+   * The data used to update VcOrderItems.
    */
-  data: Prisma.XOR<Prisma.vc_order_itemUpdateManyMutationInput, Prisma.vc_order_itemUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.VcOrderItemsUpdateManyMutationInput, Prisma.VcOrderItemsUncheckedUpdateManyInput>
   /**
-   * Filter which vc_order_items to update
+   * Filter which VcOrderItems to update
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
-   * Limit how many vc_order_items to update.
+   * Limit how many VcOrderItems to update.
    */
   limit?: number
 }
 
 /**
- * vc_order_item upsert
+ * VcOrderItems upsert
  */
-export type vc_order_itemUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * The filter to search for the vc_order_item to update in case it exists.
+   * The filter to search for the VcOrderItems to update in case it exists.
    */
-  where: Prisma.vc_order_itemWhereUniqueInput
+  where: Prisma.VcOrderItemsWhereUniqueInput
   /**
-   * In case the vc_order_item found by the `where` argument doesn't exist, create a new vc_order_item with this data.
+   * In case the VcOrderItems found by the `where` argument doesn't exist, create a new VcOrderItems with this data.
    */
-  create: Prisma.XOR<Prisma.vc_order_itemCreateInput, Prisma.vc_order_itemUncheckedCreateInput>
+  create: Prisma.XOR<Prisma.VcOrderItemsCreateInput, Prisma.VcOrderItemsUncheckedCreateInput>
   /**
-   * In case the vc_order_item was found with the provided `where` argument, update it with this data.
+   * In case the VcOrderItems was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<Prisma.vc_order_itemUpdateInput, Prisma.vc_order_itemUncheckedUpdateInput>
+  update: Prisma.XOR<Prisma.VcOrderItemsUpdateInput, Prisma.VcOrderItemsUncheckedUpdateInput>
 }
 
 /**
- * vc_order_item delete
+ * VcOrderItems delete
  */
-export type vc_order_itemDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
   /**
-   * Filter which vc_order_item to delete.
+   * Filter which VcOrderItems to delete.
    */
-  where: Prisma.vc_order_itemWhereUniqueInput
+  where: Prisma.VcOrderItemsWhereUniqueInput
 }
 
 /**
- * vc_order_item deleteMany
+ * VcOrderItems deleteMany
  */
-export type vc_order_itemDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which vc_order_items to delete
+   * Filter which VcOrderItems to delete
    */
-  where?: Prisma.vc_order_itemWhereInput
+  where?: Prisma.VcOrderItemsWhereInput
   /**
-   * Limit how many vc_order_items to delete.
+   * Limit how many VcOrderItems to delete.
    */
   limit?: number
 }
 
 /**
- * vc_order_item without action
+ * VcOrderItems without action
  */
-export type vc_order_itemDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type VcOrderItemsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_order_item
+   * Select specific fields to fetch from the VcOrderItems
    */
-  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  select?: Prisma.VcOrderItemsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_order_item
+   * Omit specific fields from the VcOrderItems
    */
-  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  omit?: Prisma.VcOrderItemsOmit<ExtArgs> | null
 }

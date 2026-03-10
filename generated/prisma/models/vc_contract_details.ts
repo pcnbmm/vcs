@@ -14,11 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_contract_details
-<<<<<<< HEAD
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-=======
  * 
->>>>>>> net
  */
 export type vc_contract_detailsModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_contract_detailsPayload>
 

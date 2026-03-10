@@ -14,11 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_color
-<<<<<<< HEAD
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-=======
  * 
->>>>>>> net
  */
 export type vc_colorModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_colorPayload>
 
@@ -244,11 +240,7 @@ export type vc_colorWhereInput = {
   cre_date?: Prisma.StringNullableFilter<"vc_color"> | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_color"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_color"> | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
-=======
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
->>>>>>> net
 }
 
 export type vc_colorOrderByWithRelationInput = {
@@ -259,11 +251,7 @@ export type vc_colorOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterOrderByRelationAggregateInput
-=======
   vc_car_master?: Prisma.vc_car_masterOrderByRelationAggregateInput
->>>>>>> net
 }
 
 export type vc_colorWhereUniqueInput = Prisma.AtLeast<{
@@ -277,11 +265,7 @@ export type vc_colorWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.StringNullableFilter<"vc_color"> | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_color"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_color"> | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
-=======
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
->>>>>>> net
 }, "color_id">
 
 export type vc_colorOrderByWithAggregationInput = {
@@ -319,11 +303,7 @@ export type vc_colorCreateInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterCreateNestedManyWithoutColorInput
-=======
   vc_car_master?: Prisma.vc_car_masterCreateNestedManyWithoutVc_colorInput
->>>>>>> net
 }
 
 export type vc_colorUncheckedCreateInput = {
@@ -334,11 +314,7 @@ export type vc_colorUncheckedCreateInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutColorInput
-=======
   vc_car_master?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutVc_colorInput
->>>>>>> net
 }
 
 export type vc_colorUpdateInput = {
@@ -348,11 +324,7 @@ export type vc_colorUpdateInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUpdateManyWithoutColorNestedInput
-=======
   vc_car_master?: Prisma.vc_car_masterUpdateManyWithoutVc_colorNestedInput
->>>>>>> net
 }
 
 export type vc_colorUncheckedUpdateInput = {
@@ -363,11 +335,7 @@ export type vc_colorUncheckedUpdateInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUncheckedUpdateManyWithoutColorNestedInput
-=======
   vc_car_master?: Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_colorNestedInput
->>>>>>> net
 }
 
 export type vc_colorCreateManyInput = {
@@ -446,25 +414,6 @@ export type vc_colorSumOrderByAggregateInput = {
   upd_by?: Prisma.SortOrder
 }
 
-<<<<<<< HEAD
-export type vc_colorCreateNestedOneWithoutVcCarMastersInput = {
-  create?: Prisma.XOR<Prisma.vc_colorCreateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedCreateWithoutVcCarMastersInput>
-  connectOrCreate?: Prisma.vc_colorCreateOrConnectWithoutVcCarMastersInput
-  connect?: Prisma.vc_colorWhereUniqueInput
-}
-
-export type vc_colorUpdateOneWithoutVcCarMastersNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_colorCreateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedCreateWithoutVcCarMastersInput>
-  connectOrCreate?: Prisma.vc_colorCreateOrConnectWithoutVcCarMastersInput
-  upsert?: Prisma.vc_colorUpsertWithoutVcCarMastersInput
-  disconnect?: Prisma.vc_colorWhereInput | boolean
-  delete?: Prisma.vc_colorWhereInput | boolean
-  connect?: Prisma.vc_colorWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_colorUpdateToOneWithWhereWithoutVcCarMastersInput, Prisma.vc_colorUpdateWithoutVcCarMastersInput>, Prisma.vc_colorUncheckedUpdateWithoutVcCarMastersInput>
-}
-
-export type vc_colorCreateWithoutVcCarMastersInput = {
-=======
 export type vc_colorCreateNestedOneWithoutVc_car_masterInput = {
   create?: Prisma.XOR<Prisma.vc_colorCreateWithoutVc_car_masterInput, Prisma.vc_colorUncheckedCreateWithoutVc_car_masterInput>
   connectOrCreate?: Prisma.vc_colorCreateOrConnectWithoutVc_car_masterInput
@@ -482,7 +431,6 @@ export type vc_colorUpdateOneWithoutVc_car_masterNestedInput = {
 }
 
 export type vc_colorCreateWithoutVc_car_masterInput = {
->>>>>>> net
   color_name?: string | null
   flag_del?: string | null
   cre_by?: number | null
@@ -491,11 +439,7 @@ export type vc_colorCreateWithoutVc_car_masterInput = {
   upd_date?: string | null
 }
 
-<<<<<<< HEAD
-export type vc_colorUncheckedCreateWithoutVcCarMastersInput = {
-=======
 export type vc_colorUncheckedCreateWithoutVc_car_masterInput = {
->>>>>>> net
   color_id?: number
   color_name?: string | null
   flag_del?: string | null
@@ -505,25 +449,6 @@ export type vc_colorUncheckedCreateWithoutVc_car_masterInput = {
   upd_date?: string | null
 }
 
-<<<<<<< HEAD
-export type vc_colorCreateOrConnectWithoutVcCarMastersInput = {
-  where: Prisma.vc_colorWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_colorCreateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedCreateWithoutVcCarMastersInput>
-}
-
-export type vc_colorUpsertWithoutVcCarMastersInput = {
-  update: Prisma.XOR<Prisma.vc_colorUpdateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedUpdateWithoutVcCarMastersInput>
-  create: Prisma.XOR<Prisma.vc_colorCreateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedCreateWithoutVcCarMastersInput>
-  where?: Prisma.vc_colorWhereInput
-}
-
-export type vc_colorUpdateToOneWithWhereWithoutVcCarMastersInput = {
-  where?: Prisma.vc_colorWhereInput
-  data: Prisma.XOR<Prisma.vc_colorUpdateWithoutVcCarMastersInput, Prisma.vc_colorUncheckedUpdateWithoutVcCarMastersInput>
-}
-
-export type vc_colorUpdateWithoutVcCarMastersInput = {
-=======
 export type vc_colorCreateOrConnectWithoutVc_car_masterInput = {
   where: Prisma.vc_colorWhereUniqueInput
   create: Prisma.XOR<Prisma.vc_colorCreateWithoutVc_car_masterInput, Prisma.vc_colorUncheckedCreateWithoutVc_car_masterInput>
@@ -541,7 +466,6 @@ export type vc_colorUpdateToOneWithWhereWithoutVc_car_masterInput = {
 }
 
 export type vc_colorUpdateWithoutVc_car_masterInput = {
->>>>>>> net
   color_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -550,11 +474,7 @@ export type vc_colorUpdateWithoutVc_car_masterInput = {
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-<<<<<<< HEAD
-export type vc_colorUncheckedUpdateWithoutVcCarMastersInput = {
-=======
 export type vc_colorUncheckedUpdateWithoutVc_car_masterInput = {
->>>>>>> net
   color_id?: Prisma.IntFieldUpdateOperationsInput | number
   color_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -570,19 +490,11 @@ export type vc_colorUncheckedUpdateWithoutVc_car_masterInput = {
  */
 
 export type Vc_colorCountOutputType = {
-<<<<<<< HEAD
-  vcCarMasters: number
-}
-
-export type Vc_colorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  vcCarMasters?: boolean | Vc_colorCountOutputTypeCountVcCarMastersArgs
-=======
   vc_car_master: number
 }
 
 export type Vc_colorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vc_car_master?: boolean | Vc_colorCountOutputTypeCountVc_car_masterArgs
->>>>>>> net
 }
 
 /**
@@ -598,11 +510,7 @@ export type Vc_colorCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
 /**
  * Vc_colorCountOutputType without action
  */
-<<<<<<< HEAD
-export type Vc_colorCountOutputTypeCountVcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-=======
 export type Vc_colorCountOutputTypeCountVc_car_masterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
->>>>>>> net
   where?: Prisma.vc_car_masterWhereInput
 }
 
@@ -615,11 +523,7 @@ export type vc_colorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-<<<<<<< HEAD
-  vcCarMasters?: boolean | Prisma.vc_color$vcCarMastersArgs<ExtArgs>
-=======
   vc_car_master?: boolean | Prisma.vc_color$vc_car_masterArgs<ExtArgs>
->>>>>>> net
   _count?: boolean | Prisma.Vc_colorCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_color"]>
 
@@ -655,11 +559,7 @@ export type vc_colorSelectScalar = {
 
 export type vc_colorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"color_id" | "color_name" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_color"]>
 export type vc_colorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-<<<<<<< HEAD
-  vcCarMasters?: boolean | Prisma.vc_color$vcCarMastersArgs<ExtArgs>
-=======
   vc_car_master?: boolean | Prisma.vc_color$vc_car_masterArgs<ExtArgs>
->>>>>>> net
   _count?: boolean | Prisma.Vc_colorCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_colorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -668,11 +568,7 @@ export type vc_colorIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $vc_colorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_color"
   objects: {
-<<<<<<< HEAD
-    vcCarMasters: Prisma.$vc_car_masterPayload<ExtArgs>[]
-=======
     vc_car_master: Prisma.$vc_car_masterPayload<ExtArgs>[]
->>>>>>> net
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     color_id: number
@@ -1076,11 +972,7 @@ readonly fields: vc_colorFieldRefs;
  */
 export interface Prisma__vc_colorClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-<<<<<<< HEAD
-  vcCarMasters<T extends Prisma.vc_color$vcCarMastersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_color$vcCarMastersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-=======
   vc_car_master<T extends Prisma.vc_color$vc_car_masterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_color$vc_car_masterArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
->>>>>>> net
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1505,15 +1397,9 @@ export type vc_colorDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
-<<<<<<< HEAD
- * vc_color.vcCarMasters
- */
-export type vc_color$vcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-=======
  * vc_color.vc_car_master
  */
 export type vc_color$vc_car_masterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
->>>>>>> net
   /**
    * Select specific fields to fetch from the vc_car_master
    */

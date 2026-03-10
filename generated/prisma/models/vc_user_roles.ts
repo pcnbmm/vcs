@@ -14,11 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_user_roles
-<<<<<<< HEAD
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-=======
  * 
->>>>>>> net
  */
 export type vc_user_rolesModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_user_rolesPayload>
 

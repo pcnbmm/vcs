@@ -33,12 +33,137 @@ export type Session = Prisma.SessionModel
  */
 export type vc_car_master = Prisma.vc_car_masterModel
 /**
- * Model vc_order_item
+ * Model VcOrderItems
  * 
  */
-export type vc_order_item = Prisma.vc_order_itemModel
-/**
- * Model vc_car_master
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
- */
 export type VcOrderItems = Prisma.VcOrderItemsModel
+/**
+ * Model fleetcard_transactions
+ * 
+ */
+export type fleetcard_transactions = Prisma.fleetcard_transactionsModel
+/**
+ * Model vc_car_brand
+ * 
+ */
+export type vc_car_brand = Prisma.vc_car_brandModel
+/**
+ * Model vc_car_spec
+ * 
+ */
+export type vc_car_spec = Prisma.vc_car_specModel
+/**
+ * Model vc_car_status
+ * 
+ */
+export type vc_car_status = Prisma.vc_car_statusModel
+/**
+ * Model vc_car_type
+ * 
+ */
+export type vc_car_type = Prisma.vc_car_typeModel
+/**
+ * Model vc_color
+ * 
+ */
+export type vc_color = Prisma.vc_colorModel
+/**
+ * Model vc_company
+ * 
+ */
+export type vc_company = Prisma.vc_companyModel
+/**
+ * Model vc_contract_details
+ * 
+ */
+export type vc_contract_details = Prisma.vc_contract_detailsModel
+/**
+ * Model vc_fuel_item
+ * 
+ */
+export type vc_fuel_item = Prisma.vc_fuel_itemModel
+/**
+ * Model vc_function
+ * 
+ */
+export type vc_function = Prisma.vc_functionModel
+/**
+ * Model vc_menu
+ * 
+ */
+export type vc_menu = Prisma.vc_menuModel
+/**
+ * Model vc_nt_car
+ * 
+ */
+export type vc_nt_car = Prisma.vc_nt_carModel
+/**
+ * Model vc_oil_type
+ * 
+ */
+export type vc_oil_type = Prisma.vc_oil_typeModel
+/**
+ * Model vc_permission
+ * 
+ */
+export type vc_permission = Prisma.vc_permissionModel
+/**
+ * Model vc_register_province
+ * 
+ */
+export type vc_register_province = Prisma.vc_register_provinceModel
+/**
+ * Model vc_replacement
+ * 
+ */
+export type vc_replacement = Prisma.vc_replacementModel
+/**
+ * Model vc_roles
+ * 
+ */
+export type vc_roles = Prisma.vc_rolesModel
+/**
+ * Model vc_type_regis
+ * 
+ */
+export type vc_type_regis = Prisma.vc_type_regisModel
+/**
+ * Model vc_user_roles
+ * 
+ */
+export type vc_user_roles = Prisma.vc_user_rolesModel
+/**
+ * Model vc_rent_car
+ * 
+ */
+export type vc_rent_car = Prisma.vc_rent_carModel
+/**
+ * Model vc_use
+ * 
+ */
+export type vc_use = Prisma.vc_useModel
+/**
+ * Model fleetcards
+ * 
+ */
+export type fleetcards = Prisma.fleetcardsModel
+/**
+ * Model vc_driver
+ * 
+ */
+export type vc_driver = Prisma.vc_driverModel
+/**
+ * Model vc_driver_license_type
+ * 
+ */
+export type vc_driver_license_type = Prisma.vc_driver_license_typeModel
+/**
+ * Model vc_start_place
+ * 
+ */
+export type vc_start_place = Prisma.vc_start_placeModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel

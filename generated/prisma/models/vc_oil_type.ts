@@ -14,11 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_oil_type
-<<<<<<< HEAD
- * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-=======
  * 
->>>>>>> net
  */
 export type vc_oil_typeModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_oil_typePayload>
 
@@ -248,11 +244,7 @@ export type vc_oil_typeWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_oil_type"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
-=======
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
->>>>>>> net
 }
 
 export type vc_oil_typeOrderByWithRelationInput = {
@@ -264,11 +256,7 @@ export type vc_oil_typeOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterOrderByRelationAggregateInput
-=======
   vc_car_master?: Prisma.vc_car_masterOrderByRelationAggregateInput
->>>>>>> net
 }
 
 export type vc_oil_typeWhereUniqueInput = Prisma.AtLeast<{
@@ -283,11 +271,7 @@ export type vc_oil_typeWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_oil_type"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
-=======
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
->>>>>>> net
 }, "oil_type_id">
 
 export type vc_oil_typeOrderByWithAggregationInput = {
@@ -328,11 +312,7 @@ export type vc_oil_typeCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterCreateNestedManyWithoutOil_typeInput
-=======
   vc_car_master?: Prisma.vc_car_masterCreateNestedManyWithoutVc_oil_typeInput
->>>>>>> net
 }
 
 export type vc_oil_typeUncheckedCreateInput = {
@@ -344,11 +324,7 @@ export type vc_oil_typeUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutOil_typeInput
-=======
   vc_car_master?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutVc_oil_typeInput
->>>>>>> net
 }
 
 export type vc_oil_typeUpdateInput = {
@@ -359,11 +335,7 @@ export type vc_oil_typeUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUpdateManyWithoutOil_typeNestedInput
-=======
   vc_car_master?: Prisma.vc_car_masterUpdateManyWithoutVc_oil_typeNestedInput
->>>>>>> net
 }
 
 export type vc_oil_typeUncheckedUpdateInput = {
@@ -375,11 +347,7 @@ export type vc_oil_typeUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-<<<<<<< HEAD
-  vcCarMasters?: Prisma.vc_car_masterUncheckedUpdateManyWithoutOil_typeNestedInput
-=======
   vc_car_master?: Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeNestedInput
->>>>>>> net
 }
 
 export type vc_oil_typeCreateManyInput = {
@@ -462,25 +430,6 @@ export type vc_oil_typeSumOrderByAggregateInput = {
   oil_type_group?: Prisma.SortOrder
 }
 
-<<<<<<< HEAD
-export type vc_oil_typeCreateNestedOneWithoutVcCarMastersInput = {
-  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
-  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutVcCarMastersInput
-  connect?: Prisma.vc_oil_typeWhereUniqueInput
-}
-
-export type vc_oil_typeUpdateOneWithoutVcCarMastersNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
-  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutVcCarMastersInput
-  upsert?: Prisma.vc_oil_typeUpsertWithoutVcCarMastersInput
-  disconnect?: Prisma.vc_oil_typeWhereInput | boolean
-  delete?: Prisma.vc_oil_typeWhereInput | boolean
-  connect?: Prisma.vc_oil_typeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_oil_typeUpdateToOneWithWhereWithoutVcCarMastersInput, Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput>, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
-}
-
-export type vc_oil_typeCreateWithoutVcCarMastersInput = {
-=======
 export type vc_oil_typeCreateNestedOneWithoutVc_car_masterInput = {
   create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVc_car_masterInput, Prisma.vc_oil_typeUncheckedCreateWithoutVc_car_masterInput>
   connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutVc_car_masterInput
@@ -498,7 +447,6 @@ export type vc_oil_typeUpdateOneWithoutVc_car_masterNestedInput = {
 }
 
 export type vc_oil_typeCreateWithoutVc_car_masterInput = {
->>>>>>> net
   oil_type_name?: string | null
   oil_type_group?: number | null
   flag_del?: string | null
@@ -508,11 +456,7 @@ export type vc_oil_typeCreateWithoutVc_car_masterInput = {
   upd_date?: Date | string | null
 }
 
-<<<<<<< HEAD
-export type vc_oil_typeUncheckedCreateWithoutVcCarMastersInput = {
-=======
 export type vc_oil_typeUncheckedCreateWithoutVc_car_masterInput = {
->>>>>>> net
   oil_type_id?: number
   oil_type_name?: string | null
   oil_type_group?: number | null
@@ -523,25 +467,6 @@ export type vc_oil_typeUncheckedCreateWithoutVc_car_masterInput = {
   upd_date?: Date | string | null
 }
 
-<<<<<<< HEAD
-export type vc_oil_typeCreateOrConnectWithoutVcCarMastersInput = {
-  where: Prisma.vc_oil_typeWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
-}
-
-export type vc_oil_typeUpsertWithoutVcCarMastersInput = {
-  update: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
-  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
-  where?: Prisma.vc_oil_typeWhereInput
-}
-
-export type vc_oil_typeUpdateToOneWithWhereWithoutVcCarMastersInput = {
-  where?: Prisma.vc_oil_typeWhereInput
-  data: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
-}
-
-export type vc_oil_typeUpdateWithoutVcCarMastersInput = {
-=======
 export type vc_oil_typeCreateOrConnectWithoutVc_car_masterInput = {
   where: Prisma.vc_oil_typeWhereUniqueInput
   create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVc_car_masterInput, Prisma.vc_oil_typeUncheckedCreateWithoutVc_car_masterInput>
@@ -559,7 +484,6 @@ export type vc_oil_typeUpdateToOneWithWhereWithoutVc_car_masterInput = {
 }
 
 export type vc_oil_typeUpdateWithoutVc_car_masterInput = {
->>>>>>> net
   oil_type_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_type_group?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -569,11 +493,7 @@ export type vc_oil_typeUpdateWithoutVc_car_masterInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-<<<<<<< HEAD
-export type vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput = {
-=======
 export type vc_oil_typeUncheckedUpdateWithoutVc_car_masterInput = {
->>>>>>> net
   oil_type_id?: Prisma.IntFieldUpdateOperationsInput | number
   oil_type_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_type_group?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -590,19 +510,11 @@ export type vc_oil_typeUncheckedUpdateWithoutVc_car_masterInput = {
  */
 
 export type Vc_oil_typeCountOutputType = {
-<<<<<<< HEAD
-  vcCarMasters: number
-}
-
-export type Vc_oil_typeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  vcCarMasters?: boolean | Vc_oil_typeCountOutputTypeCountVcCarMastersArgs
-=======
   vc_car_master: number
 }
 
 export type Vc_oil_typeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vc_car_master?: boolean | Vc_oil_typeCountOutputTypeCountVc_car_masterArgs
->>>>>>> net
 }
 
 /**
@@ -618,11 +530,7 @@ export type Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
 /**
  * Vc_oil_typeCountOutputType without action
  */
-<<<<<<< HEAD
-export type Vc_oil_typeCountOutputTypeCountVcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-=======
 export type Vc_oil_typeCountOutputTypeCountVc_car_masterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
->>>>>>> net
   where?: Prisma.vc_car_masterWhereInput
 }
 
@@ -636,11 +544,7 @@ export type vc_oil_typeSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-<<<<<<< HEAD
-  vcCarMasters?: boolean | Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>
-=======
   vc_car_master?: boolean | Prisma.vc_oil_type$vc_car_masterArgs<ExtArgs>
->>>>>>> net
   _count?: boolean | Prisma.Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_oil_type"]>
 
@@ -679,11 +583,7 @@ export type vc_oil_typeSelectScalar = {
 
 export type vc_oil_typeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"oil_type_id" | "oil_type_name" | "oil_type_group" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_oil_type"]>
 export type vc_oil_typeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-<<<<<<< HEAD
-  vcCarMasters?: boolean | Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>
-=======
   vc_car_master?: boolean | Prisma.vc_oil_type$vc_car_masterArgs<ExtArgs>
->>>>>>> net
   _count?: boolean | Prisma.Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_oil_typeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -692,11 +592,7 @@ export type vc_oil_typeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $vc_oil_typePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_oil_type"
   objects: {
-<<<<<<< HEAD
-    vcCarMasters: Prisma.$vc_car_masterPayload<ExtArgs>[]
-=======
     vc_car_master: Prisma.$vc_car_masterPayload<ExtArgs>[]
->>>>>>> net
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     oil_type_id: number
@@ -1101,11 +997,7 @@ readonly fields: vc_oil_typeFieldRefs;
  */
 export interface Prisma__vc_oil_typeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-<<<<<<< HEAD
-  vcCarMasters<T extends Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-=======
   vc_car_master<T extends Prisma.vc_oil_type$vc_car_masterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_oil_type$vc_car_masterArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
->>>>>>> net
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1531,15 +1423,9 @@ export type vc_oil_typeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
-<<<<<<< HEAD
- * vc_oil_type.vcCarMasters
- */
-export type vc_oil_type$vcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-=======
  * vc_oil_type.vc_car_master
  */
 export type vc_oil_type$vc_car_masterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
->>>>>>> net
   /**
    * Select specific fields to fetch from the vc_car_master
    */
