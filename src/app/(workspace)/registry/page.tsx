@@ -1,396 +1,413 @@
 'use client';
 
-import React, { useState } from 'react';
-import { mockVehicles } from '@/mock/data/vehicles';
-import { mockDrivers } from '@/mock/data/drivers';
-import { Car, User, CheckCircle, Clock, Wrench, Search, Plus, Edit2, Trash2, X } from 'lucide-react';
-import { Vehicle, Driver } from '@/types';
-
-type TabType = 'vehicles' | 'drivers';
-type ModalMode = 'create' | 'edit' | null;
+import { useState, useEffect } from 'react';
+import {
+    Search,
+    Car,
+    Activity,
+    CreditCard,
+    Settings,
+    CalendarDays,
+    ChevronRight,
+    ChevronLeft,
+    ChevronsLeft,
+    ChevronsRight,
+    Loader2,
+    AlertCircle,
+    CheckCircle2,
+    XCircle,
+    Info,
+    MoreHorizontal
+} from 'lucide-react';
 
 export default function RegistryPage() {
-    const [activeTab, setActiveTab] = useState<TabType>('vehicles');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [categoryFilter, setCategoryFilter] = useState('ALL');
-    const [statusFilter, setStatusFilter] = useState('ALL');
+    const [vehicles, setVehicles] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
 
-    // Local state for CRUD
-    const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles);
-    const [drivers, setDrivers] = useState<Driver[]>(mockDrivers);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
-    // Modal state
-    const [modalMode, setModalMode] = useState<ModalMode>(null);
-    const [editingVehicle, setEditingVehicle] = useState<Partial<Vehicle> | null>(null);
-    const [editingDriver, setEditingDriver] = useState<Partial<Driver> | null>(null);
+    useEffect(() => {
+        const fetchVehicles = async () => {
+            try {
+                setIsLoading(true);
+                const res = await fetch('/api/vehicles');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch vehicles data');
+                }
+                const data = await res.json();
+                setVehicles(data);
+                setIsLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch vehicles", err);
+                setError("ไม่สามารถโหลดข้อมูลทะเบียนรถได้ กรุณาลองใหม่อีกครั้ง");
+                setIsLoading(false);
+            }
+        };
 
-    // -- Filtering --
+        fetchVehicles();
+    }, []);
+
+    // Filter Logic
     const filteredVehicles = vehicles.filter(v => {
-        const matchesSearch = v.plate.includes(searchTerm) || v.brand.toLowerCase().includes(searchTerm.toLowerCase()) || v.model.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter === 'ALL' || v.type === categoryFilter;
-        const matchesStatus = statusFilter === 'ALL' || v.status === statusFilter;
-        return matchesSearch && matchesCategory && matchesStatus;
+        const matchesSearch = 
+            v.car_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            v.car_brand_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            v.car_series_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            v.car_status_name?.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesSearch;
     });
 
-    const filteredDrivers = drivers.filter(d => {
-        const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) || d.licenseNumber.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter === 'ALL' || d.status === categoryFilter;
-        return matchesSearch && matchesCategory;
-    });
+    // Reset page to 1 whenever search query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
 
-    // -- Helpers --
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'AVAILABLE':
-                return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><CheckCircle size={14}/> ว่าง</span>;
-            case 'BUSY':
-            case 'IN_USE':
-                return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"><Clock size={14}/> ใช้งานอยู่</span>;
-            case 'MAINTENANCE':
-                return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><Wrench size={14}/> ซ่อมบำรุง</span>;
-            case 'ON_LEAVE':
-                return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><Clock size={14}/> ลางาน</span>;
-            default:
-                return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{status}</span>;
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedVehicles = filteredVehicles.slice(startIndex, startIndex + itemsPerPage);
+
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
         }
     };
 
-    // -- CRUD Handlers --
-    const openCreateModal = () => {
-        if (activeTab === 'vehicles') {
-            setEditingVehicle({ id: `v${Date.now()}`, plate: '', brand: '', model: '', type: 'Sedan', capacity: 4, status: 'AVAILABLE' });
-        } else {
-            setEditingDriver({ id: `d${Date.now()}`, name: '', licenseNumber: '', phone: '', status: 'AVAILABLE' });
-        }
-        setModalMode('create');
-    };
-
-    const openEditModal = (item: Vehicle | Driver) => {
-        if (activeTab === 'vehicles') {
-            setEditingVehicle(item as Vehicle);
-        } else {
-            setEditingDriver(item as Driver);
-        }
-        setModalMode('edit');
-    };
-
-    const handleDelete = (id: string) => {
-        if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) return;
-        if (activeTab === 'vehicles') {
-            setVehicles(prev => prev.filter(v => v.id !== id));
-        } else {
-            setDrivers(prev => prev.filter(d => d.id !== id));
-        }
-    };
-
-    const handleSave = () => {
-        if (activeTab === 'vehicles' && editingVehicle) {
-            if (modalMode === 'create') {
-                setVehicles(prev => [...prev, editingVehicle as Vehicle]);
-            } else {
-                setVehicles(prev => prev.map(v => v.id === editingVehicle.id ? editingVehicle as Vehicle : v));
-            }
-        } else if (activeTab === 'drivers' && editingDriver) {
-            if (modalMode === 'create') {
-                setDrivers(prev => [...prev, editingDriver as Driver]);
-            } else {
-                setDrivers(prev => prev.map(d => d.id === editingDriver.id ? editingDriver as Driver : d));
-            }
-        }
-        closeModal();
-    };
-
-    const closeModal = () => {
-        setModalMode(null);
-        setEditingVehicle(null);
-        setEditingDriver(null);
+    const skipPages = (count: number) => {
+        let newPage = currentPage + count;
+        if (newPage < 1) newPage = 1;
+        if (newPage > totalPages) newPage = totalPages;
+        setCurrentPage(newPage);
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">ทะเบียนยานพาหนะและคนขับ</h1>
-                    <p className="text-gray-500 mt-1">จัดการข้อมูลรถและพนักงานขับรถส่วนกลาง</p>
+        <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+            {/* Header */}
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center shadow-lg shadow-slate-200">
+                        <Car className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">ทะเบียนรถ (Car Master)</h1>
+                        <p className="text-gray-500 font-medium mt-1">ข้อมูลหลักและสถานะของรถยนต์ทั้งหมด</p>
+                    </div>
                 </div>
-                <button 
-                    onClick={openCreateModal}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm shadow-blue-600/20 transition-all"
-                >
-                    <Plus size={18} />
-                    เพิ่ม{activeTab === 'vehicles' ? 'ยานพาหนะ' : 'คนขับรถ'}
-                </button>
-            </div>
 
-            {/* Controls */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                {/* Tabs */}
-                <div className="flex bg-gray-100 p-1 rounded-xl w-full sm:w-auto">
-                    <button 
-                        onClick={() => {
-                            setActiveTab('vehicles');
-                            setCategoryFilter('ALL');
-                            setStatusFilter('ALL');
-                        }}
-                        className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'vehicles' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        <Car size={18} /> ยานพาหนะ
-                    </button>
-                    <button 
-                        onClick={() => {
-                            setActiveTab('drivers');
-                            setCategoryFilter('ALL');
-                        }}
-                        className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'drivers' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        <User size={18} /> คนขับรถ
-                    </button>
-                </div>
-                
-                {/* Search */}
-                <div className="relative w-full sm:w-72">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="ค้นหาข้อมูล..." 
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm"
+                <div className="relative w-full md:w-auto">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="ค้นหาทะเบียน, ยี่ห้อ หรือสถานะ..."
+                        className="w-full md:w-80 pl-12 pr-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-100 transition-all font-medium"
                     />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 </div>
             </div>
 
-            {/* Filters & Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
-                {activeTab === 'vehicles' ? (
-                    <div className="flex flex-wrap items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-gray-700">ประเภทรถ:</span>
-                            <div className="relative">
-                                <select 
-                                    value={categoryFilter}
-                                    onChange={(e) => setCategoryFilter(e.target.value)}
-                                    className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium shadow-sm cursor-pointer"
-                                >
-                                    <option value="ALL">ทั้งหมด</option>
-                                    <option value="Sedan">รถเก๋ง (Sedan)</option>
-                                    <option value="Van">รถตู้ (Van)</option>
-                                    <option value="Racing">รถแข่ง (Racing)</option>
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                                </div>
-                            </div>
-                        </div>
+            {/* List Section */}
+            <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-gray-50">
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-slate-800 rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-900">รายการรถยนต์</h2>
+                        <span className="text-xs font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-widest ml-2">
+                            ทั้งหมด {filteredVehicles.length} คัน
+                        </span>
+                    </div>
+                </div>
 
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-gray-700">สถานะ:</span>
-                            <div className="relative">
-                                <select 
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium shadow-sm cursor-pointer"
-                                >
-                                    <option value="ALL">ทั้งหมด</option>
-                                    <option value="AVAILABLE">ว่าง</option>
-                                    <option value="BUSY">ใช้งานอยู่</option>
-                                    <option value="MAINTENANCE">ซ่อมบำรุง</option>
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                                </div>
-                            </div>
-                        </div>
+                {isLoading ? (
+                    <div className="py-20 text-center flex flex-col items-center gap-4">
+                        <Loader2 size={48} className="text-slate-800 animate-spin" />
+                        <p className="font-bold text-lg text-gray-500">กำลังโหลดข้อมูล...</p>
+                    </div>
+                ) : error ? (
+                    <div className="bg-rose-50 p-16 rounded-[2rem] text-center border border-rose-100 flex flex-col items-center gap-4">
+                        <AlertCircle size={48} className="text-rose-500" />
+                        <p className="font-bold text-lg text-rose-600">{error}</p>
+                    </div>
+                ) : filteredVehicles.length === 0 ? (
+                    <div className="py-20 text-center flex flex-col items-center gap-4">
+                        <Car size={48} className="text-gray-200" />
+                        <p className="font-black text-xl text-gray-400 uppercase tracking-widest">
+                            {searchQuery ? 'ไม่พบข้อมูลที่ค้นหา' : 'ไม่มีข้อมูลในระบบ'}
+                        </p>
                     </div>
                 ) : (
-                    <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium text-gray-700">แสดงผล:</span>
-                        <div className="relative">
-                            <select 
-                                value={categoryFilter}
-                                onChange={(e) => setCategoryFilter(e.target.value)}
-                                className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium shadow-sm cursor-pointer"
-                            >
-                                <option value="ALL">ทั้งหมด</option>
-                                <option value="AVAILABLE">ว่าง</option>
-                                <option value="BUSY">ใช้งานอยู่</option>
-                                <option value="ON_LEAVE">ลางาน</option>
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                            </div>
+                    <div className="space-y-4">
+                        <div className="overflow-x-auto rounded-[1.5rem] border border-gray-100 shadow-sm bg-white">
+                            <table className="w-full text-left border-collapse whitespace-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">ID</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">ทะเบียน</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">ยี่ห้อ / รุ่น</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">สีรถ</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">จดทะเบียน</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">สถานะ</th>
+                                        <th className="py-4 px-5 font-black text-[11px] text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100 text-center">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {paginatedVehicles.map((vehicle) => {
+                                        const isAvailable = vehicle.car_status_name === 'ใช้งานได้' || vehicle.car_status_name?.toLowerCase().includes('active') || vehicle.car_status_id === 1;
+                                        const statusColor = isAvailable ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-slate-500 bg-slate-100 border-slate-200';
+                                        const StatusIcon = isAvailable ? CheckCircle2 : Info;
+
+                                        return (
+                                            <tr
+                                                key={vehicle.car_id}
+                                                onClick={() => setSelectedVehicle(vehicle)}
+                                                className="group hover:bg-slate-50/50 cursor-pointer transition-colors bg-white"
+                                            >
+                                                <td className="py-4 px-5">
+                                                    <span className="text-[11px] font-black text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/50">
+                                                        {vehicle.car_id}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-5">
+                                                    <span className="text-sm font-black text-gray-900">{vehicle.car_number || '-'}</span>
+                                                </td>
+                                                <td className="py-4 px-5">
+                                                    <span className="text-sm font-bold text-gray-600">
+                                                        {vehicle.car_brand_name || 'ไม่มียี่ห้อ'} {vehicle.car_series_name || ''}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-5">
+                                                    <div className="flex items-center gap-2">
+                                                        <Settings size={14} className="text-gray-400" />
+                                                        <span className="text-sm font-bold text-gray-800">{vehicle.color_name || '-'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-5">
+                                                    <div className="flex items-center gap-2">
+                                                        <CalendarDays size={14} className="text-gray-400" />
+                                                        <span className="text-sm font-bold text-gray-800">{vehicle.regis_date || '-'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-5">
+                                                    <div className={`
+                                                        inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-tighter shadow-sm
+                                                        ${statusColor}
+                                                    `}>
+                                                        <StatusIcon size={12} className="shrink-0" />
+                                                        {vehicle.car_status_name || 'ไม่ระบุสถานะ'}
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-5 text-center">
+                                                    <div className="mx-auto inline-flex w-8 h-8 rounded-xl bg-white border border-gray-200 items-center justify-center group-hover:bg-slate-800 group-hover:border-slate-800 group-hover:text-white transition-all shadow-sm">
+                                                        <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 0 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 mt-6 border-t border-gray-50">
+                                <div className="text-sm text-gray-500 font-bold">
+                                    แสดง {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredVehicles.length)} จาก {filteredVehicles.length} รายการ
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {/* First Page */}
+                                    <button
+                                        onClick={() => goToPage(1)}
+                                        disabled={currentPage === 1}
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors"
+                                        title="หน้าแรก"
+                                    >
+                                        <ChevronsLeft size={18} />
+                                    </button>
+
+                                    {/* Skip -5 Pages */}
+                                    <button
+                                        onClick={() => skipPages(-5)}
+                                        disabled={currentPage <= 5}
+                                        className="h-10 px-3 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors text-xs font-black tracking-wider"
+                                        title="ย้อนกลับ 5 หน้า"
+                                    >
+                                        -5
+                                    </button>
+
+                                    {/* Previous Page */}
+                                    <button
+                                        onClick={() => goToPage(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors"
+                                        title="หน้าก่อนหน้า"
+                                    >
+                                        <ChevronLeft size={18} />
+                                    </button>
+                                    
+                                    {/* Current Page Info */}
+                                    <div className="px-5 py-2.5 text-sm font-black bg-slate-800 text-white rounded-xl shadow-md min-w-[5rem] text-center tracking-widest">
+                                        {currentPage} <span className="opacity-50">/</span> {totalPages}
+                                    </div>
+
+                                    {/* Next Page */}
+                                    <button
+                                        onClick={() => goToPage(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors"
+                                        title="หน้าถัดไป"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
+
+                                    {/* Skip +5 Pages */}
+                                    <button
+                                        onClick={() => skipPages(5)}
+                                        disabled={currentPage > totalPages - 5}
+                                        className="h-10 px-3 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors text-xs font-black tracking-wider"
+                                        title="ข้ามไป 5 หน้า"
+                                    >
+                                        +5
+                                    </button>
+
+                                    {/* Last Page */}
+                                    <button
+                                        onClick={() => goToPage(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 disabled:hover:bg-gray-50 disabled:cursor-not-allowed transition-colors"
+                                        title="หน้าสุดท้าย"
+                                    >
+                                        <ChevronsRight size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
 
-            {/* List View Table */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm text-gray-600">
-                        <thead className="bg-gray-50/50 text-gray-500 uppercase font-medium">
-                            {activeTab === 'vehicles' ? (
-                                <tr>
-                                    <th className="px-6 py-4">ทะเบียนรถ</th>
-                                    <th className="px-6 py-4">ยี่ห้อ/รุ่น</th>
-                                    <th className="px-6 py-4">ประเภท</th>
-                                    <th className="px-6 py-4">สถานะ</th>
-                                    <th className="px-6 py-4 text-right">จัดการ</th>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <th className="px-6 py-4">ชื่อ-นามสกุล</th>
-                                    <th className="px-6 py-4">ใบอนุญาตขับขี่</th>
-                                    <th className="px-6 py-4">เบอร์โทรศัพท์</th>
-                                    <th className="px-6 py-4">สถานะ</th>
-                                    <th className="px-6 py-4 text-right">จัดการ</th>
-                                </tr>
-                            )}
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {activeTab === 'vehicles' && filteredVehicles.map(vehicle => (
-                                <tr key={vehicle.id} className="hover:bg-gray-50/50 transition-colors group">
-                                    <td className="px-6 py-4 font-bold text-gray-900">{vehicle.plate}</td>
-                                    <td className="px-6 py-4">{vehicle.brand} {vehicle.model}</td>
-                                    <td className="px-6 py-4">
-                                        <span className="bg-gray-100 px-2.5 py-1 rounded-md text-xs">{vehicle.type} ({vehicle.capacity} ที่นั่ง)</span>
-                                    </td>
-                                    <td className="px-6 py-4">{getStatusBadge(vehicle.status)}</td>
-                                    <td className="px-6 py-4 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div className="flex justify-end gap-2">
-                                            <button onClick={() => openEditModal(vehicle)} className="p-1.5 text-gray-400 hover:text-blue-600 bg-white shadow-sm border border-gray-100 rounded-lg">
-                                                <Edit2 size={16} />
-                                            </button>
-                                            <button onClick={() => handleDelete(vehicle.id)} className="p-1.5 text-gray-400 hover:text-red-600 bg-white shadow-sm border border-gray-100 rounded-lg">
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-
-                            {activeTab === 'drivers' && filteredDrivers.map(driver => (
-                                <tr key={driver.id} className="hover:bg-gray-50/50 transition-colors group">
-                                    <td className="px-6 py-4 font-bold text-gray-900 flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
-                                            <User size={16} />
-                                        </div>
-                                        {driver.name}
-                                    </td>
-                                    <td className="px-6 py-4">{driver.licenseNumber}</td>
-                                    <td className="px-6 py-4">{driver.phone}</td>
-                                    <td className="px-6 py-4">{getStatusBadge(driver.status)}</td>
-                                    <td className="px-6 py-4 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div className="flex justify-end gap-2">
-                                            <button onClick={() => openEditModal(driver)} className="p-1.5 text-gray-400 hover:text-blue-600 bg-white shadow-sm border border-gray-100 rounded-lg">
-                                                <Edit2 size={16} />
-                                            </button>
-                                            <button onClick={() => handleDelete(driver.id)} className="p-1.5 text-gray-400 hover:text-red-600 bg-white shadow-sm border border-gray-100 rounded-lg">
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    
-                    {((activeTab === 'vehicles' && filteredVehicles.length === 0) || (activeTab === 'drivers' && filteredDrivers.length === 0)) && (
-                        <div className="text-center py-20">
-                            <p className="text-gray-500">ไม่พบข้อมูลที่ค้นหา</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-            
-            {/* Modal Overlay */}
-            {modalMode && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm z-[100]">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                            <h2 className="text-xl font-bold">
-                                {modalMode === 'create' ? 'เพิ่ม' : 'แก้ไข'}{activeTab === 'vehicles' ? 'ยานพาหนะ' : 'คนขับรถ'}
-                            </h2>
-                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 p-1.5 rounded-lg transition-colors">
-                                <X size={20} />
+            {/* Detail Modal */}
+            {selectedVehicle && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                        {/* Modal Header */}
+                        <div className="bg-slate-900 p-8 text-white flex justify-between items-center shrink-0">
+                            <div className="flex items-center gap-5">
+                                <div className="w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center shadow-lg shadow-white/10">
+                                    <Car className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-black uppercase tracking-tight leading-none mb-1">
+                                        {selectedVehicle.car_number || 'ไม่ระบุทะเบียน'}
+                                    </h2>
+                                    <p className="text-slate-400 text-xs font-black uppercase tracking-widest">CAR MASTER ID: {selectedVehicle.car_id}</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSelectedVehicle(null)}
+                                className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20 transition-all group"
+                            >
+                                <XCircle size={24} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
-                        
-                        <div className="p-5 space-y-4">
-                            {activeTab === 'vehicles' && editingVehicle && (
-                                <>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">ทะเบียนรถ</label>
-                                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.plate || ''} onChange={e => setEditingVehicle({...editingVehicle, plate: e.target.value})} />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">ยี่ห้อ</label>
-                                            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.brand || ''} onChange={e => setEditingVehicle({...editingVehicle, brand: e.target.value})} />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">รุ่น</label>
-                                            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.model || ''} onChange={e => setEditingVehicle({...editingVehicle, model: e.target.value})} />
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">ประเภท</label>
-                                            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.type || ''} onChange={e => setEditingVehicle({...editingVehicle, type: e.target.value})} />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">จำนวนที่นั่ง</label>
-                                            <input type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.capacity || 0} onChange={e => setEditingVehicle({...editingVehicle, capacity: parseInt(e.target.value)})} />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                                        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingVehicle.status || 'AVAILABLE'} onChange={e => setEditingVehicle({...editingVehicle, status: e.target.value as any})}>
-                                            <option value="AVAILABLE">ว่าง (AVAILABLE)</option>
-                                            <option value="BUSY">ใช้งานอยู่ (BUSY)</option>
-                                            <option value="MAINTENANCE">ซ่อมบำรุง (MAINTENANCE)</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
 
-                            {activeTab === 'drivers' && editingDriver && (
-                                <>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล</label>
-                                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingDriver.name || ''} onChange={e => setEditingDriver({...editingDriver, name: e.target.value})} />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">ใบอนุญาตขับขี่</label>
-                                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingDriver.licenseNumber || ''} onChange={e => setEditingDriver({...editingDriver, licenseNumber: e.target.value})} />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">เบอร์โทรศัพท์</label>
-                                        <input type="tel" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingDriver.phone || ''} onChange={e => setEditingDriver({...editingDriver, phone: e.target.value})} />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                                        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={editingDriver.status || 'AVAILABLE'} onChange={e => setEditingDriver({...editingDriver, status: e.target.value as any})}>
-                                            <option value="AVAILABLE">ว่าง (AVAILABLE)</option>
-                                            <option value="BUSY">กำลังปฏิบัติงาน (BUSY)</option>
-                                            <option value="ON_LEAVE">ลางาน (ON_LEAVE)</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
+                        {/* Modal Body */}
+                        <div className="p-10 overflow-y-auto space-y-10 custom-scrollbar">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <DetailCard
+                                    label="ยี่ห้อ / รุ่น"
+                                    value={selectedVehicle.car_brand_name || '-'}
+                                    subValue={selectedVehicle.car_series_name || '-'}
+                                    icon={Car}
+                                    color="text-slate-600 bg-slate-50"
+                                />
+                                <DetailCard
+                                    label="สีรถ"
+                                    value={selectedVehicle.color_name || '-'}
+                                    subValue="Color"
+                                    icon={Settings}
+                                    color="text-slate-600 bg-slate-50"
+                                />
+                                <DetailCard
+                                    label="เลขบัตร Fleetcard"
+                                    value={selectedVehicle.fleetcard_no || '-'}
+                                    subValue="Fleetcard No"
+                                    icon={CreditCard}
+                                    color="text-slate-600 bg-slate-50"
+                                />
+                                <DetailCard
+                                    label="สถานะ"
+                                    value={selectedVehicle.car_status_name || '-'}
+                                    subValue="Current Status"
+                                    icon={Activity}
+                                    color={(selectedVehicle.car_status_name === 'ใช้งานได้' || selectedVehicle.car_status_name?.toLowerCase().includes('active') || selectedVehicle.car_status_id === 1) ? 'text-emerald-600 bg-emerald-50' : 'text-slate-600 bg-slate-50'}
+                                />
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                                    <div className="w-2 h-6 bg-slate-400 rounded-full"></div>
+                                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">รายละเอียดเพิ่มเติม (Details)</h3>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <ReadOnlyField label="เลขตัวถัง (Body No)" value={selectedVehicle.body_no || '-'} />
+                                    <ReadOnlyField label="เลขเครื่องยนต์ (Machine No)" value={selectedVehicle.machine_no || '-'} />
+                                    <ReadOnlyField label="ความจุเครื่องยนต์ (CC)" value={selectedVehicle.cylinder_capacityp || '-'} />
+                                    <ReadOnlyField label="แรงม้า (Horse Power)" value={selectedVehicle.horse_power || '-'} />
+                                    <ReadOnlyField label="น้ำหนัก (Weight)" value={selectedVehicle.weight || '-'} />
+                                    <ReadOnlyField label="วันที่จดทะเบียน" value={selectedVehicle.regis_date || '-'} />
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
-                            <button onClick={closeModal} className="px-4 py-2 text-gray-700 font-medium hover:bg-gray-200 rounded-lg transition-colors">
-                                ยกเลิก
-                            </button>
-                            <button onClick={handleSave} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                                บันทึก
+                        {/* Modal Footer */}
+                        <div className="bg-slate-50 p-8 flex justify-end shrink-0 border-t border-gray-100">
+                            <button
+                                onClick={() => setSelectedVehicle(null)}
+                                className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all shadow-xl active:scale-95"
+                            >
+                                CLOSE
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+        </div>
+    );
+}
+
+// ==========================================
+// ⬇️ UI Components ⬇️
+// ==========================================
+
+function DetailCard({ label, value, subValue, icon: Icon, color }: any) {
+    return (
+        <div className="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 flex flex-col h-full">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${color}`}>
+                <Icon size={20} />
+            </div>
+            <div className="mt-auto">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{label}</p>
+                <p className="text-base font-black text-gray-900 leading-tight mb-0.5 max-w-full break-words">{value}</p>
+                <p className="text-xs text-gray-500 font-bold truncate">{subValue}</p>
+            </div>
+        </div>
+    );
+}
+
+function ReadOnlyField({ label, value }: { label: string, value: string }) {
+    return (
+        <div className="space-y-2">
+            <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{label} :</label>
+            <div className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 shadow-inner break-words">
+                {value}
+            </div>
         </div>
     );
 }

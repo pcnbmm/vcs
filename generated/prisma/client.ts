@@ -54,3 +54,108 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Booking = Prisma.BookingModel
+/**
+ * Model vc_order_item
+ * 
+ */
+export type vc_order_item = Prisma.vc_order_itemModel
+/**
+ * Model vc_car_master
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_car_master = Prisma.vc_car_masterModel
+/**
+ * Model fleetcard_transactions
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type fleetcard_transactions = Prisma.fleetcard_transactionsModel
+/**
+ * Model vc_car_status
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_car_status = Prisma.vc_car_statusModel
+/**
+ * Model vc_company
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_company = Prisma.vc_companyModel
+/**
+ * Model vc_contract_details
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_contract_details = Prisma.vc_contract_detailsModel
+/**
+ * Model vc_fuel_item
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_fuel_item = Prisma.vc_fuel_itemModel
+/**
+ * Model vc_function
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_function = Prisma.vc_functionModel
+/**
+ * Model vc_menu
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_menu = Prisma.vc_menuModel
+/**
+ * Model vc_nt_car
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_nt_car = Prisma.vc_nt_carModel
+/**
+ * Model vc_oil_type
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_oil_type = Prisma.vc_oil_typeModel
+/**
+ * Model vc_permission
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_permission = Prisma.vc_permissionModel
+/**
+ * Model vc_replacement
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_replacement = Prisma.vc_replacementModel
+/**
+ * Model vc_roles
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_roles = Prisma.vc_rolesModel
+/**
+ * Model vc_type_regis
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_type_regis = Prisma.vc_type_regisModel
+/**
+ * Model vc_user_roles
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_user_roles = Prisma.vc_user_rolesModel
+/**
+ * Model vc_car_brand
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_car_brand = Prisma.vc_car_brandModel
+/**
+ * Model vc_car_spec
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_car_spec = Prisma.vc_car_specModel
+/**
+ * Model vc_car_type
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_car_type = Prisma.vc_car_typeModel
+/**
+ * Model vc_color
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_color = Prisma.vc_colorModel
+/**
+ * Model vc_register_province
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_register_province = Prisma.vc_register_provinceModel
