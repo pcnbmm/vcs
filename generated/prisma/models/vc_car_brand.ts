@@ -248,7 +248,7 @@ export type vc_car_brandWhereInput = {
   cre_date?: Prisma.StringNullableFilter<"vc_car_brand"> | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_car_brand"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_car_brand"> | string | null
-  cars?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }
 
 export type vc_car_brandOrderByWithRelationInput = {
@@ -260,7 +260,7 @@ export type vc_car_brandOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  cars?: Prisma.vc_car_masterOrderByRelationAggregateInput
+  vcCarMasters?: Prisma.vc_car_masterOrderByRelationAggregateInput
 }
 
 export type vc_car_brandWhereUniqueInput = Prisma.AtLeast<{
@@ -275,7 +275,7 @@ export type vc_car_brandWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.StringNullableFilter<"vc_car_brand"> | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_car_brand"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_car_brand"> | string | null
-  cars?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }, "car_brand_id">
 
 export type vc_car_brandOrderByWithAggregationInput = {
@@ -316,7 +316,7 @@ export type vc_car_brandCreateInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
-  cars?: Prisma.vc_car_masterCreateNestedManyWithoutCar_brandInput
+  vcCarMasters?: Prisma.vc_car_masterCreateNestedManyWithoutCar_brandInput
 }
 
 export type vc_car_brandUncheckedCreateInput = {
@@ -328,7 +328,7 @@ export type vc_car_brandUncheckedCreateInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
-  cars?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutCar_brandInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutCar_brandInput
 }
 
 export type vc_car_brandUpdateInput = {
@@ -339,7 +339,7 @@ export type vc_car_brandUpdateInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cars?: Prisma.vc_car_masterUpdateManyWithoutCar_brandNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUpdateManyWithoutCar_brandNestedInput
 }
 
 export type vc_car_brandUncheckedUpdateInput = {
@@ -351,7 +351,7 @@ export type vc_car_brandUncheckedUpdateInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cars?: Prisma.vc_car_masterUncheckedUpdateManyWithoutCar_brandNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedUpdateManyWithoutCar_brandNestedInput
 }
 
 export type vc_car_brandCreateManyInput = {
@@ -436,23 +436,23 @@ export type vc_car_brandSumOrderByAggregateInput = {
   upd_by?: Prisma.SortOrder
 }
 
-export type vc_car_brandCreateNestedOneWithoutCarsInput = {
-  create?: Prisma.XOR<Prisma.vc_car_brandCreateWithoutCarsInput, Prisma.vc_car_brandUncheckedCreateWithoutCarsInput>
-  connectOrCreate?: Prisma.vc_car_brandCreateOrConnectWithoutCarsInput
+export type vc_car_brandCreateNestedOneWithoutVcCarMastersInput = {
+  create?: Prisma.XOR<Prisma.vc_car_brandCreateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_car_brandCreateOrConnectWithoutVcCarMastersInput
   connect?: Prisma.vc_car_brandWhereUniqueInput
 }
 
-export type vc_car_brandUpdateOneWithoutCarsNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_car_brandCreateWithoutCarsInput, Prisma.vc_car_brandUncheckedCreateWithoutCarsInput>
-  connectOrCreate?: Prisma.vc_car_brandCreateOrConnectWithoutCarsInput
-  upsert?: Prisma.vc_car_brandUpsertWithoutCarsInput
+export type vc_car_brandUpdateOneWithoutVcCarMastersNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_car_brandCreateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_car_brandCreateOrConnectWithoutVcCarMastersInput
+  upsert?: Prisma.vc_car_brandUpsertWithoutVcCarMastersInput
   disconnect?: Prisma.vc_car_brandWhereInput | boolean
   delete?: Prisma.vc_car_brandWhereInput | boolean
   connect?: Prisma.vc_car_brandWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_car_brandUpdateToOneWithWhereWithoutCarsInput, Prisma.vc_car_brandUpdateWithoutCarsInput>, Prisma.vc_car_brandUncheckedUpdateWithoutCarsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_car_brandUpdateToOneWithWhereWithoutVcCarMastersInput, Prisma.vc_car_brandUpdateWithoutVcCarMastersInput>, Prisma.vc_car_brandUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_car_brandCreateWithoutCarsInput = {
+export type vc_car_brandCreateWithoutVcCarMastersInput = {
   car_brand_name?: string | null
   car_series_name?: string | null
   flag_del?: string | null
@@ -462,7 +462,7 @@ export type vc_car_brandCreateWithoutCarsInput = {
   upd_date?: string | null
 }
 
-export type vc_car_brandUncheckedCreateWithoutCarsInput = {
+export type vc_car_brandUncheckedCreateWithoutVcCarMastersInput = {
   car_brand_id?: number
   car_brand_name?: string | null
   car_series_name?: string | null
@@ -473,23 +473,23 @@ export type vc_car_brandUncheckedCreateWithoutCarsInput = {
   upd_date?: string | null
 }
 
-export type vc_car_brandCreateOrConnectWithoutCarsInput = {
+export type vc_car_brandCreateOrConnectWithoutVcCarMastersInput = {
   where: Prisma.vc_car_brandWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_car_brandCreateWithoutCarsInput, Prisma.vc_car_brandUncheckedCreateWithoutCarsInput>
+  create: Prisma.XOR<Prisma.vc_car_brandCreateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedCreateWithoutVcCarMastersInput>
 }
 
-export type vc_car_brandUpsertWithoutCarsInput = {
-  update: Prisma.XOR<Prisma.vc_car_brandUpdateWithoutCarsInput, Prisma.vc_car_brandUncheckedUpdateWithoutCarsInput>
-  create: Prisma.XOR<Prisma.vc_car_brandCreateWithoutCarsInput, Prisma.vc_car_brandUncheckedCreateWithoutCarsInput>
+export type vc_car_brandUpsertWithoutVcCarMastersInput = {
+  update: Prisma.XOR<Prisma.vc_car_brandUpdateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedUpdateWithoutVcCarMastersInput>
+  create: Prisma.XOR<Prisma.vc_car_brandCreateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedCreateWithoutVcCarMastersInput>
   where?: Prisma.vc_car_brandWhereInput
 }
 
-export type vc_car_brandUpdateToOneWithWhereWithoutCarsInput = {
+export type vc_car_brandUpdateToOneWithWhereWithoutVcCarMastersInput = {
   where?: Prisma.vc_car_brandWhereInput
-  data: Prisma.XOR<Prisma.vc_car_brandUpdateWithoutCarsInput, Prisma.vc_car_brandUncheckedUpdateWithoutCarsInput>
+  data: Prisma.XOR<Prisma.vc_car_brandUpdateWithoutVcCarMastersInput, Prisma.vc_car_brandUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_car_brandUpdateWithoutCarsInput = {
+export type vc_car_brandUpdateWithoutVcCarMastersInput = {
   car_brand_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_series_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -499,7 +499,7 @@ export type vc_car_brandUpdateWithoutCarsInput = {
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type vc_car_brandUncheckedUpdateWithoutCarsInput = {
+export type vc_car_brandUncheckedUpdateWithoutVcCarMastersInput = {
   car_brand_id?: Prisma.IntFieldUpdateOperationsInput | number
   car_brand_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_series_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -516,11 +516,11 @@ export type vc_car_brandUncheckedUpdateWithoutCarsInput = {
  */
 
 export type Vc_car_brandCountOutputType = {
-  cars: number
+  vcCarMasters: number
 }
 
 export type Vc_car_brandCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cars?: boolean | Vc_car_brandCountOutputTypeCountCarsArgs
+  vcCarMasters?: boolean | Vc_car_brandCountOutputTypeCountVcCarMastersArgs
 }
 
 /**
@@ -536,7 +536,7 @@ export type Vc_car_brandCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types
 /**
  * Vc_car_brandCountOutputType without action
  */
-export type Vc_car_brandCountOutputTypeCountCarsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Vc_car_brandCountOutputTypeCountVcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.vc_car_masterWhereInput
 }
 
@@ -550,7 +550,7 @@ export type vc_car_brandSelect<ExtArgs extends runtime.Types.Extensions.Internal
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-  cars?: boolean | Prisma.vc_car_brand$carsArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_car_brand$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_car_brandCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_car_brand"]>
 
@@ -589,7 +589,7 @@ export type vc_car_brandSelectScalar = {
 
 export type vc_car_brandOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"car_brand_id" | "car_brand_name" | "car_series_name" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_car_brand"]>
 export type vc_car_brandInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cars?: boolean | Prisma.vc_car_brand$carsArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_car_brand$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_car_brandCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_car_brandIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -598,7 +598,7 @@ export type vc_car_brandIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types
 export type $vc_car_brandPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_car_brand"
   objects: {
-    cars: Prisma.$vc_car_masterPayload<ExtArgs>[]
+    vcCarMasters: Prisma.$vc_car_masterPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     car_brand_id: number
@@ -1003,7 +1003,7 @@ readonly fields: vc_car_brandFieldRefs;
  */
 export interface Prisma__vc_car_brandClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cars<T extends Prisma.vc_car_brand$carsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_brand$carsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vcCarMasters<T extends Prisma.vc_car_brand$vcCarMastersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_brand$vcCarMastersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1429,9 +1429,9 @@ export type vc_car_brandDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * vc_car_brand.cars
+ * vc_car_brand.vcCarMasters
  */
-export type vc_car_brand$carsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type vc_car_brand$vcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the vc_car_master
    */

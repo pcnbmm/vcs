@@ -74,7 +74,11 @@ export const ModelName = {
   vc_car_spec: 'vc_car_spec',
   vc_car_type: 'vc_car_type',
   vc_color: 'vc_color',
-  vc_register_province: 'vc_register_province'
+  vc_register_province: 'vc_register_province',
+  fleetcards: 'fleetcards',
+  vc_driver: 'vc_driver',
+  vc_driver_license_type: 'vc_driver_license_type',
+  vc_start_place: 'vc_start_place'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -177,6 +181,7 @@ export const Vc_car_masterScalarFieldEnum = {
   color_id: 'color_id',
   oil_type_id: 'oil_type_id',
   own_div_code: 'own_div_code',
+  purchase_id: 'purchase_id',
   fiscal_year: 'fiscal_year',
   start_date: 'start_date',
   end_date: 'end_date',
@@ -187,6 +192,7 @@ export const Vc_car_masterScalarFieldEnum = {
   cylinder_capacityp: 'cylinder_capacityp',
   oil_expense: 'oil_expense',
   refund_vat: 'refund_vat',
+  fleetcard_no: 'fleetcard_no',
   flag: 'flag',
   cre_by: 'cre_by',
   cre_date: 'cre_date',
@@ -195,9 +201,7 @@ export const Vc_car_masterScalarFieldEnum = {
   ref_car: 'ref_car',
   horse_power: 'horse_power',
   weight: 'weight',
-  machine_id: 'machine_id',
-  purchase_id: 'purchase_id',
-  fleetcard_no: 'fleetcard_no'
+  machine_id: 'machine_id'
 } as const
 
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
@@ -498,6 +502,81 @@ export const Vc_register_provinceScalarFieldEnum = {
 } as const
 
 export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
+
+
+export const FleetcardsScalarFieldEnum = {
+  accountNo: 'accountNo',
+  fleetcardNo: 'fleetcardNo',
+  licensePlateNo: 'licensePlateNo',
+  vendorBank: 'vendorBank',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  cardStatus: 'cardStatus',
+  costCenter: 'costCenter',
+  fundCenter: 'fundCenter',
+  gl: 'gl',
+  busProcess: 'busProcess',
+  poimSegment: 'poimSegment',
+  vatRefund: 'vatRefund',
+  fuelTypeCode: 'fuelTypeCode',
+  fuelTypeName: 'fuelTypeName',
+  stationName: 'stationName',
+  carBrand: 'carBrand',
+  carModel: 'carModel',
+  carType: 'carType',
+  fleetcard_id: 'fleetcard_id'
+} as const
+
+export type FleetcardsScalarFieldEnum = (typeof FleetcardsScalarFieldEnum)[keyof typeof FleetcardsScalarFieldEnum]
+
+
+export const Vc_driverScalarFieldEnum = {
+  driver_id: 'driver_id',
+  driver_code: 'driver_code',
+  driver_status: 'driver_status',
+  div_code: 'div_code',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  licence_type: 'licence_type',
+  licence_no: 'licence_no',
+  licence_by: 'licence_by',
+  flag: 'flag',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  tel: 'tel'
+} as const
+
+export type Vc_driverScalarFieldEnum = (typeof Vc_driverScalarFieldEnum)[keyof typeof Vc_driverScalarFieldEnum]
+
+
+export const Vc_driver_license_typeScalarFieldEnum = {
+  license_type_id: 'license_type_id',
+  license_type_name: 'license_type_name',
+  license_type_desc: 'license_type_desc',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_driver_license_typeScalarFieldEnum = (typeof Vc_driver_license_typeScalarFieldEnum)[keyof typeof Vc_driver_license_typeScalarFieldEnum]
+
+
+export const Vc_start_placeScalarFieldEnum = {
+  start_place_id: 'start_place_id',
+  start_place_name: 'start_place_name',
+  own_div_prop_id: 'own_div_prop_id',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
 
 
 export const SortOrder = {

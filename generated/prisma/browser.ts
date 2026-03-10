@@ -137,3 +137,23 @@ export type vc_color = Prisma.vc_colorModel
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
  */
 export type vc_register_province = Prisma.vc_register_provinceModel
+/**
+ * Model fleetcards
+ * 
+ */
+export type fleetcards = Prisma.fleetcardsModel
+/**
+ * Model vc_driver
+ * 
+ */
+export type vc_driver = Prisma.vc_driverModel
+/**
+ * Model vc_driver_license_type
+ * 
+ */
+export type vc_driver_license_type = Prisma.vc_driver_license_typeModel
+/**
+ * Model vc_start_place
+ * 
+ */
+export type vc_start_place = Prisma.vc_start_placeModel

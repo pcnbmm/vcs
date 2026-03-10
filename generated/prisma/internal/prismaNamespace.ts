@@ -407,7 +407,11 @@ export const ModelName = {
   vc_car_spec: 'vc_car_spec',
   vc_car_type: 'vc_car_type',
   vc_color: 'vc_color',
-  vc_register_province: 'vc_register_province'
+  vc_register_province: 'vc_register_province',
+  fleetcards: 'fleetcards',
+  vc_driver: 'vc_driver',
+  vc_driver_license_type: 'vc_driver_license_type',
+  vc_start_place: 'vc_start_place'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -423,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "booking" | "vc_order_item" | "vc_car_master" | "fleetcard_transactions" | "vc_car_status" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_user_roles" | "vc_car_brand" | "vc_car_spec" | "vc_car_type" | "vc_color" | "vc_register_province"
+    modelProps: "user" | "session" | "booking" | "vc_order_item" | "vc_car_master" | "fleetcard_transactions" | "vc_car_status" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_user_roles" | "vc_car_brand" | "vc_car_spec" | "vc_car_type" | "vc_color" | "vc_register_province" | "fleetcards" | "vc_driver" | "vc_driver_license_type" | "vc_start_place"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2203,6 +2207,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    fleetcards: {
+      payload: Prisma.$fleetcardsPayload<ExtArgs>
+      fields: Prisma.fleetcardsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.fleetcardsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.fleetcardsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        findFirst: {
+          args: Prisma.fleetcardsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.fleetcardsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        findMany: {
+          args: Prisma.fleetcardsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>[]
+        }
+        create: {
+          args: Prisma.fleetcardsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        createMany: {
+          args: Prisma.fleetcardsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.fleetcardsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>[]
+        }
+        delete: {
+          args: Prisma.fleetcardsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        update: {
+          args: Prisma.fleetcardsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        deleteMany: {
+          args: Prisma.fleetcardsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.fleetcardsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.fleetcardsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>[]
+        }
+        upsert: {
+          args: Prisma.fleetcardsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$fleetcardsPayload>
+        }
+        aggregate: {
+          args: Prisma.FleetcardsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFleetcards>
+        }
+        groupBy: {
+          args: Prisma.fleetcardsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FleetcardsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.fleetcardsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FleetcardsCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_driver: {
+      payload: Prisma.$vc_driverPayload<ExtArgs>
+      fields: Prisma.vc_driverFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_driverFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_driverFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        findFirst: {
+          args: Prisma.vc_driverFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_driverFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        findMany: {
+          args: Prisma.vc_driverFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>[]
+        }
+        create: {
+          args: Prisma.vc_driverCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        createMany: {
+          args: Prisma.vc_driverCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_driverCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>[]
+        }
+        delete: {
+          args: Prisma.vc_driverDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        update: {
+          args: Prisma.vc_driverUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_driverDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_driverUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_driverUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_driverUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driverPayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_driverAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_driver>
+        }
+        groupBy: {
+          args: Prisma.vc_driverGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_driverGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_driverCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_driverCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_driver_license_type: {
+      payload: Prisma.$vc_driver_license_typePayload<ExtArgs>
+      fields: Prisma.vc_driver_license_typeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_driver_license_typeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_driver_license_typeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        findFirst: {
+          args: Prisma.vc_driver_license_typeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_driver_license_typeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        findMany: {
+          args: Prisma.vc_driver_license_typeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>[]
+        }
+        create: {
+          args: Prisma.vc_driver_license_typeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        createMany: {
+          args: Prisma.vc_driver_license_typeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_driver_license_typeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>[]
+        }
+        delete: {
+          args: Prisma.vc_driver_license_typeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        update: {
+          args: Prisma.vc_driver_license_typeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_driver_license_typeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_driver_license_typeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_driver_license_typeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_driver_license_typeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_driver_license_typePayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_driver_license_typeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_driver_license_type>
+        }
+        groupBy: {
+          args: Prisma.vc_driver_license_typeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_driver_license_typeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_driver_license_typeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_driver_license_typeCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_start_place: {
+      payload: Prisma.$vc_start_placePayload<ExtArgs>
+      fields: Prisma.vc_start_placeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_start_placeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_start_placeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        findFirst: {
+          args: Prisma.vc_start_placeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_start_placeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        findMany: {
+          args: Prisma.vc_start_placeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>[]
+        }
+        create: {
+          args: Prisma.vc_start_placeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        createMany: {
+          args: Prisma.vc_start_placeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_start_placeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>[]
+        }
+        delete: {
+          args: Prisma.vc_start_placeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        update: {
+          args: Prisma.vc_start_placeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_start_placeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_start_placeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_start_placeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_start_placeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_start_placePayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_start_placeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_start_place>
+        }
+        groupBy: {
+          args: Prisma.vc_start_placeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_start_placeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_start_placeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_start_placeCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2326,6 +2626,7 @@ export const Vc_car_masterScalarFieldEnum = {
   color_id: 'color_id',
   oil_type_id: 'oil_type_id',
   own_div_code: 'own_div_code',
+  purchase_id: 'purchase_id',
   fiscal_year: 'fiscal_year',
   start_date: 'start_date',
   end_date: 'end_date',
@@ -2336,6 +2637,7 @@ export const Vc_car_masterScalarFieldEnum = {
   cylinder_capacityp: 'cylinder_capacityp',
   oil_expense: 'oil_expense',
   refund_vat: 'refund_vat',
+  fleetcard_no: 'fleetcard_no',
   flag: 'flag',
   cre_by: 'cre_by',
   cre_date: 'cre_date',
@@ -2344,9 +2646,7 @@ export const Vc_car_masterScalarFieldEnum = {
   ref_car: 'ref_car',
   horse_power: 'horse_power',
   weight: 'weight',
-  machine_id: 'machine_id',
-  purchase_id: 'purchase_id',
-  fleetcard_no: 'fleetcard_no'
+  machine_id: 'machine_id'
 } as const
 
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
@@ -2649,6 +2949,81 @@ export const Vc_register_provinceScalarFieldEnum = {
 export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
 
 
+export const FleetcardsScalarFieldEnum = {
+  accountNo: 'accountNo',
+  fleetcardNo: 'fleetcardNo',
+  licensePlateNo: 'licensePlateNo',
+  vendorBank: 'vendorBank',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  cardStatus: 'cardStatus',
+  costCenter: 'costCenter',
+  fundCenter: 'fundCenter',
+  gl: 'gl',
+  busProcess: 'busProcess',
+  poimSegment: 'poimSegment',
+  vatRefund: 'vatRefund',
+  fuelTypeCode: 'fuelTypeCode',
+  fuelTypeName: 'fuelTypeName',
+  stationName: 'stationName',
+  carBrand: 'carBrand',
+  carModel: 'carModel',
+  carType: 'carType',
+  fleetcard_id: 'fleetcard_id'
+} as const
+
+export type FleetcardsScalarFieldEnum = (typeof FleetcardsScalarFieldEnum)[keyof typeof FleetcardsScalarFieldEnum]
+
+
+export const Vc_driverScalarFieldEnum = {
+  driver_id: 'driver_id',
+  driver_code: 'driver_code',
+  driver_status: 'driver_status',
+  div_code: 'div_code',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  licence_type: 'licence_type',
+  licence_no: 'licence_no',
+  licence_by: 'licence_by',
+  flag: 'flag',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  tel: 'tel'
+} as const
+
+export type Vc_driverScalarFieldEnum = (typeof Vc_driverScalarFieldEnum)[keyof typeof Vc_driverScalarFieldEnum]
+
+
+export const Vc_driver_license_typeScalarFieldEnum = {
+  license_type_id: 'license_type_id',
+  license_type_name: 'license_type_name',
+  license_type_desc: 'license_type_desc',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_driver_license_typeScalarFieldEnum = (typeof Vc_driver_license_typeScalarFieldEnum)[keyof typeof Vc_driver_license_typeScalarFieldEnum]
+
+
+export const Vc_start_placeScalarFieldEnum = {
+  start_place_id: 'start_place_id',
+  start_place_name: 'start_place_name',
+  own_div_prop_id: 'own_div_prop_id',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2753,20 +3128,6 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
- * Reference to a field of type 'BigInt'
- */
-export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
-    
-
-
-/**
- * Reference to a field of type 'BigInt[]'
- */
-export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -2902,6 +3263,10 @@ export type GlobalOmitConfig = {
   vc_car_type?: Prisma.vc_car_typeOmit
   vc_color?: Prisma.vc_colorOmit
   vc_register_province?: Prisma.vc_register_provinceOmit
+  fleetcards?: Prisma.fleetcardsOmit
+  vc_driver?: Prisma.vc_driverOmit
+  vc_driver_license_type?: Prisma.vc_driver_license_typeOmit
+  vc_start_place?: Prisma.vc_start_placeOmit
 }
 
 /* Types for Logging */

@@ -232,7 +232,7 @@ export type vc_type_regisWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_type_regis"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_type_regis"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_type_regis"> | Date | string | null
-  car?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }
 
 export type vc_type_regisOrderByWithRelationInput = {
@@ -243,7 +243,7 @@ export type vc_type_regisOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  car?: Prisma.vc_car_masterOrderByRelationAggregateInput
+  vcCarMasters?: Prisma.vc_car_masterOrderByRelationAggregateInput
 }
 
 export type vc_type_regisWhereUniqueInput = Prisma.AtLeast<{
@@ -257,7 +257,7 @@ export type vc_type_regisWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_type_regis"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_type_regis"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_type_regis"> | Date | string | null
-  car?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }, "type_regis_id">
 
 export type vc_type_regisOrderByWithAggregationInput = {
@@ -295,7 +295,7 @@ export type vc_type_regisCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-  car?: Prisma.vc_car_masterCreateNestedManyWithoutCar_type_regisInput
+  vcCarMasters?: Prisma.vc_car_masterCreateNestedManyWithoutCar_type_regisInput
 }
 
 export type vc_type_regisUncheckedCreateInput = {
@@ -306,7 +306,7 @@ export type vc_type_regisUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-  car?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutCar_type_regisInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutCar_type_regisInput
 }
 
 export type vc_type_regisUpdateInput = {
@@ -316,7 +316,7 @@ export type vc_type_regisUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  car?: Prisma.vc_car_masterUpdateManyWithoutCar_type_regisNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUpdateManyWithoutCar_type_regisNestedInput
 }
 
 export type vc_type_regisUncheckedUpdateInput = {
@@ -327,7 +327,7 @@ export type vc_type_regisUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  car?: Prisma.vc_car_masterUncheckedUpdateManyWithoutCar_type_regisNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedUpdateManyWithoutCar_type_regisNestedInput
 }
 
 export type vc_type_regisCreateManyInput = {
@@ -402,23 +402,23 @@ export type vc_type_regisSumOrderByAggregateInput = {
   type_regis_id?: Prisma.SortOrder
 }
 
-export type vc_type_regisCreateNestedOneWithoutCarInput = {
-  create?: Prisma.XOR<Prisma.vc_type_regisCreateWithoutCarInput, Prisma.vc_type_regisUncheckedCreateWithoutCarInput>
-  connectOrCreate?: Prisma.vc_type_regisCreateOrConnectWithoutCarInput
+export type vc_type_regisCreateNestedOneWithoutVcCarMastersInput = {
+  create?: Prisma.XOR<Prisma.vc_type_regisCreateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_type_regisCreateOrConnectWithoutVcCarMastersInput
   connect?: Prisma.vc_type_regisWhereUniqueInput
 }
 
-export type vc_type_regisUpdateOneWithoutCarNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_type_regisCreateWithoutCarInput, Prisma.vc_type_regisUncheckedCreateWithoutCarInput>
-  connectOrCreate?: Prisma.vc_type_regisCreateOrConnectWithoutCarInput
-  upsert?: Prisma.vc_type_regisUpsertWithoutCarInput
+export type vc_type_regisUpdateOneWithoutVcCarMastersNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_type_regisCreateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_type_regisCreateOrConnectWithoutVcCarMastersInput
+  upsert?: Prisma.vc_type_regisUpsertWithoutVcCarMastersInput
   disconnect?: Prisma.vc_type_regisWhereInput | boolean
   delete?: Prisma.vc_type_regisWhereInput | boolean
   connect?: Prisma.vc_type_regisWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_type_regisUpdateToOneWithWhereWithoutCarInput, Prisma.vc_type_regisUpdateWithoutCarInput>, Prisma.vc_type_regisUncheckedUpdateWithoutCarInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_type_regisUpdateToOneWithWhereWithoutVcCarMastersInput, Prisma.vc_type_regisUpdateWithoutVcCarMastersInput>, Prisma.vc_type_regisUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_type_regisCreateWithoutCarInput = {
+export type vc_type_regisCreateWithoutVcCarMastersInput = {
   type_regis_name?: string | null
   flag_del?: string | null
   cre_by?: string | null
@@ -427,7 +427,7 @@ export type vc_type_regisCreateWithoutCarInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_type_regisUncheckedCreateWithoutCarInput = {
+export type vc_type_regisUncheckedCreateWithoutVcCarMastersInput = {
   type_regis_id?: number
   type_regis_name?: string | null
   flag_del?: string | null
@@ -437,23 +437,23 @@ export type vc_type_regisUncheckedCreateWithoutCarInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_type_regisCreateOrConnectWithoutCarInput = {
+export type vc_type_regisCreateOrConnectWithoutVcCarMastersInput = {
   where: Prisma.vc_type_regisWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_type_regisCreateWithoutCarInput, Prisma.vc_type_regisUncheckedCreateWithoutCarInput>
+  create: Prisma.XOR<Prisma.vc_type_regisCreateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedCreateWithoutVcCarMastersInput>
 }
 
-export type vc_type_regisUpsertWithoutCarInput = {
-  update: Prisma.XOR<Prisma.vc_type_regisUpdateWithoutCarInput, Prisma.vc_type_regisUncheckedUpdateWithoutCarInput>
-  create: Prisma.XOR<Prisma.vc_type_regisCreateWithoutCarInput, Prisma.vc_type_regisUncheckedCreateWithoutCarInput>
+export type vc_type_regisUpsertWithoutVcCarMastersInput = {
+  update: Prisma.XOR<Prisma.vc_type_regisUpdateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedUpdateWithoutVcCarMastersInput>
+  create: Prisma.XOR<Prisma.vc_type_regisCreateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedCreateWithoutVcCarMastersInput>
   where?: Prisma.vc_type_regisWhereInput
 }
 
-export type vc_type_regisUpdateToOneWithWhereWithoutCarInput = {
+export type vc_type_regisUpdateToOneWithWhereWithoutVcCarMastersInput = {
   where?: Prisma.vc_type_regisWhereInput
-  data: Prisma.XOR<Prisma.vc_type_regisUpdateWithoutCarInput, Prisma.vc_type_regisUncheckedUpdateWithoutCarInput>
+  data: Prisma.XOR<Prisma.vc_type_regisUpdateWithoutVcCarMastersInput, Prisma.vc_type_regisUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_type_regisUpdateWithoutCarInput = {
+export type vc_type_regisUpdateWithoutVcCarMastersInput = {
   type_regis_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -462,7 +462,7 @@ export type vc_type_regisUpdateWithoutCarInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_type_regisUncheckedUpdateWithoutCarInput = {
+export type vc_type_regisUncheckedUpdateWithoutVcCarMastersInput = {
   type_regis_id?: Prisma.IntFieldUpdateOperationsInput | number
   type_regis_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -478,11 +478,11 @@ export type vc_type_regisUncheckedUpdateWithoutCarInput = {
  */
 
 export type Vc_type_regisCountOutputType = {
-  car: number
+  vcCarMasters: number
 }
 
 export type Vc_type_regisCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  car?: boolean | Vc_type_regisCountOutputTypeCountCarArgs
+  vcCarMasters?: boolean | Vc_type_regisCountOutputTypeCountVcCarMastersArgs
 }
 
 /**
@@ -498,7 +498,7 @@ export type Vc_type_regisCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
 /**
  * Vc_type_regisCountOutputType without action
  */
-export type Vc_type_regisCountOutputTypeCountCarArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Vc_type_regisCountOutputTypeCountVcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.vc_car_masterWhereInput
 }
 
@@ -511,7 +511,7 @@ export type vc_type_regisSelect<ExtArgs extends runtime.Types.Extensions.Interna
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-  car?: boolean | Prisma.vc_type_regis$carArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_type_regis$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_type_regisCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_type_regis"]>
 
@@ -547,7 +547,7 @@ export type vc_type_regisSelectScalar = {
 
 export type vc_type_regisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"type_regis_id" | "type_regis_name" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_type_regis"]>
 export type vc_type_regisInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  car?: boolean | Prisma.vc_type_regis$carArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_type_regis$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_type_regisCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_type_regisIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -556,7 +556,7 @@ export type vc_type_regisIncludeUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type $vc_type_regisPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_type_regis"
   objects: {
-    car: Prisma.$vc_car_masterPayload<ExtArgs>[]
+    vcCarMasters: Prisma.$vc_car_masterPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     type_regis_id: number
@@ -960,7 +960,7 @@ readonly fields: vc_type_regisFieldRefs;
  */
 export interface Prisma__vc_type_regisClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  car<T extends Prisma.vc_type_regis$carArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_type_regis$carArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vcCarMasters<T extends Prisma.vc_type_regis$vcCarMastersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_type_regis$vcCarMastersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1385,9 +1385,9 @@ export type vc_type_regisDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * vc_type_regis.car
+ * vc_type_regis.vcCarMasters
  */
-export type vc_type_regis$carArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type vc_type_regis$vcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the vc_car_master
    */

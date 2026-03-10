@@ -244,7 +244,7 @@ export type vc_oil_typeWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_oil_type"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
-  cars?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }
 
 export type vc_oil_typeOrderByWithRelationInput = {
@@ -256,7 +256,7 @@ export type vc_oil_typeOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  cars?: Prisma.vc_car_masterOrderByRelationAggregateInput
+  vcCarMasters?: Prisma.vc_car_masterOrderByRelationAggregateInput
 }
 
 export type vc_oil_typeWhereUniqueInput = Prisma.AtLeast<{
@@ -271,7 +271,7 @@ export type vc_oil_typeWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_oil_type"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_oil_type"> | Date | string | null
-  cars?: Prisma.Vc_car_masterListRelationFilter
+  vcCarMasters?: Prisma.Vc_car_masterListRelationFilter
 }, "oil_type_id">
 
 export type vc_oil_typeOrderByWithAggregationInput = {
@@ -312,7 +312,7 @@ export type vc_oil_typeCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-  cars?: Prisma.vc_car_masterCreateNestedManyWithoutOil_typeInput
+  vcCarMasters?: Prisma.vc_car_masterCreateNestedManyWithoutOil_typeInput
 }
 
 export type vc_oil_typeUncheckedCreateInput = {
@@ -324,7 +324,7 @@ export type vc_oil_typeUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
-  cars?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutOil_typeInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutOil_typeInput
 }
 
 export type vc_oil_typeUpdateInput = {
@@ -335,7 +335,7 @@ export type vc_oil_typeUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  cars?: Prisma.vc_car_masterUpdateManyWithoutOil_typeNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUpdateManyWithoutOil_typeNestedInput
 }
 
 export type vc_oil_typeUncheckedUpdateInput = {
@@ -347,7 +347,7 @@ export type vc_oil_typeUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  cars?: Prisma.vc_car_masterUncheckedUpdateManyWithoutOil_typeNestedInput
+  vcCarMasters?: Prisma.vc_car_masterUncheckedUpdateManyWithoutOil_typeNestedInput
 }
 
 export type vc_oil_typeCreateManyInput = {
@@ -430,23 +430,23 @@ export type vc_oil_typeSumOrderByAggregateInput = {
   oil_type_group?: Prisma.SortOrder
 }
 
-export type vc_oil_typeCreateNestedOneWithoutCarsInput = {
-  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutCarsInput, Prisma.vc_oil_typeUncheckedCreateWithoutCarsInput>
-  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutCarsInput
+export type vc_oil_typeCreateNestedOneWithoutVcCarMastersInput = {
+  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutVcCarMastersInput
   connect?: Prisma.vc_oil_typeWhereUniqueInput
 }
 
-export type vc_oil_typeUpdateOneWithoutCarsNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutCarsInput, Prisma.vc_oil_typeUncheckedCreateWithoutCarsInput>
-  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutCarsInput
-  upsert?: Prisma.vc_oil_typeUpsertWithoutCarsInput
+export type vc_oil_typeUpdateOneWithoutVcCarMastersNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
+  connectOrCreate?: Prisma.vc_oil_typeCreateOrConnectWithoutVcCarMastersInput
+  upsert?: Prisma.vc_oil_typeUpsertWithoutVcCarMastersInput
   disconnect?: Prisma.vc_oil_typeWhereInput | boolean
   delete?: Prisma.vc_oil_typeWhereInput | boolean
   connect?: Prisma.vc_oil_typeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_oil_typeUpdateToOneWithWhereWithoutCarsInput, Prisma.vc_oil_typeUpdateWithoutCarsInput>, Prisma.vc_oil_typeUncheckedUpdateWithoutCarsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_oil_typeUpdateToOneWithWhereWithoutVcCarMastersInput, Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput>, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_oil_typeCreateWithoutCarsInput = {
+export type vc_oil_typeCreateWithoutVcCarMastersInput = {
   oil_type_name?: string | null
   oil_type_group?: number | null
   flag_del?: string | null
@@ -456,7 +456,7 @@ export type vc_oil_typeCreateWithoutCarsInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_oil_typeUncheckedCreateWithoutCarsInput = {
+export type vc_oil_typeUncheckedCreateWithoutVcCarMastersInput = {
   oil_type_id?: number
   oil_type_name?: string | null
   oil_type_group?: number | null
@@ -467,23 +467,23 @@ export type vc_oil_typeUncheckedCreateWithoutCarsInput = {
   upd_date?: Date | string | null
 }
 
-export type vc_oil_typeCreateOrConnectWithoutCarsInput = {
+export type vc_oil_typeCreateOrConnectWithoutVcCarMastersInput = {
   where: Prisma.vc_oil_typeWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutCarsInput, Prisma.vc_oil_typeUncheckedCreateWithoutCarsInput>
+  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
 }
 
-export type vc_oil_typeUpsertWithoutCarsInput = {
-  update: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutCarsInput, Prisma.vc_oil_typeUncheckedUpdateWithoutCarsInput>
-  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutCarsInput, Prisma.vc_oil_typeUncheckedCreateWithoutCarsInput>
+export type vc_oil_typeUpsertWithoutVcCarMastersInput = {
+  update: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
+  create: Prisma.XOR<Prisma.vc_oil_typeCreateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedCreateWithoutVcCarMastersInput>
   where?: Prisma.vc_oil_typeWhereInput
 }
 
-export type vc_oil_typeUpdateToOneWithWhereWithoutCarsInput = {
+export type vc_oil_typeUpdateToOneWithWhereWithoutVcCarMastersInput = {
   where?: Prisma.vc_oil_typeWhereInput
-  data: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutCarsInput, Prisma.vc_oil_typeUncheckedUpdateWithoutCarsInput>
+  data: Prisma.XOR<Prisma.vc_oil_typeUpdateWithoutVcCarMastersInput, Prisma.vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput>
 }
 
-export type vc_oil_typeUpdateWithoutCarsInput = {
+export type vc_oil_typeUpdateWithoutVcCarMastersInput = {
   oil_type_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_type_group?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -493,7 +493,7 @@ export type vc_oil_typeUpdateWithoutCarsInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_oil_typeUncheckedUpdateWithoutCarsInput = {
+export type vc_oil_typeUncheckedUpdateWithoutVcCarMastersInput = {
   oil_type_id?: Prisma.IntFieldUpdateOperationsInput | number
   oil_type_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   oil_type_group?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -510,11 +510,11 @@ export type vc_oil_typeUncheckedUpdateWithoutCarsInput = {
  */
 
 export type Vc_oil_typeCountOutputType = {
-  cars: number
+  vcCarMasters: number
 }
 
 export type Vc_oil_typeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cars?: boolean | Vc_oil_typeCountOutputTypeCountCarsArgs
+  vcCarMasters?: boolean | Vc_oil_typeCountOutputTypeCountVcCarMastersArgs
 }
 
 /**
@@ -530,7 +530,7 @@ export type Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
 /**
  * Vc_oil_typeCountOutputType without action
  */
-export type Vc_oil_typeCountOutputTypeCountCarsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Vc_oil_typeCountOutputTypeCountVcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.vc_car_masterWhereInput
 }
 
@@ -544,7 +544,7 @@ export type vc_oil_typeSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
-  cars?: boolean | Prisma.vc_oil_type$carsArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_oil_type"]>
 
@@ -583,7 +583,7 @@ export type vc_oil_typeSelectScalar = {
 
 export type vc_oil_typeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"oil_type_id" | "oil_type_name" | "oil_type_group" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_oil_type"]>
 export type vc_oil_typeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cars?: boolean | Prisma.vc_oil_type$carsArgs<ExtArgs>
+  vcCarMasters?: boolean | Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_oil_typeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_oil_typeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -592,7 +592,7 @@ export type vc_oil_typeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $vc_oil_typePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_oil_type"
   objects: {
-    cars: Prisma.$vc_car_masterPayload<ExtArgs>[]
+    vcCarMasters: Prisma.$vc_car_masterPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     oil_type_id: number
@@ -997,7 +997,7 @@ readonly fields: vc_oil_typeFieldRefs;
  */
 export interface Prisma__vc_oil_typeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cars<T extends Prisma.vc_oil_type$carsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_oil_type$carsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vcCarMasters<T extends Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_oil_type$vcCarMastersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1423,9 +1423,9 @@ export type vc_oil_typeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * vc_oil_type.cars
+ * vc_oil_type.vcCarMasters
  */
-export type vc_oil_type$carsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type vc_oil_type$vcCarMastersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the vc_car_master
    */
