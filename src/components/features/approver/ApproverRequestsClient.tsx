@@ -1,7 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { getMyBookings } from '@/app/actions/bookingActions';
-import { updateRequestStatus } from '@/app/actions/requestActions';
+import { useState } from 'react';
 import { Booking } from '@/types';
 import BookingDetailModal from '@/components/features/approver/BookingDetailModal';
 import {
@@ -10,19 +8,7 @@ import {
     Users,
     ChevronRight,
     ArrowRight,
-    Loader2,
 } from 'lucide-react';
-
-// Help mapping status_use_id to Booking status strings
-const mapStatus = (id: number | null): Booking['status'] => {
-    switch (id) {
-        case 2: return 'APPROVED';
-        case 3: return 'REJECTED';
-        case 4: return 'IN_USE';
-        case 5: return 'COMPLETED';
-        default: return 'PENDING';
-    }
-};
 
 function formatThaiDate(dateStr: string): string {
     const date = new Date(dateStr);
@@ -33,8 +19,7 @@ function formatThaiDate(dateStr: string): string {
     });
 }
 
-function formatThaiDateTime(dateStr: string | null): string {
-    if (!dateStr) return '-';
+function formatThaiDateTime(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('th-TH', {
         year: 'numeric',
@@ -54,7 +39,7 @@ function StatusBadge({ status }: { status: Booking['status'] }) {
         COMPLETED: { label: 'เสร็จสิ้น', className: 'bg-slate-100 text-slate-600' },
     };
 
-    const { label, className } = config[status] || config.PENDING;
+    const { label, className } = config[status];
 
     return (
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${className}`}>
@@ -63,17 +48,17 @@ function StatusBadge({ status }: { status: Booking['status'] }) {
     );
 }
 
-function BookingRow({ 
+function BookingRow({
     booking,
-    onClick, 
-}: { 
+    onClick,
+}: {
     booking: Booking;
-    onClick: ()=> void; 
+    onClick: () => void;
 }) {
     return (
-        <div 
-        onClick={onClick}
-        className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group">
+        <div
+            onClick={onClick}
+            className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group">
 
             {/* Col 1: เลขที่คำขอ + วันที่ขอ */}
             <div className="w-40 shrink-0">
@@ -110,7 +95,7 @@ function BookingRow({
                 <p className="text-sm font-medium text-slate-700">{booking.requesterName}</p>
                 <p className="text-xs text-slate-400 mt-0.5">{booking.department}</p>
             </div>
- 
+
             {/* Col 5: จำนวนผู้โดยสาร */}
             <div className="w-20 shrink-0 flex items-center gap-2">
                 <Users size={14} className="text-slate-400" />
@@ -128,71 +113,26 @@ function BookingRow({
     );
 }
 
-export default function ApproverRequestsPage() {
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+interface ApproverRequestsClientProps {
+    bookings: Booking[];
+}
+
+export default function ApproverRequestsClient({ bookings }: ApproverRequestsClientProps) {
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-
-    const fetchBookings = async () => {
-        setIsLoading(true);
-        const result = await getMyBookings();
-        if (result.success && result.data) {
-            const mapped: Booking[] = result.data.map((b: any) => ({
-                id: String(b.request_id),
-                requesterName: 'ผู้ใช้งานระบบ', // Placeholder since DB might not have name
-                department: b.use_div_code || '-',
-                objective: b.journey_causes || '-',
-                origin: b.start_place || '-',
-                destination: b.journey_place || '-',
-                requestDate: b.cre_date ? b.cre_date.toISOString() : new Date().toISOString(),
-                startDateTime: b.journey_date ? b.journey_date.toISOString() : '',
-                endDateTime: b.return_date ? b.return_date.toISOString() : '',
-                passengerCount: b.passenger_amount || 0,
-                status: mapStatus(b.status_use_id),
-            }));
-            setBookings(mapped);
-        }
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        fetchBookings();
-    }, []);
-
     const pendingCount = bookings.filter((b) => b.status === 'PENDING').length;
-
-    const handleApprove = async (id: string) => {
-        const res = await updateRequestStatus(Number(id), 2);
-        if (res.success) {
-            setSelectedBooking(null);
-            fetchBookings(); // Refresh list
-        } else {
-            alert(res.error);
-        }
+    const handleApprove = (id: string) => {
+        console.log('Approved:', id);
+        setSelectedBooking(null);
     };
 
-    const handleReject = async (id: string, reason: string) => {
-        // We don't save reason in DB yet based on user request "no approve_id", 
-        // but we update status to 3.
-        const res = await updateRequestStatus(Number(id), 3);
-        if (res.success) {
-            setSelectedBooking(null);
-            fetchBookings(); // Refresh list
-        } else {
-            alert(res.error);
-        }
+    const handleReject = (id: string, reason: string) => {
+        console.log('Rejected:', id, 'Reason', reason);
+        setSelectedBooking(null);
     };
-
-    if (isLoading) {
-        return (
-            <div className="flex h-96 items-center justify-center">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-            </div>
-        );
-    }
 
     return (
         <div className="space-y-6">
+            {/* ... Header เหมือนเดิม */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl font-bold text-slate-800">ตรวจสอบและอนุมัติ</h1>
@@ -215,11 +155,11 @@ export default function ApproverRequestsPage() {
                 </div>
 
                 {bookings.length > 0 ? (
-                    bookings.map((booking: Booking) => (
+                    bookings.map((booking) => (
                         <BookingRow
                             key={booking.id}
                             booking={booking}
-                            onClick={() => setSelectedBooking(booking)}
+                            onClick={() => setSelectedBooking(booking)} // ← เพิ่ม
                         />
                     ))
                 ) : (
