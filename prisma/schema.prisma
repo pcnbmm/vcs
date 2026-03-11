@@ -70,29 +70,30 @@ model vc_car_master {
 }
 
 model vc_order_item {
-  request_id       Int       @id @default(autoincrement())
-  use_div_code     String?   @db.VarChar(100)
-  userid           String?   @db.Char(8)
-  user_mobile      String?   @db.VarChar(20)
-  journey_date     DateTime? @db.Date
-  return_date      DateTime? @db.Date
-  start_place      String?   @db.VarChar(200)
-  journey_place    String?   @db.VarChar(500)
-  journey_province String?   @db.VarChar(100)
+  request_id       Int          @id @default(autoincrement())
+  use_div_code     String?      @db.VarChar(100)
+  userid           String?      @db.Char(8)
+  user_mobile      String?      @db.VarChar(20)
+  journey_date     DateTime?    @db.Date
+  return_date      DateTime?    @db.Date
+  start_place      String?      @db.VarChar(200)
+  journey_place    String?      @db.VarChar(500)
+  journey_province String?      @db.VarChar(100)
   journey_causes   String?
-  return_time      String?   @db.VarChar(10)
-  car_spec_id      String?   @db.VarChar(100)
+  return_time      String?      @db.VarChar(10)
   passenger_amount Int?
-  approve_id       String?   @db.Char(8)
+  approve_id       String?      @db.Char(8)
   status_use_id    Int?
   self_drive       Boolean?
   journey_lat      Float?
   journey_long     Float?
-  cre_by           String?   @db.VarChar(20)
+  cre_by           String?      @db.VarChar(20)
   cre_date         DateTime?
-  upd_by           String?   @db.VarChar(20)
+  upd_by           String?      @db.VarChar(20)
   upd_date         DateTime?
-  journey_time     String?   @db.VarChar(10)
+  journey_time     String?      @db.VarChar(10)
+  car_spec_id      Int?
+  vc_car_spec      vc_car_spec? @relation(fields: [car_spec_id], references: [car_spec_id])
   vc_use           vc_use[]
 }
 
@@ -139,6 +140,7 @@ model vc_car_spec {
   upd_by        Int?
   upd_date      String?         @db.VarChar(50)
   vc_car_master vc_car_master[]
+  vc_order_item vc_order_item[]
 }
 
 model vc_car_status {
