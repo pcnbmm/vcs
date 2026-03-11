@@ -79,7 +79,7 @@ model VcOrderItems {
   journey_place    String?   @db.VarChar(500)
   journey_province String?   @db.VarChar(100)
   journey_causes   String?
-  journer_time     String?   @db.VarChar(10)
+  journey_time     String?   @db.VarChar(10)
   return_time      String?   @db.VarChar(10)
   car_spec_id      String?   @db.VarChar(100)
   passenger_amount Int?
