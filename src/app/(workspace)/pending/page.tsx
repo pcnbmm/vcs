@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getMyBookings } from '@/app/actions/bookingActions';
+import { getPendingBookings, cancelRequest } from '@/app/actions/bookingActions';
 import {
     Calendar, MapPin, Search, Clock, ChevronRight,
     RefreshCw, CheckCircle2, XCircle, AlertCircle, Users, Loader2
@@ -12,6 +12,7 @@ export default function PendingPage() {
     const [requests, setRequests] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true); // จัดการสถานะโหลดข้อมูล
     const [error, setError] = useState<string | null>(null);
+    const [isCancelling, setIsCancelling] = useState(false);
 
     // 2. State สำหรับการค้นหา และ Modal
     const [searchQuery, setSearchQuery] = useState('');
@@ -23,7 +24,7 @@ export default function PendingPage() {
             try {
                 setIsLoading(true);
 
-                const result = await getMyBookings();
+                const result = await getPendingBookings();
                 if (result.success && result.data) {
                     const formattedList = result.data.map((b: any) => ({
                         id: String(b.request_id),
@@ -33,9 +34,10 @@ export default function PendingPage() {
                         date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
                             day: 'numeric', month: 'short', year: 'numeric'
                         }) : 'N/A',
-                        time: b.journer_time || 'N/A',
+                        time: b.journey_time || 'N/A',
                         objective: b.journey_causes || '-',
                         status: b.status_use_id ? String(b.status_use_id) : '1',
+                        statusName: b.vc_status_use_code?.status_use_name || 'รอดำเนินการ',
                         // เพิ่ม fields สำหรับนำไปแสดงใน Modal Detail
                         carType: b.car_spec_id,
                         origin: b.start_place,
@@ -68,6 +70,30 @@ export default function PendingPage() {
         req.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         req.destination?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // 5. ฟังก์ชันยกเลิกคำขอ
+    const handleCancel = async (id: string) => {
+        if (!window.confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกคำขานี้?')) return;
+
+        try {
+            setIsCancelling(true);
+            const result = await cancelRequest(Number(id));
+
+            if (result.success) {
+                // ลบรายการออกจาก State ทันที
+                setRequests(prev => prev.filter(req => req.id !== id));
+                setSelectedRequest(null);
+                alert('ยกเลิกคำขอสำเร็จแล้ว');
+            } else {
+                alert(result.error || 'ไม่สามารถยกเลิกคำขอได้');
+            }
+        } catch (err) {
+            console.error('Failed to cancel request:', err);
+            alert('เกิดข้อผิดพลาดในการยกเลิกคำขอ');
+        } finally {
+            setIsCancelling(false);
+        }
+    };
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-10">
@@ -132,7 +158,6 @@ export default function PendingPage() {
                     <div className="grid grid-cols-1 gap-4">
                         {filteredRequests.map((req) => {
                             const status = Number(req.status);
-                            const statusName = getStatusName(status) || 'สถานะไม่ระบุ';
                             const statusColor = getStatusColor(status) || 'text-gray-600 bg-gray-50 border-gray-100';
                             const StatusIcon = Clock;
 
@@ -188,7 +213,7 @@ export default function PendingPage() {
                                     <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0 lg:w-auto mt-4 lg:mt-0">
                                         <div className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border text-[10px] sm:text-[11px] font-black uppercase tracking-tight shadow-sm ${statusColor} whitespace-normal text-center min-h-[32px] max-w-[200px] sm:max-w-none`}>
                                             <StatusIcon size={14} className="shrink-0" />
-                                            <span className="leading-tight">{statusName}</span>
+                                            <span className="leading-tight">{req.statusName}</span>
                                         </div>
                                         <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shrink-0">
                                             <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
@@ -256,7 +281,24 @@ export default function PendingPage() {
                             </div>
                         </div>
 
-                        <div className="mt-8 flex justify-end pt-6 border-t border-gray-100">
+                        <div className="mt-8 flex justify-between items-center pt-6 border-t border-gray-100">
+                            <button
+                                onClick={() => handleCancel(selectedRequest.id)}
+                                disabled={isCancelling}
+                                className={`px-6 py-3 border border-rose-200 text-rose-600 rounded-xl font-bold text-sm hover:bg-rose-50 transition-all flex items-center gap-2 ${isCancelling ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isCancelling ? (
+                                    <>
+                                        <Loader2 size={16} className="animate-spin" />
+                                        กำลังยกเลิก...
+                                    </>
+                                ) : (
+                                    <>
+                                        <XCircle size={16} />
+                                        ยกเลิกคำขอ
+                                    </>
+                                )}
+                            </button>
                             <button
                                 onClick={() => setSelectedRequest(null)}
                                 className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors"
@@ -275,29 +317,7 @@ export default function PendingPage() {
 // ⬇️ Helper Functions ⬇️
 // ==========================================
 
-export const getStatusName = (status: number | string) => {
-    const strStatus = String(status).toUpperCase();
-
-    switch (strStatus) {
-        case '1':
-        case 'PENDING':
-            return 'รอการอนุมัติ';
-        case '2':
-        case 'APPROVED':
-            return 'อนุมัติแล้ว';
-        case '3':
-        case 'REJECTED':
-            return 'ไม่อนุมัติ';
-        case '4':
-        case 'COMPLETED':
-            return 'เสร็จสิ้น';
-        case '5':
-        case 'CANCELED':
-            return 'ยกเลิก';
-        default:
-            return 'สถานะไม่ระบุ';
-    }
-};
+// getStatusName is removed as we now use req.statusName from the database
 
 export const getStatusColor = (status: number | string) => {
     const strStatus = String(status).toUpperCase();
@@ -308,16 +328,16 @@ export const getStatusColor = (status: number | string) => {
             return 'text-amber-600 bg-amber-50 border-amber-200';
         case '2':
         case 'APPROVED':
-            return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+            return 'text-emerald-700 bg-emerald-50 border-emerald-200 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.3)]';
         case '3':
         case 'REJECTED':
-            return 'text-rose-600 bg-rose-50 border-rose-200';
+            return 'text-rose-700 bg-rose-50 border-rose-200 shadow-[0_2px_10px_-3px_rgba(244,63,94,0.2)]';
         case '4':
         case 'COMPLETED':
-            return 'text-blue-600 bg-blue-50 border-blue-200';
+            return 'text-blue-700 bg-blue-50 border-blue-200 shadow-[0_2px_10px_-3px_rgba(59,130,246,0.2)]';
         case '5':
         case 'CANCELED':
-            return 'text-gray-600 bg-gray-100 border-gray-200';
+            return 'text-gray-500 bg-gray-50 border-gray-200 shadow-sm';
         default:
             return 'text-gray-600 bg-gray-50 border-gray-100';
     }

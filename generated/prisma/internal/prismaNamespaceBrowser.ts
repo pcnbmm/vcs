@@ -54,7 +54,6 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   vc_car_master: 'vc_car_master',
-  VcOrderItems: 'VcOrderItems',
   fleetcard_transactions: 'fleetcard_transactions',
   vc_car_brand: 'vc_car_brand',
   vc_car_spec: 'vc_car_spec',
@@ -69,7 +68,6 @@ export const ModelName = {
   vc_nt_car: 'vc_nt_car',
   vc_oil_type: 'vc_oil_type',
   vc_permission: 'vc_permission',
-  vc_register_province: 'vc_register_province',
   vc_replacement: 'vc_replacement',
   vc_roles: 'vc_roles',
   vc_type_regis: 'vc_type_regis',
@@ -80,7 +78,9 @@ export const ModelName = {
   vc_driver: 'vc_driver',
   vc_driver_license_type: 'vc_driver_license_type',
   vc_start_place: 'vc_start_place',
-  Booking: 'Booking'
+  vc_status_use_code: 'vc_status_use_code',
+  vc_province: 'vc_province',
+  vc_order_item: 'vc_order_item'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -155,35 +155,6 @@ export const Vc_car_masterScalarFieldEnum = {
 } as const
 
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
-
-
-export const VcOrderItemsScalarFieldEnum = {
-  request_id: 'request_id',
-  use_div_code: 'use_div_code',
-  userid: 'userid',
-  user_mobile: 'user_mobile',
-  journey_date: 'journey_date',
-  return_date: 'return_date',
-  start_place: 'start_place',
-  journey_place: 'journey_place',
-  journey_province: 'journey_province',
-  journey_causes: 'journey_causes',
-  journer_time: 'journer_time',
-  return_time: 'return_time',
-  car_spec_id: 'car_spec_id',
-  passenger_amount: 'passenger_amount',
-  approve_id: 'approve_id',
-  status_use_id: 'status_use_id',
-  self_drive: 'self_drive',
-  journey_lat: 'journey_lat',
-  journey_long: 'journey_long',
-  cre_by: 'cre_by',
-  cre_date: 'cre_date',
-  upd_by: 'upd_by',
-  upd_date: 'upd_date'
-} as const
-
-export type VcOrderItemsScalarFieldEnum = (typeof VcOrderItemsScalarFieldEnum)[keyof typeof VcOrderItemsScalarFieldEnum]
 
 
 export const Fleetcard_transactionsScalarFieldEnum = {
@@ -415,21 +386,6 @@ export const Vc_permissionScalarFieldEnum = {
 export type Vc_permissionScalarFieldEnum = (typeof Vc_permissionScalarFieldEnum)[keyof typeof Vc_permissionScalarFieldEnum]
 
 
-export const Vc_register_provinceScalarFieldEnum = {
-  regis_province_id: 'regis_province_id',
-  regis_province_name: 'regis_province_name',
-  short_name: 'short_name',
-  region_id: 'region_id',
-  flag_del: 'flag_del',
-  cre_by: 'cre_by',
-  cre_date: 'cre_date',
-  upd_by: 'upd_by',
-  upd_date: 'upd_date'
-} as const
-
-export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
-
-
 export const Vc_replacementScalarFieldEnum = {
   replacement_id: 'replacement_id',
   car_id: 'car_id',
@@ -597,25 +553,62 @@ export const Vc_start_placeScalarFieldEnum = {
 export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
 
 
-export const BookingScalarFieldEnum = {
-  id: 'id',
-  requesterId: 'requesterId',
-  department: 'department',
-  objective: 'objective',
-  origin: 'origin',
-  destination: 'destination',
-  requestDate: 'requestDate',
-  startDateTime: 'startDateTime',
-  endDateTime: 'endDateTime',
-  passengerCount: 'passengerCount',
-  status: 'status',
-  rejectReason: 'rejectReason',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  bookingNo: 'bookingNo'
+export const Vc_status_use_codeScalarFieldEnum = {
+  status_use_id: 'status_use_id',
+  status_use_name: 'status_use_name',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
 } as const
 
-export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+export type Vc_status_use_codeScalarFieldEnum = (typeof Vc_status_use_codeScalarFieldEnum)[keyof typeof Vc_status_use_codeScalarFieldEnum]
+
+
+export const Vc_provinceScalarFieldEnum = {
+  name_th: 'name_th',
+  abbr_th: 'abbr_th',
+  name_en: 'name_en',
+  abbr_en: 'abbr_en',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  province_id: 'province_id'
+} as const
+
+export type Vc_provinceScalarFieldEnum = (typeof Vc_provinceScalarFieldEnum)[keyof typeof Vc_provinceScalarFieldEnum]
+
+
+export const Vc_order_itemScalarFieldEnum = {
+  request_id: 'request_id',
+  use_div_code: 'use_div_code',
+  userid: 'userid',
+  user_mobile: 'user_mobile',
+  journey_date: 'journey_date',
+  return_date: 'return_date',
+  start_place: 'start_place',
+  journey_place: 'journey_place',
+  journey_province: 'journey_province',
+  journey_causes: 'journey_causes',
+  return_time: 'return_time',
+  car_spec_id: 'car_spec_id',
+  passenger_amount: 'passenger_amount',
+  approve_id: 'approve_id',
+  status_use_id: 'status_use_id',
+  self_drive: 'self_drive',
+  journey_lat: 'journey_lat',
+  journey_long: 'journey_long',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  journey_time: 'journey_time'
+} as const
+
+export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
 
 
 export const SortOrder = {

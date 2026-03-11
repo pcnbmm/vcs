@@ -461,7 +461,7 @@ export type vc_car_masterWhereInput = {
   weight?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   vc_car_brand?: Prisma.XOR<Prisma.Vc_car_brandNullableScalarRelationFilter, Prisma.vc_car_brandWhereInput> | null
-  vc_register_province?: Prisma.XOR<Prisma.Vc_register_provinceNullableScalarRelationFilter, Prisma.vc_register_provinceWhereInput> | null
+  vc_register_province?: Prisma.XOR<Prisma.Vc_provinceNullableScalarRelationFilter, Prisma.vc_provinceWhereInput> | null
   vc_car_spec?: Prisma.XOR<Prisma.Vc_car_specNullableScalarRelationFilter, Prisma.vc_car_specWhereInput> | null
   vc_car_status?: Prisma.XOR<Prisma.Vc_car_statusNullableScalarRelationFilter, Prisma.vc_car_statusWhereInput> | null
   vc_car_type?: Prisma.XOR<Prisma.Vc_car_typeNullableScalarRelationFilter, Prisma.vc_car_typeWhereInput> | null
@@ -501,7 +501,7 @@ export type vc_car_masterOrderByWithRelationInput = {
   weight?: Prisma.SortOrderInput | Prisma.SortOrder
   machine_id?: Prisma.SortOrderInput | Prisma.SortOrder
   vc_car_brand?: Prisma.vc_car_brandOrderByWithRelationInput
-  vc_register_province?: Prisma.vc_register_provinceOrderByWithRelationInput
+  vc_register_province?: Prisma.vc_provinceOrderByWithRelationInput
   vc_car_spec?: Prisma.vc_car_specOrderByWithRelationInput
   vc_car_status?: Prisma.vc_car_statusOrderByWithRelationInput
   vc_car_type?: Prisma.vc_car_typeOrderByWithRelationInput
@@ -544,7 +544,7 @@ export type vc_car_masterWhereUniqueInput = Prisma.AtLeast<{
   weight?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   machine_id?: Prisma.StringNullableFilter<"vc_car_master"> | string | null
   vc_car_brand?: Prisma.XOR<Prisma.Vc_car_brandNullableScalarRelationFilter, Prisma.vc_car_brandWhereInput> | null
-  vc_register_province?: Prisma.XOR<Prisma.Vc_register_provinceNullableScalarRelationFilter, Prisma.vc_register_provinceWhereInput> | null
+  vc_register_province?: Prisma.XOR<Prisma.Vc_provinceNullableScalarRelationFilter, Prisma.vc_provinceWhereInput> | null
   vc_car_spec?: Prisma.XOR<Prisma.Vc_car_specNullableScalarRelationFilter, Prisma.vc_car_specWhereInput> | null
   vc_car_status?: Prisma.XOR<Prisma.Vc_car_statusNullableScalarRelationFilter, Prisma.vc_car_statusWhereInput> | null
   vc_car_type?: Prisma.XOR<Prisma.Vc_car_typeNullableScalarRelationFilter, Prisma.vc_car_typeWhereInput> | null
@@ -647,7 +647,7 @@ export type vc_car_masterCreateInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
@@ -710,7 +710,7 @@ export type vc_car_masterUpdateInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
@@ -1254,48 +1254,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeNestedInput = {
   deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
 }
 
-export type vc_car_masterCreateNestedManyWithoutVc_register_provinceInput = {
-  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
-  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
-  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
-  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-}
-
-export type vc_car_masterUncheckedCreateNestedManyWithoutVc_register_provinceInput = {
-  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
-  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
-  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
-  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-}
-
-export type vc_car_masterUpdateManyWithoutVc_register_provinceNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
-  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
-  upsert?: Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput[]
-  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
-  set?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  disconnect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  delete?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  update?: Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput[]
-  updateMany?: Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput[]
-  deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
-}
-
-export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceNestedInput = {
-  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
-  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
-  upsert?: Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput[]
-  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
-  set?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  disconnect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  delete?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
-  update?: Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput[]
-  updateMany?: Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput[]
-  deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
-}
-
 export type vc_car_masterCreateNestedManyWithoutVc_type_regisInput = {
   create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput> | Prisma.vc_car_masterCreateWithoutVc_type_regisInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput[]
   connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_type_regisInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_type_regisInput[]
@@ -1338,6 +1296,48 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisNestedInput = {
   deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
 }
 
+export type vc_car_masterCreateNestedManyWithoutVc_register_provinceInput = {
+  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
+  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
+  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
+  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+}
+
+export type vc_car_masterUncheckedCreateNestedManyWithoutVc_register_provinceInput = {
+  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
+  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
+  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
+  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+}
+
+export type vc_car_masterUpdateManyWithoutVc_register_provinceNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
+  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
+  upsert?: Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput[]
+  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
+  set?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  disconnect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  delete?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  update?: Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput[]
+  updateMany?: Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput[]
+  deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
+}
+
+export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_register_provinceInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput> | Prisma.vc_car_masterCreateWithoutVc_register_provinceInput[] | Prisma.vc_car_masterUncheckedCreateWithoutVc_register_provinceInput[]
+  connectOrCreate?: Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput | Prisma.vc_car_masterCreateOrConnectWithoutVc_register_provinceInput[]
+  upsert?: Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpsertWithWhereUniqueWithoutVc_register_provinceInput[]
+  createMany?: Prisma.vc_car_masterCreateManyVc_register_provinceInputEnvelope
+  set?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  disconnect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  delete?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  connect?: Prisma.vc_car_masterWhereUniqueInput | Prisma.vc_car_masterWhereUniqueInput[]
+  update?: Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateWithWhereUniqueWithoutVc_register_provinceInput[]
+  updateMany?: Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput | Prisma.vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput[]
+  deleteMany?: Prisma.vc_car_masterScalarWhereInput | Prisma.vc_car_masterScalarWhereInput[]
+}
+
 export type vc_car_masterCreateWithoutVc_car_brandInput = {
   car_number?: string | null
   fiscal_year?: number | null
@@ -1359,7 +1359,7 @@ export type vc_car_masterCreateWithoutVc_car_brandInput = {
   horse_power?: string | null
   weight?: string | null
   machine_id?: string | null
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
@@ -1482,7 +1482,7 @@ export type vc_car_masterCreateWithoutVc_car_specInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
   vc_type_regis?: Prisma.vc_type_regisCreateNestedOneWithoutVc_car_masterInput
@@ -1569,7 +1569,7 @@ export type vc_car_masterCreateWithoutVc_car_statusInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
   vc_type_regis?: Prisma.vc_type_regisCreateNestedOneWithoutVc_car_masterInput
@@ -1656,7 +1656,7 @@ export type vc_car_masterCreateWithoutVc_car_typeInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_type_regis?: Prisma.vc_type_regisCreateNestedOneWithoutVc_car_masterInput
@@ -1743,7 +1743,7 @@ export type vc_car_masterCreateWithoutVc_colorInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
@@ -1830,7 +1830,7 @@ export type vc_car_masterCreateWithoutVc_oil_typeInput = {
   weight?: string | null
   machine_id?: string | null
   vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
   vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
   vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
   vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
@@ -1893,6 +1893,93 @@ export type vc_car_masterUpdateWithWhereUniqueWithoutVc_oil_typeInput = {
 export type vc_car_masterUpdateManyWithWhereWithoutVc_oil_typeInput = {
   where: Prisma.vc_car_masterScalarWhereInput
   data: Prisma.XOR<Prisma.vc_car_masterUpdateManyMutationInput, Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput>
+}
+
+export type vc_car_masterCreateWithoutVc_type_regisInput = {
+  car_number?: string | null
+  fiscal_year?: number | null
+  start_date?: string | null
+  end_date?: string | null
+  regis_date?: string | null
+  machine_no?: string | null
+  body_no?: string | null
+  cylinder_capacityp?: string | null
+  oil_expense?: number | null
+  refund_vat?: number | null
+  fleetcard_no?: string | null
+  flag?: string | null
+  cre_by?: number | null
+  cre_date?: string | null
+  upd_by?: number | null
+  upd_date?: string | null
+  ref_car?: string | null
+  horse_power?: string | null
+  weight?: string | null
+  machine_id?: string | null
+  vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
+  vc_register_province?: Prisma.vc_provinceCreateNestedOneWithoutVc_car_masterInput
+  vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
+  vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
+  vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
+  vc_color?: Prisma.vc_colorCreateNestedOneWithoutVc_car_masterInput
+  vc_oil_type?: Prisma.vc_oil_typeCreateNestedOneWithoutVc_car_masterInput
+}
+
+export type vc_car_masterUncheckedCreateWithoutVc_type_regisInput = {
+  car_id?: number
+  car_number?: string | null
+  car_province_id?: number | null
+  car_type_id?: number | null
+  car_spec_id?: number | null
+  car_brand_id?: number | null
+  color_id?: number | null
+  oil_type_id?: number | null
+  fiscal_year?: number | null
+  start_date?: string | null
+  end_date?: string | null
+  regis_date?: string | null
+  car_status_id?: number | null
+  machine_no?: string | null
+  body_no?: string | null
+  cylinder_capacityp?: string | null
+  oil_expense?: number | null
+  refund_vat?: number | null
+  fleetcard_no?: string | null
+  flag?: string | null
+  cre_by?: number | null
+  cre_date?: string | null
+  upd_by?: number | null
+  upd_date?: string | null
+  ref_car?: string | null
+  horse_power?: string | null
+  weight?: string | null
+  machine_id?: string | null
+}
+
+export type vc_car_masterCreateOrConnectWithoutVc_type_regisInput = {
+  where: Prisma.vc_car_masterWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput>
+}
+
+export type vc_car_masterCreateManyVc_type_regisInputEnvelope = {
+  data: Prisma.vc_car_masterCreateManyVc_type_regisInput | Prisma.vc_car_masterCreateManyVc_type_regisInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_car_masterUpsertWithWhereUniqueWithoutVc_type_regisInput = {
+  where: Prisma.vc_car_masterWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_car_masterUpdateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedUpdateWithoutVc_type_regisInput>
+  create: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput>
+}
+
+export type vc_car_masterUpdateWithWhereUniqueWithoutVc_type_regisInput = {
+  where: Prisma.vc_car_masterWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_car_masterUpdateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedUpdateWithoutVc_type_regisInput>
+}
+
+export type vc_car_masterUpdateManyWithWhereWithoutVc_type_regisInput = {
+  where: Prisma.vc_car_masterScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_car_masterUpdateManyMutationInput, Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput>
 }
 
 export type vc_car_masterCreateWithoutVc_register_provinceInput = {
@@ -1982,93 +2069,6 @@ export type vc_car_masterUpdateManyWithWhereWithoutVc_register_provinceInput = {
   data: Prisma.XOR<Prisma.vc_car_masterUpdateManyMutationInput, Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput>
 }
 
-export type vc_car_masterCreateWithoutVc_type_regisInput = {
-  car_number?: string | null
-  fiscal_year?: number | null
-  start_date?: string | null
-  end_date?: string | null
-  regis_date?: string | null
-  machine_no?: string | null
-  body_no?: string | null
-  cylinder_capacityp?: string | null
-  oil_expense?: number | null
-  refund_vat?: number | null
-  fleetcard_no?: string | null
-  flag?: string | null
-  cre_by?: number | null
-  cre_date?: string | null
-  upd_by?: number | null
-  upd_date?: string | null
-  ref_car?: string | null
-  horse_power?: string | null
-  weight?: string | null
-  machine_id?: string | null
-  vc_car_brand?: Prisma.vc_car_brandCreateNestedOneWithoutVc_car_masterInput
-  vc_register_province?: Prisma.vc_register_provinceCreateNestedOneWithoutVc_car_masterInput
-  vc_car_spec?: Prisma.vc_car_specCreateNestedOneWithoutVc_car_masterInput
-  vc_car_status?: Prisma.vc_car_statusCreateNestedOneWithoutVc_car_masterInput
-  vc_car_type?: Prisma.vc_car_typeCreateNestedOneWithoutVc_car_masterInput
-  vc_color?: Prisma.vc_colorCreateNestedOneWithoutVc_car_masterInput
-  vc_oil_type?: Prisma.vc_oil_typeCreateNestedOneWithoutVc_car_masterInput
-}
-
-export type vc_car_masterUncheckedCreateWithoutVc_type_regisInput = {
-  car_id?: number
-  car_number?: string | null
-  car_province_id?: number | null
-  car_type_id?: number | null
-  car_spec_id?: number | null
-  car_brand_id?: number | null
-  color_id?: number | null
-  oil_type_id?: number | null
-  fiscal_year?: number | null
-  start_date?: string | null
-  end_date?: string | null
-  regis_date?: string | null
-  car_status_id?: number | null
-  machine_no?: string | null
-  body_no?: string | null
-  cylinder_capacityp?: string | null
-  oil_expense?: number | null
-  refund_vat?: number | null
-  fleetcard_no?: string | null
-  flag?: string | null
-  cre_by?: number | null
-  cre_date?: string | null
-  upd_by?: number | null
-  upd_date?: string | null
-  ref_car?: string | null
-  horse_power?: string | null
-  weight?: string | null
-  machine_id?: string | null
-}
-
-export type vc_car_masterCreateOrConnectWithoutVc_type_regisInput = {
-  where: Prisma.vc_car_masterWhereUniqueInput
-  create: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput>
-}
-
-export type vc_car_masterCreateManyVc_type_regisInputEnvelope = {
-  data: Prisma.vc_car_masterCreateManyVc_type_regisInput | Prisma.vc_car_masterCreateManyVc_type_regisInput[]
-  skipDuplicates?: boolean
-}
-
-export type vc_car_masterUpsertWithWhereUniqueWithoutVc_type_regisInput = {
-  where: Prisma.vc_car_masterWhereUniqueInput
-  update: Prisma.XOR<Prisma.vc_car_masterUpdateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedUpdateWithoutVc_type_regisInput>
-  create: Prisma.XOR<Prisma.vc_car_masterCreateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedCreateWithoutVc_type_regisInput>
-}
-
-export type vc_car_masterUpdateWithWhereUniqueWithoutVc_type_regisInput = {
-  where: Prisma.vc_car_masterWhereUniqueInput
-  data: Prisma.XOR<Prisma.vc_car_masterUpdateWithoutVc_type_regisInput, Prisma.vc_car_masterUncheckedUpdateWithoutVc_type_regisInput>
-}
-
-export type vc_car_masterUpdateManyWithWhereWithoutVc_type_regisInput = {
-  where: Prisma.vc_car_masterScalarWhereInput
-  data: Prisma.XOR<Prisma.vc_car_masterUpdateManyMutationInput, Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput>
-}
-
 export type vc_car_masterCreateManyVc_car_brandInput = {
   car_id?: number
   car_number?: string | null
@@ -2121,7 +2121,7 @@ export type vc_car_masterUpdateWithoutVc_car_brandInput = {
   horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
@@ -2245,7 +2245,7 @@ export type vc_car_masterUpdateWithoutVc_car_specInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
   vc_type_regis?: Prisma.vc_type_regisUpdateOneWithoutVc_car_masterNestedInput
@@ -2368,7 +2368,7 @@ export type vc_car_masterUpdateWithoutVc_car_statusInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
   vc_type_regis?: Prisma.vc_type_regisUpdateOneWithoutVc_car_masterNestedInput
@@ -2491,7 +2491,7 @@ export type vc_car_masterUpdateWithoutVc_car_typeInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_type_regis?: Prisma.vc_type_regisUpdateOneWithoutVc_car_masterNestedInput
@@ -2614,7 +2614,7 @@ export type vc_car_masterUpdateWithoutVc_colorInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
@@ -2737,7 +2737,7 @@ export type vc_car_masterUpdateWithoutVc_oil_typeInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
   vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
   vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
   vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
@@ -2785,6 +2785,129 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_oil_typeInput = {
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  car_status_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type vc_car_masterCreateManyVc_type_regisInput = {
+  car_id?: number
+  car_number?: string | null
+  car_province_id?: number | null
+  car_type_id?: number | null
+  car_spec_id?: number | null
+  car_brand_id?: number | null
+  color_id?: number | null
+  oil_type_id?: number | null
+  fiscal_year?: number | null
+  start_date?: string | null
+  end_date?: string | null
+  regis_date?: string | null
+  car_status_id?: number | null
+  machine_no?: string | null
+  body_no?: string | null
+  cylinder_capacityp?: string | null
+  oil_expense?: number | null
+  refund_vat?: number | null
+  fleetcard_no?: string | null
+  flag?: string | null
+  cre_by?: number | null
+  cre_date?: string | null
+  upd_by?: number | null
+  upd_date?: string | null
+  ref_car?: string | null
+  horse_power?: string | null
+  weight?: string | null
+  machine_id?: string | null
+}
+
+export type vc_car_masterUpdateWithoutVc_type_regisInput = {
+  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
+  vc_register_province?: Prisma.vc_provinceUpdateOneWithoutVc_car_masterNestedInput
+  vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
+  vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
+  vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
+  vc_color?: Prisma.vc_colorUpdateOneWithoutVc_car_masterNestedInput
+  vc_oil_type?: Prisma.vc_oil_typeUpdateOneWithoutVc_car_masterNestedInput
+}
+
+export type vc_car_masterUncheckedUpdateWithoutVc_type_regisInput = {
+  car_id?: Prisma.IntFieldUpdateOperationsInput | number
+  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  car_province_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_spec_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  car_status_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
+  car_id?: Prisma.IntFieldUpdateOperationsInput | number
+  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  car_province_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_spec_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2906,129 +3029,6 @@ export type vc_car_masterUncheckedUpdateManyWithoutVc_register_provinceInput = {
   car_spec_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_type_regis_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  car_status_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type vc_car_masterCreateManyVc_type_regisInput = {
-  car_id?: number
-  car_number?: string | null
-  car_province_id?: number | null
-  car_type_id?: number | null
-  car_spec_id?: number | null
-  car_brand_id?: number | null
-  color_id?: number | null
-  oil_type_id?: number | null
-  fiscal_year?: number | null
-  start_date?: string | null
-  end_date?: string | null
-  regis_date?: string | null
-  car_status_id?: number | null
-  machine_no?: string | null
-  body_no?: string | null
-  cylinder_capacityp?: string | null
-  oil_expense?: number | null
-  refund_vat?: number | null
-  fleetcard_no?: string | null
-  flag?: string | null
-  cre_by?: number | null
-  cre_date?: string | null
-  upd_by?: number | null
-  upd_date?: string | null
-  ref_car?: string | null
-  horse_power?: string | null
-  weight?: string | null
-  machine_id?: string | null
-}
-
-export type vc_car_masterUpdateWithoutVc_type_regisInput = {
-  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vc_car_brand?: Prisma.vc_car_brandUpdateOneWithoutVc_car_masterNestedInput
-  vc_register_province?: Prisma.vc_register_provinceUpdateOneWithoutVc_car_masterNestedInput
-  vc_car_spec?: Prisma.vc_car_specUpdateOneWithoutVc_car_masterNestedInput
-  vc_car_status?: Prisma.vc_car_statusUpdateOneWithoutVc_car_masterNestedInput
-  vc_car_type?: Prisma.vc_car_typeUpdateOneWithoutVc_car_masterNestedInput
-  vc_color?: Prisma.vc_colorUpdateOneWithoutVc_car_masterNestedInput
-  vc_oil_type?: Prisma.vc_oil_typeUpdateOneWithoutVc_car_masterNestedInput
-}
-
-export type vc_car_masterUncheckedUpdateWithoutVc_type_regisInput = {
-  car_id?: Prisma.IntFieldUpdateOperationsInput | number
-  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  car_province_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_spec_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  start_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  end_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  regis_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  car_status_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  machine_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  body_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cylinder_capacityp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  oil_expense?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  refund_vat?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fleetcard_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ref_car?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  horse_power?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machine_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type vc_car_masterUncheckedUpdateManyWithoutVc_type_regisInput = {
-  car_id?: Prisma.IntFieldUpdateOperationsInput | number
-  car_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  car_province_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_spec_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_brand_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   color_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   oil_type_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fiscal_year?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3243,7 +3243,7 @@ export type $vc_car_masterPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "vc_car_master"
   objects: {
     vc_car_brand: Prisma.$vc_car_brandPayload<ExtArgs> | null
-    vc_register_province: Prisma.$vc_register_provincePayload<ExtArgs> | null
+    vc_register_province: Prisma.$vc_provincePayload<ExtArgs> | null
     vc_car_spec: Prisma.$vc_car_specPayload<ExtArgs> | null
     vc_car_status: Prisma.$vc_car_statusPayload<ExtArgs> | null
     vc_car_type: Prisma.$vc_car_typePayload<ExtArgs> | null
@@ -3676,7 +3676,7 @@ readonly fields: vc_car_masterFieldRefs;
 export interface Prisma__vc_car_masterClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vc_car_brand<T extends Prisma.vc_car_master$vc_car_brandArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_car_brandArgs<ExtArgs>>): Prisma.Prisma__vc_car_brandClient<runtime.Types.Result.GetResult<Prisma.$vc_car_brandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  vc_register_province<T extends Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>>): Prisma.Prisma__vc_register_provinceClient<runtime.Types.Result.GetResult<Prisma.$vc_register_provincePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  vc_register_province<T extends Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_register_provinceArgs<ExtArgs>>): Prisma.Prisma__vc_provinceClient<runtime.Types.Result.GetResult<Prisma.$vc_provincePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   vc_car_spec<T extends Prisma.vc_car_master$vc_car_specArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_car_specArgs<ExtArgs>>): Prisma.Prisma__vc_car_specClient<runtime.Types.Result.GetResult<Prisma.$vc_car_specPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   vc_car_status<T extends Prisma.vc_car_master$vc_car_statusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_car_statusArgs<ExtArgs>>): Prisma.Prisma__vc_car_statusClient<runtime.Types.Result.GetResult<Prisma.$vc_car_statusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   vc_car_type<T extends Prisma.vc_car_master$vc_car_typeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_master$vc_car_typeArgs<ExtArgs>>): Prisma.Prisma__vc_car_typeClient<runtime.Types.Result.GetResult<Prisma.$vc_car_typePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -4160,18 +4160,18 @@ export type vc_car_master$vc_car_brandArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type vc_car_master$vc_register_provinceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the vc_register_province
+   * Select specific fields to fetch from the vc_province
    */
-  select?: Prisma.vc_register_provinceSelect<ExtArgs> | null
+  select?: Prisma.vc_provinceSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the vc_register_province
+   * Omit specific fields from the vc_province
    */
-  omit?: Prisma.vc_register_provinceOmit<ExtArgs> | null
+  omit?: Prisma.vc_provinceOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.vc_register_provinceInclude<ExtArgs> | null
-  where?: Prisma.vc_register_provinceWhereInput
+  include?: Prisma.vc_provinceInclude<ExtArgs> | null
+  where?: Prisma.vc_provinceWhereInput
 }
 
 /**

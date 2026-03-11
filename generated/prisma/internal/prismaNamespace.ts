@@ -387,7 +387,6 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   vc_car_master: 'vc_car_master',
-  VcOrderItems: 'VcOrderItems',
   fleetcard_transactions: 'fleetcard_transactions',
   vc_car_brand: 'vc_car_brand',
   vc_car_spec: 'vc_car_spec',
@@ -402,7 +401,6 @@ export const ModelName = {
   vc_nt_car: 'vc_nt_car',
   vc_oil_type: 'vc_oil_type',
   vc_permission: 'vc_permission',
-  vc_register_province: 'vc_register_province',
   vc_replacement: 'vc_replacement',
   vc_roles: 'vc_roles',
   vc_type_regis: 'vc_type_regis',
@@ -413,7 +411,9 @@ export const ModelName = {
   vc_driver: 'vc_driver',
   vc_driver_license_type: 'vc_driver_license_type',
   vc_start_place: 'vc_start_place',
-  Booking: 'Booking'
+  vc_status_use_code: 'vc_status_use_code',
+  vc_province: 'vc_province',
+  vc_order_item: 'vc_order_item'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "vc_car_master" | "vcOrderItems" | "fleetcard_transactions" | "vc_car_brand" | "vc_car_spec" | "vc_car_status" | "vc_car_type" | "vc_color" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_register_province" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_user_roles" | "vc_rent_car" | "vc_use" | "fleetcards" | "vc_driver" | "vc_driver_license_type" | "vc_start_place" | "booking"
+    modelProps: "user" | "session" | "vc_car_master" | "fleetcard_transactions" | "vc_car_brand" | "vc_car_spec" | "vc_car_status" | "vc_car_type" | "vc_color" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_user_roles" | "vc_rent_car" | "vc_use" | "fleetcards" | "vc_driver" | "vc_driver_license_type" | "vc_start_place" | "vc_status_use_code" | "vc_province" | "vc_order_item"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -652,80 +652,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.vc_car_masterCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Vc_car_masterCountAggregateOutputType> | number
-        }
-      }
-    }
-    VcOrderItems: {
-      payload: Prisma.$VcOrderItemsPayload<ExtArgs>
-      fields: Prisma.VcOrderItemsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.VcOrderItemsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.VcOrderItemsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        findFirst: {
-          args: Prisma.VcOrderItemsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.VcOrderItemsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        findMany: {
-          args: Prisma.VcOrderItemsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        create: {
-          args: Prisma.VcOrderItemsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        createMany: {
-          args: Prisma.VcOrderItemsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.VcOrderItemsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        delete: {
-          args: Prisma.VcOrderItemsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        update: {
-          args: Prisma.VcOrderItemsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        deleteMany: {
-          args: Prisma.VcOrderItemsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.VcOrderItemsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.VcOrderItemsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>[]
-        }
-        upsert: {
-          args: Prisma.VcOrderItemsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VcOrderItemsPayload>
-        }
-        aggregate: {
-          args: Prisma.VcOrderItemsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVcOrderItems>
-        }
-        groupBy: {
-          args: Prisma.VcOrderItemsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VcOrderItemsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.VcOrderItemsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VcOrderItemsCountAggregateOutputType> | number
         }
       }
     }
@@ -1765,80 +1691,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    vc_register_province: {
-      payload: Prisma.$vc_register_provincePayload<ExtArgs>
-      fields: Prisma.vc_register_provinceFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.vc_register_provinceFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.vc_register_provinceFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        findFirst: {
-          args: Prisma.vc_register_provinceFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.vc_register_provinceFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        findMany: {
-          args: Prisma.vc_register_provinceFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
-        }
-        create: {
-          args: Prisma.vc_register_provinceCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        createMany: {
-          args: Prisma.vc_register_provinceCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.vc_register_provinceCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
-        }
-        delete: {
-          args: Prisma.vc_register_provinceDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        update: {
-          args: Prisma.vc_register_provinceUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        deleteMany: {
-          args: Prisma.vc_register_provinceDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.vc_register_provinceUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.vc_register_provinceUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
-        }
-        upsert: {
-          args: Prisma.vc_register_provinceUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
-        }
-        aggregate: {
-          args: Prisma.Vc_register_provinceAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_register_province>
-        }
-        groupBy: {
-          args: Prisma.vc_register_provinceGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Vc_register_provinceGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.vc_register_provinceCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Vc_register_provinceCountAggregateOutputType> | number
-        }
-      }
-    }
     vc_replacement: {
       payload: Prisma.$vc_replacementPayload<ExtArgs>
       fields: Prisma.vc_replacementFieldRefs
@@ -2579,77 +2431,225 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Booking: {
-      payload: Prisma.$BookingPayload<ExtArgs>
-      fields: Prisma.BookingFieldRefs
+    vc_status_use_code: {
+      payload: Prisma.$vc_status_use_codePayload<ExtArgs>
+      fields: Prisma.vc_status_use_codeFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.BookingFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+          args: Prisma.vc_status_use_codeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.BookingFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         findFirst: {
-          args: Prisma.BookingFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+          args: Prisma.vc_status_use_codeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.BookingFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         findMany: {
-          args: Prisma.BookingFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+          args: Prisma.vc_status_use_codeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>[]
         }
         create: {
-          args: Prisma.BookingCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         createMany: {
-          args: Prisma.BookingCreateManyArgs<ExtArgs>
+          args: Prisma.vc_status_use_codeCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.BookingCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+          args: Prisma.vc_status_use_codeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>[]
         }
         delete: {
-          args: Prisma.BookingDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         update: {
-          args: Prisma.BookingUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         deleteMany: {
-          args: Prisma.BookingDeleteManyArgs<ExtArgs>
+          args: Prisma.vc_status_use_codeDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.BookingUpdateManyArgs<ExtArgs>
+          args: Prisma.vc_status_use_codeUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.BookingUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+          args: Prisma.vc_status_use_codeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>[]
         }
         upsert: {
-          args: Prisma.BookingUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+          args: Prisma.vc_status_use_codeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_status_use_codePayload>
         }
         aggregate: {
-          args: Prisma.BookingAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateBooking>
+          args: Prisma.Vc_status_use_codeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_status_use_code>
         }
         groupBy: {
-          args: Prisma.BookingGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BookingGroupByOutputType>[]
+          args: Prisma.vc_status_use_codeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_status_use_codeGroupByOutputType>[]
         }
         count: {
-          args: Prisma.BookingCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BookingCountAggregateOutputType> | number
+          args: Prisma.vc_status_use_codeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_status_use_codeCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_province: {
+      payload: Prisma.$vc_provincePayload<ExtArgs>
+      fields: Prisma.vc_provinceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_provinceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_provinceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        findFirst: {
+          args: Prisma.vc_provinceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_provinceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        findMany: {
+          args: Prisma.vc_provinceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>[]
+        }
+        create: {
+          args: Prisma.vc_provinceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        createMany: {
+          args: Prisma.vc_provinceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_provinceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>[]
+        }
+        delete: {
+          args: Prisma.vc_provinceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        update: {
+          args: Prisma.vc_provinceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_provinceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_provinceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_provinceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_provinceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_provincePayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_provinceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_province>
+        }
+        groupBy: {
+          args: Prisma.vc_provinceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_provinceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_provinceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_provinceCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_order_item: {
+      payload: Prisma.$vc_order_itemPayload<ExtArgs>
+      fields: Prisma.vc_order_itemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_order_itemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_order_itemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        findFirst: {
+          args: Prisma.vc_order_itemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_order_itemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        findMany: {
+          args: Prisma.vc_order_itemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        create: {
+          args: Prisma.vc_order_itemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        createMany: {
+          args: Prisma.vc_order_itemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_order_itemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        delete: {
+          args: Prisma.vc_order_itemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        update: {
+          args: Prisma.vc_order_itemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_order_itemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_order_itemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_order_itemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_order_itemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_order_itemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_order_item>
+        }
+        groupBy: {
+          args: Prisma.vc_order_itemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_order_itemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_order_itemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_order_itemCountAggregateOutputType> | number
         }
       }
     }
@@ -2748,35 +2748,6 @@ export const Vc_car_masterScalarFieldEnum = {
 } as const
 
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
-
-
-export const VcOrderItemsScalarFieldEnum = {
-  request_id: 'request_id',
-  use_div_code: 'use_div_code',
-  userid: 'userid',
-  user_mobile: 'user_mobile',
-  journey_date: 'journey_date',
-  return_date: 'return_date',
-  start_place: 'start_place',
-  journey_place: 'journey_place',
-  journey_province: 'journey_province',
-  journey_causes: 'journey_causes',
-  journer_time: 'journer_time',
-  return_time: 'return_time',
-  car_spec_id: 'car_spec_id',
-  passenger_amount: 'passenger_amount',
-  approve_id: 'approve_id',
-  status_use_id: 'status_use_id',
-  self_drive: 'self_drive',
-  journey_lat: 'journey_lat',
-  journey_long: 'journey_long',
-  cre_by: 'cre_by',
-  cre_date: 'cre_date',
-  upd_by: 'upd_by',
-  upd_date: 'upd_date'
-} as const
-
-export type VcOrderItemsScalarFieldEnum = (typeof VcOrderItemsScalarFieldEnum)[keyof typeof VcOrderItemsScalarFieldEnum]
 
 
 export const Fleetcard_transactionsScalarFieldEnum = {
@@ -3008,21 +2979,6 @@ export const Vc_permissionScalarFieldEnum = {
 export type Vc_permissionScalarFieldEnum = (typeof Vc_permissionScalarFieldEnum)[keyof typeof Vc_permissionScalarFieldEnum]
 
 
-export const Vc_register_provinceScalarFieldEnum = {
-  regis_province_id: 'regis_province_id',
-  regis_province_name: 'regis_province_name',
-  short_name: 'short_name',
-  region_id: 'region_id',
-  flag_del: 'flag_del',
-  cre_by: 'cre_by',
-  cre_date: 'cre_date',
-  upd_by: 'upd_by',
-  upd_date: 'upd_date'
-} as const
-
-export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
-
-
 export const Vc_replacementScalarFieldEnum = {
   replacement_id: 'replacement_id',
   car_id: 'car_id',
@@ -3190,25 +3146,62 @@ export const Vc_start_placeScalarFieldEnum = {
 export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
 
 
-export const BookingScalarFieldEnum = {
-  id: 'id',
-  requesterId: 'requesterId',
-  department: 'department',
-  objective: 'objective',
-  origin: 'origin',
-  destination: 'destination',
-  requestDate: 'requestDate',
-  startDateTime: 'startDateTime',
-  endDateTime: 'endDateTime',
-  passengerCount: 'passengerCount',
-  status: 'status',
-  rejectReason: 'rejectReason',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  bookingNo: 'bookingNo'
+export const Vc_status_use_codeScalarFieldEnum = {
+  status_use_id: 'status_use_id',
+  status_use_name: 'status_use_name',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
 } as const
 
-export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+export type Vc_status_use_codeScalarFieldEnum = (typeof Vc_status_use_codeScalarFieldEnum)[keyof typeof Vc_status_use_codeScalarFieldEnum]
+
+
+export const Vc_provinceScalarFieldEnum = {
+  name_th: 'name_th',
+  abbr_th: 'abbr_th',
+  name_en: 'name_en',
+  abbr_en: 'abbr_en',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  province_id: 'province_id'
+} as const
+
+export type Vc_provinceScalarFieldEnum = (typeof Vc_provinceScalarFieldEnum)[keyof typeof Vc_provinceScalarFieldEnum]
+
+
+export const Vc_order_itemScalarFieldEnum = {
+  request_id: 'request_id',
+  use_div_code: 'use_div_code',
+  userid: 'userid',
+  user_mobile: 'user_mobile',
+  journey_date: 'journey_date',
+  return_date: 'return_date',
+  start_place: 'start_place',
+  journey_place: 'journey_place',
+  journey_province: 'journey_province',
+  journey_causes: 'journey_causes',
+  return_time: 'return_time',
+  car_spec_id: 'car_spec_id',
+  passenger_amount: 'passenger_amount',
+  approve_id: 'approve_id',
+  status_use_id: 'status_use_id',
+  self_drive: 'self_drive',
+  journey_lat: 'journey_lat',
+  journey_long: 'journey_long',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  journey_time: 'journey_time'
+} as const
+
+export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3298,13 +3291,6 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -3319,16 +3305,9 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
- * Reference to a field of type 'BookingStatus'
+ * Reference to a field of type 'Boolean'
  */
-export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
-    
-
-
-/**
- * Reference to a field of type 'BookingStatus[]'
- */
-export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 /**
@@ -3429,7 +3408,6 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   vc_car_master?: Prisma.vc_car_masterOmit
-  vcOrderItems?: Prisma.VcOrderItemsOmit
   fleetcard_transactions?: Prisma.fleetcard_transactionsOmit
   vc_car_brand?: Prisma.vc_car_brandOmit
   vc_car_spec?: Prisma.vc_car_specOmit
@@ -3444,7 +3422,6 @@ export type GlobalOmitConfig = {
   vc_nt_car?: Prisma.vc_nt_carOmit
   vc_oil_type?: Prisma.vc_oil_typeOmit
   vc_permission?: Prisma.vc_permissionOmit
-  vc_register_province?: Prisma.vc_register_provinceOmit
   vc_replacement?: Prisma.vc_replacementOmit
   vc_roles?: Prisma.vc_rolesOmit
   vc_type_regis?: Prisma.vc_type_regisOmit
@@ -3455,7 +3432,9 @@ export type GlobalOmitConfig = {
   vc_driver?: Prisma.vc_driverOmit
   vc_driver_license_type?: Prisma.vc_driver_license_typeOmit
   vc_start_place?: Prisma.vc_start_placeOmit
-  booking?: Prisma.BookingOmit
+  vc_status_use_code?: Prisma.vc_status_use_codeOmit
+  vc_province?: Prisma.vc_provinceOmit
+  vc_order_item?: Prisma.vc_order_itemOmit
 }
 
 /* Types for Logging */

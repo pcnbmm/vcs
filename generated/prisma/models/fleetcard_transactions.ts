@@ -666,6 +666,10 @@ export type fleetcard_transactionsSumOrderByAggregateInput = {
   volumeLiter?: Prisma.SortOrder
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type NullableDecimalFieldUpdateOperationsInput = {
   set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
