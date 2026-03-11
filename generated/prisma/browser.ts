@@ -33,11 +33,6 @@ export type Session = Prisma.SessionModel
  */
 export type vc_car_master = Prisma.vc_car_masterModel
 /**
- * Model VcOrderItems
- * 
- */
-export type VcOrderItems = Prisma.VcOrderItemsModel
-/**
  * Model fleetcard_transactions
  * 
  */
@@ -108,11 +103,6 @@ export type vc_oil_type = Prisma.vc_oil_typeModel
  */
 export type vc_permission = Prisma.vc_permissionModel
 /**
- * Model vc_register_province
- * 
- */
-export type vc_register_province = Prisma.vc_register_provinceModel
-/**
  * Model vc_replacement
  * 
  */
@@ -163,7 +153,17 @@ export type vc_driver_license_type = Prisma.vc_driver_license_typeModel
  */
 export type vc_start_place = Prisma.vc_start_placeModel
 /**
- * Model Booking
+ * Model vc_status_use_code
  * 
  */
-export type Booking = Prisma.BookingModel
+export type vc_status_use_code = Prisma.vc_status_use_codeModel
+/**
+ * Model vc_province
+ * 
+ */
+export type vc_province = Prisma.vc_provinceModel
+/**
+ * Model vc_order_item
+ * 
+ */
+export type vc_order_item = Prisma.vc_order_itemModel
