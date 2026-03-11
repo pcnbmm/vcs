@@ -29,8 +29,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Sessions
+ * const sessions = await prisma.session.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -40,21 +40,38 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
 /**
- * Model Session
+ * Model Booking
  * 
  */
+<<<<<<< HEAD
 export type Session = Prisma.SessionModel
+=======
+export type Booking = Prisma.BookingModel
+>>>>>>> net-paint-permission
 /**
  * Model vc_car_master
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
  */
 export type vc_car_master = Prisma.vc_car_masterModel
 /**
+<<<<<<< HEAD
+=======
+ * Model vc_order_item
+ * 
+ */
+export type vc_order_item = Prisma.vc_order_itemModel
+/**
+>>>>>>> net-paint-permission
  * Model fleetcard_transactions
  * 
  */
@@ -125,6 +142,19 @@ export type vc_oil_type = Prisma.vc_oil_typeModel
  */
 export type vc_permission = Prisma.vc_permissionModel
 /**
+<<<<<<< HEAD
+=======
+ * Model vc_register_province
+ * 
+ */
+export type vc_register_province = Prisma.vc_register_provinceModel
+/**
+ * Model vc_rent_car
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_rent_car = Prisma.vc_rent_carModel
+/**
+>>>>>>> net-paint-permission
  * Model vc_replacement
  * 
  */
@@ -140,11 +170,20 @@ export type vc_roles = Prisma.vc_rolesModel
  */
 export type vc_type_regis = Prisma.vc_type_regisModel
 /**
+<<<<<<< HEAD
+=======
+ * Model vc_use
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_use = Prisma.vc_useModel
+/**
+>>>>>>> net-paint-permission
  * Model vc_user_roles
  * 
  */
 export type vc_user_roles = Prisma.vc_user_rolesModel
 /**
+<<<<<<< HEAD
  * Model vc_rent_car
  * 
  */
@@ -157,20 +196,33 @@ export type vc_use = Prisma.vc_useModel
 /**
  * Model fleetcards
  * 
+=======
+ * Model fleetcards
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+>>>>>>> net-paint-permission
  */
 export type fleetcards = Prisma.fleetcardsModel
 /**
  * Model vc_driver
+<<<<<<< HEAD
  * 
+=======
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+>>>>>>> net-paint-permission
  */
 export type vc_driver = Prisma.vc_driverModel
 /**
  * Model vc_driver_license_type
+<<<<<<< HEAD
  * 
+=======
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+>>>>>>> net-paint-permission
  */
 export type vc_driver_license_type = Prisma.vc_driver_license_typeModel
 /**
  * Model vc_start_place
+<<<<<<< HEAD
  * 
  */
 export type vc_start_place = Prisma.vc_start_placeModel
@@ -189,3 +241,8 @@ export type vc_province = Prisma.vc_provinceModel
  * 
  */
 export type vc_order_item = Prisma.vc_order_itemModel
+=======
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+ */
+export type vc_start_place = Prisma.vc_start_placeModel
+>>>>>>> net-paint-permission

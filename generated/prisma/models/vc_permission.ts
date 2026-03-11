@@ -396,10 +396,13 @@ export type vc_permissionSumOrderByAggregateInput = {
   function_id?: Prisma.SortOrder
 }
 
+<<<<<<< HEAD
 export type NullableBoolFieldUpdateOperationsInput = {
   set?: boolean | null
 }
 
+=======
+>>>>>>> net-paint-permission
 
 
 export type vc_permissionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{

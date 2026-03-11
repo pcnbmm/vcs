@@ -1,0 +1,150 @@
+# Vehicle Management System (VMS) - Architectural Blueprint
+
+This document outlines the architectural design for a robust Enterprise-level Vehicle Management System, specifically focusing on advanced Identity and Access Management (IAM), Role-Based Access Control (RBAC), and Data Scoping.
+
+## 1. Tech Stack Recommendation
+
+For an enterprise-grade system that prioritizes security, scalability, and maintainability, the following stack is recommended:
+
+| Layer | Technology | Rationale |
+| :--- | :--- | :--- |
+| **Frontend** | **Next.js 15 (App Router)** | Provides Server-Side Rendering (SSR), API Routes, and optimized performance. |
+| **Language** | **TypeScript** | Ensures type safety for complex permission logic and domain entities. |
+| **Backend/Runtime** | **Node.js (Next.js Edge/Node runtime)** | High performance and consistent environment across frontend/backend. |
+| **Database** | **PostgreSQL (e.g., Neon / Supabase)** | High-reliability relational database with strong support for complex queries. |
+| **ORM** | **Prisma** | Provides a type-safe schema and simplifies complex RBAC relationship queries. |
+| **Authentication** | **Auth.js (NextAuth v5)** | Industry-standard for secure session management and flexible provider support (OAuth, LDAP, Credentials). |
+| **Authorization** | **CASL (Isomorphic Library)** | A powerful library for defining and checking "What a user can do" (Abilities). |
+| **Validation** | **Zod** | Schema validation for API requests and environment variables. |
+
+---
+
+## 2. Database Blueprint (RBAC & Data Scoping Schema)
+
+### ER Diagram Logic
+The schema follows a standard RBAC pattern extended with **Data Scoping** attributes to handle geographical or organizational restrictions (Region/L-Level).
+
+```mermaid
+erDiagram
+    USER ||--o{ USER_ROLE : has
+    ROLE ||--o{ USER_ROLE : "assigned to"
+    ROLE ||--o{ ROLE_PERMISSION : contains
+    PERMISSION ||--o{ ROLE_PERMISSION : "mapping to"
+    
+    USER {
+        string id PK
+        string email UK
+        string password_hash
+        string name
+        string region_id FK "Fleet Owner Scope"
+        string level_id FK "L-Level Scope"
+        datetime created_at
+    }
+
+    ROLE {
+        string id PK
+        string role_name UK "Admin, Approver, etc."
+        string description
+    }
+
+    PERMISSION {
+        string id PK
+        string name UK "e.g., Can_Approve"
+        string action "read | create | update | delete | manage"
+        string subject "Booking | Vehicle | User | Report"
+    }
+
+    USER_ROLE {
+        string user_id PK, FK
+        string role_id PK, FK
+    }
+
+    ROLE_PERMISSION {
+        string role_id PK, FK
+        string permission_id PK, FK
+    }
+
+    REGION {
+        string id PK
+        string region_name
+    }
+
+    L_LEVEL {
+        string id PK
+        string level_name
+    }
+
+    USER }o--|| REGION : "belongs to"
+    USER }o--|| L_LEVEL : "belongs to"
+```
+
+### Role-Specific Data Scoping Strategy
+- **Global Roles** (Admin, Executive): `region_id` and `level_id` are `NULL` (unscoped access).
+- **Fleet Owner (Region)**: The user is linked to a `region_id`. Backend queries filter by: `WHERE region_id = session.user.region_id`.
+- **Fleet Owner (L-Level)**: The user is linked to a `level_id`. Backend queries filter by: `WHERE level_id = session.user.level_id`.
+
+---
+
+## 3. Supported Roles (Defined via Master Data)
+
+As per the requirements, the system supports these 8 core roles:
+
+1.  **User**: Requesting vehicles, tracking status.
+2.  **Approver**: Approving/rejecting vehicle requests.
+3.  **Dispatcher**: Fleet orchestration, assigning drivers/vehicles.
+4.  **Admin**: System configuration, master data management.
+5.  **Executive**: High-level dashboards and cross-regional reporting.
+6.  **Fleet Owner (Region)**: Regional management (Scoped to `RegionID`).
+7.  **Fleet Owner (L-Level)**: Organizational level management (Scoped to `LevelID`).
+8.  **Manage Roles**: Security-focused role for managing users and their role assignments.
+
+---
+
+## 4. Technical Workflow: Permission Check (Middleware & Guards)
+
+### Flow Diagram: Frontend to Backend
+The process follows a "Defense in Depth" approach where checks are performed multiple times.
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend (UI)
+    participant MW as Next.js Middleware
+    participant SRV as Server Action / API Route
+    participant DB as Database (Prisma)
+
+    FE->>MW: HTTP Request (/bookings/approve)
+    MW->>MW: Check Session (NextAuth)
+    alt No Session
+        MW-->>FE: 302 Redirect to /login
+    else Has Session
+        MW->>MW: Check Path Access (Basic Role Guard)
+        alt Role Missing for Path
+            MW-->>FE: 403 Forbidden
+        else Access Granted
+            MW->>SRV: Process Request
+            SRV->>SRV: Permission Guard (CASL Check)
+            note right of SRV: checkAbility("update", "Booking")
+            SRV->>DB: Fetch Data (Apply SCOPE Filter)
+            note right of DB: SELECT * WHERE region_id = session.uid
+            DB-->>SRV: Scoped Result
+            SRV-->>FE: HTTP 200 (Success)
+        end
+    end
+```
+
+### Implementation Details:
+1.  **Frontend Guard**: Use a `PermissionWrapper` component to show/hide buttons based on the user's `ability` object.
+2.  **Backend Guard**: 
+    - A custom `guard` function that reads the user's roles and permissions from the session (or cache).
+    - Checks if the user's action matches the required permission (e.g., `Can_Approve`).
+3.  **Data Scoping Filter**: In the Prisma service layer, we inject the user's scope:
+    ```typescript
+    const bookings = await prisma.booking.findMany({
+      where: {
+        ...(user.role === 'FLEET_OWNER_REGION' ? { regionId: user.regionId } : {}),
+        ...(user.role === 'FLEET_OWNER_LEVEL' ? { levelId: user.levelId } : {}),
+      },
+    });
+    ```
+
+---

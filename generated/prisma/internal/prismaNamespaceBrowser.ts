@@ -51,9 +51,16 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Session: 'Session',
   User: 'User',
+<<<<<<< HEAD
   Session: 'Session',
   vc_car_master: 'vc_car_master',
+=======
+  Booking: 'Booking',
+  vc_car_master: 'vc_car_master',
+  vc_order_item: 'vc_order_item',
+>>>>>>> net-paint-permission
   fleetcard_transactions: 'fleetcard_transactions',
   vc_car_brand: 'vc_car_brand',
   vc_car_spec: 'vc_car_spec',
@@ -68,6 +75,7 @@ export const ModelName = {
   vc_nt_car: 'vc_nt_car',
   vc_oil_type: 'vc_oil_type',
   vc_permission: 'vc_permission',
+<<<<<<< HEAD
   vc_replacement: 'vc_replacement',
   vc_roles: 'vc_roles',
   vc_type_regis: 'vc_type_regis',
@@ -81,6 +89,19 @@ export const ModelName = {
   vc_status_use_code: 'vc_status_use_code',
   vc_province: 'vc_province',
   vc_order_item: 'vc_order_item'
+=======
+  vc_register_province: 'vc_register_province',
+  vc_rent_car: 'vc_rent_car',
+  vc_replacement: 'vc_replacement',
+  vc_roles: 'vc_roles',
+  vc_type_regis: 'vc_type_regis',
+  vc_use: 'vc_use',
+  vc_user_roles: 'vc_user_roles',
+  fleetcards: 'fleetcards',
+  vc_driver: 'vc_driver',
+  vc_driver_license_type: 'vc_driver_license_type',
+  vc_start_place: 'vc_start_place'
+>>>>>>> net-paint-permission
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -99,6 +120,7 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+<<<<<<< HEAD
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -112,6 +134,8 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const SessionScalarFieldEnum = {
   id: 'id',
   sessionToken: 'sessionToken',
@@ -122,6 +146,43 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  createdAt: 'createdAt',
+  password: 'password',
+  role: 'role',
+  username: 'username'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  requesterId: 'requesterId',
+  department: 'department',
+  objective: 'objective',
+  origin: 'origin',
+  destination: 'destination',
+  requestDate: 'requestDate',
+  startDateTime: 'startDateTime',
+  endDateTime: 'endDateTime',
+  passengerCount: 'passengerCount',
+  status: 'status',
+  rejectReason: 'rejectReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  bookingNo: 'bookingNo'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Vc_car_masterScalarFieldEnum = {
   car_id: 'car_id',
   car_number: 'car_number',
@@ -157,6 +218,38 @@ export const Vc_car_masterScalarFieldEnum = {
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_order_itemScalarFieldEnum = {
+  request_id: 'request_id',
+  use_div_code: 'use_div_code',
+  userid: 'userid',
+  user_mobile: 'user_mobile',
+  journey_date: 'journey_date',
+  return_date: 'return_date',
+  start_place: 'start_place',
+  journey_place: 'journey_place',
+  journey_province: 'journey_province',
+  journey_causes: 'journey_causes',
+  journer_time: 'journer_time',
+  return_time: 'return_time',
+  car_spec_id: 'car_spec_id',
+  passenger_amount: 'passenger_amount',
+  approve_id: 'approve_id',
+  status_use_id: 'status_use_id',
+  self_drive: 'self_drive',
+  journey_lat: 'journey_lat',
+  journey_long: 'journey_long',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Fleetcard_transactionsScalarFieldEnum = {
   fleetcard_trans_id: 'fleetcard_trans_id',
   fleetcard_id: 'fleetcard_id',
@@ -386,6 +479,41 @@ export const Vc_permissionScalarFieldEnum = {
 export type Vc_permissionScalarFieldEnum = (typeof Vc_permissionScalarFieldEnum)[keyof typeof Vc_permissionScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_register_provinceScalarFieldEnum = {
+  regis_province_id: 'regis_province_id',
+  regis_province_name: 'regis_province_name',
+  short_name: 'short_name',
+  region_id: 'region_id',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
+
+
+export const Vc_rent_carScalarFieldEnum = {
+  rent_car_id: 'rent_car_id',
+  car_id: 'car_id',
+  rent_no: 'rent_no',
+  company_id: 'company_id',
+  price_per_month: 'price_per_month',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  replacement_flag: 'replacement_flag',
+  po: 'po'
+} as const
+
+export type Vc_rent_carScalarFieldEnum = (typeof Vc_rent_carScalarFieldEnum)[keyof typeof Vc_rent_carScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Vc_replacementScalarFieldEnum = {
   replacement_id: 'replacement_id',
   car_id: 'car_id',
@@ -427,6 +555,7 @@ export const Vc_type_regisScalarFieldEnum = {
 export type Vc_type_regisScalarFieldEnum = (typeof Vc_type_regisScalarFieldEnum)[keyof typeof Vc_type_regisScalarFieldEnum]
 
 
+<<<<<<< HEAD
 export const Vc_user_rolesScalarFieldEnum = {
   user_id: 'user_id',
   roles_id: 'roles_id',
@@ -456,6 +585,8 @@ export const Vc_rent_carScalarFieldEnum = {
 export type Vc_rent_carScalarFieldEnum = (typeof Vc_rent_carScalarFieldEnum)[keyof typeof Vc_rent_carScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const Vc_useScalarFieldEnum = {
   use_id: 'use_id',
   request_id: 'request_id',
@@ -478,6 +609,21 @@ export const Vc_useScalarFieldEnum = {
 export type Vc_useScalarFieldEnum = (typeof Vc_useScalarFieldEnum)[keyof typeof Vc_useScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_user_rolesScalarFieldEnum = {
+  user_id: 'user_id',
+  roles_id: 'roles_id',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_user_rolesScalarFieldEnum = (typeof Vc_user_rolesScalarFieldEnum)[keyof typeof Vc_user_rolesScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const FleetcardsScalarFieldEnum = {
   accountNo: 'accountNo',
   fleetcardNo: 'fleetcardNo',
@@ -553,6 +699,7 @@ export const Vc_start_placeScalarFieldEnum = {
 export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
 
 
+<<<<<<< HEAD
 export const Vc_status_use_codeScalarFieldEnum = {
   status_use_id: 'status_use_id',
   status_use_name: 'status_use_name',
@@ -611,6 +758,8 @@ export const Vc_order_itemScalarFieldEnum = {
 export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'

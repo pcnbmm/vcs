@@ -14,7 +14,11 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_rent_car
+<<<<<<< HEAD
  * 
+=======
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+>>>>>>> net-paint-permission
  */
 export type vc_rent_carModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_rent_carPayload>
 

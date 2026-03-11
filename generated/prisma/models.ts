@@ -8,9 +8,15 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
 export type * from './models/Session'
+<<<<<<< HEAD
 export type * from './models/vc_car_master'
+=======
+export type * from './models/User'
+export type * from './models/Booking'
+export type * from './models/vc_car_master'
+export type * from './models/vc_order_item'
+>>>>>>> net-paint-permission
 export type * from './models/fleetcard_transactions'
 export type * from './models/vc_car_brand'
 export type * from './models/vc_car_spec'
@@ -25,17 +31,30 @@ export type * from './models/vc_menu'
 export type * from './models/vc_nt_car'
 export type * from './models/vc_oil_type'
 export type * from './models/vc_permission'
+<<<<<<< HEAD
 export type * from './models/vc_replacement'
 export type * from './models/vc_roles'
 export type * from './models/vc_type_regis'
 export type * from './models/vc_user_roles'
 export type * from './models/vc_rent_car'
 export type * from './models/vc_use'
+=======
+export type * from './models/vc_register_province'
+export type * from './models/vc_rent_car'
+export type * from './models/vc_replacement'
+export type * from './models/vc_roles'
+export type * from './models/vc_type_regis'
+export type * from './models/vc_use'
+export type * from './models/vc_user_roles'
+>>>>>>> net-paint-permission
 export type * from './models/fleetcards'
 export type * from './models/vc_driver'
 export type * from './models/vc_driver_license_type'
 export type * from './models/vc_start_place'
+<<<<<<< HEAD
 export type * from './models/vc_status_use_code'
 export type * from './models/vc_province'
 export type * from './models/vc_order_item'
+=======
+>>>>>>> net-paint-permission
 export type * from './commonInputTypes'

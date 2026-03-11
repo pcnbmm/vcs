@@ -14,7 +14,11 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model vc_driver_license_type
+<<<<<<< HEAD
  * 
+=======
+ * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+>>>>>>> net-paint-permission
  */
 export type vc_driver_license_typeModel = runtime.Types.Result.DefaultSelection<Prisma.$vc_driver_license_typePayload>
 

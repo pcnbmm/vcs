@@ -53,6 +53,10 @@ export type Vc_order_itemMinAggregateOutputType = {
   journey_place: string | null
   journey_province: string | null
   journey_causes: string | null
+<<<<<<< HEAD
+=======
+  journer_time: string | null
+>>>>>>> net-paint-permission
   return_time: string | null
   car_spec_id: string | null
   passenger_amount: number | null
@@ -65,7 +69,10 @@ export type Vc_order_itemMinAggregateOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+<<<<<<< HEAD
   journey_time: string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type Vc_order_itemMaxAggregateOutputType = {
@@ -79,6 +86,10 @@ export type Vc_order_itemMaxAggregateOutputType = {
   journey_place: string | null
   journey_province: string | null
   journey_causes: string | null
+<<<<<<< HEAD
+=======
+  journer_time: string | null
+>>>>>>> net-paint-permission
   return_time: string | null
   car_spec_id: string | null
   passenger_amount: number | null
@@ -91,7 +102,10 @@ export type Vc_order_itemMaxAggregateOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+<<<<<<< HEAD
   journey_time: string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type Vc_order_itemCountAggregateOutputType = {
@@ -105,6 +119,10 @@ export type Vc_order_itemCountAggregateOutputType = {
   journey_place: number
   journey_province: number
   journey_causes: number
+<<<<<<< HEAD
+=======
+  journer_time: number
+>>>>>>> net-paint-permission
   return_time: number
   car_spec_id: number
   passenger_amount: number
@@ -117,7 +135,10 @@ export type Vc_order_itemCountAggregateOutputType = {
   cre_date: number
   upd_by: number
   upd_date: number
+<<<<<<< HEAD
   journey_time: number
+=======
+>>>>>>> net-paint-permission
   _all: number
 }
 
@@ -149,6 +170,10 @@ export type Vc_order_itemMinAggregateInputType = {
   journey_place?: true
   journey_province?: true
   journey_causes?: true
+<<<<<<< HEAD
+=======
+  journer_time?: true
+>>>>>>> net-paint-permission
   return_time?: true
   car_spec_id?: true
   passenger_amount?: true
@@ -161,7 +186,10 @@ export type Vc_order_itemMinAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+<<<<<<< HEAD
   journey_time?: true
+=======
+>>>>>>> net-paint-permission
 }
 
 export type Vc_order_itemMaxAggregateInputType = {
@@ -175,6 +203,10 @@ export type Vc_order_itemMaxAggregateInputType = {
   journey_place?: true
   journey_province?: true
   journey_causes?: true
+<<<<<<< HEAD
+=======
+  journer_time?: true
+>>>>>>> net-paint-permission
   return_time?: true
   car_spec_id?: true
   passenger_amount?: true
@@ -187,7 +219,10 @@ export type Vc_order_itemMaxAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+<<<<<<< HEAD
   journey_time?: true
+=======
+>>>>>>> net-paint-permission
 }
 
 export type Vc_order_itemCountAggregateInputType = {
@@ -201,6 +236,10 @@ export type Vc_order_itemCountAggregateInputType = {
   journey_place?: true
   journey_province?: true
   journey_causes?: true
+<<<<<<< HEAD
+=======
+  journer_time?: true
+>>>>>>> net-paint-permission
   return_time?: true
   car_spec_id?: true
   passenger_amount?: true
@@ -213,7 +252,10 @@ export type Vc_order_itemCountAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+<<<<<<< HEAD
   journey_time?: true
+=======
+>>>>>>> net-paint-permission
   _all?: true
 }
 
@@ -314,6 +356,10 @@ export type Vc_order_itemGroupByOutputType = {
   journey_place: string | null
   journey_province: string | null
   journey_causes: string | null
+<<<<<<< HEAD
+=======
+  journer_time: string | null
+>>>>>>> net-paint-permission
   return_time: string | null
   car_spec_id: string | null
   passenger_amount: number | null
@@ -326,7 +372,10 @@ export type Vc_order_itemGroupByOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+<<<<<<< HEAD
   journey_time: string | null
+=======
+>>>>>>> net-paint-permission
   _count: Vc_order_itemCountAggregateOutputType | null
   _avg: Vc_order_itemAvgAggregateOutputType | null
   _sum: Vc_order_itemSumAggregateOutputType | null
@@ -363,6 +412,10 @@ export type vc_order_itemWhereInput = {
   journey_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   journey_province?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   journey_causes?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   car_spec_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   passenger_amount?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
@@ -375,8 +428,11 @@ export type vc_order_itemWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   vc_status_use_code?: Prisma.XOR<Prisma.Vc_status_use_codeNullableScalarRelationFilter, Prisma.vc_status_use_codeWhereInput> | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemOrderByWithRelationInput = {
@@ -390,6 +446,10 @@ export type vc_order_itemOrderByWithRelationInput = {
   journey_place?: Prisma.SortOrderInput | Prisma.SortOrder
   journey_province?: Prisma.SortOrderInput | Prisma.SortOrder
   journey_causes?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.SortOrderInput | Prisma.SortOrder
+>>>>>>> net-paint-permission
   return_time?: Prisma.SortOrderInput | Prisma.SortOrder
   car_spec_id?: Prisma.SortOrderInput | Prisma.SortOrder
   passenger_amount?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -402,8 +462,11 @@ export type vc_order_itemOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
   journey_time?: Prisma.SortOrderInput | Prisma.SortOrder
   vc_status_use_code?: Prisma.vc_status_use_codeOrderByWithRelationInput
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemWhereUniqueInput = Prisma.AtLeast<{
@@ -420,6 +483,10 @@ export type vc_order_itemWhereUniqueInput = Prisma.AtLeast<{
   journey_place?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   journey_province?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   journey_causes?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   car_spec_id?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   passenger_amount?: Prisma.IntNullableFilter<"vc_order_item"> | number | null
@@ -432,8 +499,11 @@ export type vc_order_itemWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_order_item"> | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.StringNullableFilter<"vc_order_item"> | string | null
   vc_status_use_code?: Prisma.XOR<Prisma.Vc_status_use_codeNullableScalarRelationFilter, Prisma.vc_status_use_codeWhereInput> | null
+=======
+>>>>>>> net-paint-permission
 }, "request_id">
 
 export type vc_order_itemOrderByWithAggregationInput = {
@@ -447,6 +517,10 @@ export type vc_order_itemOrderByWithAggregationInput = {
   journey_place?: Prisma.SortOrderInput | Prisma.SortOrder
   journey_province?: Prisma.SortOrderInput | Prisma.SortOrder
   journey_causes?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.SortOrderInput | Prisma.SortOrder
+>>>>>>> net-paint-permission
   return_time?: Prisma.SortOrderInput | Prisma.SortOrder
   car_spec_id?: Prisma.SortOrderInput | Prisma.SortOrder
   passenger_amount?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -459,7 +533,10 @@ export type vc_order_itemOrderByWithAggregationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+<<<<<<< HEAD
   journey_time?: Prisma.SortOrderInput | Prisma.SortOrder
+=======
+>>>>>>> net-paint-permission
   _count?: Prisma.vc_order_itemCountOrderByAggregateInput
   _avg?: Prisma.vc_order_itemAvgOrderByAggregateInput
   _max?: Prisma.vc_order_itemMaxOrderByAggregateInput
@@ -481,6 +558,10 @@ export type vc_order_itemScalarWhereWithAggregatesInput = {
   journey_place?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
   journey_province?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
   journey_causes?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
   car_spec_id?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
   passenger_amount?: Prisma.IntNullableWithAggregatesFilter<"vc_order_item"> | number | null
@@ -493,7 +574,10 @@ export type vc_order_itemScalarWhereWithAggregatesInput = {
   cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
   upd_by?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
   upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_order_item"> | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.StringNullableWithAggregatesFilter<"vc_order_item"> | string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemCreateInput = {
@@ -506,10 +590,18 @@ export type vc_order_itemCreateInput = {
   journey_place?: string | null
   journey_province?: string | null
   journey_causes?: string | null
+<<<<<<< HEAD
+=======
+  journer_time?: string | null
+>>>>>>> net-paint-permission
   return_time?: string | null
   car_spec_id?: string | null
   passenger_amount?: number | null
   approve_id?: string | null
+<<<<<<< HEAD
+=======
+  status_use_id?: number | null
+>>>>>>> net-paint-permission
   self_drive?: boolean | null
   journey_lat?: number | null
   journey_long?: number | null
@@ -517,8 +609,11 @@ export type vc_order_itemCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+<<<<<<< HEAD
   journey_time?: string | null
   vc_status_use_code?: Prisma.vc_status_use_codeCreateNestedOneWithoutVc_order_itemInput
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemUncheckedCreateInput = {
@@ -532,6 +627,10 @@ export type vc_order_itemUncheckedCreateInput = {
   journey_place?: string | null
   journey_province?: string | null
   journey_causes?: string | null
+<<<<<<< HEAD
+=======
+  journer_time?: string | null
+>>>>>>> net-paint-permission
   return_time?: string | null
   car_spec_id?: string | null
   passenger_amount?: number | null
@@ -544,7 +643,10 @@ export type vc_order_itemUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+<<<<<<< HEAD
   journey_time?: string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemUpdateInput = {
@@ -557,10 +659,18 @@ export type vc_order_itemUpdateInput = {
   journey_place?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_causes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_spec_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passenger_amount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   approve_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  status_use_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+>>>>>>> net-paint-permission
   self_drive?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   journey_lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   journey_long?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -568,8 +678,11 @@ export type vc_order_itemUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_status_use_code?: Prisma.vc_status_use_codeUpdateOneWithoutVc_order_itemNestedInput
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemUncheckedUpdateInput = {
@@ -583,6 +696,10 @@ export type vc_order_itemUncheckedUpdateInput = {
   journey_place?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_causes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_spec_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passenger_amount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -595,7 +712,10 @@ export type vc_order_itemUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemCreateManyInput = {
@@ -609,6 +729,10 @@ export type vc_order_itemCreateManyInput = {
   journey_place?: string | null
   journey_province?: string | null
   journey_causes?: string | null
+<<<<<<< HEAD
+=======
+  journer_time?: string | null
+>>>>>>> net-paint-permission
   return_time?: string | null
   car_spec_id?: string | null
   passenger_amount?: number | null
@@ -621,7 +745,10 @@ export type vc_order_itemCreateManyInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+<<<<<<< HEAD
   journey_time?: string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemUpdateManyMutationInput = {
@@ -634,10 +761,18 @@ export type vc_order_itemUpdateManyMutationInput = {
   journey_place?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_causes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_spec_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passenger_amount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   approve_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  status_use_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+>>>>>>> net-paint-permission
   self_drive?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   journey_lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   journey_long?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -645,7 +780,10 @@ export type vc_order_itemUpdateManyMutationInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemUncheckedUpdateManyInput = {
@@ -659,6 +797,10 @@ export type vc_order_itemUncheckedUpdateManyInput = {
   journey_place?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   journey_causes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+>>>>>>> net-paint-permission
   return_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   car_spec_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passenger_amount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -671,6 +813,7 @@ export type vc_order_itemUncheckedUpdateManyInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+<<<<<<< HEAD
   journey_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -682,6 +825,8 @@ export type Vc_order_itemListRelationFilter = {
 
 export type vc_order_itemOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemCountOrderByAggregateInput = {
@@ -695,6 +840,10 @@ export type vc_order_itemCountOrderByAggregateInput = {
   journey_place?: Prisma.SortOrder
   journey_province?: Prisma.SortOrder
   journey_causes?: Prisma.SortOrder
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.SortOrder
+>>>>>>> net-paint-permission
   return_time?: Prisma.SortOrder
   car_spec_id?: Prisma.SortOrder
   passenger_amount?: Prisma.SortOrder
@@ -707,7 +856,10 @@ export type vc_order_itemCountOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+<<<<<<< HEAD
   journey_time?: Prisma.SortOrder
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemAvgOrderByAggregateInput = {
@@ -729,6 +881,10 @@ export type vc_order_itemMaxOrderByAggregateInput = {
   journey_place?: Prisma.SortOrder
   journey_province?: Prisma.SortOrder
   journey_causes?: Prisma.SortOrder
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.SortOrder
+>>>>>>> net-paint-permission
   return_time?: Prisma.SortOrder
   car_spec_id?: Prisma.SortOrder
   passenger_amount?: Prisma.SortOrder
@@ -741,7 +897,10 @@ export type vc_order_itemMaxOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+<<<<<<< HEAD
   journey_time?: Prisma.SortOrder
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemMinOrderByAggregateInput = {
@@ -755,6 +914,10 @@ export type vc_order_itemMinOrderByAggregateInput = {
   journey_place?: Prisma.SortOrder
   journey_province?: Prisma.SortOrder
   journey_causes?: Prisma.SortOrder
+<<<<<<< HEAD
+=======
+  journer_time?: Prisma.SortOrder
+>>>>>>> net-paint-permission
   return_time?: Prisma.SortOrder
   car_spec_id?: Prisma.SortOrder
   passenger_amount?: Prisma.SortOrder
@@ -767,7 +930,10 @@ export type vc_order_itemMinOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+<<<<<<< HEAD
   journey_time?: Prisma.SortOrder
+=======
+>>>>>>> net-paint-permission
 }
 
 export type vc_order_itemSumOrderByAggregateInput = {
@@ -778,6 +944,7 @@ export type vc_order_itemSumOrderByAggregateInput = {
   journey_long?: Prisma.SortOrder
 }
 
+<<<<<<< HEAD
 export type vc_order_itemCreateNestedManyWithoutVc_status_use_codeInput = {
   create?: Prisma.XOR<Prisma.vc_order_itemCreateWithoutVc_status_use_codeInput, Prisma.vc_order_itemUncheckedCreateWithoutVc_status_use_codeInput> | Prisma.vc_order_itemCreateWithoutVc_status_use_codeInput[] | Prisma.vc_order_itemUncheckedCreateWithoutVc_status_use_codeInput[]
   connectOrCreate?: Prisma.vc_order_itemCreateOrConnectWithoutVc_status_use_codeInput | Prisma.vc_order_itemCreateOrConnectWithoutVc_status_use_codeInput[]
@@ -1021,6 +1188,14 @@ export type vc_order_itemUncheckedUpdateManyWithoutVc_status_use_codeInput = {
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   journey_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+=======
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
+>>>>>>> net-paint-permission
 }
 
 
@@ -1036,6 +1211,10 @@ export type vc_order_itemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   journey_place?: boolean
   journey_province?: boolean
   journey_causes?: boolean
+<<<<<<< HEAD
+=======
+  journer_time?: boolean
+>>>>>>> net-paint-permission
   return_time?: boolean
   car_spec_id?: boolean
   passenger_amount?: boolean
@@ -1048,8 +1227,11 @@ export type vc_order_itemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+<<<<<<< HEAD
   journey_time?: boolean
   vc_status_use_code?: boolean | Prisma.vc_order_item$vc_status_use_codeArgs<ExtArgs>
+=======
+>>>>>>> net-paint-permission
 }, ExtArgs["result"]["vc_order_item"]>
 
 export type vc_order_itemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1063,6 +1245,10 @@ export type vc_order_itemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   journey_place?: boolean
   journey_province?: boolean
   journey_causes?: boolean
+<<<<<<< HEAD
+=======
+  journer_time?: boolean
+>>>>>>> net-paint-permission
   return_time?: boolean
   car_spec_id?: boolean
   passenger_amount?: boolean
@@ -1075,8 +1261,11 @@ export type vc_order_itemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+<<<<<<< HEAD
   journey_time?: boolean
   vc_status_use_code?: boolean | Prisma.vc_order_item$vc_status_use_codeArgs<ExtArgs>
+=======
+>>>>>>> net-paint-permission
 }, ExtArgs["result"]["vc_order_item"]>
 
 export type vc_order_itemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1090,6 +1279,10 @@ export type vc_order_itemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   journey_place?: boolean
   journey_province?: boolean
   journey_causes?: boolean
+<<<<<<< HEAD
+=======
+  journer_time?: boolean
+>>>>>>> net-paint-permission
   return_time?: boolean
   car_spec_id?: boolean
   passenger_amount?: boolean
@@ -1102,8 +1295,11 @@ export type vc_order_itemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+<<<<<<< HEAD
   journey_time?: boolean
   vc_status_use_code?: boolean | Prisma.vc_order_item$vc_status_use_codeArgs<ExtArgs>
+=======
+>>>>>>> net-paint-permission
 }, ExtArgs["result"]["vc_order_item"]>
 
 export type vc_order_itemSelectScalar = {
@@ -1117,6 +1313,10 @@ export type vc_order_itemSelectScalar = {
   journey_place?: boolean
   journey_province?: boolean
   journey_causes?: boolean
+<<<<<<< HEAD
+=======
+  journer_time?: boolean
+>>>>>>> net-paint-permission
   return_time?: boolean
   car_spec_id?: boolean
   passenger_amount?: boolean
@@ -1129,6 +1329,7 @@ export type vc_order_itemSelectScalar = {
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+<<<<<<< HEAD
   journey_time?: boolean
 }
 
@@ -1148,6 +1349,15 @@ export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     vc_status_use_code: Prisma.$vc_status_use_codePayload<ExtArgs> | null
   }
+=======
+}
+
+export type vc_order_itemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"request_id" | "use_div_code" | "userid" | "user_mobile" | "journey_date" | "return_date" | "start_place" | "journey_place" | "journey_province" | "journey_causes" | "journer_time" | "return_time" | "car_spec_id" | "passenger_amount" | "approve_id" | "status_use_id" | "self_drive" | "journey_lat" | "journey_long" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_order_item"]>
+
+export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "vc_order_item"
+  objects: {}
+>>>>>>> net-paint-permission
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     request_id: number
     use_div_code: string | null
@@ -1159,6 +1369,10 @@ export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     journey_place: string | null
     journey_province: string | null
     journey_causes: string | null
+<<<<<<< HEAD
+=======
+    journer_time: string | null
+>>>>>>> net-paint-permission
     return_time: string | null
     car_spec_id: string | null
     passenger_amount: number | null
@@ -1171,7 +1385,10 @@ export type $vc_order_itemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     cre_date: Date | null
     upd_by: string | null
     upd_date: Date | null
+<<<<<<< HEAD
     journey_time: string | null
+=======
+>>>>>>> net-paint-permission
   }, ExtArgs["result"]["vc_order_item"]>
   composites: {}
 }
@@ -1566,7 +1783,10 @@ readonly fields: vc_order_itemFieldRefs;
  */
 export interface Prisma__vc_order_itemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+<<<<<<< HEAD
   vc_status_use_code<T extends Prisma.vc_order_item$vc_status_use_codeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_order_item$vc_status_use_codeArgs<ExtArgs>>): Prisma.Prisma__vc_status_use_codeClient<runtime.Types.Result.GetResult<Prisma.$vc_status_use_codePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+=======
+>>>>>>> net-paint-permission
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1606,6 +1826,10 @@ export interface vc_order_itemFieldRefs {
   readonly journey_place: Prisma.FieldRef<"vc_order_item", 'String'>
   readonly journey_province: Prisma.FieldRef<"vc_order_item", 'String'>
   readonly journey_causes: Prisma.FieldRef<"vc_order_item", 'String'>
+<<<<<<< HEAD
+=======
+  readonly journer_time: Prisma.FieldRef<"vc_order_item", 'String'>
+>>>>>>> net-paint-permission
   readonly return_time: Prisma.FieldRef<"vc_order_item", 'String'>
   readonly car_spec_id: Prisma.FieldRef<"vc_order_item", 'String'>
   readonly passenger_amount: Prisma.FieldRef<"vc_order_item", 'Int'>
@@ -1618,7 +1842,10 @@ export interface vc_order_itemFieldRefs {
   readonly cre_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
   readonly upd_by: Prisma.FieldRef<"vc_order_item", 'String'>
   readonly upd_date: Prisma.FieldRef<"vc_order_item", 'DateTime'>
+<<<<<<< HEAD
   readonly journey_time: Prisma.FieldRef<"vc_order_item", 'String'>
+=======
+>>>>>>> net-paint-permission
 }
     
 
@@ -1636,10 +1863,13 @@ export type vc_order_itemFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter, which vc_order_item to fetch.
    */
   where: Prisma.vc_order_itemWhereUniqueInput
@@ -1658,10 +1888,13 @@ export type vc_order_itemFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter, which vc_order_item to fetch.
    */
   where: Prisma.vc_order_itemWhereUniqueInput
@@ -1680,10 +1913,13 @@ export type vc_order_itemFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter, which vc_order_item to fetch.
    */
   where?: Prisma.vc_order_itemWhereInput
@@ -1732,10 +1968,13 @@ export type vc_order_itemFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter, which vc_order_item to fetch.
    */
   where?: Prisma.vc_order_itemWhereInput
@@ -1784,10 +2023,13 @@ export type vc_order_itemFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter, which vc_order_items to fetch.
    */
   where?: Prisma.vc_order_itemWhereInput
@@ -1831,10 +2073,13 @@ export type vc_order_itemCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * The data needed to create a vc_order_item.
    */
   data?: Prisma.XOR<Prisma.vc_order_itemCreateInput, Prisma.vc_order_itemUncheckedCreateInput>
@@ -1868,10 +2113,13 @@ export type vc_order_itemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    */
   data: Prisma.vc_order_itemCreateManyInput | Prisma.vc_order_itemCreateManyInput[]
   skipDuplicates?: boolean
+<<<<<<< HEAD
   /**
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemIncludeCreateManyAndReturn<ExtArgs> | null
+=======
+>>>>>>> net-paint-permission
 }
 
 /**
@@ -1887,10 +2135,13 @@ export type vc_order_itemUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * The data needed to update a vc_order_item.
    */
   data: Prisma.XOR<Prisma.vc_order_itemUpdateInput, Prisma.vc_order_itemUncheckedUpdateInput>
@@ -1942,10 +2193,13 @@ export type vc_order_itemUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * Limit how many vc_order_items to update.
    */
   limit?: number
+<<<<<<< HEAD
   /**
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemIncludeUpdateManyAndReturn<ExtArgs> | null
+=======
+>>>>>>> net-paint-permission
 }
 
 /**
@@ -1961,10 +2215,13 @@ export type vc_order_itemUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * The filter to search for the vc_order_item to update in case it exists.
    */
   where: Prisma.vc_order_itemWhereUniqueInput
@@ -1991,10 +2248,13 @@ export type vc_order_itemDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
   /**
+<<<<<<< HEAD
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
   /**
+=======
+>>>>>>> net-paint-permission
    * Filter which vc_order_item to delete.
    */
   where: Prisma.vc_order_itemWhereUniqueInput
@@ -2015,6 +2275,7 @@ export type vc_order_itemDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+<<<<<<< HEAD
  * vc_order_item.vc_status_use_code
  */
 export type vc_order_item$vc_status_use_codeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2034,6 +2295,8 @@ export type vc_order_item$vc_status_use_codeArgs<ExtArgs extends runtime.Types.E
 }
 
 /**
+=======
+>>>>>>> net-paint-permission
  * vc_order_item without action
  */
 export type vc_order_itemDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2045,8 +2308,11 @@ export type vc_order_itemDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the vc_order_item
    */
   omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+<<<<<<< HEAD
   /**
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.vc_order_itemInclude<ExtArgs> | null
+=======
+>>>>>>> net-paint-permission
 }

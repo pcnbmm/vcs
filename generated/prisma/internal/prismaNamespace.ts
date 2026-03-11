@@ -384,9 +384,16 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  Session: 'Session',
   User: 'User',
+<<<<<<< HEAD
   Session: 'Session',
   vc_car_master: 'vc_car_master',
+=======
+  Booking: 'Booking',
+  vc_car_master: 'vc_car_master',
+  vc_order_item: 'vc_order_item',
+>>>>>>> net-paint-permission
   fleetcard_transactions: 'fleetcard_transactions',
   vc_car_brand: 'vc_car_brand',
   vc_car_spec: 'vc_car_spec',
@@ -401,6 +408,7 @@ export const ModelName = {
   vc_nt_car: 'vc_nt_car',
   vc_oil_type: 'vc_oil_type',
   vc_permission: 'vc_permission',
+<<<<<<< HEAD
   vc_replacement: 'vc_replacement',
   vc_roles: 'vc_roles',
   vc_type_regis: 'vc_type_regis',
@@ -414,6 +422,19 @@ export const ModelName = {
   vc_status_use_code: 'vc_status_use_code',
   vc_province: 'vc_province',
   vc_order_item: 'vc_order_item'
+=======
+  vc_register_province: 'vc_register_province',
+  vc_rent_car: 'vc_rent_car',
+  vc_replacement: 'vc_replacement',
+  vc_roles: 'vc_roles',
+  vc_type_regis: 'vc_type_regis',
+  vc_use: 'vc_use',
+  vc_user_roles: 'vc_user_roles',
+  fleetcards: 'fleetcards',
+  vc_driver: 'vc_driver',
+  vc_driver_license_type: 'vc_driver_license_type',
+  vc_start_place: 'vc_start_place'
+>>>>>>> net-paint-permission
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,84 +450,14 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
+<<<<<<< HEAD
     modelProps: "user" | "session" | "vc_car_master" | "fleetcard_transactions" | "vc_car_brand" | "vc_car_spec" | "vc_car_status" | "vc_car_type" | "vc_color" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_user_roles" | "vc_rent_car" | "vc_use" | "fleetcards" | "vc_driver" | "vc_driver_license_type" | "vc_start_place" | "vc_status_use_code" | "vc_province" | "vc_order_item"
+=======
+    modelProps: "session" | "user" | "booking" | "vc_car_master" | "vc_order_item" | "fleetcard_transactions" | "vc_car_brand" | "vc_car_spec" | "vc_car_status" | "vc_car_type" | "vc_color" | "vc_company" | "vc_contract_details" | "vc_fuel_item" | "vc_function" | "vc_menu" | "vc_nt_car" | "vc_oil_type" | "vc_permission" | "vc_register_province" | "vc_rent_car" | "vc_replacement" | "vc_roles" | "vc_type_regis" | "vc_use" | "vc_user_roles" | "fleetcards" | "vc_driver" | "vc_driver_license_type" | "vc_start_place"
+>>>>>>> net-paint-permission
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
-    User: {
-      payload: Prisma.$UserPayload<ExtArgs>
-      fields: Prisma.UserFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.UserFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        findFirst: {
-          args: Prisma.UserFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        findMany: {
-          args: Prisma.UserFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        create: {
-          args: Prisma.UserCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        createMany: {
-          args: Prisma.UserCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        delete: {
-          args: Prisma.UserDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        update: {
-          args: Prisma.UserUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        deleteMany: {
-          args: Prisma.UserDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.UserUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        upsert: {
-          args: Prisma.UserUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        aggregate: {
-          args: Prisma.UserAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUser>
-        }
-        groupBy: {
-          args: Prisma.UserGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.UserCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
-        }
-      }
-    }
     Session: {
       payload: Prisma.$SessionPayload<ExtArgs>
       fields: Prisma.SessionFieldRefs
@@ -581,6 +532,157 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
+=======
+    User: {
+      payload: Prisma.$UserPayload<ExtArgs>
+      fields: Prisma.UserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        findFirst: {
+          args: Prisma.UserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        findMany: {
+          args: Prisma.UserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+        }
+        create: {
+          args: Prisma.UserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        createMany: {
+          args: Prisma.UserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+        }
+        delete: {
+          args: Prisma.UserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        update: {
+          args: Prisma.UserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+        }
+        aggregate: {
+          args: Prisma.UserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUser>
+        }
+        groupBy: {
+          args: Prisma.UserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    Booking: {
+      payload: Prisma.$BookingPayload<ExtArgs>
+      fields: Prisma.BookingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findMany: {
+          args: Prisma.BookingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        create: {
+          args: Prisma.BookingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        createMany: {
+          args: Prisma.BookingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        update: {
+          args: Prisma.BookingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBooking>
+        }
+        groupBy: {
+          args: Prisma.BookingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingCountAggregateOutputType> | number
+        }
+      }
+    }
+>>>>>>> net-paint-permission
     vc_car_master: {
       payload: Prisma.$vc_car_masterPayload<ExtArgs>
       fields: Prisma.vc_car_masterFieldRefs
@@ -655,6 +757,83 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
+=======
+    vc_order_item: {
+      payload: Prisma.$vc_order_itemPayload<ExtArgs>
+      fields: Prisma.vc_order_itemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_order_itemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_order_itemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        findFirst: {
+          args: Prisma.vc_order_itemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_order_itemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        findMany: {
+          args: Prisma.vc_order_itemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        create: {
+          args: Prisma.vc_order_itemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        createMany: {
+          args: Prisma.vc_order_itemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_order_itemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        delete: {
+          args: Prisma.vc_order_itemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        update: {
+          args: Prisma.vc_order_itemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_order_itemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_order_itemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_order_itemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_order_itemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_order_itemPayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_order_itemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_order_item>
+        }
+        groupBy: {
+          args: Prisma.vc_order_itemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_order_itemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_order_itemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_order_itemCountAggregateOutputType> | number
+        }
+      }
+    }
+>>>>>>> net-paint-permission
     fleetcard_transactions: {
       payload: Prisma.$fleetcard_transactionsPayload<ExtArgs>
       fields: Prisma.fleetcard_transactionsFieldRefs
@@ -1691,6 +1870,157 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
+=======
+    vc_register_province: {
+      payload: Prisma.$vc_register_provincePayload<ExtArgs>
+      fields: Prisma.vc_register_provinceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_register_provinceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_register_provinceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        findFirst: {
+          args: Prisma.vc_register_provinceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_register_provinceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        findMany: {
+          args: Prisma.vc_register_provinceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
+        }
+        create: {
+          args: Prisma.vc_register_provinceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        createMany: {
+          args: Prisma.vc_register_provinceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_register_provinceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
+        }
+        delete: {
+          args: Prisma.vc_register_provinceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        update: {
+          args: Prisma.vc_register_provinceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_register_provinceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_register_provinceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_register_provinceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_register_provinceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_register_provincePayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_register_provinceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_register_province>
+        }
+        groupBy: {
+          args: Prisma.vc_register_provinceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_register_provinceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_register_provinceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_register_provinceCountAggregateOutputType> | number
+        }
+      }
+    }
+    vc_rent_car: {
+      payload: Prisma.$vc_rent_carPayload<ExtArgs>
+      fields: Prisma.vc_rent_carFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_rent_carFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_rent_carFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        findFirst: {
+          args: Prisma.vc_rent_carFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_rent_carFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        findMany: {
+          args: Prisma.vc_rent_carFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>[]
+        }
+        create: {
+          args: Prisma.vc_rent_carCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        createMany: {
+          args: Prisma.vc_rent_carCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_rent_carCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>[]
+        }
+        delete: {
+          args: Prisma.vc_rent_carDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        update: {
+          args: Prisma.vc_rent_carUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_rent_carDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_rent_carUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_rent_carUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_rent_carUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_rent_carPayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_rent_carAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_rent_car>
+        }
+        groupBy: {
+          args: Prisma.vc_rent_carGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_rent_carGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_rent_carCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_rent_carCountAggregateOutputType> | number
+        }
+      }
+    }
+>>>>>>> net-paint-permission
     vc_replacement: {
       payload: Prisma.$vc_replacementPayload<ExtArgs>
       fields: Prisma.vc_replacementFieldRefs
@@ -1913,6 +2243,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
     vc_user_roles: {
       payload: Prisma.$vc_user_rolesPayload<ExtArgs>
       fields: Prisma.vc_user_rolesFieldRefs
@@ -2061,6 +2392,8 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+=======
+>>>>>>> net-paint-permission
     vc_use: {
       payload: Prisma.$vc_usePayload<ExtArgs>
       fields: Prisma.vc_useFieldRefs
@@ -2135,6 +2468,83 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
+=======
+    vc_user_roles: {
+      payload: Prisma.$vc_user_rolesPayload<ExtArgs>
+      fields: Prisma.vc_user_rolesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.vc_user_rolesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.vc_user_rolesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        findFirst: {
+          args: Prisma.vc_user_rolesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.vc_user_rolesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        findMany: {
+          args: Prisma.vc_user_rolesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>[]
+        }
+        create: {
+          args: Prisma.vc_user_rolesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        createMany: {
+          args: Prisma.vc_user_rolesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.vc_user_rolesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>[]
+        }
+        delete: {
+          args: Prisma.vc_user_rolesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        update: {
+          args: Prisma.vc_user_rolesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        deleteMany: {
+          args: Prisma.vc_user_rolesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.vc_user_rolesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.vc_user_rolesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>[]
+        }
+        upsert: {
+          args: Prisma.vc_user_rolesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$vc_user_rolesPayload>
+        }
+        aggregate: {
+          args: Prisma.Vc_user_rolesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVc_user_roles>
+        }
+        groupBy: {
+          args: Prisma.vc_user_rolesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_user_rolesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.vc_user_rolesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Vc_user_rolesCountAggregateOutputType> | number
+        }
+      }
+    }
+>>>>>>> net-paint-permission
     fleetcards: {
       payload: Prisma.$fleetcardsPayload<ExtArgs>
       fields: Prisma.fleetcardsFieldRefs
@@ -2431,6 +2841,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+<<<<<<< HEAD
     vc_status_use_code: {
       payload: Prisma.$vc_status_use_codePayload<ExtArgs>
       fields: Prisma.vc_status_use_codeFieldRefs
@@ -2653,6 +3064,8 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+=======
+>>>>>>> net-paint-permission
   }
 } & {
   other: {
@@ -2692,6 +3105,7 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+<<<<<<< HEAD
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -2705,6 +3119,8 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const SessionScalarFieldEnum = {
   id: 'id',
   sessionToken: 'sessionToken',
@@ -2715,6 +3131,43 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  createdAt: 'createdAt',
+  password: 'password',
+  role: 'role',
+  username: 'username'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  requesterId: 'requesterId',
+  department: 'department',
+  objective: 'objective',
+  origin: 'origin',
+  destination: 'destination',
+  requestDate: 'requestDate',
+  startDateTime: 'startDateTime',
+  endDateTime: 'endDateTime',
+  passengerCount: 'passengerCount',
+  status: 'status',
+  rejectReason: 'rejectReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  bookingNo: 'bookingNo'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Vc_car_masterScalarFieldEnum = {
   car_id: 'car_id',
   car_number: 'car_number',
@@ -2750,6 +3203,38 @@ export const Vc_car_masterScalarFieldEnum = {
 export type Vc_car_masterScalarFieldEnum = (typeof Vc_car_masterScalarFieldEnum)[keyof typeof Vc_car_masterScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_order_itemScalarFieldEnum = {
+  request_id: 'request_id',
+  use_div_code: 'use_div_code',
+  userid: 'userid',
+  user_mobile: 'user_mobile',
+  journey_date: 'journey_date',
+  return_date: 'return_date',
+  start_place: 'start_place',
+  journey_place: 'journey_place',
+  journey_province: 'journey_province',
+  journey_causes: 'journey_causes',
+  journer_time: 'journer_time',
+  return_time: 'return_time',
+  car_spec_id: 'car_spec_id',
+  passenger_amount: 'passenger_amount',
+  approve_id: 'approve_id',
+  status_use_id: 'status_use_id',
+  self_drive: 'self_drive',
+  journey_lat: 'journey_lat',
+  journey_long: 'journey_long',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Fleetcard_transactionsScalarFieldEnum = {
   fleetcard_trans_id: 'fleetcard_trans_id',
   fleetcard_id: 'fleetcard_id',
@@ -2979,6 +3464,41 @@ export const Vc_permissionScalarFieldEnum = {
 export type Vc_permissionScalarFieldEnum = (typeof Vc_permissionScalarFieldEnum)[keyof typeof Vc_permissionScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_register_provinceScalarFieldEnum = {
+  regis_province_id: 'regis_province_id',
+  regis_province_name: 'regis_province_name',
+  short_name: 'short_name',
+  region_id: 'region_id',
+  flag_del: 'flag_del',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_register_provinceScalarFieldEnum = (typeof Vc_register_provinceScalarFieldEnum)[keyof typeof Vc_register_provinceScalarFieldEnum]
+
+
+export const Vc_rent_carScalarFieldEnum = {
+  rent_car_id: 'rent_car_id',
+  car_id: 'car_id',
+  rent_no: 'rent_no',
+  company_id: 'company_id',
+  price_per_month: 'price_per_month',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date',
+  replacement_flag: 'replacement_flag',
+  po: 'po'
+} as const
+
+export type Vc_rent_carScalarFieldEnum = (typeof Vc_rent_carScalarFieldEnum)[keyof typeof Vc_rent_carScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const Vc_replacementScalarFieldEnum = {
   replacement_id: 'replacement_id',
   car_id: 'car_id',
@@ -3020,6 +3540,7 @@ export const Vc_type_regisScalarFieldEnum = {
 export type Vc_type_regisScalarFieldEnum = (typeof Vc_type_regisScalarFieldEnum)[keyof typeof Vc_type_regisScalarFieldEnum]
 
 
+<<<<<<< HEAD
 export const Vc_user_rolesScalarFieldEnum = {
   user_id: 'user_id',
   roles_id: 'roles_id',
@@ -3049,6 +3570,8 @@ export const Vc_rent_carScalarFieldEnum = {
 export type Vc_rent_carScalarFieldEnum = (typeof Vc_rent_carScalarFieldEnum)[keyof typeof Vc_rent_carScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const Vc_useScalarFieldEnum = {
   use_id: 'use_id',
   request_id: 'request_id',
@@ -3071,6 +3594,21 @@ export const Vc_useScalarFieldEnum = {
 export type Vc_useScalarFieldEnum = (typeof Vc_useScalarFieldEnum)[keyof typeof Vc_useScalarFieldEnum]
 
 
+<<<<<<< HEAD
+=======
+export const Vc_user_rolesScalarFieldEnum = {
+  user_id: 'user_id',
+  roles_id: 'roles_id',
+  cre_by: 'cre_by',
+  cre_date: 'cre_date',
+  upd_by: 'upd_by',
+  upd_date: 'upd_date'
+} as const
+
+export type Vc_user_rolesScalarFieldEnum = (typeof Vc_user_rolesScalarFieldEnum)[keyof typeof Vc_user_rolesScalarFieldEnum]
+
+
+>>>>>>> net-paint-permission
 export const FleetcardsScalarFieldEnum = {
   accountNo: 'accountNo',
   fleetcardNo: 'fleetcardNo',
@@ -3146,6 +3684,7 @@ export const Vc_start_placeScalarFieldEnum = {
 export type Vc_start_placeScalarFieldEnum = (typeof Vc_start_placeScalarFieldEnum)[keyof typeof Vc_start_placeScalarFieldEnum]
 
 
+<<<<<<< HEAD
 export const Vc_status_use_codeScalarFieldEnum = {
   status_use_id: 'status_use_id',
   status_use_name: 'status_use_name',
@@ -3204,6 +3743,8 @@ export const Vc_order_itemScalarFieldEnum = {
 export type Vc_order_itemScalarFieldEnum = (typeof Vc_order_itemScalarFieldEnum)[keyof typeof Vc_order_itemScalarFieldEnum]
 
 
+=======
+>>>>>>> net-paint-permission
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3277,6 +3818,23 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+<<<<<<< HEAD
+=======
+ * Reference to a field of type 'BookingStatus'
+ */
+export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingStatus[]'
+ */
+export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+    
+
+
+/**
+>>>>>>> net-paint-permission
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3291,6 +3849,16 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+<<<<<<< HEAD
+=======
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+>>>>>>> net-paint-permission
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -3303,6 +3871,7 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
+<<<<<<< HEAD
 
 /**
  * Reference to a field of type 'Boolean'
@@ -3310,6 +3879,8 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
+=======
+>>>>>>> net-paint-permission
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3405,9 +3976,15 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
-  user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
+<<<<<<< HEAD
   vc_car_master?: Prisma.vc_car_masterOmit
+=======
+  user?: Prisma.UserOmit
+  booking?: Prisma.BookingOmit
+  vc_car_master?: Prisma.vc_car_masterOmit
+  vc_order_item?: Prisma.vc_order_itemOmit
+>>>>>>> net-paint-permission
   fleetcard_transactions?: Prisma.fleetcard_transactionsOmit
   vc_car_brand?: Prisma.vc_car_brandOmit
   vc_car_spec?: Prisma.vc_car_specOmit
@@ -3422,19 +3999,32 @@ export type GlobalOmitConfig = {
   vc_nt_car?: Prisma.vc_nt_carOmit
   vc_oil_type?: Prisma.vc_oil_typeOmit
   vc_permission?: Prisma.vc_permissionOmit
+<<<<<<< HEAD
   vc_replacement?: Prisma.vc_replacementOmit
   vc_roles?: Prisma.vc_rolesOmit
   vc_type_regis?: Prisma.vc_type_regisOmit
   vc_user_roles?: Prisma.vc_user_rolesOmit
   vc_rent_car?: Prisma.vc_rent_carOmit
   vc_use?: Prisma.vc_useOmit
+=======
+  vc_register_province?: Prisma.vc_register_provinceOmit
+  vc_rent_car?: Prisma.vc_rent_carOmit
+  vc_replacement?: Prisma.vc_replacementOmit
+  vc_roles?: Prisma.vc_rolesOmit
+  vc_type_regis?: Prisma.vc_type_regisOmit
+  vc_use?: Prisma.vc_useOmit
+  vc_user_roles?: Prisma.vc_user_rolesOmit
+>>>>>>> net-paint-permission
   fleetcards?: Prisma.fleetcardsOmit
   vc_driver?: Prisma.vc_driverOmit
   vc_driver_license_type?: Prisma.vc_driver_license_typeOmit
   vc_start_place?: Prisma.vc_start_placeOmit
+<<<<<<< HEAD
   vc_status_use_code?: Prisma.vc_status_use_codeOmit
   vc_province?: Prisma.vc_provinceOmit
   vc_order_item?: Prisma.vc_order_itemOmit
+=======
+>>>>>>> net-paint-permission
 }
 
 /* Types for Logging */
