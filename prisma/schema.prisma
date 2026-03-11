@@ -15,7 +15,6 @@ model User {
   password  String
   role      String    @default("USER")
   username  String    @unique
-  Booking   Booking[]
   sessions  Session[]
 }
 
@@ -68,7 +67,7 @@ model vc_car_master {
   vc_oil_type          vc_oil_type?          @relation(fields: [oil_type_id], references: [oil_type_id])
 }
 
-model VcOrderItems {
+model vc_order_item {
   request_id       Int       @id @default(autoincrement())
   use_div_code     String?   @db.VarChar(100)
   userid           String?   @db.Char(8)
@@ -79,7 +78,6 @@ model VcOrderItems {
   journey_place    String?   @db.VarChar(500)
   journey_province String?   @db.VarChar(100)
   journey_causes   String?
-  journey_time     String?   @db.VarChar(10)
   return_time      String?   @db.VarChar(10)
   car_spec_id      String?   @db.VarChar(100)
   passenger_amount Int?
@@ -92,8 +90,7 @@ model VcOrderItems {
   cre_date         DateTime?
   upd_by           String?   @db.VarChar(20)
   upd_date         DateTime?
-
-  @@map("vc_order_item")
+  journey_time     String?   @db.VarChar(10)
 }
 
 model fleetcard_transactions {
@@ -440,23 +437,17 @@ model vc_start_place {
   upd_date         DateTime? @db.Date
 }
 
-model Booking {
-  id             String        @id
-  requesterId    String
-  department     String
-  objective      String
-  origin         String
-  destination    String
-  requestDate    DateTime      @default(now())
-  startDateTime  DateTime
-  endDateTime    DateTime
-  passengerCount Int
-  status         BookingStatus @default(PENDING)
-  rejectReason   String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime
-  bookingNo      String?       @unique
-  User           User          @relation(fields: [requesterId], references: [id])
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_status_use_code {
+  status_use_id   Int?
+  status_use_name String?   @db.VarChar(50)
+  flag_del        String?   @db.Char(1)
+  cre_by          String?   @db.VarChar(50)
+  cre_date        DateTime? @db.Date
+  upd_by          String?   @db.VarChar(50)
+  upd_date        DateTime? @db.Date
+
+  @@ignore
 }
 
 enum BookingStatus {
