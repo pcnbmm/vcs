@@ -12,27 +12,41 @@ async function main() {
 
   console.log('--- Seeding Data ---')
 
-  const users = [
-    {
-      username: "dev",
-      email: "",
-      name: "Dev",
-      password: hashedPassword,
-      role: "DEV"
+    const users = [
+        {
+            username: "dev",
+            email: "dev@vcs.com",
+            name: "Dev",
+            password: hashedPassword,
+            role: "DEV"
+        },
+        {
+            username: "user01",
+            email: "user01@vcs.com",
+            name: "นาย สมชาย ใจดี",
+            password: hashedPassword,
+            role: "USER"
+        },
+        {
+            username: "user02",
+            email: "user02@vcs.com",
+            name: "นางสาว วิภา รักงาน",
+            password: hashedPassword,
+            role: "USER"
+        },
+    ];
+
+    for (const u of users) {
+        await prisma.user.upsert({
+            where: { username: u.username },
+            update: { password: u.password, email: u.email, name: u.name, role: u.role },
+            create: u,
+        });
+        console.log(`User created: ${u.username}`);
     }
   ]
 
-  for (const u of users) {
-    await prisma.user.upsert({
-      where: { username: u.username },
-      update: {password: u.password, 
-        email: u.email, 
-        name: u.name, 
-        role: u.role}, 
-      create: u,
-    })
-    console.log(`User created: ${u.username}`)
-  }
+    console.log('--- Seeding Done ---');
 }
 
 main()
