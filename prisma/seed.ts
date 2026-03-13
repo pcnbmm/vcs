@@ -44,7 +44,6 @@ async function main() {
         });
         console.log(`User created: ${u.username}`);
     }
-  ]
 
     console.log('--- Seeding Done ---');
 }
