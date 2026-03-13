@@ -45,10 +45,6 @@ async function main() {
         console.log(`User created: ${u.username}`);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> docker
     console.log('--- Seeding Done ---');
 }
 

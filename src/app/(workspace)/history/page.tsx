@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getHistoryBookings } from '@/app/actions/bookingActions';
 import {
     Calendar,
     MapPin,
@@ -16,54 +15,50 @@ import {
     Loader2
 } from 'lucide-react';
 
+// ประกาศ Status ไว้ใช้ในหน้านี้ (หรือสามารถแยกไปไว้ในไฟล์ utils/constants.ts ได้)
+const REQUEST_STATUS = {
+    REJECTED: 3,
+    CANCELLED: 4,
+    DISPATCH_REJECTED: 7,
+    DISPATCH_CANCELLED: 8,
+    RETURN_APPROVED: 11, // Completed
+    RETURN_REJECTED: 12,
+    RETURN_CANCELLED: 13,
+    DISPATCH_APPROVAL_CANCELLED: 14,
+    NOT_RECEIVED: 15
+};
+
 export default function HistoryPage() {
     // 1. State สำหรับดึงข้อมูลจาก API
     const [requests, setRequests] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 2. State สำหรับการค้นหาและ Modal
+    // 2. State สำหรับค้นหาและแสดง Modal
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedRequest, setSelectedRequest] = useState<any>(null);
 
-    // 3. ดึงข้อมูลครั้งแรกจาก Database
+    // 3. ฟังก์ชันดึงข้อมูลจาก Database
     useEffect(() => {
         const fetchHistory = async () => {
             try {
                 setIsLoading(true);
-                const result = await getHistoryBookings();
-                if (result.success && result.data) {
-                    const formattedList = result.data.map((b: any) => ({
-                        id: String(b.request_id),
-                        requester: 'ผู้ใช้งานระบบ',
-                        department: b.use_div_code || 'ฝ่ายบริหาร',
-                        destination: b.journey_place,
-                        date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
-                            day: 'numeric', month: 'short', year: 'numeric'
-                        }) : 'N/A',
-                        time: b.journey_time || 'N/A',
-                        objective: b.journey_causes || '-',
-                        status: b.status_use_id ? String(b.status_use_id) : '1',
-                        statusName: b.vc_status_use_code?.status_use_name || 'รอดำเนินการ',
-                        // Details for modal
-                        carType: b.car_spec_id,
-                        origin: b.start_place,
-                        province: b.journey_province,
-                        passengers: b.passenger_amount,
-                        phone: b.user_mobile,
-                        selfDrive: b.self_drive ? 'ใช่ (ขับเอง)' : 'ไม่ใช่ (ขอพนักงานขับ)',
-                        endDate: b.return_date ? new Date(b.return_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
-                        endTime: b.return_time || '-',
-                    }));
-                    setRequests(formattedList);
-                } else {
-                    setRequests([]);
-                    setError("ไม่สามารถโหลดประวัติได้");
-                }
-                setIsLoading(false);
+                // TODO: เปลี่ยนเป็น URL API จริงของคุณ
+                // หมายเหตุ: แนะนำให้ส่งพารามิเตอร์ไปกรองสถานะที่ฝั่ง Backend แทนเพื่อลดภาระของ Frontend
+                // const res = await fetch('/api/history');
+                // const data = await res.json();
+                // setRequests(data);
+
+                // --- โค้ดจำลองการดึงข้อมูลสำเร็จ (ลบออกเมื่อต่อ API จริง) ---
+                setTimeout(() => {
+                    setRequests([]); // ทดสอบใส่ mock data ตรงนี้ได้
+                    setIsLoading(false);
+                }, 1000);
+                // ---------------------------------------------------
+
             } catch (err) {
                 console.error("Failed to fetch history", err);
-                setError("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+                setError("ไม่สามารถโหลดประวัติคำขอได้ กรุณาลองใหม่อีกครั้ง");
                 setIsLoading(false);
             }
         };
@@ -71,10 +66,20 @@ export default function HistoryPage() {
         fetchHistory();
     }, []);
 
-    // 4. จัดการกรองข้อมูล
+    // 4. จัดการกรองข้อมูล (แสดงเฉพาะประวัติที่จบแล้ว + ค้นหาจาก text)
     const historyRequests = requests.filter(req => {
-        // กรองสถานะที่ถือว่าเป็น "ประวัติ" (2=Approved, 3=Rejected, 5=Completed, 6=Cancelled)
-        const isHistoryStatus = [2, 3, 5, 6].includes(Number(req.status));
+        // กรองสถานะที่ถือว่าเป็น "ประวัติ" (ถ้า Backend กรองมาให้แล้ว สามารถลบเงื่อนไขส่วนนี้ออกได้)
+        const isHistoryStatus = [
+            REQUEST_STATUS.REJECTED,
+            REQUEST_STATUS.CANCELLED,
+            REQUEST_STATUS.DISPATCH_REJECTED,
+            REQUEST_STATUS.DISPATCH_CANCELLED,
+            REQUEST_STATUS.RETURN_APPROVED,
+            REQUEST_STATUS.RETURN_REJECTED,
+            REQUEST_STATUS.RETURN_CANCELLED,
+            REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED,
+            REQUEST_STATUS.NOT_RECEIVED
+        ].includes(Number(req.status));
 
         // กรองตามคำค้นหา
         const matchesSearch = 
@@ -88,63 +93,71 @@ export default function HistoryPage() {
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-10">
             {/* Header */}
-            <div className="bg-slate-900 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-blue-500/20 transition-all duration-700"></div>
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-800 rounded-[2rem] flex items-center justify-center shadow-2xl border border-slate-600 group-hover:scale-105 transition-transform">
-                            <Archive className="w-10 h-10 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-4xl font-black text-white tracking-tight">ประวัติคำขอใช้รถ</h1>
-                            <p className="text-slate-400 font-medium mt-1">รายการคำขอที่ดำเนินการเสร็จสิ้นหรือยกเลิกแล้ว</p>
-                        </div>
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center shadow-lg shadow-slate-200">
+                        <Archive className="w-8 h-8 text-white" />
                     </div>
+                    <div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">ประวัติคำขอ (History)</h1>
+                        <p className="text-gray-500 font-medium mt-1">รายการคำขอที่ดำเนินการเสร็จสิ้นแล้ว</p>
+                    </div>
+                </div>
 
-                    <div className="relative w-full md:w-auto">
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="ค้นหาตามเลขที่ หรือ สถานที่..."
-                            className="w-full md:w-96 pl-14 pr-6 py-4 bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
-                        />
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={22} />
-                    </div>
+                <div className="relative w-full md:w-auto">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="ค้นหาเลขที่, ชื่อ หรือสถานที่..."
+                        className="w-full md:w-80 pl-12 pr-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-100 transition-all font-medium"
+                    />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 </div>
             </div>
 
-            {/* List Table */}
+            {/* List Section */}
             <div className="space-y-4">
+                <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-slate-800 rounded-full"></div>
+                        <h2 className="text-xl font-bold text-gray-900">รายการย้อนหลังทั้งหมด</h2>
+                        <span className="text-xs font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-widest ml-2">
+                            {historyRequests.length}
+                        </span>
+                    </div>
+                </div>
+
+                {/* แสดงผลตาม State: Loading, Error, Empty, Data */}
                 {isLoading ? (
-                    <div className="bg-white p-24 rounded-[3.5rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
-                        <Loader2 size={56} className="text-slate-800 animate-spin" />
-                        <p className="font-bold text-xl text-slate-500">กำลังโหลดประวัติ...</p>
+                    <div className="bg-white p-20 rounded-[3rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+                        <Loader2 size={48} className="text-slate-800 animate-spin" />
+                        <p className="font-bold text-lg text-gray-500">กำลังโหลดข้อมูลประวัติ...</p>
                     </div>
                 ) : error ? (
-                    <div className="bg-rose-50 p-24 rounded-[3.5rem] text-center border border-rose-100 shadow-sm flex flex-col items-center gap-4">
-                        <AlertCircle size={56} className="text-rose-500" />
-                        <p className="font-bold text-xl text-rose-600">{error}</p>
+                    <div className="bg-rose-50 p-20 rounded-[3rem] text-center border border-rose-100 shadow-sm flex flex-col items-center gap-4">
+                        <AlertCircle size={48} className="text-rose-500" />
+                        <p className="font-bold text-lg text-rose-600">{error}</p>
                     </div>
                 ) : historyRequests.length === 0 ? (
-                    <div className="bg-white p-24 rounded-[3.5rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-6">
-                        <Archive size={64} className="text-gray-200" />
-                        <p className="font-black text-2xl text-gray-400 uppercase tracking-widest italic">
-                            {searchQuery ? 'ไม่พบข้อมูลที่ค้นหา' : 'ไม่มีประวัติรายการ'}
+                    <div className="bg-white p-20 rounded-[3rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+                        <Archive size={48} className="text-gray-200" />
+                        <p className="font-black text-xl text-gray-400 uppercase tracking-widest">
+                            {searchQuery ? 'ไม่พบประวัติที่ค้นหา' : 'ไม่พบประวัติคำขอ'}
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-5">
+                    <div className="grid grid-cols-1 gap-4">
                         {historyRequests.map((req) => {
-                            const status = Number(req.status);
-                            const statusColor = getStatusColor(status);
-                            const StatusIcon = CheckCircle2;
+                            const statusName = getStatusName(req.status);
+                            const statusColor = getStatusColor(req.status);
+                            const StatusIcon = Number(req.status) === REQUEST_STATUS.RETURN_APPROVED ? CheckCircle2 : XCircle;
 
                             return (
                                 <div
                                     key={req.id}
                                     onClick={() => setSelectedRequest(req)}
-                                    className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6"
+                                    className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6 opacity-80 hover:opacity-100 grayscale hover:grayscale-0"
                                 >
                                     {/* Request Info */}
                                     <div className="flex-1 min-w-[200px]">
@@ -183,11 +196,11 @@ export default function HistoryPage() {
                                     {/* Status & Action */}
                                     <div className="flex items-center justify-between lg:justify-end gap-6 shrink-0 lg:min-w-[200px]">
                                         <div className={`
-                                                inline-flex items-center gap-2 px-6 py-2.5 rounded-full border text-[13px] font-bold shadow-sm transition-all
+                                                inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-black uppercase tracking-tighter shadow-sm
                                                 ${statusColor}
                                             `}>
-                                            <StatusIcon size={16} className="shrink-0" />
-                                            {req.statusName}
+                                            <StatusIcon size={14} className="shrink-0" />
+                                            {statusName}
                                         </div>
                                         <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-slate-800 group-hover:border-slate-800 group-hover:text-white transition-all">
                                             <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
@@ -242,7 +255,7 @@ export default function HistoryPage() {
                                 />
                                 <DetailCard
                                     label="สถานะสุดท้าย"
-                                    value={selectedRequest.statusName}
+                                    value={getStatusName(selectedRequest.status)}
                                     subValue="Final Status"
                                     icon={CheckCircle2}
                                     color={getStatusColor(selectedRequest.status)}
@@ -255,14 +268,22 @@ export default function HistoryPage() {
                                     <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">รายละเอียด (Details)</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <ReadOnlyField label="จำนวนผู้โดยสาร (Passengers)" value={`${selectedRequest.passengers} คน`} icon={Users} />
-                                    <ReadOnlyField label="ลักษณะการขับขี่" value={selectedRequest.selfDrive} icon={Clock} />
-                                </div>
-                                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">วัตถุประสงค์ (Objective)</p>
-                                    <p className="font-bold text-slate-800 leading-relaxed">{selectedRequest.objective}</p>
+                                    <ReadOnlyField label="จำนวนผู้เดินทาง" value={`${selectedRequest.passengers || 0} คน`} />
+                                    <ReadOnlyField label="วันที่" value={selectedRequest.date} />
+                                    <ReadOnlyField label="เวลา" value={selectedRequest.time} />
+                                    <ReadOnlyField label="หมายเหตุ" value={selectedRequest.objective || '-'} />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="bg-slate-50 p-8 flex justify-end shrink-0 border-t border-gray-100">
+                            <button
+                                onClick={() => setSelectedRequest(null)}
+                                className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all shadow-xl active:scale-95"
+                            >
+                                CLOSE
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -272,58 +293,74 @@ export default function HistoryPage() {
 }
 
 // ==========================================
+// ⬇️ UI Components ⬇️
+// ==========================================
+
+function DetailCard({ label, value, subValue, icon: Icon, color }: any) {
+    return (
+        <div className="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${color}`}>
+                <Icon size={20} />
+            </div>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{label}</p>
+            <p className="text-base font-black text-gray-900 leading-tight mb-0.5">{value}</p>
+            <p className="text-xs text-gray-500 font-bold truncate">{subValue}</p>
+        </div>
+    );
+}
+
+function ReadOnlyField({ label, value }: { label: string, value: string }) {
+    return (
+        <div className="space-y-2">
+            <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{label} :</label>
+            <div className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 shadow-inner break-words">
+                {value}
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
 // ⬇️ Helper Functions ⬇️
 // ==========================================
 
-const REQUEST_STATUS = {
-    PENDING: 1,
-    APPROVED: 2,
-    REJECTED: 3,
-    IN_USE: 4,
-    COMPLETED: 5,
-    CANCELLED: 6
+const getStatusName = (status: number | string) => {
+    const numStatus = Number(status);
+    switch (numStatus) {
+        case REQUEST_STATUS.REJECTED:
+        case REQUEST_STATUS.DISPATCH_REJECTED:
+        case REQUEST_STATUS.RETURN_REJECTED:
+            return 'ไม่อนุมัติ';
+        case REQUEST_STATUS.CANCELLED:
+        case REQUEST_STATUS.DISPATCH_CANCELLED:
+        case REQUEST_STATUS.RETURN_CANCELLED:
+        case REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED:
+            return 'ยกเลิก';
+        case REQUEST_STATUS.RETURN_APPROVED:
+            return 'เสร็จสิ้นสมบูรณ์';
+        case REQUEST_STATUS.NOT_RECEIVED:
+            return 'ไม่ได้รับรถ';
+        default:
+            return 'สถานะไม่ระบุ';
+    }
 };
 
 const getStatusColor = (status: number | string) => {
     const numStatus = Number(status);
     switch (numStatus) {
-        case REQUEST_STATUS.PENDING:
-            return 'text-amber-600 bg-amber-50 border-amber-200';
-        case REQUEST_STATUS.APPROVED:
-            return 'text-emerald-700 bg-emerald-50 border-emerald-300 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.4)]';
         case REQUEST_STATUS.REJECTED:
-            return 'text-rose-700 bg-rose-50 border-rose-200 shadow-[0_2px_10px_-3px_rgba(244,63,94,0.3)]';
-        case REQUEST_STATUS.IN_USE:
-            return 'text-blue-600 bg-blue-50 border-blue-200';
-        case REQUEST_STATUS.COMPLETED:
-            return 'text-indigo-600 bg-indigo-50 border-indigo-200';
+        case REQUEST_STATUS.DISPATCH_REJECTED:
+        case REQUEST_STATUS.RETURN_REJECTED:
+            return 'text-rose-600 bg-rose-50 border-rose-200';
         case REQUEST_STATUS.CANCELLED:
-            return 'text-slate-500 bg-slate-50 border-slate-200 shadow-sm';
+        case REQUEST_STATUS.DISPATCH_CANCELLED:
+        case REQUEST_STATUS.RETURN_CANCELLED:
+        case REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED:
+        case REQUEST_STATUS.NOT_RECEIVED:
+            return 'text-slate-500 bg-slate-100 border-slate-200';
+        case REQUEST_STATUS.RETURN_APPROVED:
+            return 'text-emerald-600 bg-emerald-50 border-emerald-200';
         default:
             return 'text-gray-600 bg-gray-50 border-gray-100';
     }
 };
-
-// --- Internal helper components for this page ---
-const DetailCard = ({ label, value, subValue, icon: Icon, color }: any) => (
-    <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-3">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${color}`}>
-            <Icon size={24} />
-        </div>
-        <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{label}</p>
-            <p className="text-lg font-black text-gray-900 leading-tight mt-1">{value}</p>
-            {subValue && <p className="text-xs font-bold text-gray-400 mt-0.5">{subValue}</p>}
-        </div>
-    </div>
-);
-
-const ReadOnlyField = ({ label, value, icon: Icon }: any) => (
-    <div className="space-y-2">
-        <div className="flex items-center gap-2">
-            <Icon size={14} className="text-slate-400" />
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{label}</p>
-        </div>
-        <p className="text-base font-bold text-slate-700 ml-5">{value || '-'}</p>
-    </div>
-);
