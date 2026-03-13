@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { Booking } from '@/types';
 import { revalidatePath } from 'next/cache';
 
 export async function createBooking(formData: FormData) {
@@ -56,13 +57,9 @@ export async function createBooking(formData: FormData) {
 export async function getMyBookings() {
     try {
         const bookings = await prisma.vc_order_item.findMany({
-<<<<<<< HEAD
-            orderBy: { request_id: 'desc' }
-=======
             orderBy: {
                 request_id: 'desc'
             }
->>>>>>> docker
         });
         return { success: true, data: bookings };
     } catch (error) {
@@ -71,60 +68,9 @@ export async function getMyBookings() {
     }
 }
 
-export async function getHistoryBookings() {
+export async function getBookings(): Promise<Booking[]> {
     try {
         const bookings = await prisma.vc_order_item.findMany({
-<<<<<<< HEAD
-            where: {
-                status_use_id: {
-                    in: [2, 3, 5, 6] // 2=approved, 3=rejected, 5=completed, 6=cancelled
-                }
-            },
-            include: {
-                vc_status_use_code: true  // ดึงชื่อสถานะจาก DB โดยตรง
-            },
-            orderBy: { request_id: 'desc' }
-        });
-        return { success: true, data: bookings };
-    } catch (error) {
-        console.error('Error fetching history bookings:', error);
-        return { success: false, error: 'Failed to fetch history bookings' };
-    }
-}
-
-export async function getPendingBookings() {
-    try {
-        const bookings = await prisma.vc_order_item.findMany({
-            where: {
-                status_use_id: 1 // 1 = pending
-            },
-            include: {
-                vc_status_use_code: true  // ดึงชื่อสถานะจาก DB โดยตรง
-            },
-            orderBy: { request_id: 'desc' }
-        });
-        return { success: true, data: bookings };
-    } catch (error) {
-        console.error('Error fetching pending bookings:', error);
-        return { success: false, error: 'Failed to fetch pending bookings' };
-    }
-}
-
-export async function cancelRequest(request_id: number) {
-    try {
-        await prisma.vc_order_item.update({
-            where: { request_id: request_id },
-            data: {
-                status_use_id: 6, // 6 = cancelled
-                upd_date: new Date()
-            }
-        });
-
-        revalidatePath('/pending');
-        revalidatePath('/history');
-
-        return { success: true };
-=======
             orderBy: { request_id: 'desc' }
         });
 
@@ -143,9 +89,8 @@ export async function cancelRequest(request_id: number) {
                 b.status_use_id === 3 ? 'REJECTED' : 'PENDING' as Booking['status'],
             rejectReason: undefined,
         }));
->>>>>>> docker
     } catch (error) {
-        console.error('Error cancelling request:', error);
-        return { success: false, error: 'Failed to cancel request' };
+        console.error('Error fetching bookings:', error);
+        return [];
     }
 }
