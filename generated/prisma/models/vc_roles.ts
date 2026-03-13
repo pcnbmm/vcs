@@ -232,6 +232,10 @@ export type vc_rolesWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_roles"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_roles"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_roles"> | Date | string | null
+  vc_permission?: Prisma.Vc_permissionListRelationFilter
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.Vc_useListRelationFilter
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.Vc_useListRelationFilter
+  vc_user_roles?: Prisma.Vc_user_rolesListRelationFilter
 }
 
 export type vc_rolesOrderByWithRelationInput = {
@@ -242,6 +246,10 @@ export type vc_rolesOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  vc_permission?: Prisma.vc_permissionOrderByRelationAggregateInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useOrderByRelationAggregateInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useOrderByRelationAggregateInput
+  vc_user_roles?: Prisma.vc_user_rolesOrderByRelationAggregateInput
 }
 
 export type vc_rolesWhereUniqueInput = Prisma.AtLeast<{
@@ -255,6 +263,10 @@ export type vc_rolesWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_roles"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_roles"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_roles"> | Date | string | null
+  vc_permission?: Prisma.Vc_permissionListRelationFilter
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.Vc_useListRelationFilter
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.Vc_useListRelationFilter
+  vc_user_roles?: Prisma.Vc_user_rolesListRelationFilter
 }, "roles_id">
 
 export type vc_rolesOrderByWithAggregationInput = {
@@ -292,6 +304,10 @@ export type vc_rolesCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesCreateNestedManyWithoutVc_rolesInput
 }
 
 export type vc_rolesUncheckedCreateInput = {
@@ -302,6 +318,10 @@ export type vc_rolesUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedCreateNestedManyWithoutVc_rolesInput
 }
 
 export type vc_rolesUpdateInput = {
@@ -311,6 +331,10 @@ export type vc_rolesUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUpdateManyWithoutVc_rolesNestedInput
 }
 
 export type vc_rolesUncheckedUpdateInput = {
@@ -321,6 +345,10 @@ export type vc_rolesUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedUpdateManyWithoutVc_rolesNestedInput
 }
 
 export type vc_rolesCreateManyInput = {
@@ -350,6 +378,11 @@ export type vc_rolesUncheckedUpdateManyInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type Vc_rolesScalarRelationFilter = {
+  is?: Prisma.vc_rolesWhereInput
+  isNot?: Prisma.vc_rolesWhereInput
 }
 
 export type vc_rolesCountOrderByAggregateInput = {
@@ -390,6 +423,393 @@ export type vc_rolesSumOrderByAggregateInput = {
   roles_id?: Prisma.SortOrder
 }
 
+export type Vc_rolesNullableScalarRelationFilter = {
+  is?: Prisma.vc_rolesWhereInput | null
+  isNot?: Prisma.vc_rolesWhereInput | null
+}
+
+export type vc_rolesCreateNestedOneWithoutVc_permissionInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedCreateWithoutVc_permissionInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_permissionInput
+  connect?: Prisma.vc_rolesWhereUniqueInput
+}
+
+export type vc_rolesUpdateOneRequiredWithoutVc_permissionNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedCreateWithoutVc_permissionInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_permissionInput
+  upsert?: Prisma.vc_rolesUpsertWithoutVc_permissionInput
+  connect?: Prisma.vc_rolesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_rolesUpdateToOneWithWhereWithoutVc_permissionInput, Prisma.vc_rolesUpdateWithoutVc_permissionInput>, Prisma.vc_rolesUncheckedUpdateWithoutVc_permissionInput>
+}
+
+export type vc_rolesCreateNestedOneWithoutVc_user_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_user_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_user_rolesInput
+  connect?: Prisma.vc_rolesWhereUniqueInput
+}
+
+export type vc_rolesUpdateOneWithoutVc_user_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_user_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_user_rolesInput
+  upsert?: Prisma.vc_rolesUpsertWithoutVc_user_rolesInput
+  disconnect?: Prisma.vc_rolesWhereInput | boolean
+  delete?: Prisma.vc_rolesWhereInput | boolean
+  connect?: Prisma.vc_rolesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_rolesUpdateToOneWithWhereWithoutVc_user_rolesInput, Prisma.vc_rolesUpdateWithoutVc_user_rolesInput>, Prisma.vc_rolesUncheckedUpdateWithoutVc_user_rolesInput>
+}
+
+export type vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  connect?: Prisma.vc_rolesWhereUniqueInput
+}
+
+export type vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  connect?: Prisma.vc_rolesWhereUniqueInput
+}
+
+export type vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  upsert?: Prisma.vc_rolesUpsertWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  disconnect?: Prisma.vc_rolesWhereInput | boolean
+  delete?: Prisma.vc_rolesWhereInput | boolean
+  connect?: Prisma.vc_rolesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_rolesUpdateToOneWithWhereWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput>, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+  connectOrCreate?: Prisma.vc_rolesCreateOrConnectWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  upsert?: Prisma.vc_rolesUpsertWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  disconnect?: Prisma.vc_rolesWhereInput | boolean
+  delete?: Prisma.vc_rolesWhereInput | boolean
+  connect?: Prisma.vc_rolesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_rolesUpdateToOneWithWhereWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_rolesCreateWithoutVc_permissionInput = {
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesUncheckedCreateWithoutVc_permissionInput = {
+  roles_id?: number
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesCreateOrConnectWithoutVc_permissionInput = {
+  where: Prisma.vc_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedCreateWithoutVc_permissionInput>
+}
+
+export type vc_rolesUpsertWithoutVc_permissionInput = {
+  update: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_permissionInput>
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedCreateWithoutVc_permissionInput>
+  where?: Prisma.vc_rolesWhereInput
+}
+
+export type vc_rolesUpdateToOneWithWhereWithoutVc_permissionInput = {
+  where?: Prisma.vc_rolesWhereInput
+  data: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_permissionInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_permissionInput>
+}
+
+export type vc_rolesUpdateWithoutVc_permissionInput = {
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUpdateManyWithoutVc_rolesNestedInput
+}
+
+export type vc_rolesUncheckedUpdateWithoutVc_permissionInput = {
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedUpdateManyWithoutVc_rolesNestedInput
+}
+
+export type vc_rolesCreateWithoutVc_user_rolesInput = {
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+}
+
+export type vc_rolesUncheckedCreateWithoutVc_user_rolesInput = {
+  roles_id?: number
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+}
+
+export type vc_rolesCreateOrConnectWithoutVc_user_rolesInput = {
+  where: Prisma.vc_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_user_rolesInput>
+}
+
+export type vc_rolesUpsertWithoutVc_user_rolesInput = {
+  update: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_user_rolesInput>
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_user_rolesInput>
+  where?: Prisma.vc_rolesWhereInput
+}
+
+export type vc_rolesUpdateToOneWithWhereWithoutVc_user_rolesInput = {
+  where?: Prisma.vc_rolesWhereInput
+  data: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_user_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_user_rolesInput>
+}
+
+export type vc_rolesUpdateWithoutVc_user_rolesInput = {
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+}
+
+export type vc_rolesUncheckedUpdateWithoutVc_user_rolesInput = {
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+}
+
+export type vc_rolesCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesUncheckedCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  roles_id?: number
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesCreateOrConnectWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  where: Prisma.vc_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_rolesCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesUncheckedCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  roles_id?: number
+  roles_name?: string | null
+  description?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedCreateNestedManyWithoutVc_rolesInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedCreateNestedManyWithoutVc_rolesInput
+}
+
+export type vc_rolesCreateOrConnectWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  where: Prisma.vc_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_rolesUpsertWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  update: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+  where?: Prisma.vc_rolesWhereInput
+}
+
+export type vc_rolesUpdateToOneWithWhereWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  where?: Prisma.vc_rolesWhereInput
+  data: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_rolesUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUpdateManyWithoutVc_rolesNestedInput
+}
+
+export type vc_rolesUncheckedUpdateWithoutVc_use_vc_use_approved_byTovc_rolesInput = {
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_recorder_idTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedUpdateManyWithoutVc_rolesNestedInput
+}
+
+export type vc_rolesUpsertWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  update: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_rolesCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedCreateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+  where?: Prisma.vc_rolesWhereInput
+}
+
+export type vc_rolesUpdateToOneWithWhereWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  where?: Prisma.vc_rolesWhereInput
+  data: Prisma.XOR<Prisma.vc_rolesUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput, Prisma.vc_rolesUncheckedUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_rolesUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUpdateManyWithoutVc_rolesNestedInput
+}
+
+export type vc_rolesUncheckedUpdateWithoutVc_use_vc_use_recorder_idTovc_rolesInput = {
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+  roles_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedUpdateManyWithoutVc_rolesNestedInput
+  vc_use_vc_use_approved_byTovc_roles?: Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput
+  vc_user_roles?: Prisma.vc_user_rolesUncheckedUpdateManyWithoutVc_rolesNestedInput
+}
+
+
+/**
+ * Count Type Vc_rolesCountOutputType
+ */
+
+export type Vc_rolesCountOutputType = {
+  vc_permission: number
+  vc_use_vc_use_approved_byTovc_roles: number
+  vc_use_vc_use_recorder_idTovc_roles: number
+  vc_user_roles: number
+}
+
+export type Vc_rolesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_permission?: boolean | Vc_rolesCountOutputTypeCountVc_permissionArgs
+  vc_use_vc_use_approved_byTovc_roles?: boolean | Vc_rolesCountOutputTypeCountVc_use_vc_use_approved_byTovc_rolesArgs
+  vc_use_vc_use_recorder_idTovc_roles?: boolean | Vc_rolesCountOutputTypeCountVc_use_vc_use_recorder_idTovc_rolesArgs
+  vc_user_roles?: boolean | Vc_rolesCountOutputTypeCountVc_user_rolesArgs
+}
+
+/**
+ * Vc_rolesCountOutputType without action
+ */
+export type Vc_rolesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vc_rolesCountOutputType
+   */
+  select?: Prisma.Vc_rolesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Vc_rolesCountOutputType without action
+ */
+export type Vc_rolesCountOutputTypeCountVc_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_permissionWhereInput
+}
+
+/**
+ * Vc_rolesCountOutputType without action
+ */
+export type Vc_rolesCountOutputTypeCountVc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_useWhereInput
+}
+
+/**
+ * Vc_rolesCountOutputType without action
+ */
+export type Vc_rolesCountOutputTypeCountVc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_useWhereInput
+}
+
+/**
+ * Vc_rolesCountOutputType without action
+ */
+export type Vc_rolesCountOutputTypeCountVc_user_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_user_rolesWhereInput
+}
 
 
 export type vc_rolesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -400,6 +820,11 @@ export type vc_rolesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  vc_permission?: boolean | Prisma.vc_roles$vc_permissionArgs<ExtArgs>
+  vc_use_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_roles$vc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_use_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_roles$vc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_user_roles?: boolean | Prisma.vc_roles$vc_user_rolesArgs<ExtArgs>
+  _count?: boolean | Prisma.Vc_rolesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_roles"]>
 
 export type vc_rolesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -433,10 +858,24 @@ export type vc_rolesSelectScalar = {
 }
 
 export type vc_rolesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"roles_id" | "roles_name" | "description" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_roles"]>
+export type vc_rolesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_permission?: boolean | Prisma.vc_roles$vc_permissionArgs<ExtArgs>
+  vc_use_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_roles$vc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_use_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_roles$vc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_user_roles?: boolean | Prisma.vc_roles$vc_user_rolesArgs<ExtArgs>
+  _count?: boolean | Prisma.Vc_rolesCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type vc_rolesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type vc_rolesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $vc_rolesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_roles"
-  objects: {}
+  objects: {
+    vc_permission: Prisma.$vc_permissionPayload<ExtArgs>[]
+    vc_use_vc_use_approved_byTovc_roles: Prisma.$vc_usePayload<ExtArgs>[]
+    vc_use_vc_use_recorder_idTovc_roles: Prisma.$vc_usePayload<ExtArgs>[]
+    vc_user_roles: Prisma.$vc_user_rolesPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     roles_id: number
     roles_name: string | null
@@ -839,6 +1278,10 @@ readonly fields: vc_rolesFieldRefs;
  */
 export interface Prisma__vc_rolesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  vc_permission<T extends Prisma.vc_roles$vc_permissionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_roles$vc_permissionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_permissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vc_use_vc_use_approved_byTovc_roles<T extends Prisma.vc_roles$vc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_roles$vc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_usePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vc_use_vc_use_recorder_idTovc_roles<T extends Prisma.vc_roles$vc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_roles$vc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_usePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vc_user_roles<T extends Prisma.vc_roles$vc_user_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_roles$vc_user_rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_user_rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -892,6 +1335,10 @@ export type vc_rolesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_roles to fetch.
    */
   where: Prisma.vc_rolesWhereUniqueInput
@@ -910,6 +1357,10 @@ export type vc_rolesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_roles to fetch.
    */
   where: Prisma.vc_rolesWhereUniqueInput
@@ -927,6 +1378,10 @@ export type vc_rolesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the vc_roles
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
   /**
    * Filter, which vc_roles to fetch.
    */
@@ -976,6 +1431,10 @@ export type vc_rolesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_roles to fetch.
    */
   where?: Prisma.vc_rolesWhereInput
@@ -1024,6 +1483,10 @@ export type vc_rolesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_roles to fetch.
    */
   where?: Prisma.vc_rolesWhereInput
@@ -1066,6 +1529,10 @@ export type vc_rolesCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the vc_roles
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
   /**
    * The data needed to create a vc_roles.
    */
@@ -1114,6 +1581,10 @@ export type vc_rolesUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the vc_roles
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
   /**
    * The data needed to update a vc_roles.
    */
@@ -1181,6 +1652,10 @@ export type vc_rolesUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * The filter to search for the vc_roles to update in case it exists.
    */
   where: Prisma.vc_rolesWhereUniqueInput
@@ -1207,6 +1682,10 @@ export type vc_rolesDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  /**
    * Filter which vc_roles to delete.
    */
   where: Prisma.vc_rolesWhereUniqueInput
@@ -1227,6 +1706,102 @@ export type vc_rolesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * vc_roles.vc_permission
+ */
+export type vc_roles$vc_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_permission
+   */
+  select?: Prisma.vc_permissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_permission
+   */
+  omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  where?: Prisma.vc_permissionWhereInput
+  orderBy?: Prisma.vc_permissionOrderByWithRelationInput | Prisma.vc_permissionOrderByWithRelationInput[]
+  cursor?: Prisma.vc_permissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_permissionScalarFieldEnum | Prisma.Vc_permissionScalarFieldEnum[]
+}
+
+/**
+ * vc_roles.vc_use_vc_use_approved_byTovc_roles
+ */
+export type vc_roles$vc_use_vc_use_approved_byTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_use
+   */
+  select?: Prisma.vc_useSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_use
+   */
+  omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  where?: Prisma.vc_useWhereInput
+  orderBy?: Prisma.vc_useOrderByWithRelationInput | Prisma.vc_useOrderByWithRelationInput[]
+  cursor?: Prisma.vc_useWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_useScalarFieldEnum | Prisma.Vc_useScalarFieldEnum[]
+}
+
+/**
+ * vc_roles.vc_use_vc_use_recorder_idTovc_roles
+ */
+export type vc_roles$vc_use_vc_use_recorder_idTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_use
+   */
+  select?: Prisma.vc_useSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_use
+   */
+  omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  where?: Prisma.vc_useWhereInput
+  orderBy?: Prisma.vc_useOrderByWithRelationInput | Prisma.vc_useOrderByWithRelationInput[]
+  cursor?: Prisma.vc_useWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_useScalarFieldEnum | Prisma.Vc_useScalarFieldEnum[]
+}
+
+/**
+ * vc_roles.vc_user_roles
+ */
+export type vc_roles$vc_user_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_user_roles
+   */
+  select?: Prisma.vc_user_rolesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_user_roles
+   */
+  omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  where?: Prisma.vc_user_rolesWhereInput
+  orderBy?: Prisma.vc_user_rolesOrderByWithRelationInput | Prisma.vc_user_rolesOrderByWithRelationInput[]
+  cursor?: Prisma.vc_user_rolesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_user_rolesScalarFieldEnum | Prisma.Vc_user_rolesScalarFieldEnum[]
+}
+
+/**
  * vc_roles without action
  */
 export type vc_rolesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1238,4 +1813,8 @@ export type vc_rolesDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the vc_roles
    */
   omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
 }

@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 export async function createBooking(formData: FormData) {
     try {
         const use_div_code = formData.get('use_div_code') as string;
-        const car_spec_id = formData.get('car_spec_id') as string;
+        const car_spec_id = formData.get('car_spec_id') ? parseInt(formData.get('car_spec_id') as string) : null;
         const start_place = formData.get('start_place') as string;
         const journey_province = formData.get('journey_province') as string;
         const journey_place = formData.get('journey_place') as string;
@@ -56,7 +56,13 @@ export async function createBooking(formData: FormData) {
 export async function getMyBookings() {
     try {
         const bookings = await prisma.vc_order_item.findMany({
+<<<<<<< HEAD
             orderBy: { request_id: 'desc' }
+=======
+            orderBy: {
+                request_id: 'desc'
+            }
+>>>>>>> docker
         });
         return { success: true, data: bookings };
     } catch (error) {
@@ -68,6 +74,7 @@ export async function getMyBookings() {
 export async function getHistoryBookings() {
     try {
         const bookings = await prisma.vc_order_item.findMany({
+<<<<<<< HEAD
             where: {
                 status_use_id: {
                     in: [2, 3, 5, 6] // 2=approved, 3=rejected, 5=completed, 6=cancelled
@@ -117,6 +124,26 @@ export async function cancelRequest(request_id: number) {
         revalidatePath('/history');
 
         return { success: true };
+=======
+            orderBy: { request_id: 'desc' }
+        });
+
+        return bookings.map((b) => ({
+            id: String(b.request_id),
+            requesterName: b.userid ?? '',
+            department: b.use_div_code ?? '',
+            objective: b.journey_causes ?? '',
+            origin: b.start_place ?? '',
+            destination: b.journey_place ?? '',
+            requestDate: b.cre_date?.toISOString() ?? new Date().toISOString(),
+            startDateTime: b.journey_date?.toISOString() ?? new Date().toISOString(),
+            endDateTime: b.return_date?.toISOString() ?? new Date().toISOString(),
+            passengerCount: b.passenger_amount ?? 0,
+            status: b.status_use_id === 2 ? 'APPROVED' :
+                b.status_use_id === 3 ? 'REJECTED' : 'PENDING' as Booking['status'],
+            rejectReason: undefined,
+        }));
+>>>>>>> docker
     } catch (error) {
         console.error('Error cancelling request:', error);
         return { success: false, error: 'Failed to cancel request' };

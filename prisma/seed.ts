@@ -12,11 +12,10 @@ async function main() {
 
     console.log('--- Seeding Data ---');
 
-    // ── Seed Users ───────────────────────────────────────────
     const users = [
         {
             username: "dev",
-            email: "dev@vcs.com", // ← แก้จาก "" เพราะ @unique จะ conflict
+            email: "dev@vcs.com",
             name: "Dev",
             password: hashedPassword,
             role: "DEV"
@@ -46,7 +45,10 @@ async function main() {
         console.log(`User created: ${u.username}`);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> docker
     console.log('--- Seeding Done ---');
 }
 

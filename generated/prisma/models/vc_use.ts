@@ -34,31 +34,31 @@ export type Vc_useAvgAggregateOutputType = {
   use_id: number | null
   request_id: number | null
   car_id: number | null
-  emp_id: number | null
   approved_by: number | null
   mile_begin: number | null
   mile_end: number | null
   cre_by: number | null
   upd_by: number | null
+  recorder_id: number | null
 }
 
 export type Vc_useSumAggregateOutputType = {
   use_id: number | null
   request_id: number | null
   car_id: number | null
-  emp_id: number | null
   approved_by: number | null
   mile_begin: number | null
   mile_end: number | null
   cre_by: number | null
   upd_by: number | null
+  recorder_id: number | null
 }
 
 export type Vc_useMinAggregateOutputType = {
   use_id: number | null
   request_id: number | null
   car_id: number | null
-  emp_id: number | null
+  emp_id: string | null
   drive_type: string | null
   approved_by: number | null
   journey_real_time: string | null
@@ -71,13 +71,14 @@ export type Vc_useMinAggregateOutputType = {
   cre_date: Date | null
   upd_by: number | null
   upd_date: Date | null
+  recorder_id: number | null
 }
 
 export type Vc_useMaxAggregateOutputType = {
   use_id: number | null
   request_id: number | null
   car_id: number | null
-  emp_id: number | null
+  emp_id: string | null
   drive_type: string | null
   approved_by: number | null
   journey_real_time: string | null
@@ -90,6 +91,7 @@ export type Vc_useMaxAggregateOutputType = {
   cre_date: Date | null
   upd_by: number | null
   upd_date: Date | null
+  recorder_id: number | null
 }
 
 export type Vc_useCountAggregateOutputType = {
@@ -109,6 +111,7 @@ export type Vc_useCountAggregateOutputType = {
   cre_date: number
   upd_by: number
   upd_date: number
+  recorder_id: number
   _all: number
 }
 
@@ -117,24 +120,24 @@ export type Vc_useAvgAggregateInputType = {
   use_id?: true
   request_id?: true
   car_id?: true
-  emp_id?: true
   approved_by?: true
   mile_begin?: true
   mile_end?: true
   cre_by?: true
   upd_by?: true
+  recorder_id?: true
 }
 
 export type Vc_useSumAggregateInputType = {
   use_id?: true
   request_id?: true
   car_id?: true
-  emp_id?: true
   approved_by?: true
   mile_begin?: true
   mile_end?: true
   cre_by?: true
   upd_by?: true
+  recorder_id?: true
 }
 
 export type Vc_useMinAggregateInputType = {
@@ -154,6 +157,7 @@ export type Vc_useMinAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  recorder_id?: true
 }
 
 export type Vc_useMaxAggregateInputType = {
@@ -173,6 +177,7 @@ export type Vc_useMaxAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  recorder_id?: true
 }
 
 export type Vc_useCountAggregateInputType = {
@@ -192,6 +197,7 @@ export type Vc_useCountAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  recorder_id?: true
   _all?: true
 }
 
@@ -285,7 +291,7 @@ export type Vc_useGroupByOutputType = {
   use_id: number
   request_id: number | null
   car_id: number | null
-  emp_id: number | null
+  emp_id: string | null
   drive_type: string | null
   approved_by: number | null
   journey_real_time: string | null
@@ -298,6 +304,7 @@ export type Vc_useGroupByOutputType = {
   cre_date: Date | null
   upd_by: number | null
   upd_date: Date | null
+  recorder_id: number | null
   _count: Vc_useCountAggregateOutputType | null
   _avg: Vc_useAvgAggregateOutputType | null
   _sum: Vc_useSumAggregateOutputType | null
@@ -327,7 +334,7 @@ export type vc_useWhereInput = {
   use_id?: Prisma.IntFilter<"vc_use"> | number
   request_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
   car_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
-  emp_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  emp_id?: Prisma.StringNullableFilter<"vc_use"> | string | null
   drive_type?: Prisma.StringNullableFilter<"vc_use"> | string | null
   approved_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
   journey_real_time?: Prisma.StringNullableFilter<"vc_use"> | string | null
@@ -340,6 +347,12 @@ export type vc_useWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
+  recorder_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
+  vc_car_master?: Prisma.XOR<Prisma.Vc_car_masterNullableScalarRelationFilter, Prisma.vc_car_masterWhereInput> | null
+  User?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
+  vc_order_item?: Prisma.XOR<Prisma.Vc_order_itemNullableScalarRelationFilter, Prisma.vc_order_itemWhereInput> | null
 }
 
 export type vc_useOrderByWithRelationInput = {
@@ -359,6 +372,12 @@ export type vc_useOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  recorder_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesOrderByWithRelationInput
+  vc_car_master?: Prisma.vc_car_masterOrderByWithRelationInput
+  User?: Prisma.UserOrderByWithRelationInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesOrderByWithRelationInput
+  vc_order_item?: Prisma.vc_order_itemOrderByWithRelationInput
 }
 
 export type vc_useWhereUniqueInput = Prisma.AtLeast<{
@@ -368,7 +387,7 @@ export type vc_useWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.vc_useWhereInput | Prisma.vc_useWhereInput[]
   request_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
   car_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
-  emp_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  emp_id?: Prisma.StringNullableFilter<"vc_use"> | string | null
   drive_type?: Prisma.StringNullableFilter<"vc_use"> | string | null
   approved_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
   journey_real_time?: Prisma.StringNullableFilter<"vc_use"> | string | null
@@ -381,6 +400,12 @@ export type vc_useWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
   upd_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
+  recorder_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
+  vc_car_master?: Prisma.XOR<Prisma.Vc_car_masterNullableScalarRelationFilter, Prisma.vc_car_masterWhereInput> | null
+  User?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
+  vc_order_item?: Prisma.XOR<Prisma.Vc_order_itemNullableScalarRelationFilter, Prisma.vc_order_itemWhereInput> | null
 }, "use_id">
 
 export type vc_useOrderByWithAggregationInput = {
@@ -400,6 +425,7 @@ export type vc_useOrderByWithAggregationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  recorder_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.vc_useCountOrderByAggregateInput
   _avg?: Prisma.vc_useAvgOrderByAggregateInput
   _max?: Prisma.vc_useMaxOrderByAggregateInput
@@ -414,7 +440,7 @@ export type vc_useScalarWhereWithAggregatesInput = {
   use_id?: Prisma.IntWithAggregatesFilter<"vc_use"> | number
   request_id?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
   car_id?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
-  emp_id?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
+  emp_id?: Prisma.StringNullableWithAggregatesFilter<"vc_use"> | string | null
   drive_type?: Prisma.StringNullableWithAggregatesFilter<"vc_use"> | string | null
   approved_by?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
   journey_real_time?: Prisma.StringNullableWithAggregatesFilter<"vc_use"> | string | null
@@ -427,14 +453,11 @@ export type vc_useScalarWhereWithAggregatesInput = {
   cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_use"> | Date | string | null
   upd_by?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
   upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_use"> | Date | string | null
+  recorder_id?: Prisma.IntNullableWithAggregatesFilter<"vc_use"> | number | null
 }
 
 export type vc_useCreateInput = {
-  request_id?: number | null
-  car_id?: number | null
-  emp_id?: number | null
   drive_type?: string | null
-  approved_by?: number | null
   journey_real_time?: string | null
   return_real_time?: string | null
   return_real_date?: Date | string | null
@@ -445,13 +468,18 @@ export type vc_useCreateInput = {
   cre_date?: Date | string | null
   upd_by?: number | null
   upd_date?: Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  vc_car_master?: Prisma.vc_car_masterCreateNestedOneWithoutVc_useInput
+  User?: Prisma.UserCreateNestedOneWithoutVc_useInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedOneWithoutVc_useInput
 }
 
 export type vc_useUncheckedCreateInput = {
   use_id?: number
   request_id?: number | null
   car_id?: number | null
-  emp_id?: number | null
+  emp_id?: string | null
   drive_type?: string | null
   approved_by?: number | null
   journey_real_time?: string | null
@@ -464,14 +492,11 @@ export type vc_useUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: number | null
   upd_date?: Date | string | null
+  recorder_id?: number | null
 }
 
 export type vc_useUpdateInput = {
-  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  emp_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -482,13 +507,18 @@ export type vc_useUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput
+  vc_car_master?: Prisma.vc_car_masterUpdateOneWithoutVc_useNestedInput
+  User?: Prisma.UserUpdateOneWithoutVc_useNestedInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateOneWithoutVc_useNestedInput
 }
 
 export type vc_useUncheckedUpdateInput = {
   use_id?: Prisma.IntFieldUpdateOperationsInput | number
   request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  emp_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -501,13 +531,14 @@ export type vc_useUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type vc_useCreateManyInput = {
   use_id?: number
   request_id?: number | null
   car_id?: number | null
-  emp_id?: number | null
+  emp_id?: string | null
   drive_type?: string | null
   approved_by?: number | null
   journey_real_time?: string | null
@@ -520,14 +551,11 @@ export type vc_useCreateManyInput = {
   cre_date?: Date | string | null
   upd_by?: number | null
   upd_date?: Date | string | null
+  recorder_id?: number | null
 }
 
 export type vc_useUpdateManyMutationInput = {
-  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  emp_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -544,7 +572,7 @@ export type vc_useUncheckedUpdateManyInput = {
   use_id?: Prisma.IntFieldUpdateOperationsInput | number
   request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  emp_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -557,6 +585,17 @@ export type vc_useUncheckedUpdateManyInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type Vc_useListRelationFilter = {
+  every?: Prisma.vc_useWhereInput
+  some?: Prisma.vc_useWhereInput
+  none?: Prisma.vc_useWhereInput
+}
+
+export type vc_useOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type vc_useCountOrderByAggregateInput = {
@@ -576,18 +615,19 @@ export type vc_useCountOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  recorder_id?: Prisma.SortOrder
 }
 
 export type vc_useAvgOrderByAggregateInput = {
   use_id?: Prisma.SortOrder
   request_id?: Prisma.SortOrder
   car_id?: Prisma.SortOrder
-  emp_id?: Prisma.SortOrder
   approved_by?: Prisma.SortOrder
   mile_begin?: Prisma.SortOrder
   mile_end?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
+  recorder_id?: Prisma.SortOrder
 }
 
 export type vc_useMaxOrderByAggregateInput = {
@@ -607,6 +647,7 @@ export type vc_useMaxOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  recorder_id?: Prisma.SortOrder
 }
 
 export type vc_useMinOrderByAggregateInput = {
@@ -626,18 +667,942 @@ export type vc_useMinOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  recorder_id?: Prisma.SortOrder
 }
 
 export type vc_useSumOrderByAggregateInput = {
   use_id?: Prisma.SortOrder
   request_id?: Prisma.SortOrder
   car_id?: Prisma.SortOrder
-  emp_id?: Prisma.SortOrder
   approved_by?: Prisma.SortOrder
   mile_begin?: Prisma.SortOrder
   mile_end?: Prisma.SortOrder
   cre_by?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
+  recorder_id?: Prisma.SortOrder
+}
+
+export type vc_useCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput> | Prisma.vc_useCreateWithoutUserInput[] | Prisma.vc_useUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutUserInput | Prisma.vc_useCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.vc_useCreateManyUserInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput> | Prisma.vc_useCreateWithoutUserInput[] | Prisma.vc_useUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutUserInput | Prisma.vc_useCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.vc_useCreateManyUserInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput> | Prisma.vc_useCreateWithoutUserInput[] | Prisma.vc_useUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutUserInput | Prisma.vc_useCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutUserInput | Prisma.vc_useUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.vc_useCreateManyUserInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutUserInput | Prisma.vc_useUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutUserInput | Prisma.vc_useUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput> | Prisma.vc_useCreateWithoutUserInput[] | Prisma.vc_useUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutUserInput | Prisma.vc_useCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutUserInput | Prisma.vc_useUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.vc_useCreateManyUserInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutUserInput | Prisma.vc_useUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutUserInput | Prisma.vc_useUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useCreateNestedManyWithoutVc_car_masterInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput> | Prisma.vc_useCreateWithoutVc_car_masterInput[] | Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput | Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput[]
+  createMany?: Prisma.vc_useCreateManyVc_car_masterInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUncheckedCreateNestedManyWithoutVc_car_masterInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput> | Prisma.vc_useCreateWithoutVc_car_masterInput[] | Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput | Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput[]
+  createMany?: Prisma.vc_useCreateManyVc_car_masterInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUpdateManyWithoutVc_car_masterNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput> | Prisma.vc_useCreateWithoutVc_car_masterInput[] | Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput | Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_car_masterInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_car_masterInput[]
+  createMany?: Prisma.vc_useCreateManyVc_car_masterInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_car_masterInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_car_masterInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_car_masterInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_car_masterInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_car_masterNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput> | Prisma.vc_useCreateWithoutVc_car_masterInput[] | Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput | Prisma.vc_useCreateOrConnectWithoutVc_car_masterInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_car_masterInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_car_masterInput[]
+  createMany?: Prisma.vc_useCreateManyVc_car_masterInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_car_masterInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_car_masterInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_car_masterInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_car_masterInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUncheckedCreateNestedManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_approved_byTovc_rolesInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput> | Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[] | Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  createMany?: Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useCreateNestedManyWithoutVc_order_itemInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput> | Prisma.vc_useCreateWithoutVc_order_itemInput[] | Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput | Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput[]
+  createMany?: Prisma.vc_useCreateManyVc_order_itemInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUncheckedCreateNestedManyWithoutVc_order_itemInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput> | Prisma.vc_useCreateWithoutVc_order_itemInput[] | Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput | Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput[]
+  createMany?: Prisma.vc_useCreateManyVc_order_itemInputEnvelope
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+}
+
+export type vc_useUpdateManyWithoutVc_order_itemNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput> | Prisma.vc_useCreateWithoutVc_order_itemInput[] | Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput | Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_order_itemInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_order_itemInput[]
+  createMany?: Prisma.vc_useCreateManyVc_order_itemInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_order_itemInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_order_itemInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_order_itemInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_order_itemInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_order_itemNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput> | Prisma.vc_useCreateWithoutVc_order_itemInput[] | Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput[]
+  connectOrCreate?: Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput | Prisma.vc_useCreateOrConnectWithoutVc_order_itemInput[]
+  upsert?: Prisma.vc_useUpsertWithWhereUniqueWithoutVc_order_itemInput | Prisma.vc_useUpsertWithWhereUniqueWithoutVc_order_itemInput[]
+  createMany?: Prisma.vc_useCreateManyVc_order_itemInputEnvelope
+  set?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  disconnect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  delete?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  connect?: Prisma.vc_useWhereUniqueInput | Prisma.vc_useWhereUniqueInput[]
+  update?: Prisma.vc_useUpdateWithWhereUniqueWithoutVc_order_itemInput | Prisma.vc_useUpdateWithWhereUniqueWithoutVc_order_itemInput[]
+  updateMany?: Prisma.vc_useUpdateManyWithWhereWithoutVc_order_itemInput | Prisma.vc_useUpdateManyWithWhereWithoutVc_order_itemInput[]
+  deleteMany?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+}
+
+export type vc_useCreateWithoutUserInput = {
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  vc_car_master?: Prisma.vc_car_masterCreateNestedOneWithoutVc_useInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedOneWithoutVc_useInput
+}
+
+export type vc_useUncheckedCreateWithoutUserInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useCreateOrConnectWithoutUserInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput>
+}
+
+export type vc_useCreateManyUserInputEnvelope = {
+  data: Prisma.vc_useCreateManyUserInput | Prisma.vc_useCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_useUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_useUpdateWithoutUserInput, Prisma.vc_useUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutUserInput, Prisma.vc_useUncheckedCreateWithoutUserInput>
+}
+
+export type vc_useUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_useUpdateWithoutUserInput, Prisma.vc_useUncheckedUpdateWithoutUserInput>
+}
+
+export type vc_useUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.vc_useScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_useUpdateManyMutationInput, Prisma.vc_useUncheckedUpdateManyWithoutUserInput>
+}
+
+export type vc_useScalarWhereInput = {
+  AND?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+  OR?: Prisma.vc_useScalarWhereInput[]
+  NOT?: Prisma.vc_useScalarWhereInput | Prisma.vc_useScalarWhereInput[]
+  use_id?: Prisma.IntFilter<"vc_use"> | number
+  request_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  car_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  emp_id?: Prisma.StringNullableFilter<"vc_use"> | string | null
+  drive_type?: Prisma.StringNullableFilter<"vc_use"> | string | null
+  approved_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  journey_real_time?: Prisma.StringNullableFilter<"vc_use"> | string | null
+  return_real_time?: Prisma.StringNullableFilter<"vc_use"> | string | null
+  return_real_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
+  mile_begin?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  mile_end?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  note?: Prisma.StringNullableFilter<"vc_use"> | string | null
+  cre_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  cre_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
+  upd_by?: Prisma.IntNullableFilter<"vc_use"> | number | null
+  upd_date?: Prisma.DateTimeNullableFilter<"vc_use"> | Date | string | null
+  recorder_id?: Prisma.IntNullableFilter<"vc_use"> | number | null
+}
+
+export type vc_useCreateWithoutVc_car_masterInput = {
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  User?: Prisma.UserCreateNestedOneWithoutVc_useInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedOneWithoutVc_useInput
+}
+
+export type vc_useUncheckedCreateWithoutVc_car_masterInput = {
+  use_id?: number
+  request_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useCreateOrConnectWithoutVc_car_masterInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput>
+}
+
+export type vc_useCreateManyVc_car_masterInputEnvelope = {
+  data: Prisma.vc_useCreateManyVc_car_masterInput | Prisma.vc_useCreateManyVc_car_masterInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_useUpsertWithWhereUniqueWithoutVc_car_masterInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_car_masterInput, Prisma.vc_useUncheckedUpdateWithoutVc_car_masterInput>
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_car_masterInput, Prisma.vc_useUncheckedCreateWithoutVc_car_masterInput>
+}
+
+export type vc_useUpdateWithWhereUniqueWithoutVc_car_masterInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_car_masterInput, Prisma.vc_useUncheckedUpdateWithoutVc_car_masterInput>
+}
+
+export type vc_useUpdateManyWithWhereWithoutVc_car_masterInput = {
+  where: Prisma.vc_useScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_useUpdateManyMutationInput, Prisma.vc_useUncheckedUpdateManyWithoutVc_car_masterInput>
+}
+
+export type vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  vc_car_master?: Prisma.vc_car_masterCreateNestedOneWithoutVc_useInput
+  User?: Prisma.UserCreateNestedOneWithoutVc_useInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedOneWithoutVc_useInput
+}
+
+export type vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useCreateOrConnectWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInputEnvelope = {
+  data: Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInput | Prisma.vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  vc_car_master?: Prisma.vc_car_masterCreateNestedOneWithoutVc_useInput
+  User?: Prisma.UserCreateNestedOneWithoutVc_useInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedOneWithoutVc_useInput
+}
+
+export type vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+}
+
+export type vc_useCreateOrConnectWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInputEnvelope = {
+  data: Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInput | Prisma.vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput, Prisma.vc_useUncheckedUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  where: Prisma.vc_useScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_useUpdateManyMutationInput, Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput>
+}
+
+export type vc_useUpsertWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedCreateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_useUpdateWithWhereUniqueWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput, Prisma.vc_useUncheckedUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_useUpdateManyWithWhereWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  where: Prisma.vc_useScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_useUpdateManyMutationInput, Prisma.vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput>
+}
+
+export type vc_useCreateWithoutVc_order_itemInput = {
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_approved_byTovc_rolesInput
+  vc_car_master?: Prisma.vc_car_masterCreateNestedOneWithoutVc_useInput
+  User?: Prisma.UserCreateNestedOneWithoutVc_useInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_use_vc_use_recorder_idTovc_rolesInput
+}
+
+export type vc_useUncheckedCreateWithoutVc_order_itemInput = {
+  use_id?: number
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useCreateOrConnectWithoutVc_order_itemInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput>
+}
+
+export type vc_useCreateManyVc_order_itemInputEnvelope = {
+  data: Prisma.vc_useCreateManyVc_order_itemInput | Prisma.vc_useCreateManyVc_order_itemInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_useUpsertWithWhereUniqueWithoutVc_order_itemInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_order_itemInput, Prisma.vc_useUncheckedUpdateWithoutVc_order_itemInput>
+  create: Prisma.XOR<Prisma.vc_useCreateWithoutVc_order_itemInput, Prisma.vc_useUncheckedCreateWithoutVc_order_itemInput>
+}
+
+export type vc_useUpdateWithWhereUniqueWithoutVc_order_itemInput = {
+  where: Prisma.vc_useWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_useUpdateWithoutVc_order_itemInput, Prisma.vc_useUncheckedUpdateWithoutVc_order_itemInput>
+}
+
+export type vc_useUpdateManyWithWhereWithoutVc_order_itemInput = {
+  where: Prisma.vc_useScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_useUpdateManyMutationInput, Prisma.vc_useUncheckedUpdateManyWithoutVc_order_itemInput>
+}
+
+export type vc_useCreateManyUserInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useUpdateWithoutUserInput = {
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput
+  vc_car_master?: Prisma.vc_car_masterUpdateOneWithoutVc_useNestedInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateOneWithoutVc_useNestedInput
+}
+
+export type vc_useUncheckedUpdateWithoutUserInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useUncheckedUpdateManyWithoutUserInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useCreateManyVc_car_masterInput = {
+  use_id?: number
+  request_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useUpdateWithoutVc_car_masterInput = {
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput
+  User?: Prisma.UserUpdateOneWithoutVc_useNestedInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateOneWithoutVc_useNestedInput
+}
+
+export type vc_useUncheckedUpdateWithoutVc_car_masterInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_car_masterInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useCreateManyVc_roles_vc_use_approved_byTovc_rolesInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useCreateManyVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  use_id?: number
+  request_id?: number | null
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+}
+
+export type vc_useUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_car_master?: Prisma.vc_car_masterUpdateOneWithoutVc_useNestedInput
+  User?: Prisma.UserUpdateOneWithoutVc_useNestedInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateOneWithoutVc_useNestedInput
+}
+
+export type vc_useUncheckedUpdateWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_approved_byTovc_rolesInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput
+  vc_car_master?: Prisma.vc_car_masterUpdateOneWithoutVc_useNestedInput
+  User?: Prisma.UserUpdateOneWithoutVc_useNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateOneWithoutVc_useNestedInput
+}
+
+export type vc_useUncheckedUpdateWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_roles_vc_use_recorder_idTovc_rolesInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  request_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type vc_useCreateManyVc_order_itemInput = {
+  use_id?: number
+  car_id?: number | null
+  emp_id?: string | null
+  drive_type?: string | null
+  approved_by?: number | null
+  journey_real_time?: string | null
+  return_real_time?: string | null
+  return_real_date?: Date | string | null
+  mile_begin?: number | null
+  mile_end?: number | null
+  note?: string | null
+  cre_by?: number | null
+  cre_date?: Date | string | null
+  upd_by?: number | null
+  upd_date?: Date | string | null
+  recorder_id?: number | null
+}
+
+export type vc_useUpdateWithoutVc_order_itemInput = {
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles_vc_use_approved_byTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_approved_byTovc_rolesNestedInput
+  vc_car_master?: Prisma.vc_car_masterUpdateOneWithoutVc_useNestedInput
+  User?: Prisma.UserUpdateOneWithoutVc_useNestedInput
+  vc_roles_vc_use_recorder_idTovc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_use_vc_use_recorder_idTovc_rolesNestedInput
+}
+
+export type vc_useUncheckedUpdateWithoutVc_order_itemInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type vc_useUncheckedUpdateManyWithoutVc_order_itemInput = {
+  use_id?: Prisma.IntFieldUpdateOperationsInput | number
+  car_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  emp_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drive_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approved_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  journey_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  return_real_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mile_begin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mile_end?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recorder_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -659,6 +1624,12 @@ export type vc_useSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  recorder_id?: boolean
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
 }, ExtArgs["result"]["vc_use"]>
 
 export type vc_useSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -678,6 +1649,12 @@ export type vc_useSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  recorder_id?: boolean
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
 }, ExtArgs["result"]["vc_use"]>
 
 export type vc_useSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -697,6 +1674,12 @@ export type vc_useSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  recorder_id?: boolean
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
 }, ExtArgs["result"]["vc_use"]>
 
 export type vc_useSelectScalar = {
@@ -716,18 +1699,46 @@ export type vc_useSelectScalar = {
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  recorder_id?: boolean
 }
 
-export type vc_useOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"use_id" | "request_id" | "car_id" | "emp_id" | "drive_type" | "approved_by" | "journey_real_time" | "return_real_time" | "return_real_date" | "mile_begin" | "mile_end" | "note" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_use"]>
+export type vc_useOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"use_id" | "request_id" | "car_id" | "emp_id" | "drive_type" | "approved_by" | "journey_real_time" | "return_real_time" | "return_real_date" | "mile_begin" | "mile_end" | "note" | "cre_by" | "cre_date" | "upd_by" | "upd_date" | "recorder_id", ExtArgs["result"]["vc_use"]>
+export type vc_useInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
+}
+export type vc_useIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
+}
+export type vc_useIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles_vc_use_approved_byTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>
+  vc_car_master?: boolean | Prisma.vc_use$vc_car_masterArgs<ExtArgs>
+  User?: boolean | Prisma.vc_use$UserArgs<ExtArgs>
+  vc_roles_vc_use_recorder_idTovc_roles?: boolean | Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_use$vc_order_itemArgs<ExtArgs>
+}
 
 export type $vc_usePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_use"
-  objects: {}
+  objects: {
+    vc_roles_vc_use_approved_byTovc_roles: Prisma.$vc_rolesPayload<ExtArgs> | null
+    vc_car_master: Prisma.$vc_car_masterPayload<ExtArgs> | null
+    User: Prisma.$UserPayload<ExtArgs> | null
+    vc_roles_vc_use_recorder_idTovc_roles: Prisma.$vc_rolesPayload<ExtArgs> | null
+    vc_order_item: Prisma.$vc_order_itemPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     use_id: number
     request_id: number | null
     car_id: number | null
-    emp_id: number | null
+    emp_id: string | null
     drive_type: string | null
     approved_by: number | null
     journey_real_time: string | null
@@ -740,6 +1751,7 @@ export type $vc_usePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     cre_date: Date | null
     upd_by: number | null
     upd_date: Date | null
+    recorder_id: number | null
   }, ExtArgs["result"]["vc_use"]>
   composites: {}
 }
@@ -1134,6 +2146,11 @@ readonly fields: vc_useFieldRefs;
  */
 export interface Prisma__vc_useClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  vc_roles_vc_use_approved_byTovc_roles<T extends Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs>>): Prisma.Prisma__vc_rolesClient<runtime.Types.Result.GetResult<Prisma.$vc_rolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  vc_car_master<T extends Prisma.vc_use$vc_car_masterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_use$vc_car_masterArgs<ExtArgs>>): Prisma.Prisma__vc_car_masterClient<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  User<T extends Prisma.vc_use$UserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_use$UserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  vc_roles_vc_use_recorder_idTovc_roles<T extends Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs>>): Prisma.Prisma__vc_rolesClient<runtime.Types.Result.GetResult<Prisma.$vc_rolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  vc_order_item<T extends Prisma.vc_use$vc_order_itemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_use$vc_order_itemArgs<ExtArgs>>): Prisma.Prisma__vc_order_itemClient<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1166,7 +2183,7 @@ export interface vc_useFieldRefs {
   readonly use_id: Prisma.FieldRef<"vc_use", 'Int'>
   readonly request_id: Prisma.FieldRef<"vc_use", 'Int'>
   readonly car_id: Prisma.FieldRef<"vc_use", 'Int'>
-  readonly emp_id: Prisma.FieldRef<"vc_use", 'Int'>
+  readonly emp_id: Prisma.FieldRef<"vc_use", 'String'>
   readonly drive_type: Prisma.FieldRef<"vc_use", 'String'>
   readonly approved_by: Prisma.FieldRef<"vc_use", 'Int'>
   readonly journey_real_time: Prisma.FieldRef<"vc_use", 'String'>
@@ -1179,6 +2196,7 @@ export interface vc_useFieldRefs {
   readonly cre_date: Prisma.FieldRef<"vc_use", 'DateTime'>
   readonly upd_by: Prisma.FieldRef<"vc_use", 'Int'>
   readonly upd_date: Prisma.FieldRef<"vc_use", 'DateTime'>
+  readonly recorder_id: Prisma.FieldRef<"vc_use", 'Int'>
 }
     
 
@@ -1195,6 +2213,10 @@ export type vc_useFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the vc_use
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
   /**
    * Filter, which vc_use to fetch.
    */
@@ -1214,6 +2236,10 @@ export type vc_useFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  /**
    * Filter, which vc_use to fetch.
    */
   where: Prisma.vc_useWhereUniqueInput
@@ -1231,6 +2257,10 @@ export type vc_useFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the vc_use
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
   /**
    * Filter, which vc_use to fetch.
    */
@@ -1280,6 +2310,10 @@ export type vc_useFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  /**
    * Filter, which vc_use to fetch.
    */
   where?: Prisma.vc_useWhereInput
@@ -1328,6 +2362,10 @@ export type vc_useFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  /**
    * Filter, which vc_uses to fetch.
    */
   where?: Prisma.vc_useWhereInput
@@ -1371,6 +2409,10 @@ export type vc_useCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  /**
    * The data needed to create a vc_use.
    */
   data?: Prisma.XOR<Prisma.vc_useCreateInput, Prisma.vc_useUncheckedCreateInput>
@@ -1404,6 +2446,10 @@ export type vc_useCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    */
   data: Prisma.vc_useCreateManyInput | Prisma.vc_useCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1418,6 +2464,10 @@ export type vc_useUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the vc_use
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
   /**
    * The data needed to update a vc_use.
    */
@@ -1470,6 +2520,10 @@ export type vc_useUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many vc_uses to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1484,6 +2538,10 @@ export type vc_useUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the vc_use
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
   /**
    * The filter to search for the vc_use to update in case it exists.
    */
@@ -1511,6 +2569,10 @@ export type vc_useDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
+  /**
    * Filter which vc_use to delete.
    */
   where: Prisma.vc_useWhereUniqueInput
@@ -1531,6 +2593,101 @@ export type vc_useDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * vc_use.vc_roles_vc_use_approved_byTovc_roles
+ */
+export type vc_use$vc_roles_vc_use_approved_byTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_roles
+   */
+  select?: Prisma.vc_rolesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_roles
+   */
+  omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  where?: Prisma.vc_rolesWhereInput
+}
+
+/**
+ * vc_use.vc_car_master
+ */
+export type vc_use$vc_car_masterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_car_master
+   */
+  select?: Prisma.vc_car_masterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_car_master
+   */
+  omit?: Prisma.vc_car_masterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_car_masterInclude<ExtArgs> | null
+  where?: Prisma.vc_car_masterWhereInput
+}
+
+/**
+ * vc_use.User
+ */
+export type vc_use$UserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * vc_use.vc_roles_vc_use_recorder_idTovc_roles
+ */
+export type vc_use$vc_roles_vc_use_recorder_idTovc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_roles
+   */
+  select?: Prisma.vc_rolesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_roles
+   */
+  omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  where?: Prisma.vc_rolesWhereInput
+}
+
+/**
+ * vc_use.vc_order_item
+ */
+export type vc_use$vc_order_itemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_order_item
+   */
+  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_order_item
+   */
+  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_order_itemInclude<ExtArgs> | null
+  where?: Prisma.vc_order_itemWhereInput
+}
+
+/**
  * vc_use without action
  */
 export type vc_useDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1542,4 +2699,8 @@ export type vc_useDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the vc_use
    */
   omit?: Prisma.vc_useOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_useInclude<ExtArgs> | null
 }
