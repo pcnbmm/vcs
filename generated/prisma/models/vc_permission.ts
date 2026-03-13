@@ -27,85 +27,85 @@ export type AggregateVc_permission = {
 }
 
 export type Vc_permissionAvgAggregateOutputType = {
-  role_id: number | null
   function_id: number | null
+  roles_id: number | null
 }
 
 export type Vc_permissionSumAggregateOutputType = {
-  role_id: number | null
   function_id: number | null
+  roles_id: number | null
 }
 
 export type Vc_permissionMinAggregateOutputType = {
-  role_id: number | null
   function_id: number | null
   can_access: boolean | null
   cre_by: string | null
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  roles_id: number | null
 }
 
 export type Vc_permissionMaxAggregateOutputType = {
-  role_id: number | null
   function_id: number | null
   can_access: boolean | null
   cre_by: string | null
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  roles_id: number | null
 }
 
 export type Vc_permissionCountAggregateOutputType = {
-  role_id: number
   function_id: number
   can_access: number
   cre_by: number
   cre_date: number
   upd_by: number
   upd_date: number
+  roles_id: number
   _all: number
 }
 
 
 export type Vc_permissionAvgAggregateInputType = {
-  role_id?: true
   function_id?: true
+  roles_id?: true
 }
 
 export type Vc_permissionSumAggregateInputType = {
-  role_id?: true
   function_id?: true
+  roles_id?: true
 }
 
 export type Vc_permissionMinAggregateInputType = {
-  role_id?: true
   function_id?: true
   can_access?: true
   cre_by?: true
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  roles_id?: true
 }
 
 export type Vc_permissionMaxAggregateInputType = {
-  role_id?: true
   function_id?: true
   can_access?: true
   cre_by?: true
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  roles_id?: true
 }
 
 export type Vc_permissionCountAggregateInputType = {
-  role_id?: true
   function_id?: true
   can_access?: true
   cre_by?: true
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  roles_id?: true
   _all?: true
 }
 
@@ -196,13 +196,13 @@ export type vc_permissionGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 export type Vc_permissionGroupByOutputType = {
-  role_id: number
-  function_id: number | null
+  function_id: number
   can_access: boolean | null
   cre_by: string | null
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  roles_id: number
   _count: Vc_permissionCountAggregateOutputType | null
   _avg: Vc_permissionAvgAggregateOutputType | null
   _sum: Vc_permissionSumAggregateOutputType | null
@@ -229,46 +229,53 @@ export type vc_permissionWhereInput = {
   AND?: Prisma.vc_permissionWhereInput | Prisma.vc_permissionWhereInput[]
   OR?: Prisma.vc_permissionWhereInput[]
   NOT?: Prisma.vc_permissionWhereInput | Prisma.vc_permissionWhereInput[]
-  role_id?: Prisma.IntFilter<"vc_permission"> | number
-  function_id?: Prisma.IntNullableFilter<"vc_permission"> | number | null
+  function_id?: Prisma.IntFilter<"vc_permission"> | number
   can_access?: Prisma.BoolNullableFilter<"vc_permission"> | boolean | null
   cre_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
   cre_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
+  roles_id?: Prisma.IntFilter<"vc_permission"> | number
+  vc_function?: Prisma.XOR<Prisma.Vc_functionScalarRelationFilter, Prisma.vc_functionWhereInput>
+  vc_roles?: Prisma.XOR<Prisma.Vc_rolesScalarRelationFilter, Prisma.vc_rolesWhereInput>
 }
 
 export type vc_permissionOrderByWithRelationInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  function_id?: Prisma.SortOrder
   can_access?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+  vc_function?: Prisma.vc_functionOrderByWithRelationInput
+  vc_roles?: Prisma.vc_rolesOrderByWithRelationInput
 }
 
 export type vc_permissionWhereUniqueInput = Prisma.AtLeast<{
-  role_id?: number
+  roles_id_function_id?: Prisma.vc_permissionRoles_idFunction_idCompoundUniqueInput
   AND?: Prisma.vc_permissionWhereInput | Prisma.vc_permissionWhereInput[]
   OR?: Prisma.vc_permissionWhereInput[]
   NOT?: Prisma.vc_permissionWhereInput | Prisma.vc_permissionWhereInput[]
-  function_id?: Prisma.IntNullableFilter<"vc_permission"> | number | null
+  function_id?: Prisma.IntFilter<"vc_permission"> | number
   can_access?: Prisma.BoolNullableFilter<"vc_permission"> | boolean | null
   cre_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
   cre_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
-}, "role_id">
+  roles_id?: Prisma.IntFilter<"vc_permission"> | number
+  vc_function?: Prisma.XOR<Prisma.Vc_functionScalarRelationFilter, Prisma.vc_functionWhereInput>
+  vc_roles?: Prisma.XOR<Prisma.Vc_rolesScalarRelationFilter, Prisma.vc_rolesWhereInput>
+}, "roles_id_function_id">
 
 export type vc_permissionOrderByWithAggregationInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  function_id?: Prisma.SortOrder
   can_access?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
   _count?: Prisma.vc_permissionCountOrderByAggregateInput
   _avg?: Prisma.vc_permissionAvgOrderByAggregateInput
   _max?: Prisma.vc_permissionMaxOrderByAggregateInput
@@ -280,65 +287,66 @@ export type vc_permissionScalarWhereWithAggregatesInput = {
   AND?: Prisma.vc_permissionScalarWhereWithAggregatesInput | Prisma.vc_permissionScalarWhereWithAggregatesInput[]
   OR?: Prisma.vc_permissionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.vc_permissionScalarWhereWithAggregatesInput | Prisma.vc_permissionScalarWhereWithAggregatesInput[]
-  role_id?: Prisma.IntWithAggregatesFilter<"vc_permission"> | number
-  function_id?: Prisma.IntNullableWithAggregatesFilter<"vc_permission"> | number | null
+  function_id?: Prisma.IntWithAggregatesFilter<"vc_permission"> | number
   can_access?: Prisma.BoolNullableWithAggregatesFilter<"vc_permission"> | boolean | null
   cre_by?: Prisma.StringNullableWithAggregatesFilter<"vc_permission"> | string | null
   cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_permission"> | Date | string | null
   upd_by?: Prisma.StringNullableWithAggregatesFilter<"vc_permission"> | string | null
   upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_permission"> | Date | string | null
+  roles_id?: Prisma.IntWithAggregatesFilter<"vc_permission"> | number
 }
 
 export type vc_permissionCreateInput = {
-  function_id?: number | null
   can_access?: boolean | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_function: Prisma.vc_functionCreateNestedOneWithoutVc_permissionInput
+  vc_roles: Prisma.vc_rolesCreateNestedOneWithoutVc_permissionInput
 }
 
 export type vc_permissionUncheckedCreateInput = {
-  role_id?: number
-  function_id?: number | null
+  function_id: number
   can_access?: boolean | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  roles_id: number
 }
 
 export type vc_permissionUpdateInput = {
-  function_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_function?: Prisma.vc_functionUpdateOneRequiredWithoutVc_permissionNestedInput
+  vc_roles?: Prisma.vc_rolesUpdateOneRequiredWithoutVc_permissionNestedInput
 }
 
 export type vc_permissionUncheckedUpdateInput = {
-  role_id?: Prisma.IntFieldUpdateOperationsInput | number
-  function_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  function_id?: Prisma.IntFieldUpdateOperationsInput | number
   can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type vc_permissionCreateManyInput = {
-  role_id?: number
-  function_id?: number | null
+  function_id: number
   can_access?: boolean | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  roles_id: number
 }
 
 export type vc_permissionUpdateManyMutationInput = {
-  function_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -347,8 +355,315 @@ export type vc_permissionUpdateManyMutationInput = {
 }
 
 export type vc_permissionUncheckedUpdateManyInput = {
-  role_id?: Prisma.IntFieldUpdateOperationsInput | number
-  function_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  function_id?: Prisma.IntFieldUpdateOperationsInput | number
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type Vc_permissionListRelationFilter = {
+  every?: Prisma.vc_permissionWhereInput
+  some?: Prisma.vc_permissionWhereInput
+  none?: Prisma.vc_permissionWhereInput
+}
+
+export type vc_permissionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type vc_permissionRoles_idFunction_idCompoundUniqueInput = {
+  roles_id: number
+  function_id: number
+}
+
+export type vc_permissionCountOrderByAggregateInput = {
+  function_id?: Prisma.SortOrder
+  can_access?: Prisma.SortOrder
+  cre_by?: Prisma.SortOrder
+  cre_date?: Prisma.SortOrder
+  upd_by?: Prisma.SortOrder
+  upd_date?: Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+}
+
+export type vc_permissionAvgOrderByAggregateInput = {
+  function_id?: Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+}
+
+export type vc_permissionMaxOrderByAggregateInput = {
+  function_id?: Prisma.SortOrder
+  can_access?: Prisma.SortOrder
+  cre_by?: Prisma.SortOrder
+  cre_date?: Prisma.SortOrder
+  upd_by?: Prisma.SortOrder
+  upd_date?: Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+}
+
+export type vc_permissionMinOrderByAggregateInput = {
+  function_id?: Prisma.SortOrder
+  can_access?: Prisma.SortOrder
+  cre_by?: Prisma.SortOrder
+  cre_date?: Prisma.SortOrder
+  upd_by?: Prisma.SortOrder
+  upd_date?: Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+}
+
+export type vc_permissionSumOrderByAggregateInput = {
+  function_id?: Prisma.SortOrder
+  roles_id?: Prisma.SortOrder
+}
+
+export type vc_permissionCreateNestedManyWithoutVc_functionInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput> | Prisma.vc_permissionCreateWithoutVc_functionInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput | Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_functionInputEnvelope
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+}
+
+export type vc_permissionUncheckedCreateNestedManyWithoutVc_functionInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput> | Prisma.vc_permissionCreateWithoutVc_functionInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput | Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_functionInputEnvelope
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+}
+
+export type vc_permissionUpdateManyWithoutVc_functionNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput> | Prisma.vc_permissionCreateWithoutVc_functionInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput | Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput[]
+  upsert?: Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_functionInput | Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_functionInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_functionInputEnvelope
+  set?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  disconnect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  delete?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  update?: Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_functionInput | Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_functionInput[]
+  updateMany?: Prisma.vc_permissionUpdateManyWithWhereWithoutVc_functionInput | Prisma.vc_permissionUpdateManyWithWhereWithoutVc_functionInput[]
+  deleteMany?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+}
+
+export type vc_permissionUncheckedUpdateManyWithoutVc_functionNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput> | Prisma.vc_permissionCreateWithoutVc_functionInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput | Prisma.vc_permissionCreateOrConnectWithoutVc_functionInput[]
+  upsert?: Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_functionInput | Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_functionInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_functionInputEnvelope
+  set?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  disconnect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  delete?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  update?: Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_functionInput | Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_functionInput[]
+  updateMany?: Prisma.vc_permissionUpdateManyWithWhereWithoutVc_functionInput | Prisma.vc_permissionUpdateManyWithWhereWithoutVc_functionInput[]
+  deleteMany?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+}
+
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
+}
+
+export type vc_permissionCreateNestedManyWithoutVc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_permissionCreateWithoutVc_rolesInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput | Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_rolesInputEnvelope
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+}
+
+export type vc_permissionUncheckedCreateNestedManyWithoutVc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_permissionCreateWithoutVc_rolesInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput | Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_rolesInputEnvelope
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+}
+
+export type vc_permissionUpdateManyWithoutVc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_permissionCreateWithoutVc_rolesInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput | Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput[]
+  upsert?: Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_rolesInputEnvelope
+  set?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  disconnect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  delete?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  update?: Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_rolesInput[]
+  updateMany?: Prisma.vc_permissionUpdateManyWithWhereWithoutVc_rolesInput | Prisma.vc_permissionUpdateManyWithWhereWithoutVc_rolesInput[]
+  deleteMany?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+}
+
+export type vc_permissionUncheckedUpdateManyWithoutVc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_permissionCreateWithoutVc_rolesInput[] | Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput | Prisma.vc_permissionCreateOrConnectWithoutVc_rolesInput[]
+  upsert?: Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_permissionUpsertWithWhereUniqueWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_permissionCreateManyVc_rolesInputEnvelope
+  set?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  disconnect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  delete?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  connect?: Prisma.vc_permissionWhereUniqueInput | Prisma.vc_permissionWhereUniqueInput[]
+  update?: Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_permissionUpdateWithWhereUniqueWithoutVc_rolesInput[]
+  updateMany?: Prisma.vc_permissionUpdateManyWithWhereWithoutVc_rolesInput | Prisma.vc_permissionUpdateManyWithWhereWithoutVc_rolesInput[]
+  deleteMany?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+}
+
+export type vc_permissionCreateWithoutVc_functionInput = {
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_roles: Prisma.vc_rolesCreateNestedOneWithoutVc_permissionInput
+}
+
+export type vc_permissionUncheckedCreateWithoutVc_functionInput = {
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  roles_id: number
+}
+
+export type vc_permissionCreateOrConnectWithoutVc_functionInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput>
+}
+
+export type vc_permissionCreateManyVc_functionInputEnvelope = {
+  data: Prisma.vc_permissionCreateManyVc_functionInput | Prisma.vc_permissionCreateManyVc_functionInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_permissionUpsertWithWhereUniqueWithoutVc_functionInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_permissionUpdateWithoutVc_functionInput, Prisma.vc_permissionUncheckedUpdateWithoutVc_functionInput>
+  create: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_functionInput, Prisma.vc_permissionUncheckedCreateWithoutVc_functionInput>
+}
+
+export type vc_permissionUpdateWithWhereUniqueWithoutVc_functionInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_permissionUpdateWithoutVc_functionInput, Prisma.vc_permissionUncheckedUpdateWithoutVc_functionInput>
+}
+
+export type vc_permissionUpdateManyWithWhereWithoutVc_functionInput = {
+  where: Prisma.vc_permissionScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_permissionUpdateManyMutationInput, Prisma.vc_permissionUncheckedUpdateManyWithoutVc_functionInput>
+}
+
+export type vc_permissionScalarWhereInput = {
+  AND?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+  OR?: Prisma.vc_permissionScalarWhereInput[]
+  NOT?: Prisma.vc_permissionScalarWhereInput | Prisma.vc_permissionScalarWhereInput[]
+  function_id?: Prisma.IntFilter<"vc_permission"> | number
+  can_access?: Prisma.BoolNullableFilter<"vc_permission"> | boolean | null
+  cre_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
+  cre_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
+  upd_by?: Prisma.StringNullableFilter<"vc_permission"> | string | null
+  upd_date?: Prisma.DateTimeNullableFilter<"vc_permission"> | Date | string | null
+  roles_id?: Prisma.IntFilter<"vc_permission"> | number
+}
+
+export type vc_permissionCreateWithoutVc_rolesInput = {
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  vc_function: Prisma.vc_functionCreateNestedOneWithoutVc_permissionInput
+}
+
+export type vc_permissionUncheckedCreateWithoutVc_rolesInput = {
+  function_id: number
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+}
+
+export type vc_permissionCreateOrConnectWithoutVc_rolesInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput>
+}
+
+export type vc_permissionCreateManyVc_rolesInputEnvelope = {
+  data: Prisma.vc_permissionCreateManyVc_rolesInput | Prisma.vc_permissionCreateManyVc_rolesInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_permissionUpsertWithWhereUniqueWithoutVc_rolesInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_permissionUpdateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedUpdateWithoutVc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_permissionCreateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedCreateWithoutVc_rolesInput>
+}
+
+export type vc_permissionUpdateWithWhereUniqueWithoutVc_rolesInput = {
+  where: Prisma.vc_permissionWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_permissionUpdateWithoutVc_rolesInput, Prisma.vc_permissionUncheckedUpdateWithoutVc_rolesInput>
+}
+
+export type vc_permissionUpdateManyWithWhereWithoutVc_rolesInput = {
+  where: Prisma.vc_permissionScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_permissionUpdateManyMutationInput, Prisma.vc_permissionUncheckedUpdateManyWithoutVc_rolesInput>
+}
+
+export type vc_permissionCreateManyVc_functionInput = {
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  roles_id: number
+}
+
+export type vc_permissionUpdateWithoutVc_functionInput = {
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles?: Prisma.vc_rolesUpdateOneRequiredWithoutVc_permissionNestedInput
+}
+
+export type vc_permissionUncheckedUpdateWithoutVc_functionInput = {
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type vc_permissionUncheckedUpdateManyWithoutVc_functionInput = {
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type vc_permissionCreateManyVc_rolesInput = {
+  function_id: number
+  can_access?: boolean | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+}
+
+export type vc_permissionUpdateWithoutVc_rolesInput = {
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_function?: Prisma.vc_functionUpdateOneRequiredWithoutVc_permissionNestedInput
+}
+
+export type vc_permissionUncheckedUpdateWithoutVc_rolesInput = {
+  function_id?: Prisma.IntFieldUpdateOperationsInput | number
   can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -356,101 +671,91 @@ export type vc_permissionUncheckedUpdateManyInput = {
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type vc_permissionCountOrderByAggregateInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrder
-  can_access?: Prisma.SortOrder
-  cre_by?: Prisma.SortOrder
-  cre_date?: Prisma.SortOrder
-  upd_by?: Prisma.SortOrder
-  upd_date?: Prisma.SortOrder
-}
-
-export type vc_permissionAvgOrderByAggregateInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrder
-}
-
-export type vc_permissionMaxOrderByAggregateInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrder
-  can_access?: Prisma.SortOrder
-  cre_by?: Prisma.SortOrder
-  cre_date?: Prisma.SortOrder
-  upd_by?: Prisma.SortOrder
-  upd_date?: Prisma.SortOrder
-}
-
-export type vc_permissionMinOrderByAggregateInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrder
-  can_access?: Prisma.SortOrder
-  cre_by?: Prisma.SortOrder
-  cre_date?: Prisma.SortOrder
-  upd_by?: Prisma.SortOrder
-  upd_date?: Prisma.SortOrder
-}
-
-export type vc_permissionSumOrderByAggregateInput = {
-  role_id?: Prisma.SortOrder
-  function_id?: Prisma.SortOrder
+export type vc_permissionUncheckedUpdateManyWithoutVc_rolesInput = {
+  function_id?: Prisma.IntFieldUpdateOperationsInput | number
+  can_access?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
 
 export type vc_permissionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  role_id?: boolean
   function_id?: boolean
   can_access?: boolean
   cre_by?: boolean
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  roles_id?: boolean
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_permission"]>
 
 export type vc_permissionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  role_id?: boolean
   function_id?: boolean
   can_access?: boolean
   cre_by?: boolean
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  roles_id?: boolean
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_permission"]>
 
 export type vc_permissionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  role_id?: boolean
   function_id?: boolean
   can_access?: boolean
   cre_by?: boolean
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  roles_id?: boolean
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_permission"]>
 
 export type vc_permissionSelectScalar = {
-  role_id?: boolean
   function_id?: boolean
   can_access?: boolean
   cre_by?: boolean
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  roles_id?: boolean
 }
 
-export type vc_permissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"role_id" | "function_id" | "can_access" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_permission"]>
+export type vc_permissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"function_id" | "can_access" | "cre_by" | "cre_date" | "upd_by" | "upd_date" | "roles_id", ExtArgs["result"]["vc_permission"]>
+export type vc_permissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
+}
+export type vc_permissionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
+}
+export type vc_permissionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_function?: boolean | Prisma.vc_functionDefaultArgs<ExtArgs>
+  vc_roles?: boolean | Prisma.vc_rolesDefaultArgs<ExtArgs>
+}
 
 export type $vc_permissionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_permission"
-  objects: {}
+  objects: {
+    vc_function: Prisma.$vc_functionPayload<ExtArgs>
+    vc_roles: Prisma.$vc_rolesPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    role_id: number
-    function_id: number | null
+    function_id: number
     can_access: boolean | null
     cre_by: string | null
     cre_date: Date | null
     upd_by: string | null
     upd_date: Date | null
+    roles_id: number
   }, ExtArgs["result"]["vc_permission"]>
   composites: {}
 }
@@ -534,8 +839,8 @@ export interface vc_permissionDelegate<ExtArgs extends runtime.Types.Extensions.
    * // Get first 10 Vc_permissions
    * const vc_permissions = await prisma.vc_permission.findMany({ take: 10 })
    * 
-   * // Only select the `role_id`
-   * const vc_permissionWithRole_idOnly = await prisma.vc_permission.findMany({ select: { role_id: true } })
+   * // Only select the `function_id`
+   * const vc_permissionWithFunction_idOnly = await prisma.vc_permission.findMany({ select: { function_id: true } })
    * 
    */
   findMany<T extends vc_permissionFindManyArgs>(args?: Prisma.SelectSubset<T, vc_permissionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_permissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -579,9 +884,9 @@ export interface vc_permissionDelegate<ExtArgs extends runtime.Types.Extensions.
    *   ]
    * })
    * 
-   * // Create many Vc_permissions and only return the `role_id`
-   * const vc_permissionWithRole_idOnly = await prisma.vc_permission.createManyAndReturn({
-   *   select: { role_id: true },
+   * // Create many Vc_permissions and only return the `function_id`
+   * const vc_permissionWithFunction_idOnly = await prisma.vc_permission.createManyAndReturn({
+   *   select: { function_id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -670,9 +975,9 @@ export interface vc_permissionDelegate<ExtArgs extends runtime.Types.Extensions.
    *   ]
    * })
    * 
-   * // Update zero or more Vc_permissions and only return the `role_id`
-   * const vc_permissionWithRole_idOnly = await prisma.vc_permission.updateManyAndReturn({
-   *   select: { role_id: true },
+   * // Update zero or more Vc_permissions and only return the `function_id`
+   * const vc_permissionWithFunction_idOnly = await prisma.vc_permission.updateManyAndReturn({
+   *   select: { function_id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -845,6 +1150,8 @@ readonly fields: vc_permissionFieldRefs;
  */
 export interface Prisma__vc_permissionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  vc_function<T extends Prisma.vc_functionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_functionDefaultArgs<ExtArgs>>): Prisma.Prisma__vc_functionClient<runtime.Types.Result.GetResult<Prisma.$vc_functionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  vc_roles<T extends Prisma.vc_rolesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_rolesDefaultArgs<ExtArgs>>): Prisma.Prisma__vc_rolesClient<runtime.Types.Result.GetResult<Prisma.$vc_rolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -874,13 +1181,13 @@ export interface Prisma__vc_permissionClient<T, Null = never, ExtArgs extends ru
  * Fields of the vc_permission model
  */
 export interface vc_permissionFieldRefs {
-  readonly role_id: Prisma.FieldRef<"vc_permission", 'Int'>
   readonly function_id: Prisma.FieldRef<"vc_permission", 'Int'>
   readonly can_access: Prisma.FieldRef<"vc_permission", 'Boolean'>
   readonly cre_by: Prisma.FieldRef<"vc_permission", 'String'>
   readonly cre_date: Prisma.FieldRef<"vc_permission", 'DateTime'>
   readonly upd_by: Prisma.FieldRef<"vc_permission", 'String'>
   readonly upd_date: Prisma.FieldRef<"vc_permission", 'DateTime'>
+  readonly roles_id: Prisma.FieldRef<"vc_permission", 'Int'>
 }
     
 
@@ -897,6 +1204,10 @@ export type vc_permissionFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
   /**
    * Filter, which vc_permission to fetch.
    */
@@ -916,6 +1227,10 @@ export type vc_permissionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_permission to fetch.
    */
   where: Prisma.vc_permissionWhereUniqueInput
@@ -933,6 +1248,10 @@ export type vc_permissionFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
   /**
    * Filter, which vc_permission to fetch.
    */
@@ -982,6 +1301,10 @@ export type vc_permissionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_permission to fetch.
    */
   where?: Prisma.vc_permissionWhereInput
@@ -1030,6 +1353,10 @@ export type vc_permissionFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_permissions to fetch.
    */
   where?: Prisma.vc_permissionWhereInput
@@ -1073,9 +1400,13 @@ export type vc_permissionCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  /**
    * The data needed to create a vc_permission.
    */
-  data?: Prisma.XOR<Prisma.vc_permissionCreateInput, Prisma.vc_permissionUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.vc_permissionCreateInput, Prisma.vc_permissionUncheckedCreateInput>
 }
 
 /**
@@ -1106,6 +1437,10 @@ export type vc_permissionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    */
   data: Prisma.vc_permissionCreateManyInput | Prisma.vc_permissionCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1120,6 +1455,10 @@ export type vc_permissionUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
   /**
    * The data needed to update a vc_permission.
    */
@@ -1172,6 +1511,10 @@ export type vc_permissionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * Limit how many vc_permissions to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1186,6 +1529,10 @@ export type vc_permissionUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
   /**
    * The filter to search for the vc_permission to update in case it exists.
    */
@@ -1212,6 +1559,10 @@ export type vc_permissionDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
   /**
    * Filter which vc_permission to delete.
    */
@@ -1244,4 +1595,8 @@ export type vc_permissionDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the vc_permission
    */
   omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
 }

@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache'
  */
 export async function updateRequestStatus(request_id: number, status_id: number) {
     try {
-        await prisma.vcOrderItems.update({
+        await prisma.vc_order_item.update({
             where: {
                 request_id: request_id
             },

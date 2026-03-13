@@ -7,14 +7,14 @@ import { revalidatePath } from 'next/cache';
 export async function createBooking(formData: FormData) {
     try {
         const use_div_code = formData.get('use_div_code') as string;
-        const car_spec_id = formData.get('car_spec_id') as string;
+        const car_spec_id = formData.get('car_spec_id') ? parseInt(formData.get('car_spec_id') as string) : null;
         const start_place = formData.get('start_place') as string;
         const journey_province = formData.get('journey_province') as string;
         const journey_place = formData.get('journey_place') as string;
         const journey_lat = parseFloat(formData.get('journey_lat') as string || '0');
         const journey_long = parseFloat(formData.get('journey_long') as string || '0');
         const journey_date = new Date(formData.get('journey_date') as string);
-        const journer_time = formData.get('journer_time') as string;
+        const journey_time = formData.get('journey_time') as string;
         const return_date = new Date(formData.get('return_date') as string);
         const return_time = formData.get('return_time') as string;
         const journey_causes = formData.get('journey_causes') as string;
@@ -22,7 +22,7 @@ export async function createBooking(formData: FormData) {
         const user_mobile = formData.get('user_mobile') as string;
         const self_drive = formData.get('self_drive') === 'true';
 
-        const booking = await prisma.vcOrderItems.create({
+        const booking = await prisma.vc_order_item.create({
             data: {
                 use_div_code,
                 car_spec_id,
@@ -32,7 +32,7 @@ export async function createBooking(formData: FormData) {
                 journey_lat,
                 journey_long,
                 journey_date,
-                journer_time,
+                journey_time,
                 return_date,
                 return_time,
                 journey_causes,
@@ -56,7 +56,7 @@ export async function createBooking(formData: FormData) {
 
 export async function getMyBookings() {
     try {
-        const bookings = await prisma.vcOrderItems.findMany({
+        const bookings = await prisma.vc_order_item.findMany({
             orderBy: {
                 request_id: 'desc'
             }
@@ -70,31 +70,24 @@ export async function getMyBookings() {
 
 export async function getBookings(): Promise<Booking[]> {
     try {
-        const bookings = await prisma.booking.findMany({
-            include: {
-                User: {
-                    select: {
-                        name: true,
-                    }
-                }
-            },
-            orderBy: {
-                requestDate: 'desc',
-            }
+        const bookings = await prisma.vc_order_item.findMany({
+            orderBy: { request_id: 'desc' }
         });
+
         return bookings.map((b) => ({
-            id: b.bookingNo ?? b.id,
-            requesterName: b.User.name ?? '',
-            department: b.department,
-            objective: b.objective,
-            origin: b.origin,
-            destination: b.destination,
-            requestDate: b.requestDate.toISOString(),
-            startDateTime: b.startDateTime.toISOString(),
-            endDateTime: b.endDateTime.toISOString(),
-            passengerCount: b.passengerCount,
-            status: b.status as Booking['status'],
-            rejectReason: b.rejectReason ?? undefined,
+            id: String(b.request_id),
+            requesterName: b.userid ?? '',
+            department: b.use_div_code ?? '',
+            objective: b.journey_causes ?? '',
+            origin: b.start_place ?? '',
+            destination: b.journey_place ?? '',
+            requestDate: b.cre_date?.toISOString() ?? new Date().toISOString(),
+            startDateTime: b.journey_date?.toISOString() ?? new Date().toISOString(),
+            endDateTime: b.return_date?.toISOString() ?? new Date().toISOString(),
+            passengerCount: b.passenger_amount ?? 0,
+            status: b.status_use_id === 2 ? 'APPROVED' :
+                b.status_use_id === 3 ? 'REJECTED' : 'PENDING' as Booking['status'],
+            rejectReason: undefined,
         }));
     } catch (error) {
         console.error('Error fetching bookings:', error);

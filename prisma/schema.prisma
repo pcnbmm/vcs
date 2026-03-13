@@ -15,8 +15,8 @@ model User {
   password  String
   role      String    @default("USER")
   username  String    @unique
-  Booking   Booking[]
   sessions  Session[]
+  vc_use    vc_use[]
 }
 
 model Session {
@@ -29,8 +29,8 @@ model Session {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_car_master {
-  car_id               Int                   @id @default(autoincrement())
-  car_number           String?               @db.VarChar(50)
+  car_id               Int            @id @default(autoincrement())
+  car_number           String?        @db.VarChar(50)
   car_province_id      Int?
   car_type_id          Int?
   car_spec_id          Int?
@@ -39,61 +39,34 @@ model vc_car_master {
   color_id             Int?
   oil_type_id          Int?
   fiscal_year          Int?
-  start_date           String?               @db.VarChar(50)
-  end_date             String?               @db.VarChar(50)
-  regis_date           String?               @db.VarChar(50)
+  start_date           String?        @db.VarChar(50)
+  end_date             String?        @db.VarChar(50)
+  regis_date           String?        @db.VarChar(50)
   car_status_id        Int?
-  machine_no           String?               @db.VarChar(50)
-  body_no              String?               @db.VarChar(50)
-  cylinder_capacityp   String?               @db.VarChar(50)
-  oil_expense          Float?                @db.Real
+  machine_no           String?        @db.VarChar(50)
+  body_no              String?        @db.VarChar(50)
+  cylinder_capacityp   String?        @db.VarChar(50)
+  oil_expense          Float?         @db.Real
   refund_vat           Int?
-  fleetcard_no         String?               @db.VarChar(255)
-  flag                 String?               @db.VarChar(50)
+  fleetcard_no         String?        @db.VarChar(255)
+  flag                 String?        @db.VarChar(50)
   cre_by               Int?
-  cre_date             String?               @db.VarChar(50)
+  cre_date             String?        @db.VarChar(50)
   upd_by               Int?
-  upd_date             String?               @db.VarChar(50)
-  ref_car              String?               @db.VarChar(50)
-  horse_power          String?               @db.VarChar(50)
-  weight               String?               @db.VarChar(50)
-  machine_id           String?               @db.VarChar(50)
-  vc_car_brand         vc_car_brand?         @relation(fields: [car_brand_id], references: [car_brand_id])
-  vc_register_province vc_register_province? @relation(fields: [car_province_id], references: [regis_province_id])
-  vc_car_spec          vc_car_spec?          @relation(fields: [car_spec_id], references: [car_spec_id])
-  vc_car_status        vc_car_status?        @relation(fields: [car_status_id], references: [car_status_id])
-  vc_car_type          vc_car_type?          @relation(fields: [car_type_id], references: [car_type_id])
-  vc_type_regis        vc_type_regis?        @relation(fields: [car_type_regis_id], references: [type_regis_id])
-  vc_color             vc_color?             @relation(fields: [color_id], references: [color_id])
-  vc_oil_type          vc_oil_type?          @relation(fields: [oil_type_id], references: [oil_type_id])
-}
-
-model VcOrderItems {
-  request_id       Int       @id @default(autoincrement())
-  use_div_code     String?   @db.VarChar(100)
-  userid           String?   @db.Char(8)
-  user_mobile      String?   @db.VarChar(20)
-  journey_date     DateTime? @db.Date
-  return_date      DateTime? @db.Date
-  start_place      String?   @db.VarChar(200)
-  journey_place    String?   @db.VarChar(500)
-  journey_province String?   @db.VarChar(100)
-  journey_causes   String?
-  journer_time     String?   @db.VarChar(10)
-  return_time      String?   @db.VarChar(10)
-  car_spec_id      String?   @db.VarChar(100)
-  passenger_amount Int?
-  approve_id       String?   @db.Char(8)
-  status_use_id    Int?
-  self_drive       Boolean?
-  journey_lat      Float?
-  journey_long     Float?
-  cre_by           String?   @db.VarChar(20)
-  cre_date         DateTime?
-  upd_by           String?   @db.VarChar(20)
-  upd_date         DateTime?
-
-  @@map("vc_order_item")
+  upd_date             String?        @db.VarChar(50)
+  ref_car              String?        @db.VarChar(50)
+  horse_power          String?        @db.VarChar(50)
+  weight               String?        @db.VarChar(50)
+  machine_id           String?        @db.VarChar(50)
+  vc_car_brand         vc_car_brand?  @relation(fields: [car_brand_id], references: [car_brand_id])
+  vc_register_province vc_province?   @relation(fields: [car_province_id], references: [province_id])
+  vc_car_spec          vc_car_spec?   @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_car_status        vc_car_status? @relation(fields: [car_status_id], references: [car_status_id])
+  vc_car_type          vc_car_type?   @relation(fields: [car_type_id], references: [car_type_id])
+  vc_type_regis        vc_type_regis? @relation(fields: [car_type_regis_id], references: [type_regis_id])
+  vc_color             vc_color?      @relation(fields: [color_id], references: [color_id])
+  vc_oil_type          vc_oil_type?   @relation(fields: [oil_type_id], references: [oil_type_id])
+  vc_use               vc_use[]
 }
 
 model fleetcard_transactions {
@@ -139,6 +112,7 @@ model vc_car_spec {
   upd_by        Int?
   upd_date      String?         @db.VarChar(50)
   vc_car_master vc_car_master[]
+  vc_order_item vc_order_item[]
 }
 
 model vc_car_status {
@@ -225,14 +199,15 @@ model vc_fuel_item {
 }
 
 model vc_function {
-  function_id Int       @id @default(autoincrement())
-  menu_id     Int?
-  func_name   String?   @db.VarChar(100)
-  func_code   String?   @db.VarChar(50)
-  cre_by      String?   @db.VarChar(8)
-  cre_date    DateTime? @db.Date
-  upd_by      String?   @db.VarChar(8)
-  upd_date    DateTime? @db.Date
+  function_id   Int             @id @default(autoincrement())
+  menu_id       Int?
+  func_name     String?         @db.VarChar(100)
+  func_code     String?         @db.VarChar(50)
+  cre_by        String?         @db.VarChar(8)
+  cre_date      DateTime?       @db.Date
+  upd_by        String?         @db.VarChar(8)
+  upd_date      DateTime?       @db.Date
+  vc_permission vc_permission[]
 }
 
 model vc_menu {
@@ -280,26 +255,17 @@ model vc_oil_type {
 }
 
 model vc_permission {
-  role_id     Int       @id @default(autoincrement())
-  function_id Int?
+  function_id Int
   can_access  Boolean?
-  cre_by      String?   @db.VarChar(8)
-  cre_date    DateTime? @db.Date
-  upd_by      String?   @db.VarChar(8)
-  upd_date    DateTime? @db.Date
-}
+  cre_by      String?     @db.VarChar(8)
+  cre_date    DateTime?   @db.Date
+  upd_by      String?     @db.VarChar(8)
+  upd_date    DateTime?   @db.Date
+  roles_id    Int
+  vc_function vc_function @relation(fields: [function_id], references: [function_id])
+  vc_roles    vc_roles    @relation(fields: [roles_id], references: [roles_id])
 
-model vc_register_province {
-  regis_province_id   Int             @id @default(autoincrement())
-  regis_province_name String?         @db.VarChar(50)
-  short_name          String?         @db.VarChar(50)
-  region_id           Int?
-  flag_del            String?         @db.VarChar(50)
-  cre_by              Int?
-  cre_date            String?         @db.VarChar(50)
-  upd_by              Int?
-  upd_date            String?         @db.VarChar(50)
-  vc_car_master       vc_car_master[]
+  @@id([roles_id, function_id])
 }
 
 model vc_replacement {
@@ -315,13 +281,17 @@ model vc_replacement {
 }
 
 model vc_roles {
-  roles_id    Int       @id @default(autoincrement())
-  roles_name  String?   @db.VarChar(50)
-  description String?   @db.VarChar(255)
-  cre_by      String?   @db.VarChar(8)
-  cre_date    DateTime? @db.Date
-  upd_by      String?   @db.VarChar(8)
-  upd_date    DateTime? @db.Date
+  roles_id                            Int             @id @default(autoincrement())
+  roles_name                          String?         @db.VarChar(50)
+  description                         String?         @db.VarChar(255)
+  cre_by                              String?         @db.VarChar(8)
+  cre_date                            DateTime?       @db.Date
+  upd_by                              String?         @db.VarChar(8)
+  upd_date                            DateTime?       @db.Date
+  vc_permission                       vc_permission[]
+  vc_use_vc_use_approved_byTovc_roles vc_use[]        @relation("vc_use_approved_byTovc_roles")
+  vc_use_vc_use_recorder_idTovc_roles vc_use[]        @relation("vc_use_recorder_idTovc_roles")
+  vc_user_roles                       vc_user_roles[]
 }
 
 model vc_type_regis {
@@ -336,12 +306,14 @@ model vc_type_regis {
 }
 
 model vc_user_roles {
-  user_id  Int       @id @default(autoincrement())
-  roles_id Int?
-  cre_by   String?   @db.VarChar(50)
-  cre_date DateTime? @db.Date
-  upd_by   String?   @db.VarChar(50)
-  upd_date DateTime? @db.Date
+  user_id       Int?
+  roles_id      Int?
+  cre_by        String?   @db.VarChar(50)
+  cre_date      DateTime? @db.Date
+  upd_by        String?   @db.VarChar(50)
+  upd_date      DateTime? @db.Date
+  user_roles_id Int       @id @default(autoincrement())
+  vc_roles      vc_roles? @relation(fields: [roles_id], references: [roles_id])
 }
 
 model vc_rent_car {
@@ -359,22 +331,28 @@ model vc_rent_car {
 }
 
 model vc_use {
-  use_id            Int       @id @default(autoincrement())
-  request_id        Int?
-  car_id            Int?
-  emp_id            Int?
-  drive_type        String?   @db.VarChar(50)
-  approved_by       Int?
-  journey_real_time String?   @db.VarChar(50)
-  return_real_time  String?   @db.VarChar(50)
-  return_real_date  DateTime? @db.Date
-  mile_begin        Int?
-  mile_end          Int?
-  note              String?   @db.VarChar(64)
-  cre_by            Int?
-  cre_date          DateTime? @db.Date
-  upd_by            Int?
-  upd_date          DateTime? @db.Date
+  use_id                                Int            @id @default(autoincrement())
+  request_id                            Int?
+  car_id                                Int?
+  emp_id                                String?
+  drive_type                            String?        @db.VarChar(50)
+  approved_by                           Int?
+  journey_real_time                     String?        @db.VarChar(50)
+  return_real_time                      String?        @db.VarChar(50)
+  return_real_date                      DateTime?      @db.Date
+  mile_begin                            Int?
+  mile_end                              Int?
+  note                                  String?        @db.VarChar(64)
+  cre_by                                Int?
+  cre_date                              DateTime?      @db.Date
+  upd_by                                Int?
+  upd_date                              DateTime?      @db.Date
+  recorder_id                           Int?
+  vc_roles_vc_use_approved_byTovc_roles vc_roles?      @relation("vc_use_approved_byTovc_roles", fields: [approved_by], references: [roles_id])
+  vc_car_master                         vc_car_master? @relation(fields: [car_id], references: [car_id])
+  User                                  User?          @relation(fields: [emp_id], references: [id])
+  vc_roles_vc_use_recorder_idTovc_roles vc_roles?      @relation("vc_use_recorder_idTovc_roles", fields: [recorder_id], references: [roles_id])
+  vc_order_item                         vc_order_item? @relation(fields: [request_id], references: [request_id])
 }
 
 model fleetcards {
@@ -440,29 +418,54 @@ model vc_start_place {
   upd_date         DateTime? @db.Date
 }
 
-model Booking {
-  id             String        @id
-  requesterId    String
-  department     String
-  objective      String
-  origin         String
-  destination    String
-  requestDate    DateTime      @default(now())
-  startDateTime  DateTime
-  endDateTime    DateTime
-  passengerCount Int
-  status         BookingStatus @default(PENDING)
-  rejectReason   String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime
-  bookingNo      String?       @unique
-  User           User          @relation(fields: [requesterId], references: [id])
+model vc_province {
+  name_th       String?         @db.VarChar(50)
+  abbr_th       String?         @db.VarChar(50)
+  name_en       String?         @db.VarChar(50)
+  abbr_en       String?         @db.VarChar(50)
+  flag_del      String?         @db.VarChar(50)
+  cre_by        String?         @db.VarChar(50)
+  cre_date      String?         @db.VarChar(50)
+  upd_by        String?         @db.VarChar(50)
+  upd_date      String?         @db.VarChar(50)
+  province_id   Int             @id @default(autoincrement())
+  vc_car_master vc_car_master[]
 }
 
-enum BookingStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  IN_USE
-  COMPLETED
+model vc_status_use_code {
+  status_use_id   Int       @id @default(autoincrement())
+  status_use_name String?   @db.VarChar(50)
+  flag_del        String?   @db.Char(1)
+  cre_by          String?   @db.VarChar(50)
+  cre_date        DateTime? @db.Date
+  upd_by          String?   @db.VarChar(50)
+  upd_date        DateTime? @db.Date
+}
+
+model vc_order_item {
+  request_id       Int          @id @default(autoincrement())
+  use_div_code     String?      @db.VarChar(100)
+  userid           String?      @db.Char(8)
+  user_mobile      String?      @db.VarChar(20)
+  journey_date     DateTime?    @db.Date
+  return_date      DateTime?    @db.Date
+  start_place      String?      @db.VarChar(200)
+  journey_place    String?      @db.VarChar(500)
+  journey_province String?      @db.VarChar(100)
+  journey_causes   String?
+  return_time      String?      @db.VarChar(10)
+  passenger_amount Int?
+  approve_id       String?      @db.Char(8)
+  status_use_id    Int?
+  self_drive       Boolean?
+  journey_lat      Float?
+  journey_long     Float?
+  cre_by           String?      @db.VarChar(20)
+  cre_date         DateTime?
+  upd_by           String?      @db.VarChar(20)
+  upd_date         DateTime?
+  journey_time     String?      @db.VarChar(10)
+  car_spec_id      Int?
+  vc_car_spec      vc_car_spec? @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_use           vc_use[]
 }

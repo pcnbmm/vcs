@@ -244,6 +244,7 @@ export type vc_functionWhereInput = {
   cre_date?: Prisma.DateTimeNullableFilter<"vc_function"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_function"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_function"> | Date | string | null
+  vc_permission?: Prisma.Vc_permissionListRelationFilter
 }
 
 export type vc_functionOrderByWithRelationInput = {
@@ -255,6 +256,7 @@ export type vc_functionOrderByWithRelationInput = {
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  vc_permission?: Prisma.vc_permissionOrderByRelationAggregateInput
 }
 
 export type vc_functionWhereUniqueInput = Prisma.AtLeast<{
@@ -269,6 +271,7 @@ export type vc_functionWhereUniqueInput = Prisma.AtLeast<{
   cre_date?: Prisma.DateTimeNullableFilter<"vc_function"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_function"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_function"> | Date | string | null
+  vc_permission?: Prisma.Vc_permissionListRelationFilter
 }, "function_id">
 
 export type vc_functionOrderByWithAggregationInput = {
@@ -309,6 +312,7 @@ export type vc_functionCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionCreateNestedManyWithoutVc_functionInput
 }
 
 export type vc_functionUncheckedCreateInput = {
@@ -320,6 +324,7 @@ export type vc_functionUncheckedCreateInput = {
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedCreateNestedManyWithoutVc_functionInput
 }
 
 export type vc_functionUpdateInput = {
@@ -330,6 +335,7 @@ export type vc_functionUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUpdateManyWithoutVc_functionNestedInput
 }
 
 export type vc_functionUncheckedUpdateInput = {
@@ -341,6 +347,7 @@ export type vc_functionUncheckedUpdateInput = {
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_permission?: Prisma.vc_permissionUncheckedUpdateManyWithoutVc_functionNestedInput
 }
 
 export type vc_functionCreateManyInput = {
@@ -418,6 +425,112 @@ export type vc_functionSumOrderByAggregateInput = {
   menu_id?: Prisma.SortOrder
 }
 
+export type Vc_functionScalarRelationFilter = {
+  is?: Prisma.vc_functionWhereInput
+  isNot?: Prisma.vc_functionWhereInput
+}
+
+export type vc_functionCreateNestedOneWithoutVc_permissionInput = {
+  create?: Prisma.XOR<Prisma.vc_functionCreateWithoutVc_permissionInput, Prisma.vc_functionUncheckedCreateWithoutVc_permissionInput>
+  connectOrCreate?: Prisma.vc_functionCreateOrConnectWithoutVc_permissionInput
+  connect?: Prisma.vc_functionWhereUniqueInput
+}
+
+export type vc_functionUpdateOneRequiredWithoutVc_permissionNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_functionCreateWithoutVc_permissionInput, Prisma.vc_functionUncheckedCreateWithoutVc_permissionInput>
+  connectOrCreate?: Prisma.vc_functionCreateOrConnectWithoutVc_permissionInput
+  upsert?: Prisma.vc_functionUpsertWithoutVc_permissionInput
+  connect?: Prisma.vc_functionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_functionUpdateToOneWithWhereWithoutVc_permissionInput, Prisma.vc_functionUpdateWithoutVc_permissionInput>, Prisma.vc_functionUncheckedUpdateWithoutVc_permissionInput>
+}
+
+export type vc_functionCreateWithoutVc_permissionInput = {
+  menu_id?: number | null
+  func_name?: string | null
+  func_code?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+}
+
+export type vc_functionUncheckedCreateWithoutVc_permissionInput = {
+  function_id?: number
+  menu_id?: number | null
+  func_name?: string | null
+  func_code?: string | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+}
+
+export type vc_functionCreateOrConnectWithoutVc_permissionInput = {
+  where: Prisma.vc_functionWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_functionCreateWithoutVc_permissionInput, Prisma.vc_functionUncheckedCreateWithoutVc_permissionInput>
+}
+
+export type vc_functionUpsertWithoutVc_permissionInput = {
+  update: Prisma.XOR<Prisma.vc_functionUpdateWithoutVc_permissionInput, Prisma.vc_functionUncheckedUpdateWithoutVc_permissionInput>
+  create: Prisma.XOR<Prisma.vc_functionCreateWithoutVc_permissionInput, Prisma.vc_functionUncheckedCreateWithoutVc_permissionInput>
+  where?: Prisma.vc_functionWhereInput
+}
+
+export type vc_functionUpdateToOneWithWhereWithoutVc_permissionInput = {
+  where?: Prisma.vc_functionWhereInput
+  data: Prisma.XOR<Prisma.vc_functionUpdateWithoutVc_permissionInput, Prisma.vc_functionUncheckedUpdateWithoutVc_permissionInput>
+}
+
+export type vc_functionUpdateWithoutVc_permissionInput = {
+  menu_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  func_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  func_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type vc_functionUncheckedUpdateWithoutVc_permissionInput = {
+  function_id?: Prisma.IntFieldUpdateOperationsInput | number
+  menu_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  func_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  func_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+
+/**
+ * Count Type Vc_functionCountOutputType
+ */
+
+export type Vc_functionCountOutputType = {
+  vc_permission: number
+}
+
+export type Vc_functionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_permission?: boolean | Vc_functionCountOutputTypeCountVc_permissionArgs
+}
+
+/**
+ * Vc_functionCountOutputType without action
+ */
+export type Vc_functionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vc_functionCountOutputType
+   */
+  select?: Prisma.Vc_functionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Vc_functionCountOutputType without action
+ */
+export type Vc_functionCountOutputTypeCountVc_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_permissionWhereInput
+}
 
 
 export type vc_functionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -429,6 +542,8 @@ export type vc_functionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  vc_permission?: boolean | Prisma.vc_function$vc_permissionArgs<ExtArgs>
+  _count?: boolean | Prisma.Vc_functionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_function"]>
 
 export type vc_functionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -465,10 +580,18 @@ export type vc_functionSelectScalar = {
 }
 
 export type vc_functionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"function_id" | "menu_id" | "func_name" | "func_code" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_function"]>
+export type vc_functionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_permission?: boolean | Prisma.vc_function$vc_permissionArgs<ExtArgs>
+  _count?: boolean | Prisma.Vc_functionCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type vc_functionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type vc_functionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $vc_functionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_function"
-  objects: {}
+  objects: {
+    vc_permission: Prisma.$vc_permissionPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     function_id: number
     menu_id: number | null
@@ -872,6 +995,7 @@ readonly fields: vc_functionFieldRefs;
  */
 export interface Prisma__vc_functionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  vc_permission<T extends Prisma.vc_function$vc_permissionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_function$vc_permissionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_permissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -926,6 +1050,10 @@ export type vc_functionFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_function to fetch.
    */
   where: Prisma.vc_functionWhereUniqueInput
@@ -944,6 +1072,10 @@ export type vc_functionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_function to fetch.
    */
   where: Prisma.vc_functionWhereUniqueInput
@@ -961,6 +1093,10 @@ export type vc_functionFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the vc_function
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
   /**
    * Filter, which vc_function to fetch.
    */
@@ -1010,6 +1146,10 @@ export type vc_functionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_function to fetch.
    */
   where?: Prisma.vc_functionWhereInput
@@ -1058,6 +1198,10 @@ export type vc_functionFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * Filter, which vc_functions to fetch.
    */
   where?: Prisma.vc_functionWhereInput
@@ -1100,6 +1244,10 @@ export type vc_functionCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the vc_function
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
   /**
    * The data needed to create a vc_function.
    */
@@ -1148,6 +1296,10 @@ export type vc_functionUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the vc_function
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
   /**
    * The data needed to update a vc_function.
    */
@@ -1215,6 +1367,10 @@ export type vc_functionUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * The filter to search for the vc_function to update in case it exists.
    */
   where: Prisma.vc_functionWhereUniqueInput
@@ -1241,6 +1397,10 @@ export type vc_functionDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
+  /**
    * Filter which vc_function to delete.
    */
   where: Prisma.vc_functionWhereUniqueInput
@@ -1261,6 +1421,30 @@ export type vc_functionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
+ * vc_function.vc_permission
+ */
+export type vc_function$vc_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_permission
+   */
+  select?: Prisma.vc_permissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_permission
+   */
+  omit?: Prisma.vc_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_permissionInclude<ExtArgs> | null
+  where?: Prisma.vc_permissionWhereInput
+  orderBy?: Prisma.vc_permissionOrderByWithRelationInput | Prisma.vc_permissionOrderByWithRelationInput[]
+  cursor?: Prisma.vc_permissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_permissionScalarFieldEnum | Prisma.Vc_permissionScalarFieldEnum[]
+}
+
+/**
  * vc_function without action
  */
 export type vc_functionDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1272,4 +1456,8 @@ export type vc_functionDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the vc_function
    */
   omit?: Prisma.vc_functionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_functionInclude<ExtArgs> | null
 }

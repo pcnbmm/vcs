@@ -241,6 +241,7 @@ export type vc_car_specWhereInput = {
   upd_by?: Prisma.IntNullableFilter<"vc_car_spec"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_car_spec"> | string | null
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
+  vc_order_item?: Prisma.Vc_order_itemListRelationFilter
 }
 
 export type vc_car_specOrderByWithRelationInput = {
@@ -252,6 +253,7 @@ export type vc_car_specOrderByWithRelationInput = {
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
   vc_car_master?: Prisma.vc_car_masterOrderByRelationAggregateInput
+  vc_order_item?: Prisma.vc_order_itemOrderByRelationAggregateInput
 }
 
 export type vc_car_specWhereUniqueInput = Prisma.AtLeast<{
@@ -266,6 +268,7 @@ export type vc_car_specWhereUniqueInput = Prisma.AtLeast<{
   upd_by?: Prisma.IntNullableFilter<"vc_car_spec"> | number | null
   upd_date?: Prisma.StringNullableFilter<"vc_car_spec"> | string | null
   vc_car_master?: Prisma.Vc_car_masterListRelationFilter
+  vc_order_item?: Prisma.Vc_order_itemListRelationFilter
 }, "car_spec_id">
 
 export type vc_car_specOrderByWithAggregationInput = {
@@ -304,6 +307,7 @@ export type vc_car_specCreateInput = {
   upd_by?: number | null
   upd_date?: string | null
   vc_car_master?: Prisma.vc_car_masterCreateNestedManyWithoutVc_car_specInput
+  vc_order_item?: Prisma.vc_order_itemCreateNestedManyWithoutVc_car_specInput
 }
 
 export type vc_car_specUncheckedCreateInput = {
@@ -315,6 +319,7 @@ export type vc_car_specUncheckedCreateInput = {
   upd_by?: number | null
   upd_date?: string | null
   vc_car_master?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutVc_car_specInput
+  vc_order_item?: Prisma.vc_order_itemUncheckedCreateNestedManyWithoutVc_car_specInput
 }
 
 export type vc_car_specUpdateInput = {
@@ -325,6 +330,7 @@ export type vc_car_specUpdateInput = {
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_master?: Prisma.vc_car_masterUpdateManyWithoutVc_car_specNestedInput
+  vc_order_item?: Prisma.vc_order_itemUpdateManyWithoutVc_car_specNestedInput
 }
 
 export type vc_car_specUncheckedUpdateInput = {
@@ -336,6 +342,7 @@ export type vc_car_specUncheckedUpdateInput = {
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vc_car_master?: Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_car_specNestedInput
+  vc_order_item?: Prisma.vc_order_itemUncheckedUpdateManyWithoutVc_car_specNestedInput
 }
 
 export type vc_car_specCreateManyInput = {
@@ -430,6 +437,22 @@ export type vc_car_specUpdateOneWithoutVc_car_masterNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.vc_car_specUpdateToOneWithWhereWithoutVc_car_masterInput, Prisma.vc_car_specUpdateWithoutVc_car_masterInput>, Prisma.vc_car_specUncheckedUpdateWithoutVc_car_masterInput>
 }
 
+export type vc_car_specCreateNestedOneWithoutVc_order_itemInput = {
+  create?: Prisma.XOR<Prisma.vc_car_specCreateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedCreateWithoutVc_order_itemInput>
+  connectOrCreate?: Prisma.vc_car_specCreateOrConnectWithoutVc_order_itemInput
+  connect?: Prisma.vc_car_specWhereUniqueInput
+}
+
+export type vc_car_specUpdateOneWithoutVc_order_itemNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_car_specCreateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedCreateWithoutVc_order_itemInput>
+  connectOrCreate?: Prisma.vc_car_specCreateOrConnectWithoutVc_order_itemInput
+  upsert?: Prisma.vc_car_specUpsertWithoutVc_order_itemInput
+  disconnect?: Prisma.vc_car_specWhereInput | boolean
+  delete?: Prisma.vc_car_specWhereInput | boolean
+  connect?: Prisma.vc_car_specWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.vc_car_specUpdateToOneWithWhereWithoutVc_order_itemInput, Prisma.vc_car_specUpdateWithoutVc_order_itemInput>, Prisma.vc_car_specUncheckedUpdateWithoutVc_order_itemInput>
+}
+
 export type vc_car_specCreateWithoutVc_car_masterInput = {
   car_spec_name?: string | null
   flag_del?: string | null
@@ -437,6 +460,7 @@ export type vc_car_specCreateWithoutVc_car_masterInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
+  vc_order_item?: Prisma.vc_order_itemCreateNestedManyWithoutVc_car_specInput
 }
 
 export type vc_car_specUncheckedCreateWithoutVc_car_masterInput = {
@@ -447,6 +471,7 @@ export type vc_car_specUncheckedCreateWithoutVc_car_masterInput = {
   cre_date?: string | null
   upd_by?: number | null
   upd_date?: string | null
+  vc_order_item?: Prisma.vc_order_itemUncheckedCreateNestedManyWithoutVc_car_specInput
 }
 
 export type vc_car_specCreateOrConnectWithoutVc_car_masterInput = {
@@ -472,6 +497,7 @@ export type vc_car_specUpdateWithoutVc_car_masterInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vc_order_item?: Prisma.vc_order_itemUpdateManyWithoutVc_car_specNestedInput
 }
 
 export type vc_car_specUncheckedUpdateWithoutVc_car_masterInput = {
@@ -482,6 +508,65 @@ export type vc_car_specUncheckedUpdateWithoutVc_car_masterInput = {
   cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vc_order_item?: Prisma.vc_order_itemUncheckedUpdateManyWithoutVc_car_specNestedInput
+}
+
+export type vc_car_specCreateWithoutVc_order_itemInput = {
+  car_spec_name?: string | null
+  flag_del?: string | null
+  cre_by?: number | null
+  cre_date?: string | null
+  upd_by?: number | null
+  upd_date?: string | null
+  vc_car_master?: Prisma.vc_car_masterCreateNestedManyWithoutVc_car_specInput
+}
+
+export type vc_car_specUncheckedCreateWithoutVc_order_itemInput = {
+  car_spec_id?: number
+  car_spec_name?: string | null
+  flag_del?: string | null
+  cre_by?: number | null
+  cre_date?: string | null
+  upd_by?: number | null
+  upd_date?: string | null
+  vc_car_master?: Prisma.vc_car_masterUncheckedCreateNestedManyWithoutVc_car_specInput
+}
+
+export type vc_car_specCreateOrConnectWithoutVc_order_itemInput = {
+  where: Prisma.vc_car_specWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_car_specCreateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedCreateWithoutVc_order_itemInput>
+}
+
+export type vc_car_specUpsertWithoutVc_order_itemInput = {
+  update: Prisma.XOR<Prisma.vc_car_specUpdateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedUpdateWithoutVc_order_itemInput>
+  create: Prisma.XOR<Prisma.vc_car_specCreateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedCreateWithoutVc_order_itemInput>
+  where?: Prisma.vc_car_specWhereInput
+}
+
+export type vc_car_specUpdateToOneWithWhereWithoutVc_order_itemInput = {
+  where?: Prisma.vc_car_specWhereInput
+  data: Prisma.XOR<Prisma.vc_car_specUpdateWithoutVc_order_itemInput, Prisma.vc_car_specUncheckedUpdateWithoutVc_order_itemInput>
+}
+
+export type vc_car_specUpdateWithoutVc_order_itemInput = {
+  car_spec_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vc_car_master?: Prisma.vc_car_masterUpdateManyWithoutVc_car_specNestedInput
+}
+
+export type vc_car_specUncheckedUpdateWithoutVc_order_itemInput = {
+  car_spec_id?: Prisma.IntFieldUpdateOperationsInput | number
+  car_spec_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flag_del?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_by?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upd_date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vc_car_master?: Prisma.vc_car_masterUncheckedUpdateManyWithoutVc_car_specNestedInput
 }
 
 
@@ -491,10 +576,12 @@ export type vc_car_specUncheckedUpdateWithoutVc_car_masterInput = {
 
 export type Vc_car_specCountOutputType = {
   vc_car_master: number
+  vc_order_item: number
 }
 
 export type Vc_car_specCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vc_car_master?: boolean | Vc_car_specCountOutputTypeCountVc_car_masterArgs
+  vc_order_item?: boolean | Vc_car_specCountOutputTypeCountVc_order_itemArgs
 }
 
 /**
@@ -514,6 +601,13 @@ export type Vc_car_specCountOutputTypeCountVc_car_masterArgs<ExtArgs extends run
   where?: Prisma.vc_car_masterWhereInput
 }
 
+/**
+ * Vc_car_specCountOutputType without action
+ */
+export type Vc_car_specCountOutputTypeCountVc_order_itemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.vc_order_itemWhereInput
+}
+
 
 export type vc_car_specSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   car_spec_id?: boolean
@@ -524,6 +618,7 @@ export type vc_car_specSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   upd_by?: boolean
   upd_date?: boolean
   vc_car_master?: boolean | Prisma.vc_car_spec$vc_car_masterArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_car_spec$vc_order_itemArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_car_specCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vc_car_spec"]>
 
@@ -560,6 +655,7 @@ export type vc_car_specSelectScalar = {
 export type vc_car_specOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"car_spec_id" | "car_spec_name" | "flag_del" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_car_spec"]>
 export type vc_car_specInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vc_car_master?: boolean | Prisma.vc_car_spec$vc_car_masterArgs<ExtArgs>
+  vc_order_item?: boolean | Prisma.vc_car_spec$vc_order_itemArgs<ExtArgs>
   _count?: boolean | Prisma.Vc_car_specCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type vc_car_specIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -569,6 +665,7 @@ export type $vc_car_specPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "vc_car_spec"
   objects: {
     vc_car_master: Prisma.$vc_car_masterPayload<ExtArgs>[]
+    vc_order_item: Prisma.$vc_order_itemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     car_spec_id: number
@@ -973,6 +1070,7 @@ readonly fields: vc_car_specFieldRefs;
 export interface Prisma__vc_car_specClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vc_car_master<T extends Prisma.vc_car_spec$vc_car_masterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_spec$vc_car_masterArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_car_masterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vc_order_item<T extends Prisma.vc_car_spec$vc_order_itemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_car_spec$vc_order_itemArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$vc_order_itemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1418,6 +1516,30 @@ export type vc_car_spec$vc_car_masterArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.Vc_car_masterScalarFieldEnum | Prisma.Vc_car_masterScalarFieldEnum[]
+}
+
+/**
+ * vc_car_spec.vc_order_item
+ */
+export type vc_car_spec$vc_order_itemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_order_item
+   */
+  select?: Prisma.vc_order_itemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_order_item
+   */
+  omit?: Prisma.vc_order_itemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_order_itemInclude<ExtArgs> | null
+  where?: Prisma.vc_order_itemWhereInput
+  orderBy?: Prisma.vc_order_itemOrderByWithRelationInput | Prisma.vc_order_itemOrderByWithRelationInput[]
+  cursor?: Prisma.vc_order_itemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Vc_order_itemScalarFieldEnum | Prisma.Vc_order_itemScalarFieldEnum[]
 }
 
 /**

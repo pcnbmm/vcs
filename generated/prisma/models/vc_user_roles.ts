@@ -29,11 +29,13 @@ export type AggregateVc_user_roles = {
 export type Vc_user_rolesAvgAggregateOutputType = {
   user_id: number | null
   roles_id: number | null
+  user_roles_id: number | null
 }
 
 export type Vc_user_rolesSumAggregateOutputType = {
   user_id: number | null
   roles_id: number | null
+  user_roles_id: number | null
 }
 
 export type Vc_user_rolesMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type Vc_user_rolesMinAggregateOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  user_roles_id: number | null
 }
 
 export type Vc_user_rolesMaxAggregateOutputType = {
@@ -52,6 +55,7 @@ export type Vc_user_rolesMaxAggregateOutputType = {
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  user_roles_id: number | null
 }
 
 export type Vc_user_rolesCountAggregateOutputType = {
@@ -61,6 +65,7 @@ export type Vc_user_rolesCountAggregateOutputType = {
   cre_date: number
   upd_by: number
   upd_date: number
+  user_roles_id: number
   _all: number
 }
 
@@ -68,11 +73,13 @@ export type Vc_user_rolesCountAggregateOutputType = {
 export type Vc_user_rolesAvgAggregateInputType = {
   user_id?: true
   roles_id?: true
+  user_roles_id?: true
 }
 
 export type Vc_user_rolesSumAggregateInputType = {
   user_id?: true
   roles_id?: true
+  user_roles_id?: true
 }
 
 export type Vc_user_rolesMinAggregateInputType = {
@@ -82,6 +89,7 @@ export type Vc_user_rolesMinAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  user_roles_id?: true
 }
 
 export type Vc_user_rolesMaxAggregateInputType = {
@@ -91,6 +99,7 @@ export type Vc_user_rolesMaxAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  user_roles_id?: true
 }
 
 export type Vc_user_rolesCountAggregateInputType = {
@@ -100,6 +109,7 @@ export type Vc_user_rolesCountAggregateInputType = {
   cre_date?: true
   upd_by?: true
   upd_date?: true
+  user_roles_id?: true
   _all?: true
 }
 
@@ -190,12 +200,13 @@ export type vc_user_rolesGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 export type Vc_user_rolesGroupByOutputType = {
-  user_id: number
+  user_id: number | null
   roles_id: number | null
   cre_by: string | null
   cre_date: Date | null
   upd_by: string | null
   upd_date: Date | null
+  user_roles_id: number
   _count: Vc_user_rolesCountAggregateOutputType | null
   _avg: Vc_user_rolesAvgAggregateOutputType | null
   _sum: Vc_user_rolesSumAggregateOutputType | null
@@ -222,42 +233,49 @@ export type vc_user_rolesWhereInput = {
   AND?: Prisma.vc_user_rolesWhereInput | Prisma.vc_user_rolesWhereInput[]
   OR?: Prisma.vc_user_rolesWhereInput[]
   NOT?: Prisma.vc_user_rolesWhereInput | Prisma.vc_user_rolesWhereInput[]
-  user_id?: Prisma.IntFilter<"vc_user_roles"> | number
+  user_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
   roles_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
   cre_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
   cre_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
+  user_roles_id?: Prisma.IntFilter<"vc_user_roles"> | number
+  vc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
 }
 
 export type vc_user_rolesOrderByWithRelationInput = {
-  user_id?: Prisma.SortOrder
+  user_id?: Prisma.SortOrderInput | Prisma.SortOrder
   roles_id?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
+  vc_roles?: Prisma.vc_rolesOrderByWithRelationInput
 }
 
 export type vc_user_rolesWhereUniqueInput = Prisma.AtLeast<{
-  user_id?: number
+  user_roles_id?: number
   AND?: Prisma.vc_user_rolesWhereInput | Prisma.vc_user_rolesWhereInput[]
   OR?: Prisma.vc_user_rolesWhereInput[]
   NOT?: Prisma.vc_user_rolesWhereInput | Prisma.vc_user_rolesWhereInput[]
+  user_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
   roles_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
   cre_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
   cre_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
   upd_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
   upd_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
-}, "user_id">
+  vc_roles?: Prisma.XOR<Prisma.Vc_rolesNullableScalarRelationFilter, Prisma.vc_rolesWhereInput> | null
+}, "user_roles_id">
 
 export type vc_user_rolesOrderByWithAggregationInput = {
-  user_id?: Prisma.SortOrder
+  user_id?: Prisma.SortOrderInput | Prisma.SortOrder
   roles_id?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cre_date?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_by?: Prisma.SortOrderInput | Prisma.SortOrder
   upd_date?: Prisma.SortOrderInput | Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
   _count?: Prisma.vc_user_rolesCountOrderByAggregateInput
   _avg?: Prisma.vc_user_rolesAvgOrderByAggregateInput
   _max?: Prisma.vc_user_rolesMaxOrderByAggregateInput
@@ -269,59 +287,65 @@ export type vc_user_rolesScalarWhereWithAggregatesInput = {
   AND?: Prisma.vc_user_rolesScalarWhereWithAggregatesInput | Prisma.vc_user_rolesScalarWhereWithAggregatesInput[]
   OR?: Prisma.vc_user_rolesScalarWhereWithAggregatesInput[]
   NOT?: Prisma.vc_user_rolesScalarWhereWithAggregatesInput | Prisma.vc_user_rolesScalarWhereWithAggregatesInput[]
-  user_id?: Prisma.IntWithAggregatesFilter<"vc_user_roles"> | number
+  user_id?: Prisma.IntNullableWithAggregatesFilter<"vc_user_roles"> | number | null
   roles_id?: Prisma.IntNullableWithAggregatesFilter<"vc_user_roles"> | number | null
   cre_by?: Prisma.StringNullableWithAggregatesFilter<"vc_user_roles"> | string | null
   cre_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_user_roles"> | Date | string | null
   upd_by?: Prisma.StringNullableWithAggregatesFilter<"vc_user_roles"> | string | null
   upd_date?: Prisma.DateTimeNullableWithAggregatesFilter<"vc_user_roles"> | Date | string | null
+  user_roles_id?: Prisma.IntWithAggregatesFilter<"vc_user_roles"> | number
 }
 
 export type vc_user_rolesCreateInput = {
-  roles_id?: number | null
+  user_id?: number | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  vc_roles?: Prisma.vc_rolesCreateNestedOneWithoutVc_user_rolesInput
 }
 
 export type vc_user_rolesUncheckedCreateInput = {
-  user_id?: number
+  user_id?: number | null
   roles_id?: number | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  user_roles_id?: number
 }
 
 export type vc_user_rolesUpdateInput = {
-  roles_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vc_roles?: Prisma.vc_rolesUpdateOneWithoutVc_user_rolesNestedInput
 }
 
 export type vc_user_rolesUncheckedUpdateInput = {
-  user_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roles_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user_roles_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type vc_user_rolesCreateManyInput = {
-  user_id?: number
+  user_id?: number | null
   roles_id?: number | null
   cre_by?: string | null
   cre_date?: Date | string | null
   upd_by?: string | null
   upd_date?: Date | string | null
+  user_roles_id?: number
 }
 
 export type vc_user_rolesUpdateManyMutationInput = {
-  roles_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -329,12 +353,23 @@ export type vc_user_rolesUpdateManyMutationInput = {
 }
 
 export type vc_user_rolesUncheckedUpdateManyInput = {
-  user_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roles_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user_roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type Vc_user_rolesListRelationFilter = {
+  every?: Prisma.vc_user_rolesWhereInput
+  some?: Prisma.vc_user_rolesWhereInput
+  none?: Prisma.vc_user_rolesWhereInput
+}
+
+export type vc_user_rolesOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type vc_user_rolesCountOrderByAggregateInput = {
@@ -344,11 +379,13 @@ export type vc_user_rolesCountOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
 }
 
 export type vc_user_rolesAvgOrderByAggregateInput = {
   user_id?: Prisma.SortOrder
   roles_id?: Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
 }
 
 export type vc_user_rolesMaxOrderByAggregateInput = {
@@ -358,6 +395,7 @@ export type vc_user_rolesMaxOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
 }
 
 export type vc_user_rolesMinOrderByAggregateInput = {
@@ -367,11 +405,146 @@ export type vc_user_rolesMinOrderByAggregateInput = {
   cre_date?: Prisma.SortOrder
   upd_by?: Prisma.SortOrder
   upd_date?: Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
 }
 
 export type vc_user_rolesSumOrderByAggregateInput = {
   user_id?: Prisma.SortOrder
   roles_id?: Prisma.SortOrder
+  user_roles_id?: Prisma.SortOrder
+}
+
+export type vc_user_rolesCreateNestedManyWithoutVc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_user_rolesCreateWithoutVc_rolesInput[] | Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput | Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_user_rolesCreateManyVc_rolesInputEnvelope
+  connect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+}
+
+export type vc_user_rolesUncheckedCreateNestedManyWithoutVc_rolesInput = {
+  create?: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_user_rolesCreateWithoutVc_rolesInput[] | Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput | Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_user_rolesCreateManyVc_rolesInputEnvelope
+  connect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+}
+
+export type vc_user_rolesUpdateManyWithoutVc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_user_rolesCreateWithoutVc_rolesInput[] | Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput | Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput[]
+  upsert?: Prisma.vc_user_rolesUpsertWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_user_rolesUpsertWithWhereUniqueWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_user_rolesCreateManyVc_rolesInputEnvelope
+  set?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  disconnect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  delete?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  connect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  update?: Prisma.vc_user_rolesUpdateWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_user_rolesUpdateWithWhereUniqueWithoutVc_rolesInput[]
+  updateMany?: Prisma.vc_user_rolesUpdateManyWithWhereWithoutVc_rolesInput | Prisma.vc_user_rolesUpdateManyWithWhereWithoutVc_rolesInput[]
+  deleteMany?: Prisma.vc_user_rolesScalarWhereInput | Prisma.vc_user_rolesScalarWhereInput[]
+}
+
+export type vc_user_rolesUncheckedUpdateManyWithoutVc_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput> | Prisma.vc_user_rolesCreateWithoutVc_rolesInput[] | Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput[]
+  connectOrCreate?: Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput | Prisma.vc_user_rolesCreateOrConnectWithoutVc_rolesInput[]
+  upsert?: Prisma.vc_user_rolesUpsertWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_user_rolesUpsertWithWhereUniqueWithoutVc_rolesInput[]
+  createMany?: Prisma.vc_user_rolesCreateManyVc_rolesInputEnvelope
+  set?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  disconnect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  delete?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  connect?: Prisma.vc_user_rolesWhereUniqueInput | Prisma.vc_user_rolesWhereUniqueInput[]
+  update?: Prisma.vc_user_rolesUpdateWithWhereUniqueWithoutVc_rolesInput | Prisma.vc_user_rolesUpdateWithWhereUniqueWithoutVc_rolesInput[]
+  updateMany?: Prisma.vc_user_rolesUpdateManyWithWhereWithoutVc_rolesInput | Prisma.vc_user_rolesUpdateManyWithWhereWithoutVc_rolesInput[]
+  deleteMany?: Prisma.vc_user_rolesScalarWhereInput | Prisma.vc_user_rolesScalarWhereInput[]
+}
+
+export type vc_user_rolesCreateWithoutVc_rolesInput = {
+  user_id?: number | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+}
+
+export type vc_user_rolesUncheckedCreateWithoutVc_rolesInput = {
+  user_id?: number | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  user_roles_id?: number
+}
+
+export type vc_user_rolesCreateOrConnectWithoutVc_rolesInput = {
+  where: Prisma.vc_user_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput>
+}
+
+export type vc_user_rolesCreateManyVc_rolesInputEnvelope = {
+  data: Prisma.vc_user_rolesCreateManyVc_rolesInput | Prisma.vc_user_rolesCreateManyVc_rolesInput[]
+  skipDuplicates?: boolean
+}
+
+export type vc_user_rolesUpsertWithWhereUniqueWithoutVc_rolesInput = {
+  where: Prisma.vc_user_rolesWhereUniqueInput
+  update: Prisma.XOR<Prisma.vc_user_rolesUpdateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedUpdateWithoutVc_rolesInput>
+  create: Prisma.XOR<Prisma.vc_user_rolesCreateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedCreateWithoutVc_rolesInput>
+}
+
+export type vc_user_rolesUpdateWithWhereUniqueWithoutVc_rolesInput = {
+  where: Prisma.vc_user_rolesWhereUniqueInput
+  data: Prisma.XOR<Prisma.vc_user_rolesUpdateWithoutVc_rolesInput, Prisma.vc_user_rolesUncheckedUpdateWithoutVc_rolesInput>
+}
+
+export type vc_user_rolesUpdateManyWithWhereWithoutVc_rolesInput = {
+  where: Prisma.vc_user_rolesScalarWhereInput
+  data: Prisma.XOR<Prisma.vc_user_rolesUpdateManyMutationInput, Prisma.vc_user_rolesUncheckedUpdateManyWithoutVc_rolesInput>
+}
+
+export type vc_user_rolesScalarWhereInput = {
+  AND?: Prisma.vc_user_rolesScalarWhereInput | Prisma.vc_user_rolesScalarWhereInput[]
+  OR?: Prisma.vc_user_rolesScalarWhereInput[]
+  NOT?: Prisma.vc_user_rolesScalarWhereInput | Prisma.vc_user_rolesScalarWhereInput[]
+  user_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
+  roles_id?: Prisma.IntNullableFilter<"vc_user_roles"> | number | null
+  cre_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
+  cre_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
+  upd_by?: Prisma.StringNullableFilter<"vc_user_roles"> | string | null
+  upd_date?: Prisma.DateTimeNullableFilter<"vc_user_roles"> | Date | string | null
+  user_roles_id?: Prisma.IntFilter<"vc_user_roles"> | number
+}
+
+export type vc_user_rolesCreateManyVc_rolesInput = {
+  user_id?: number | null
+  cre_by?: string | null
+  cre_date?: Date | string | null
+  upd_by?: string | null
+  upd_date?: Date | string | null
+  user_roles_id?: number
+}
+
+export type vc_user_rolesUpdateWithoutVc_rolesInput = {
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type vc_user_rolesUncheckedUpdateWithoutVc_rolesInput = {
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user_roles_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type vc_user_rolesUncheckedUpdateManyWithoutVc_rolesInput = {
+  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cre_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cre_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  upd_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upd_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user_roles_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -383,6 +556,8 @@ export type vc_user_rolesSelect<ExtArgs extends runtime.Types.Extensions.Interna
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  user_roles_id?: boolean
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
 }, ExtArgs["result"]["vc_user_roles"]>
 
 export type vc_user_rolesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -392,6 +567,8 @@ export type vc_user_rolesSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  user_roles_id?: boolean
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
 }, ExtArgs["result"]["vc_user_roles"]>
 
 export type vc_user_rolesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -401,6 +578,8 @@ export type vc_user_rolesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  user_roles_id?: boolean
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
 }, ExtArgs["result"]["vc_user_roles"]>
 
 export type vc_user_rolesSelectScalar = {
@@ -410,20 +589,33 @@ export type vc_user_rolesSelectScalar = {
   cre_date?: boolean
   upd_by?: boolean
   upd_date?: boolean
+  user_roles_id?: boolean
 }
 
-export type vc_user_rolesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"user_id" | "roles_id" | "cre_by" | "cre_date" | "upd_by" | "upd_date", ExtArgs["result"]["vc_user_roles"]>
+export type vc_user_rolesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"user_id" | "roles_id" | "cre_by" | "cre_date" | "upd_by" | "upd_date" | "user_roles_id", ExtArgs["result"]["vc_user_roles"]>
+export type vc_user_rolesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
+}
+export type vc_user_rolesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
+}
+export type vc_user_rolesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  vc_roles?: boolean | Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>
+}
 
 export type $vc_user_rolesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "vc_user_roles"
-  objects: {}
+  objects: {
+    vc_roles: Prisma.$vc_rolesPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    user_id: number
+    user_id: number | null
     roles_id: number | null
     cre_by: string | null
     cre_date: Date | null
     upd_by: string | null
     upd_date: Date | null
+    user_roles_id: number
   }, ExtArgs["result"]["vc_user_roles"]>
   composites: {}
 }
@@ -818,6 +1010,7 @@ readonly fields: vc_user_rolesFieldRefs;
  */
 export interface Prisma__vc_user_rolesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  vc_roles<T extends Prisma.vc_user_roles$vc_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.vc_user_roles$vc_rolesArgs<ExtArgs>>): Prisma.Prisma__vc_rolesClient<runtime.Types.Result.GetResult<Prisma.$vc_rolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -853,6 +1046,7 @@ export interface vc_user_rolesFieldRefs {
   readonly cre_date: Prisma.FieldRef<"vc_user_roles", 'DateTime'>
   readonly upd_by: Prisma.FieldRef<"vc_user_roles", 'String'>
   readonly upd_date: Prisma.FieldRef<"vc_user_roles", 'DateTime'>
+  readonly user_roles_id: Prisma.FieldRef<"vc_user_roles", 'Int'>
 }
     
 
@@ -869,6 +1063,10 @@ export type vc_user_rolesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the vc_user_roles
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
   /**
    * Filter, which vc_user_roles to fetch.
    */
@@ -888,6 +1086,10 @@ export type vc_user_rolesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_user_roles to fetch.
    */
   where: Prisma.vc_user_rolesWhereUniqueInput
@@ -905,6 +1107,10 @@ export type vc_user_rolesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the vc_user_roles
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
   /**
    * Filter, which vc_user_roles to fetch.
    */
@@ -954,6 +1160,10 @@ export type vc_user_rolesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_user_roles to fetch.
    */
   where?: Prisma.vc_user_rolesWhereInput
@@ -1002,6 +1212,10 @@ export type vc_user_rolesFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  /**
    * Filter, which vc_user_roles to fetch.
    */
   where?: Prisma.vc_user_rolesWhereInput
@@ -1045,6 +1259,10 @@ export type vc_user_rolesCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  /**
    * The data needed to create a vc_user_roles.
    */
   data?: Prisma.XOR<Prisma.vc_user_rolesCreateInput, Prisma.vc_user_rolesUncheckedCreateInput>
@@ -1078,6 +1296,10 @@ export type vc_user_rolesCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    */
   data: Prisma.vc_user_rolesCreateManyInput | Prisma.vc_user_rolesCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1092,6 +1314,10 @@ export type vc_user_rolesUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the vc_user_roles
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
   /**
    * The data needed to update a vc_user_roles.
    */
@@ -1144,6 +1370,10 @@ export type vc_user_rolesUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * Limit how many vc_user_roles to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1158,6 +1388,10 @@ export type vc_user_rolesUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the vc_user_roles
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
   /**
    * The filter to search for the vc_user_roles to update in case it exists.
    */
@@ -1185,6 +1419,10 @@ export type vc_user_rolesDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
+  /**
    * Filter which vc_user_roles to delete.
    */
   where: Prisma.vc_user_rolesWhereUniqueInput
@@ -1205,6 +1443,25 @@ export type vc_user_rolesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * vc_user_roles.vc_roles
+ */
+export type vc_user_roles$vc_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the vc_roles
+   */
+  select?: Prisma.vc_rolesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the vc_roles
+   */
+  omit?: Prisma.vc_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_rolesInclude<ExtArgs> | null
+  where?: Prisma.vc_rolesWhereInput
+}
+
+/**
  * vc_user_roles without action
  */
 export type vc_user_rolesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1216,4 +1473,8 @@ export type vc_user_rolesDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the vc_user_roles
    */
   omit?: Prisma.vc_user_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.vc_user_rolesInclude<ExtArgs> | null
 }
