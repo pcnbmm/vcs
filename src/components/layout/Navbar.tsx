@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const handleLogout = () => {
-    signOut({ callbackUrl: "/login" }); // ← redirect ไป /login หลัง logout
+    signOut({ callbackUrl: "/login" });
   };
 
   return (
@@ -19,9 +19,9 @@ export default function Navbar() {
         <div className="flex items-center gap-3 p-2 rounded-lg">
           <div className="text-right hidden sm:block">
             <p className="text-sm font-medium text-slate-700">
-              เจี๊ยบตัดยางน้อยหน่าทำไม
+              Name Surname
             </p>
-            <p className="text-xs text-slate-500">Dev</p>
+            <p className="text-xs text-slate-500">Role</p>
           </div>
           <UserCircle size={32} className="text-slate-400" />
         </div>
