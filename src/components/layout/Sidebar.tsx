@@ -5,12 +5,13 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, Car, ClipboardList, Users, 
   History, CheckCircle2, Navigation, FileBarChart, 
-  Settings, UserCog, Key, ChevronLeft, ChevronRight
+  Settings, UserCog, Key, ChevronLeft, ChevronRight, AlertCircle
 } from 'lucide-react';
 
 const menuItems = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { title: 'ขอใช้รถ', href: '/booking', icon: ClipboardList },
+  { title: 'ขอใช้รถด่วน', href: '/urgent', icon: AlertCircle },
   { title: 'ติดตามคำขอ', href: '/pending', icon: Navigation },
   { title: 'ประวัติคำขอ', href: '/history', icon: History },
   { title: 'อนุมัติคำขอ', href: '/approver-requests', icon: CheckCircle2 },
