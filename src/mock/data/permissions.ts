@@ -45,56 +45,63 @@ export const mockMenus: MenuItem[] = [
     menu_name: "ติดตามคำขอ",
     route_path: "/pending",
     menu_icon: "Navigation",
-    sort_order: 3,
+    sort_order: 4,
   },
   {
     menu_id: 4,
     menu_name: "ประวัติคำขอ",
     route_path: "/history",
     menu_icon: "History",
-    sort_order: 4,
+    sort_order: 5,
   },
   {
     menu_id: 5,
     menu_name: "อนุมัติคำขอ",
     route_path: "/approver-requests",
     menu_icon: "CheckCircle2",
-    sort_order: 5,
+    sort_order: 6,
   },
   {
     menu_id: 6,
     menu_name: "จัดรถและคนขับ",
     route_path: "/assign",
     menu_icon: "UserCog",
-    sort_order: 6,
+    sort_order: 7,
   },
   {
     menu_id: 7,
     menu_name: "บันทึกการคืนรถ",
     route_path: "/returns",
     menu_icon: "Key",
-    sort_order: 7,
+    sort_order: 8,
   },
   {
     menu_id: 8,
     menu_name: "รายงาน",
     route_path: "/reports",
     menu_icon: "FileBarChart",
-    sort_order: 8,
+    sort_order: 9,
   },
   {
     menu_id: 9,
     menu_name: "จัดการสิทธิ์",
     route_path: "/permissions",
     menu_icon: "Settings",
-    sort_order: 9,
+    sort_order: 10,
   },
   {
     menu_id: 10,
     menu_name: "ข้อมูลรถ/คนขับ",
     route_path: "/registry",
     menu_icon: "Car",
-    sort_order: 10,
+    sort_order: 11,
+  },
+  {
+    menu_id: 11,
+    menu_name: "ขอใช้รถด่วน",
+    route_path: "/urgent",
+    menu_icon: "ClipboardList",
+    sort_order: 3,
   },
 ];
 
@@ -122,6 +129,7 @@ export const mockRoleMenus: RoleMenu[] = [
   { roles_id: 3, menu_id: 6 },
   { roles_id: 3, menu_id: 7 },
   { roles_id: 3, menu_id: 8 },
+  { roles_id: 3, menu_id: 11 },
   // Admin
   { roles_id: 4, menu_id: 1 },
   { roles_id: 4, menu_id: 9 },
@@ -137,6 +145,7 @@ export const mockRoleMenus: RoleMenu[] = [
   { roles_id: 5, menu_id: 8 },
   { roles_id: 5, menu_id: 9 },
   { roles_id: 5, menu_id: 10 },
+  { roles_id: 5, menu_id: 11 },
 ];
 
 // ── Icon Map ──────────────────────────────────────────────────
