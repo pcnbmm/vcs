@@ -128,14 +128,15 @@ model vc_color {
 }
 
 model vc_company {
-  company_id   Int       @id @default(autoincrement())
-  company_name String?   @db.VarChar(200)
-  company_tel  String?   @db.VarChar(50)
-  flag_del     String?   @db.Char(1)
-  cre_by       String?   @db.VarChar(50)
-  cre_date     DateTime? @db.Date
-  upd_by       String?   @db.VarChar(50)
-  upd_date     DateTime? @db.Date
+  company_id   Int           @id @default(autoincrement())
+  company_name String?       @db.VarChar(200)
+  company_tel  String?       @db.VarChar(50)
+  flag_del     String?       @db.Char(1)
+  cre_by       String?       @db.VarChar(50)
+  cre_date     DateTime?     @db.Date
+  upd_by       String?       @db.VarChar(50)
+  upd_date     DateTime?     @db.Date
+  vc_rent_car  vc_rent_car[]
 }
 
 model vc_contract_details {
@@ -156,25 +157,26 @@ model vc_contract_details {
 }
 
 model vc_fuel_item {
-  fuel_item_id    Int       @id @default(autoincrement())
-  car_id          Int?
-  oil_type_id     Int?
-  fuel_date       DateTime? @db.Date
-  fuel_time       DateTime? @db.Time(6)
-  driver_id       Int?
-  fuel_station_id Int?
-  mile_car        Int?
-  pay_method      String?   @db.Char(1)
-  pay_card_id     String?   @db.VarChar(50)
-  amount_liter    Decimal?  @db.Decimal(12, 2)
-  amount_baht     Decimal?  @db.Decimal(12, 2)
-  liter_price     Decimal?  @db.Decimal(12, 2)
-  amount_vat      Decimal?  @db.Decimal(12, 2)
-  invoice_no      String?   @db.VarChar(50)
-  cre_by          String?   @db.VarChar(50)
-  cre_date        DateTime? @db.Date
-  upd_by          String?   @db.VarChar(8)
-  upd_date        DateTime? @db.Date
+  fuel_item_id Int          @id @default(autoincrement())
+  car_id       Int?
+  oil_type_id  Int?
+  fuel_date    DateTime?    @db.Date
+  fuel_time    DateTime?    @db.Time(6)
+  driver_id    Int?
+  mile_car     Int?
+  pay_method   String?      @db.Char(1)
+  pay_card_id  String?      @db.VarChar(50)
+  amount_liter Decimal?     @db.Decimal(12, 2)
+  amount_baht  Decimal?     @db.Decimal(12, 2)
+  liter_price  Decimal?     @db.Decimal(12, 2)
+  amount_vat   Decimal?     @db.Decimal(12, 2)
+  invoice_no   String?      @db.VarChar(50)
+  cre_by       String?      @db.VarChar(50)
+  cre_date     DateTime?    @db.Date
+  upd_by       String?      @db.VarChar(8)
+  upd_date     DateTime?    @db.Date
+  vc_driver    vc_driver?   @relation(fields: [driver_id], references: [driver_id])
+  vc_oil_type  vc_oil_type? @relation(fields: [oil_type_id], references: [oil_type_id])
 }
 
 model vc_function {
@@ -189,35 +191,37 @@ model vc_function {
 }
 
 model vc_menu {
-  menu_id    Int       @id @default(autoincrement())
-  menuname   String?   @db.VarChar(100)
-  route_path String?   @db.VarChar(100)
-  menu_icon  String?   @db.VarChar(50)
-  sort_order Int?
-  cre_by     String?   @db.VarChar(8)
-  cre_date   DateTime? @db.Date
-  upd_by     String?   @db.VarChar(8)
-  upd_date   DateTime? @db.Date
+  menu_id      Int            @id @default(autoincrement())
+  menuname     String?        @db.VarChar(100)
+  route_path   String?        @db.VarChar(100)
+  menu_icon    String?        @db.VarChar(50)
+  sort_order   Int?
+  cre_by       String?        @db.VarChar(8)
+  cre_date     DateTime?      @db.Date
+  upd_by       String?        @db.VarChar(8)
+  upd_date     DateTime?      @db.Date
+  vc_menu_role vc_menu_role[]
 }
 
 model vc_nt_car {
-  nt_car_id                  Int       @id @default(autoincrement())
+  nt_car_id                  Int            @id @default(autoincrement())
   car_id                     Int?
-  asset_no                   String?   @db.VarChar(13)
-  car_account_no_tax         String?   @db.VarChar(50)
-  car_account_no_insure      String?   @db.VarChar(50)
-  car_cost_center            String?   @db.VarChar(50)
-  car_business_process       String?   @db.VarChar(50)
-  car_functional_area        String?   @db.VarChar(50)
-  car_segment_code           String?   @db.VarChar(50)
-  car_product_code           String?   @db.VarChar(50)
-  purchase_price             Decimal?  @db.Decimal(12, 2)
+  asset_no                   String?        @db.VarChar(13)
+  car_account_no_tax         String?        @db.VarChar(50)
+  car_account_no_insure      String?        @db.VarChar(50)
+  car_cost_center            String?        @db.VarChar(50)
+  car_business_process       String?        @db.VarChar(50)
+  car_functional_area        String?        @db.VarChar(50)
+  car_segment_code           String?        @db.VarChar(50)
+  car_product_code           String?        @db.VarChar(50)
+  purchase_price             Decimal?       @db.Decimal(12, 2)
   insure_cartype             Int?
   insure_third_party_cartype Int?
-  cre_by                     String?   @db.VarChar(50)
-  cre_date                   DateTime? @db.Date
-  upd_by                     String?   @db.VarChar(50)
-  upd_date                   DateTime? @db.Date
+  cre_by                     String?        @db.VarChar(50)
+  cre_date                   DateTime?      @db.Date
+  upd_by                     String?        @db.VarChar(50)
+  upd_date                   DateTime?      @db.Date
+  vc_car_master              vc_car_master? @relation(fields: [car_id], references: [car_id])
 }
 
 model vc_oil_type {
@@ -233,15 +237,16 @@ model vc_oil_type {
 }
 
 model vc_replacement {
-  replacement_id     Int       @id @default(autoincrement())
+  replacement_id     Int            @id @default(autoincrement())
   car_id             Int?
   replacemant_car_id Int?
-  start_date         DateTime? @db.Date
-  end_date           DateTime? @db.Date
-  cre_by             String?   @db.VarChar(50)
-  cre_date           DateTime? @db.Date
-  upd_by             String?   @db.VarChar(50)
-  upd_date           DateTime? @db.Date
+  start_date         DateTime?      @db.Date
+  end_date           DateTime?      @db.Date
+  cre_by             String?        @db.VarChar(50)
+  cre_date           DateTime?      @db.Date
+  upd_by             String?        @db.VarChar(50)
+  upd_date           DateTime?      @db.Date
+  vc_car_master      vc_car_master? @relation(fields: [car_id], references: [car_id])
 }
 
 model vc_roles {
@@ -255,6 +260,7 @@ model vc_roles {
   vc_use_vc_use_approved_byTovc_roles vc_use[]        @relation("vc_use_approved_byTovc_roles")
   vc_use_vc_use_recorder_idTovc_roles vc_use[]        @relation("vc_use_recorder_idTovc_roles")
   vc_user_roles                       vc_user_roles[]
+  vc_users                            vc_users[]
 }
 
 model vc_type_regis {
@@ -277,20 +283,23 @@ model vc_user_roles {
   user_roles_id Int       @id @default(autoincrement())
   user_id       Int?
   vc_roles      vc_roles? @relation(fields: [roles_id], references: [roles_id])
+  vc_users      vc_users? @relation(fields: [user_id], references: [userid])
 }
 
 model vc_rent_car {
-  rent_car_id      Int       @id @default(autoincrement())
-  car_id           Int?
-  rent_no          String?   @db.VarChar(100)
-  company_id       Int?
-  price_per_month  Decimal?  @db.Decimal(10, 2)
-  cre_by           String?   @db.VarChar(50)
-  cre_date         DateTime? @db.Date
-  upd_by           String?   @db.VarChar(50)
-  upd_date         DateTime? @db.Date
-  replacement_flag String?   @db.Char(1)
-  po               String?   @db.VarChar(100)
+  rent_car_id          Int         @id @default(autoincrement())
+  car_id               Int?
+  rent_no              String?     @db.VarChar(100)
+  company_id           Int?
+  price_per_month      Decimal?    @db.Decimal(10, 2)
+  cre_by               String?     @db.VarChar(50)
+  cre_date             DateTime?   @db.Date
+  upd_by               String?     @db.VarChar(50)
+  upd_date             DateTime?   @db.Date
+  replacement_flag     String?     @db.Char(1)
+  po                   String?     @db.VarChar(100)
+  vc_companyCompany_id Int?
+  vc_company           vc_company? @relation(fields: [vc_companyCompany_id], references: [company_id])
 }
 
 model vc_use {
@@ -340,32 +349,36 @@ model fleetcards {
 }
 
 model vc_driver {
-  driver_id     Int       @id @default(autoincrement())
-  driver_code   String?   @db.VarChar(50)
-  driver_status String?   @db.Char(1)
-  div_code      String?   @db.VarChar(8)
-  start_date    DateTime? @db.Date
-  end_date      DateTime? @db.Date
-  licence_type  Int?
-  licence_no    String?   @db.VarChar(50)
-  licence_by    Int?
-  flag          String?   @db.Char(1)
-  cre_by        String?   @db.VarChar(50)
-  cre_date      DateTime? @db.Date
-  upd_by        String?   @db.VarChar(50)
-  upd_date      DateTime? @db.Date
-  tel           String?   @db.VarChar(15)
+  driver_id              Int                     @id @default(autoincrement())
+  driver_code            String?                 @db.VarChar(50)
+  driver_status          String?                 @db.Char(1)
+  div_code               String?                 @db.VarChar(8)
+  start_date             DateTime?               @db.Date
+  end_date               DateTime?               @db.Date
+  licence_type           Int?
+  licence_no             String?                 @db.VarChar(50)
+  licence_by             Int?
+  flag                   String?                 @db.Char(1)
+  cre_by                 String?                 @db.VarChar(50)
+  cre_date               DateTime?               @db.Date
+  upd_by                 String?                 @db.VarChar(50)
+  upd_date               DateTime?               @db.Date
+  tel                    String?                 @db.VarChar(15)
+  vc_users               vc_users                @relation(fields: [driver_id], references: [userid])
+  vc_driver_license_type vc_driver_license_type? @relation(fields: [licence_type], references: [license_type_id])
+  vc_fuel_item           vc_fuel_item[]
 }
 
 model vc_driver_license_type {
-  license_type_id   Int       @id @default(autoincrement())
-  license_type_name String?   @db.VarChar(200)
-  license_type_desc String?   @db.VarChar(400)
-  flag_del          String?   @db.Char(1)
-  cre_by            String?   @db.VarChar(8)
-  cre_date          DateTime? @db.Date
-  upd_by            String?   @db.VarChar(8)
-  upd_date          DateTime? @db.Date
+  license_type_id   Int         @id @default(autoincrement())
+  license_type_name String?     @db.VarChar(200)
+  license_type_desc String?     @db.VarChar(400)
+  flag_del          String?     @db.Char(1)
+  cre_by            String?     @db.VarChar(8)
+  cre_date          DateTime?   @db.Date
+  upd_by            String?     @db.VarChar(8)
+  upd_date          DateTime?   @db.Date
+  vc_driver         vc_driver[]
 }
 
 model vc_start_place {

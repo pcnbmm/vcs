@@ -8,9 +8,9 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    const hashedPassword = await bcrypt.hash("dev1234", 10);
+  const hashedPassword = await bcrypt.hash("dev1234", 10) // รหัสเริ่มต้น
 
-    console.log('--- Seeding Data ---');
+  console.log('--- Seeding Data ---')
 
     const users = [
         {
@@ -46,9 +46,9 @@ async function main() {
 }
 
 main()
-    .then(async () => await prisma.$disconnect())
-    .catch(async (e) => {
-        console.error(e);
-        await prisma.$disconnect();
-        process.exit(1);
-    });
+  .then(async () => await prisma.$disconnect())
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
