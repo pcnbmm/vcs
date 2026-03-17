@@ -90,13 +90,6 @@ export default function Sidebar() {
                     })}
                 </ul>
             </nav>
-
-            {!isCollapsed && (
-                <div className="m-4 p-4 bg-slate-800/50 rounded-xl text-center text-xs text-slate-400 border border-slate-700/50">
-                    <p className="font-medium text-slate-300 mb-1">Dev Mode</p>
-                    <p>All Menus Enabled</p>
-                </div>
-            )}
         </div>
     );
 }
