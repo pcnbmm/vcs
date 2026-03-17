@@ -9,46 +9,46 @@ datasource db {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_car_master {
-  car_id               Int              @id @default(autoincrement())
-  car_number           String?          @db.VarChar(50)
-  car_province_id      Int?
-  car_type_id          Int?
-  car_spec_id          Int?
-  car_brand_id         Int?
-  car_type_regis_id    Int?
-  color_id             Int?
-  oil_type_id          Int?
-  own_div_code         String?          @db.VarChar(50)
-  fiscal_year          Int?
-  start_date           String?          @db.VarChar(50)
-  end_date             String?          @db.VarChar(50)
-  regis_date           String?          @db.VarChar(50)
-  car_status_id        Int?
-  machine_no           String?          @db.VarChar(50)
-  body_no              String?          @db.VarChar(50)
-  cylinder_capacityp   String?          @db.VarChar(50)
-  oil_expense          Float?           @db.Real
-  refund_vat           Int?
-  fleetcard_no         String?          @db.VarChar(50)
-  flag                 String?          @db.VarChar(50)
-  cre_by               Int?
-  cre_date             String?          @db.VarChar(50)
-  upd_by               Int?
-  upd_date             String?          @db.VarChar(50)
-  ref_car              String?          @db.VarChar(50)
-  horse_power          String?          @db.VarChar(50)
-  weight               String?          @db.VarChar(50)
-  machine_id           String?          @db.VarChar(50)
-  vc_car_brand         vc_car_brand?    @relation(fields: [car_brand_id], references: [car_brand_id])
-  vc_register_province vc_province?     @relation(fields: [car_province_id], references: [province_id])
-  vc_car_spec          vc_car_spec?     @relation(fields: [car_spec_id], references: [car_spec_id])
-  vc_car_status        vc_car_status?   @relation(fields: [car_status_id], references: [car_status_id])
-  vc_car_type          vc_car_type?     @relation(fields: [car_type_id], references: [car_type_id])
-  vc_type_regis        vc_type_regis?   @relation(fields: [car_type_regis_id], references: [type_regis_id])
-  vc_color             vc_color?        @relation(fields: [color_id], references: [color_id])
-  vc_oil_type          vc_oil_type?     @relation(fields: [oil_type_id], references: [oil_type_id])
-  vc_nt_car            vc_nt_car[]
-  vc_replacement       vc_replacement[]
+  car_id             Int              @id @default(autoincrement())
+  car_number         String?          @db.VarChar(50)
+  car_province_id    Int?
+  car_type_id        Int?
+  car_spec_id        Int?
+  car_brand_id       Int?
+  car_type_regis_id  Int?
+  color_id           Int?
+  oil_type_id        Int?
+  own_div_code       String?          @db.VarChar(50)
+  fiscal_year        Int?
+  start_date         String?          @db.VarChar(50)
+  end_date           String?          @db.VarChar(50)
+  regis_date         String?          @db.VarChar(50)
+  car_status_id      Int?
+  machine_no         String?          @db.VarChar(50)
+  body_no            String?          @db.VarChar(50)
+  cylinder_capacityp String?          @db.VarChar(50)
+  oil_expense        Float?           @db.Real
+  refund_vat         Int?
+  fleetcard_no       String?          @db.VarChar(50)
+  flag               String?          @db.VarChar(50)
+  cre_by             Int?
+  cre_date           String?          @db.VarChar(50)
+  upd_by             Int?
+  upd_date           String?          @db.VarChar(50)
+  ref_car            String?          @db.VarChar(50)
+  horse_power        String?          @db.VarChar(50)
+  weight             String?          @db.VarChar(50)
+  machine_id         String?          @db.VarChar(50)
+  vc_car_brand       vc_car_brand?    @relation(fields: [car_brand_id], references: [car_brand_id])
+  vc_province        vc_province?     @relation(fields: [car_province_id], references: [province_id])
+  vc_car_spec        vc_car_spec?     @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_car_status      vc_car_status?   @relation(fields: [car_status_id], references: [car_status_id])
+  vc_car_type        vc_car_type?     @relation(fields: [car_type_id], references: [car_type_id])
+  vc_type_regis      vc_type_regis?   @relation(fields: [car_type_regis_id], references: [type_regis_id])
+  vc_color           vc_color?        @relation(fields: [color_id], references: [color_id])
+  vc_oil_type        vc_oil_type?     @relation(fields: [oil_type_id], references: [oil_type_id])
+  vc_nt_car          vc_nt_car[]
+  vc_replacement     vc_replacement[]
 }
 
 model fleetcard_transactions {

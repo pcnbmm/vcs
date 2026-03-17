@@ -1,13 +1,16 @@
 import { withAuth } from "next-auth/middleware";
-
-export default withAuth({
-  pages: {
-    signIn: "/login",
+import { NextResponse } from "next/server";
+export default withAuth(
+  function middleware(req) {
+    return NextResponse.next();
   },
-});
+  {
+    pages: {
+      signIn: "/login",
+    },
+  },
+);
 
 export const config = {
-  // ระบุหน้าที่ต้องการให้ "รปภ." เฝ้าไว้
-  // ถ้าพยายามเข้าหน้าพวกนี้โดยไม่ Login ระบบจะดีดไปหน้า /login อัตโนมัติ
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/((?!login|api|_next/static|_next/image|favicon.ico).*)"],
 };

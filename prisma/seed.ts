@@ -22,6 +22,15 @@ async function main() {
             usertype: "USER",
             email: "test1@vcs.com",
         },
+         {
+            username: "User03",
+            username2: hashedPassword,
+            firstname: "test",
+            lastname: "test",
+            bname: "test",
+            usertype: "USER",
+            email: "test2@vcs.com",
+        },
     ];
 
     for (const u of users) {
