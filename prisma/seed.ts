@@ -14,32 +14,29 @@ async function main() {
 
     const users = [
         {
-            username: "dev",
-            email: "dev@vcs.com",
-            name: "Dev",
-            password: hashedPassword,
-            role: "DEV"
+            username: "User02",
+            username2: hashedPassword,
+            firstname: "test",
+            lastname: "test",
+            bname: "test",
+            usertype: "USER",
+            email: "test1@vcs.com",
         },
-        {
-            username: "user01",
-            email: "user01@vcs.com",
-            name: "นาย สมชาย ใจดี",
-            password: hashedPassword,
-            role: "USER"
-        },
-        {
-            username: "user02",
-            email: "user02@vcs.com",
-            name: "นางสาว วิภา รักงาน",
-            password: hashedPassword,
-            role: "USER"
+         {
+            username: "User03",
+            username2: hashedPassword,
+            firstname: "test",
+            lastname: "test",
+            bname: "test",
+            usertype: "USER",
+            email: "test2@vcs.com",
         },
     ];
 
     for (const u of users) {
-        await prisma.user.upsert({
-            where: { username: u.username },
-            update: { password: u.password, email: u.email, name: u.name, role: u.role },
+        await prisma.vc_users.upsert({
+            where: { userid: 0 }, // ← userid เป็น autoincrement ใช้ username แทน
+            update: { username2: u.username2 },
             create: u,
         });
         console.log(`User created: ${u.username}`);
