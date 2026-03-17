@@ -61,8 +61,8 @@ export default function ReturnsPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 relative">
       {/* Header Square */}
-      <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex items-center gap-6">
-        <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+      <div className="bg-white rounded-4xl p-6 shadow-sm border border-slate-100 flex items-center gap-6">
+        <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center shrink-0 shadow-md">
           <Car className="text-white" size={32} />
         </div>
         <div>
@@ -85,7 +85,7 @@ export default function ReturnsPage() {
             className="flex-1 outline-none text-slate-600 placeholder:text-slate-400 bg-transparent w-full"
           />
         </div>
-        <div className="w-[1px] h-8 bg-slate-200"></div>
+        <div className="w-px h-8 bg-slate-200"></div>
 
         <div className="relative">
           <button
@@ -120,7 +120,7 @@ export default function ReturnsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-4xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
