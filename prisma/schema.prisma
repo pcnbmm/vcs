@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -509,19 +509,6 @@ model vc_menu_role {
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model vc_orgs {
-  orgid       Int     @id @default(autoincrement())
-  orgname     String? @db.VarChar(255)
-  priority    String? @db.VarChar(50)
-  short_name  String? @db.VarChar(50)
-  mom_org     Int?
-  index_org   Int?
-  free_check  String? @db.VarChar(50)
-  short_name2 String? @db.VarChar(50)
-  status      String? @db.VarChar(50)
-  upd_date    String? @db.VarChar(50)
-}
-
 model vc_orgs {
   orgid       Int     @id @default(autoincrement())
   orgname     String? @db.VarChar(255)
