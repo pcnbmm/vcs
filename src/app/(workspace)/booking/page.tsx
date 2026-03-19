@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
+import { getStartPlaces } from "@/app/actions/startPlaceActions";
+import { getCarSpecs } from "@/app/actions/carSpecActions";
+import { getOrgs } from "@/app/actions/orgActions";
 import { departments, vehicleTypes, provinces } from "@/mock/data/vehicles";
 import {
   FileText,
@@ -24,10 +27,10 @@ import LongdoMapBox from "@/components/ui/LongdoMapBox";
 
 export default function VehicleRequestPage() {
   const router = useRouter();
-
+  const [startPlaces, setStartPlaces] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Helper to get today's date in YYYY-MM-DD format
+  const [carSpecs, setCarSpecs] = useState<any[]>([]);
+  const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const getCurrentTime = () => {
     const now = new Date();
@@ -36,9 +39,9 @@ export default function VehicleRequestPage() {
 
   // Form States
   const [formData, setFormData] = useState({
-    ownerDept: "ฝ่ายบริหาร",
-    vehicleType: "รถเก๋ง 1500 cc",
-    origin: "หลักสี่",
+    ownerDept: "",
+    vehicleType: "",
+    origin: "",
     province: "กรุงเทพมหานคร",
     destination: "",
     lat: 0,
@@ -79,7 +82,10 @@ export default function VehicleRequestPage() {
       const dataToSubmit = new FormData();
       dataToSubmit.append("use_div_code", formData.ownerDept);
       dataToSubmit.append("car_spec_id", formData.vehicleType);
-      dataToSubmit.append("start_place", formData.origin);
+      dataToSubmit.append(
+        "start_place",
+        String(startPlaceMap[formData.origin] ?? 1),
+      );
       dataToSubmit.append("journey_province", formData.province);
       dataToSubmit.append("journey_place", formData.destination);
       dataToSubmit.append("journey_lat", formData.lat.toString());
@@ -123,9 +129,9 @@ export default function VehicleRequestPage() {
 
   const resetForm = () => {
     setFormData({
-      ownerDept: "ฝ่ายบริหาร",
+      ownerDept: "",
       vehicleType: "รถเก๋ง 1500 cc",
-      origin: "หลักสี่",
+      origin: startPlaces[0]?.start_place_name ?? "",
       province: "กรุงเทพมหานคร",
       destination: "",
       lat: 0,
@@ -142,20 +148,40 @@ export default function VehicleRequestPage() {
     });
   };
 
-  // Helper: Lock province based on origin
   useEffect(() => {
-    if (formData.origin === "บางรัก" || formData.origin === "หลักสี่") {
-      handleInputChange("province", "กรุงเทพมหานคร");
-    } else if (formData.origin === "แจ้งวัฒนะ") {
-      handleInputChange("province", "นนทบุรี");
-    }
-  }, [formData.origin]);
+    const fetchStartPlaces = async () => {
+      const result = await getStartPlaces();
+      if (result.success) setStartPlaces(result.data);
+    };
+    fetchStartPlaces();
+  }, []);
+  useEffect(() => {
+    const fetchCarSpecs = async () => {
+      const result = await getCarSpecs();
+      if (result.success) setCarSpecs(result.data);
+    };
+    fetchCarSpecs();
+  }, []);
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      const result = await getOrgs();
+      if (result.success) setOrgs(result.data);
+    };
+    fetchOrgs();
+  }, []);
 
   const mockDrivers = [
     { driver_id: 1, driver_code: "D001", name: "นาย สมชาย ขับดี" },
     { driver_id: 2, driver_code: "D002", name: "นาย สมหมาย วิ่งเร็ว" },
     { driver_id: 3, driver_code: "D003", name: "นาย สมศักดิ์ ปลอดภัย" },
   ];
+  const startPlaceMap = startPlaces.reduce(
+    (acc, sp) => {
+      acc[sp.start_place_name] = sp.start_place_id;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
@@ -203,8 +229,11 @@ export default function VehicleRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    {departments.map((d: string) => (
-                      <option key={d}>{d}</option>
+                    <option value="">-- เลือกสังกัด --</option>
+                    {orgs.map((org) => (
+                      <option key={org.orgid} value={org.orgid}>
+                        {org.orgname}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -217,8 +246,11 @@ export default function VehicleRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    {vehicleTypes.map((v: string) => (
-                      <option key={v}>{v}</option>
+                    <option value="">-- เลือกประเภทรถ --</option>
+                    {carSpecs.map((cs) => (
+                      <option key={cs.car_spec_id} value={cs.car_spec_id}>
+                        {cs.car_spec_name}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -232,9 +264,14 @@ export default function VehicleRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    <option value="หลักสี่">หลักสี่</option>
-                    <option value="แจ้งวัฒนะ">แจ้งวัฒนะ</option>
-                    <option value="บางรัก">บางรัก</option>
+                    {startPlaces.map((sp) => (
+                      <option
+                        key={sp.start_place_id}
+                        value={sp.start_place_name}
+                      >
+                        {sp.start_place_name}
+                      </option>
+                    ))}
                   </select>
                 </FormField>
 
