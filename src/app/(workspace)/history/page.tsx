@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getMyBookings } from '@/app/actions/bookingActions';
 import {
     Calendar,
     MapPin,
@@ -43,19 +44,26 @@ export default function HistoryPage() {
         const fetchHistory = async () => {
             try {
                 setIsLoading(true);
-                // TODO: เปลี่ยนเป็น URL API จริงของคุณ
-                // หมายเหตุ: แนะนำให้ส่งพารามิเตอร์ไปกรองสถานะที่ฝั่ง Backend แทนเพื่อลดภาระของ Frontend
-                // const res = await fetch('/api/history');
-                // const data = await res.json();
-                // setRequests(data);
-
-                // --- โค้ดจำลองการดึงข้อมูลสำเร็จ (ลบออกเมื่อต่อ API จริง) ---
-                setTimeout(() => {
-                    setRequests([]); // ทดสอบใส่ mock data ตรงนี้ได้
-                    setIsLoading(false);
-                }, 1000);
-                // ---------------------------------------------------
-
+                const result = await getMyBookings();
+                
+                if (result.success && result.data) {
+                    const formattedList = result.data.map((b: any) => ({
+                        id: String(b.request_id),
+                        requester: 'ผู้ใช้งานระบบ',
+                        department: b.use_div_code || 'ฝ่ายบริหาร',
+                        destination: b.journey_place,
+                        date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
+                            day: 'numeric', month: 'short', year: 'numeric'
+                        }) : 'N/A',
+                        time: b.journey_time || 'N/A',
+                        objective: b.journey_causes || '-',
+                        status: b.status_use_id ? Number(b.status_use_id) : 1,
+                        origin: b.start_place,
+                        passengers: b.passenger_amount,
+                    }));
+                    setRequests(formattedList);
+                }
+                setIsLoading(false);
             } catch (err) {
                 console.error("Failed to fetch history", err);
                 setError("ไม่สามารถโหลดประวัติคำขอได้ กรุณาลองใหม่อีกครั้ง");
@@ -68,8 +76,9 @@ export default function HistoryPage() {
 
     // 4. จัดการกรองข้อมูล (แสดงเฉพาะประวัติที่จบแล้ว + ค้นหาจาก text)
     const historyRequests = requests.filter(req => {
-        // กรองสถานะที่ถือว่าเป็น "ประวัติ" (ถ้า Backend กรองมาให้แล้ว สามารถลบเงื่อนไขส่วนนี้ออกได้)
+        // กรองสถานะที่ถือว่าเป็น "ประวัติ"
         const isHistoryStatus = [
+            2, // Approved (แสดงในประวัติด้วย)
             REQUEST_STATUS.REJECTED,
             REQUEST_STATUS.CANCELLED,
             REQUEST_STATUS.DISPATCH_REJECTED,
@@ -338,6 +347,8 @@ const getStatusName = (status: number | string) => {
             return 'ยกเลิก';
         case REQUEST_STATUS.RETURN_APPROVED:
             return 'เสร็จสิ้นสมบูรณ์';
+        case 2:
+            return 'อนุมัติแล้ว';
         case REQUEST_STATUS.NOT_RECEIVED:
             return 'ไม่ได้รับรถ';
         default:
