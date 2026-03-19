@@ -27,7 +27,7 @@ export default function LoginPage() {
       if (res?.error) {
         setError("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
       } else {
-        router.push("/dashboard");
+        router.push("/booking");
         router.refresh();
       }
     } catch (err) {
