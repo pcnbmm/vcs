@@ -94,7 +94,7 @@ export default function VehicleRequestPage() {
       // รวม start date และ time เพื่อให้เป็น Date string สำหรับ Prisma
       const combinedDateTime = `${formData.startDate}T${formData.startTime}:00`;
       dataToSubmit.append("journey_date", combinedDateTime);
-      dataToSubmit.append("journer_time", formData.startTime); // เก็บแยกด้วยตามโจทย์
+      dataToSubmit.append("journey_time", formData.startTime); // เก็บแยกด้วยตามโจทย์
 
       // รวม end date และ time
       const combinedEndDateTime = `${formData.endDate}T${formData.endTime || "00:00"}:00`;
