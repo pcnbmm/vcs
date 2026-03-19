@@ -4,7 +4,8 @@ import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
-import { departments, vehicleTypes, provinces } from "@/mock/data/vehicles";
+import { useRouter } from "next/navigation";
+import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import {
   FileText,
   Car,
@@ -22,9 +23,6 @@ import {
   Map as MapIcon,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-import LongdoMapBox from "@/components/ui/LongdoMapBox";
-
 export default function VehicleRequestPage() {
   const router = useRouter();
   const [startPlaces, setStartPlaces] = useState<any[]>([]);
@@ -32,12 +30,13 @@ export default function VehicleRequestPage() {
   const [carSpecs, setCarSpecs] = useState<any[]>([]);
   const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
+  const [provinceList, setProvinceList] = useState<any[]>([]);
+
   const getCurrentTime = () => {
     const now = new Date();
     return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
   };
 
-  // Form States
   const [formData, setFormData] = useState({
     ownerDept: "",
     vehicleType: "",
@@ -78,7 +77,6 @@ export default function VehicleRequestPage() {
     setIsSubmitting(true);
 
     try {
-      // สร้าง FormData โดยใช้ชื่อฟิลด์ให้ตรงกับ Database เป๊ะๆ
       const dataToSubmit = new FormData();
       dataToSubmit.append("use_div_code", formData.ownerDept);
       dataToSubmit.append("car_spec_id", formData.vehicleType);
@@ -91,12 +89,10 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_lat", formData.lat.toString());
       dataToSubmit.append("journey_long", formData.lon.toString());
 
-      // รวม start date และ time เพื่อให้เป็น Date string สำหรับ Prisma
       const combinedDateTime = `${formData.startDate}T${formData.startTime}:00`;
       dataToSubmit.append("journey_date", combinedDateTime);
-      dataToSubmit.append("journey_time", formData.startTime); // เก็บแยกด้วยตามโจทย์
+      dataToSubmit.append("journey_time", formData.startTime);
 
-      // รวม end date และ time
       const combinedEndDateTime = `${formData.endDate}T${formData.endTime || "00:00"}:00`;
       dataToSubmit.append("return_date", combinedEndDateTime);
       dataToSubmit.append("return_time", formData.endTime || "00:00");
@@ -109,13 +105,11 @@ export default function VehicleRequestPage() {
         dataToSubmit.append("driver_id", formData.driverId.toString());
       }
 
-      // เรียกใช้งาน Server Action ของ Prisma
       const result = await createBooking(dataToSubmit);
 
       if (result.success) {
         alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
         resetForm();
-        // ย้ายไประบุหน้าประวัติที่อยู่เมนูหลักแทน
       } else {
         alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }
@@ -169,6 +163,14 @@ export default function VehicleRequestPage() {
     };
     fetchOrgs();
   }, []);
+  useEffect(() => {
+    const selected = startPlaces.find(
+      (sp) => sp.start_place_name === formData.origin,
+    );
+    if (selected?.province_id) {
+      handleInputChange("province", selected.province_id);
+    }
+  }, [formData.origin, startPlaces]);
 
   const mockDrivers = [
     { driver_id: 1, driver_code: "D001", name: "นาย สมชาย ขับดี" },
@@ -207,7 +209,7 @@ export default function VehicleRequestPage() {
         {/* Main Form */}
         <div className="w-full space-y-8">
           <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
               <Car size={200} />
             </div>
 
@@ -278,17 +280,12 @@ export default function VehicleRequestPage() {
                 <FormField label="จังหวัด" icon={MapIcon} required>
                   <select
                     value={formData.province}
-                    onChange={(e) =>
-                      handleInputChange("province", e.target.value)
-                    }
-                    disabled={["บางรัก", "แจ้งวัฒนะ", "หลักสี่"].includes(
-                      formData.origin,
-                    )}
-                    className={`w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm ${["บางรัก", "แจ้งวัฒนะ", "หลักสี่"].includes(formData.origin) ? "opacity-60 cursor-not-allowed bg-gray-100" : ""}`}
+                    disabled={true} // ← auto-set จาก start_place ไม่ให้ user เลือกเอง
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
-                    {provinces.map((p: string) => (
-                      <option key={p} className="text-black">
-                        {p}
+                    {startPlaces.map((sp) => (
+                      <option key={sp.start_place_id} value={sp.province_id}>
+                        {sp.province?.name_th ?? "-"}
                       </option>
                     ))}
                   </select>
@@ -299,9 +296,13 @@ export default function VehicleRequestPage() {
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
                     <LongdoMapBox
                       onLocationSelect={(loc: any) => {
-                        handleInputChange("destination", loc.name);
-                        handleInputChange("lat", loc.lat);
-                        handleInputChange("lon", loc.lon);
+                        // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
+                        setFormData((prev) => ({
+                          ...prev,
+                          destination: loc.name,
+                          lat: loc.lat,
+                          lon: loc.lon,
+                        }));
                       }}
                       placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
                     />

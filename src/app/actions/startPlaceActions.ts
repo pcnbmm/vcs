@@ -6,6 +6,9 @@ export async function getStartPlaces() {
     try {
         const startPlaces = await prisma.vc_start_place.findMany({
             where: { flag_del: null },
+            include: {
+                province: true // ← ดึงจังหวัดมาด้วย
+            },
             orderBy: { start_place_id: 'asc' }
         });
         return { success: true, data: startPlaces };
