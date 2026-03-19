@@ -7,7 +7,71 @@ datasource db {
   provider = "postgresql"
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_order_item {
+  request_id         Int                 @id @default(autoincrement())
+  use_div_code       String?             @db.VarChar(100)
+  userid             Int?
+  user_mobile        String?             @db.VarChar(20)
+  journey_date       DateTime?           @db.Date
+  return_date        DateTime?           @db.Date
+  journey_place      String?             @db.VarChar(500)
+  journey_province   String?             @db.VarChar(100)
+  journey_causes     String?
+  return_time        String?             @db.VarChar(10)
+  passenger_amount   Int?
+  approve_id         String?             @db.Char(8)
+  status_use_id      Int?
+  self_drive         Boolean?
+  journey_lat        Float?
+  journey_long       Float?
+  cre_by             String?             @db.VarChar(20)
+  cre_date           DateTime?
+  upd_by             String?             @db.VarChar(20)
+  upd_date           DateTime?
+  journey_time       String?             @db.VarChar(10)
+  car_spec_id        Int?
+  is_urgent          Boolean             @default(false)
+  start_place        Int?
+  vc_car_spec        vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_start_place     vc_start_place?     @relation(fields: [start_place], references: [start_place_id])
+  vc_status_use_code vc_status_use_code? @relation(fields: [status_use_id], references: [status_use_id])
+  vc_user            vc_users?           @relation(fields: [userid], references: [userid])
+  vc_use             vc_use[]
+}
+
+model vc_users {
+  username      String?         @db.VarChar(50)
+  username2     String?
+  bname         String?         @db.VarChar(50)
+  firstname     String?         @db.VarChar(50)
+  lastname      String?         @db.VarChar(50)
+  usertype      String?         @db.VarChar(50)
+  user_role_id  Int?
+  groupjob      String?         @db.VarChar(50)
+  positionid    String?         @db.VarChar(50)
+  positionname  String?         @db.VarChar(50)
+  situation     String?         @db.VarChar(50)
+  level         String?         @db.VarChar(50)
+  companyid     String?         @db.VarChar(50)
+  lineid        String?         @db.VarChar(50)
+  groupid       String?         @db.VarChar(50)
+  departmentid  String?         @db.VarChar(50)
+  sectionid     String?         @db.VarChar(50)
+  bname_eng     String?         @db.VarChar(50)
+  firstname_eng String?         @db.VarChar(50)
+  lastname_eng  String?         @db.VarChar(50)
+  email         String?         @db.VarChar(50)
+  mobile_no     String?         @db.VarChar(50)
+  office_no     String?         @db.VarChar(50)
+  checkupdate   String?         @db.VarChar(50)
+  upd_date      String?         @db.VarChar(50)
+  userid        Int             @id @default(autoincrement())
+  vc_driver     vc_driver?
+  vc_order_item vc_order_item[]
+  vc_user_roles vc_user_roles[]
+  vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
+}
+
 model vc_car_master {
   car_id             Int              @id @default(autoincrement())
   car_number         String?          @db.VarChar(50)
@@ -73,6 +137,7 @@ model fleetcard_transactions {
   jvID               String?   @db.VarChar(50)
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_car_brand {
   car_brand_id    Int             @id @default(autoincrement())
   car_brand_name  String?         @db.VarChar(255)
@@ -400,7 +465,7 @@ model vc_start_place {
   upd_by           String?         @db.VarChar(8)
   upd_date         DateTime?       @db.Date
   vc_order_item    vc_order_item[]
-  vc_province      vc_province?    @relation(fields: [province_id], references: [province_id])
+  province         vc_province?    @relation(fields: [province_id], references: [province_id])
 }
 
 model vc_province {
@@ -429,38 +494,6 @@ model vc_status_use_code {
   vc_order_item   vc_order_item[]
 }
 
-model vc_order_item {
-  request_id         Int                 @id @default(autoincrement())
-  use_div_code       String?             @db.VarChar(100)
-  userid             Int?
-  user_mobile        String?             @db.VarChar(20)
-  journey_date       DateTime?           @db.Date
-  return_date        DateTime?           @db.Date
-  journey_place      String?             @db.VarChar(500)
-  journey_province   String?             @db.VarChar(100)
-  journey_causes     String?
-  return_time        String?             @db.VarChar(10)
-  passenger_amount   Int?
-  approve_id         String?             @db.Char(8)
-  status_use_id      Int?
-  self_drive         Boolean?
-  journey_lat        Float?
-  journey_long       Float?
-  cre_by             String?             @db.VarChar(20)
-  cre_date           DateTime?
-  upd_by             String?             @db.VarChar(20)
-  upd_date           DateTime?
-  journey_time       String?             @db.VarChar(10)
-  car_spec_id        Int?
-  is_urgent          Boolean             @default(false)
-  start_place        Int?
-  vc_car_spec        vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
-  vc_start_place     vc_start_place?     @relation(fields: [start_place], references: [start_place_id])
-  vc_status_use_code vc_status_use_code? @relation(fields: [status_use_id], references: [status_use_id])
-  vc_users           vc_users?           @relation(fields: [userid], references: [userid])
-  vc_use             vc_use[]
-}
-
 model vc_menu_role {
   menu_id       Int?
   roles_id      Int?
@@ -475,37 +508,18 @@ model vc_menu_role {
   vc_roles      vc_roles?    @relation(fields: [roles_id], references: [roles_id])
 }
 
-model vc_users {
-  username      String?         @db.VarChar(50)
-  username2     String?
-  bname         String?         @db.VarChar(50)
-  firstname     String?         @db.VarChar(50)
-  lastname      String?         @db.VarChar(50)
-  usertype      String?         @db.VarChar(50)
-  user_role_id  Int?
-  groupjob      String?         @db.VarChar(50)
-  positionid    String?         @db.VarChar(50)
-  positionname  String?         @db.VarChar(50)
-  situation     String?         @db.VarChar(50)
-  level         String?         @db.VarChar(50)
-  companyid     String?         @db.VarChar(50)
-  lineid        String?         @db.VarChar(50)
-  groupid       String?         @db.VarChar(50)
-  departmentid  String?         @db.VarChar(50)
-  sectionid     String?         @db.VarChar(50)
-  bname_eng     String?         @db.VarChar(50)
-  firstname_eng String?         @db.VarChar(50)
-  lastname_eng  String?         @db.VarChar(50)
-  email         String?         @db.VarChar(50)
-  mobile_no     String?         @db.VarChar(50)
-  office_no     String?         @db.VarChar(50)
-  checkupdate   String?         @db.VarChar(50)
-  upd_date      String?         @db.VarChar(50)
-  userid        Int             @id @default(autoincrement())
-  vc_driver     vc_driver?
-  vc_order_item vc_order_item[]
-  vc_user_roles vc_user_roles[]
-  vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_orgs {
+  orgid       Int     @id @default(autoincrement())
+  orgname     String? @db.VarChar(255)
+  priority    String? @db.VarChar(50)
+  short_name  String? @db.VarChar(50)
+  mom_org     Int?
+  index_org   Int?
+  free_check  String? @db.VarChar(50)
+  short_name2 String? @db.VarChar(50)
+  status      String? @db.VarChar(50)
+  upd_date    String? @db.VarChar(50)
 }
 
 model vc_orgs {
