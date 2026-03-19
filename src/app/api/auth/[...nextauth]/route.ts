@@ -22,33 +22,33 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.vc_users.findFirst({
           where: { username: credentials.username },
+          include: {
+            vc_user_roles: {
+              include: { vc_roles: true },
+            },
+          },
         });
 
         if (!user) return null;
 
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
-          user.username2 ?? "", // ← password เก็บใน username2
+          user.username2 ?? "",
         );
 
         if (!isPasswordValid) return null;
 
-        // ── Map usertype → roles_id ──────────────────────────────
-        const roleMap: Record<string, number> = {
-          USER: 1,
-          APPROVER: 2,
-          DISPATCHER: 3,
-          ADMIN: 4,
-          DEV: 5,
-        };
-        const mockRoles = [roleMap[user.usertype ?? "USER"] ?? 1];
+        // ── ดึง roles จาก vc_user_roles ───────────────────────
+        const roles = user.vc_user_roles
+          .map((ur) => ur.roles_id)
+          .filter(Boolean) as number[];
 
         return {
           id: String(user.userid),
           name: user.bname,
           email: user.email,
           username: user.username ?? "",
-          roles: mockRoles,
+          roles: roles.length > 0 ? roles : [1], // fallback role 1
         };
       },
     }),
