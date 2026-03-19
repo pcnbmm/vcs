@@ -11,14 +11,22 @@ interface LongdoMapBoxProps {
     placeholder?: string;
 }
 
-const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placeholder }) => {
+// ใช้ React.memo เพื่อลดการ Render แผนที่ซ้ำๆ เมื่อ Parent มีการพิมพ์ข้อมูลอื่นๆ
+const LongdoMapBox: React.FC<LongdoMapBoxProps> = React.memo(({ onLocationSelect, placeholder }) => {
     const mapRef = useRef<any>(null);
+    const containerRef = useRef<HTMLDivElement>(null); // ใช้ Ref แทน getElementById
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const [isMapLoaded, setIsMapLoaded] = useState(false);
     const [selectedPos, setSelectedPos] = useState<{ lat: number; lon: number } | null>(null);
+
+    // แก้ Bug Stale Closure: ใช้ Ref เก็บ callback ล่าสุดเสมอ
+    const onLocationSelectRef = useRef(onLocationSelect);
+    useEffect(() => {
+        onLocationSelectRef.current = onLocationSelect;
+    }, [onLocationSelect]);
 
     useEffect(() => {
         // Load Script
@@ -42,32 +50,32 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
 
         function initMap() {
             if (mapRef.current) return;
-            const canvas = document.getElementById('map-canvas');
+            const canvas = containerRef.current;
             // @ts-ignore
             if (canvas && window.longdo) {
+                // console.log("LongdoMapBox: Initializing map...");
                 // @ts-ignore
                 const map = new window.longdo.Map({
                     placeholder: canvas,
                     lastview: false,
                     language: 'th',
-                    // @ts-ignore
                     ui: window.longdo.UiComponent.None
                 });
                 mapRef.current = map;
 
+                // พยายาม Resize ทันทีหลังจากสร้าง
+                map.resize();
+
                 map.Event.bind('ready', () => {
                     setIsMapLoaded(true);
-
-                    // --- บังคับตั้งค่าการใช้งานเมาส์ ให้เลื่อนได้ (Drag) และห้ามลากครอบ (RubberBand) ---
-                    try {
-                        // @ts-ignore
-                        map.Ui.Mouse.enableRubberBand(false);
-                        // @ts-ignore
-                        map.Ui.Mouse.enableDrag(true);
-                    } catch (e) {
-                        console.warn("Map UI Mouse config error:", e);
-                    }
-                    // -----------------------------------------------------------------------
+                    
+                    // บังคับ resize หลายๆ ครั้งในช่วงแรกเพื่อแก้ปัญหาเลื่อนไม่ได้ในหน้าจอเต็ม
+                    // เนื่องจาก Layout ของ Next.js อาจจะยังไม่ลงตัว ณ วินาทีที่แผนที่โหลดเสร็จ
+                    [100, 500, 1000, 2000].forEach(delay => {
+                        setTimeout(() => {
+                            if (mapRef.current) mapRef.current.resize();
+                        }, delay);
+                    });
 
                     // ปักหมุดเมื่อคลิก - ใช้พิกัดจาก Pointer ปัจจุบัน
                     map.Event.bind('click', async () => {
@@ -88,6 +96,33 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
                 });
             }
         }
+
+        const handleResize = () => {
+            mapRef.current?.resize();
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // แก้ปัญหาหน้าจอเต็มเลื่อนไม่ได้: ใช้ ResizeObserver ดักจับการเปลี่ยนขนาดของกล่องแผนที่โดยตรง
+        const container = containerRef.current;
+        const resizeObserver = new ResizeObserver(() => {
+            if (mapRef.current) {
+                // console.log("LongdoMapBox: Container resized, calling map.resize()");
+                mapRef.current.resize();
+            }
+        });
+
+        if (container) {
+            resizeObserver.observe(container);
+        }
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            if (container) resizeObserver.unobserve(container);
+            resizeObserver.disconnect();
+            // Cleanup: กรณี unmount สั่ง clear map reference
+            mapRef.current = null;
+        };
     }, []);
 
     const updatePin = (loc: any, name: string) => {
@@ -101,7 +136,12 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
         });
         mapRef.current.Overlays.add(marker);
         setSelectedPos({ lat: loc.lat, lon: loc.lon });
-        onLocationSelect({ name, lat: loc.lat, lon: loc.lon });
+        
+        // Debug
+        // console.log("LongdoMapBox: Pin updated at", loc.lat, loc.lon);
+        
+        // ใช้ Ref เพื่อส่งค่ากลับไปยัง Parent อย่างถูกต้อง
+        onLocationSelectRef.current({ name, lat: loc.lat, lon: loc.lon });
     };
 
     const executeSearch = async (keyword: string) => {
@@ -169,16 +209,16 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
                 </button>
             </div>
 
-            {/* Map Container - ปรับให้สูงพอดีและรองรับการเลื่อนหน้าจอบนมือถือ/แท็บเล็ต */}
-            <div className="relative w-full h-[500px] md:h-[650px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100 ring-1 ring-slate-200" style={{ touchAction: 'pan-y' }}>
+            {/* Map Container - ปรับขนาดให้กะทัดรัด (Compact Picker) */}
+            <div className="relative w-full h-[280px] md:h-[320px] rounded-[1.5rem] overflow-hidden border-2 border-white shadow-lg bg-slate-100 ring-1 ring-slate-200" style={{ touchAction: 'none' }}>
                 <div
-                    id="map-canvas"
+                    ref={containerRef}
                     className="w-full h-full"
-                    style={{ userSelect: 'none', touchAction: 'none' }}
+                    style={{ userSelect: 'none', zIndex: 1 }}
                 ></div>
 
                 {!isMapLoaded && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-50">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-50 pointer-events-none">
                         <Loader2 className="animate-spin text-blue-600 mb-2" size={32} />
                         <span className="font-bold text-slate-400">กำลังโหลดแผนที่แบบอิสระ...</span>
                     </div>
@@ -223,6 +263,6 @@ const LongdoMapBox: React.FC<LongdoMapBoxProps> = ({ onLocationSelect, placehold
             </div>
         </div>
     );
-};
+});
 
 export default LongdoMapBox;

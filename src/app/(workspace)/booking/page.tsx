@@ -207,7 +207,7 @@ export default function VehicleRequestPage() {
         {/* Main Form */}
         <div className="w-full space-y-8">
           <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
               <Car size={200} />
             </div>
 
@@ -299,9 +299,13 @@ export default function VehicleRequestPage() {
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
                     <LongdoMapBox
                       onLocationSelect={(loc: any) => {
-                        handleInputChange("destination", loc.name);
-                        handleInputChange("lat", loc.lat);
-                        handleInputChange("lon", loc.lon);
+                        // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
+                        setFormData((prev) => ({
+                          ...prev,
+                          destination: loc.name,
+                          lat: loc.lat,
+                          lon: loc.lon,
+                        }));
                       }}
                       placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
                     />
