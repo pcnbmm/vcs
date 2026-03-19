@@ -183,11 +183,6 @@ export default function VehicleRequestPage() {
     fetchDrivers();
   }, []);
 
-  const mockDrivers = [
-    { driver_id: 1, driver_code: "D001", name: "นาย สมชาย ขับดี" },
-    { driver_id: 2, driver_code: "D002", name: "นาย สมหมาย วิ่งเร็ว" },
-    { driver_id: 3, driver_code: "D003", name: "นาย สมศักดิ์ ปลอดภัย" },
-  ];
   const startPlaceMap = startPlaces.reduce(
     (acc, sp) => {
       acc[sp.start_place_name] = sp.start_place_id;
@@ -296,7 +291,7 @@ export default function VehicleRequestPage() {
                   >
                     {startPlaces.map((sp) => (
                       <option key={sp.start_place_id} value={sp.province_id}>
-                        {sp.province?.name_th ?? "-"}
+                        {sp.province?.province_name ?? "-"}
                       </option>
                     ))}
                   </select>

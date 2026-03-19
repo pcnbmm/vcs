@@ -469,16 +469,14 @@ model vc_start_place {
 }
 
 model vc_province {
-  name_th        String?          @db.VarChar(50)
-  abbr_th        String?          @db.VarChar(50)
-  name_en        String?          @db.VarChar(50)
-  abbr_en        String?          @db.VarChar(50)
-  flag_del       String?          @db.VarChar(50)
-  cre_by         String?          @db.VarChar(50)
-  cre_date       String?          @db.VarChar(50)
-  upd_by         String?          @db.VarChar(50)
-  upd_date       String?          @db.VarChar(50)
   province_id    Int              @id @default(autoincrement())
+  province_name  String?          @db.VarChar(50)
+  short_name     String?          @db.VarChar(50)
+  flag_del       String?          @db.VarChar(50)
+  cre_by         Int?
+  cre_date       String?          @db.VarChar(50)
+  upd_by         Int?
+  upd_date       String?          @db.VarChar(50)
   vc_car_master  vc_car_master[]
   vc_start_place vc_start_place[]
 }
