@@ -6,6 +6,7 @@ import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
 import { useRouter } from "next/navigation";
 import LongdoMapBox from "@/components/ui/LongdoMapBox";
+import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
   Car,
@@ -31,6 +32,8 @@ export default function VehicleRequestPage() {
   const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [provinceList, setProvinceList] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [driverSearch, setDriverSearch] = useState('');
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -140,6 +143,7 @@ export default function VehicleRequestPage() {
       selfDrive: false,
       driverId: 0,
     });
+    setDriverSearch('');
   };
 
   useEffect(() => {
@@ -171,6 +175,13 @@ export default function VehicleRequestPage() {
       handleInputChange("province", selected.province_id);
     }
   }, [formData.origin, startPlaces]);
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      const result = await getDrivers();
+      if (result.success) setDrivers(result.data);
+    };
+    fetchDrivers();
+  }, []);
 
   const mockDrivers = [
     { driver_id: 1, driver_code: "D001", name: "นาย สมชาย ขับดี" },
@@ -390,7 +401,7 @@ export default function VehicleRequestPage() {
                 </FormField>
 
                 {/* Self Drive Checkbox + Driver Combobox */}
-                <div className="md:col-span-2 space-y-3">
+                <div className="md:col-span-2 space-y-3 relative"></div>
                   <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                     <input
                       type="checkbox"
@@ -398,6 +409,7 @@ export default function VehicleRequestPage() {
                       onChange={(e) => {
                         handleInputChange("selfDrive", e.target.checked);
                         handleInputChange("driverId", 0);
+                         setDriverSearch('');
                       }}
                       className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
                     />
@@ -416,34 +428,60 @@ export default function VehicleRequestPage() {
                           type="text"
                           value={
                             formData.driverId
-                              ? (mockDrivers.find(
-                                  (d) => d.driver_id === formData.driverId,
-                                )?.name ?? "")
-                              : ""
+                              ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
+                              : driverSearch
                           }
                           onChange={(e) => {
-                            const found = mockDrivers.find(
-                              (d) =>
-                                d.name.includes(e.target.value) ||
-                                d.driver_code.includes(e.target.value),
-                            );
-                            handleInputChange(
-                              "driverId",
-                              found?.driver_id ?? 0,
-                            );
+                            setDriverSearch(e.target.value);
+                            handleInputChange("driverId", 0); // reset เมื่อพิมพ์ใหม่
                           }}
-                          placeholder="พิมพ์ชื่อหรือรหัสคนขับ..."
-                          list="driver-list"
+                          placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
                           className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                         />
-                        <datalist id="driver-list">
-                          {mockDrivers.map((d) => (
-                            <option key={d.driver_id} value={d.name}>
-                              {d.driver_code}
-                            </option>
-                          ))}
-                        </datalist>
-                        {!formData.driverId && (
+                        {/* Dropdown ผลการค้นหา */}
+                        {driverSearch && !formData.driverId && (
+                          <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-48 overflow-y-auto">
+                            {drivers
+                              .filter((d) => {
+                                const fullName =
+                                  `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                                return (
+                                  fullName
+                                    .toLowerCase()
+                                    .includes(driverSearch.toLowerCase()) ||
+                                  String(d.driver_code).includes(driverSearch)
+                                );
+                              })
+                              .map((d) => (
+                                <button
+                                  key={d.driver_id}
+                                  type="button"
+                                  onClick={() => {
+                                    handleInputChange("driverId", d.driver_id);
+                                    setDriverSearch("");
+                                  }}
+                                  className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors"
+                                >
+                                  {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
+                                  <span className="text-xs text-gray-400 ml-2">
+                                    ({d.driver_code})
+                                  </span>
+                                </button>
+                              ))}
+                            {drivers.filter((d) => {
+                              const fullName =
+                                `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                              return fullName
+                                .toLowerCase()
+                                .includes(driverSearch.toLowerCase());
+                            }).length === 0 && (
+                              <div className="px-4 py-3 text-sm text-gray-400">
+                                ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {!formData.driverId && !driverSearch && (
                           <p className="text-xs text-red-500 font-medium mt-1">
                             * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
                             กรุณาติดต่อ Admin
@@ -532,7 +570,6 @@ export default function VehicleRequestPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
