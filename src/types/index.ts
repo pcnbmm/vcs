@@ -32,6 +32,9 @@ export interface Booking {
     rejectReason?: string;
     vehicleId?: string;
     driverId?: string;
+    phone?: string;
+    carType?: string;
+    selfDrive?: string;
 }
 
 export interface Driver {
