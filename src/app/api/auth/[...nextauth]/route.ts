@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import { mockRoles } from "@/mock/data/permissions";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -45,10 +44,10 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: String(user.userid),
-          name: user.bname,
+          name: `${user.bname ?? ""} ${user.firstname ?? ""} ${user.lastname ?? ""}`.trim(),
           email: user.email,
           username: user.username ?? "",
-          roles: roles.length > 0 ? roles : [1], // fallback role 1
+          roles: roles.length > 0 ? roles : [1],
         };
       },
     }),
@@ -59,6 +58,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.username = (user as any).username;
         token.roles = (user as any).roles;
+        token.userRoleId = (user as any).userRoleId; // ← เพิ่ม
       }
       return token;
     },

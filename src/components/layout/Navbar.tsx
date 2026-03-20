@@ -1,35 +1,57 @@
 "use client";
 
 import { UserCircle, LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { getRoles } from "@/app/actions/roleActions";
 
 export default function Navbar() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const [roleMap, setRoleMap] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      const result = await getRoles();
+      if (result.success) {
+        const map = result.data.reduce(
+          (acc, r) => {
+            acc[r.roles_id] = r.roles_name ?? `Role ${r.roles_id}`;
+            return acc;
+          },
+          {} as Record<number, string>,
+        );
+        setRoleMap(map);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  const roleNames = (user?.roles ?? [])
+    .map((r) => roleMap[r] ?? `Role ${r}`)
+    .join(", ");
+
   const handleLogout = () => {
     signOut({ callbackUrl: "/login" });
   };
 
   return (
     <header className="h-16 border-b bg-white flex items-center justify-between px-8 sticky top-0 z-10">
-      {/* ซ้าย: ว่างไว้ก่อน */}
       <div />
-
-      {/* ขวา: Profile + Logout */}
       <div className="flex items-center gap-3">
-        {/* Profile */}
         <div className="flex items-center gap-3 p-2 rounded-lg">
           <div className="text-right hidden sm:block">
             <p className="text-sm font-medium text-slate-700">
-              Name Surname
+              {user?.name ?? "ผู้ใช้งาน"}
             </p>
-            <p className="text-xs text-slate-500">Role</p>
+            <p className="text-xs text-slate-500">
+              {roleNames || "ไม่ระบุ Role"}
+            </p>
           </div>
-          <UserCircle size={32} className="text-slate-400" />
         </div>
 
-        {/* Divider */}
         <div className="w-px h-6 bg-slate-200" />
 
-        {/* Logout Button */}
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors text-sm font-medium"
