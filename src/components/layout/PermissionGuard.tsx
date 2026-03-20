@@ -5,12 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getMenusByRoleIds } from "@/app/actions/menuActions";
 import { Loader2 } from "lucide-react";
+import { PermissionsProvider } from "@/components/providers/PermissionsContext";
 
 export default function PermissionGuard({ children }: { children: React.ReactNode }) {
     const { data: session, status } = useSession();
     const pathname = usePathname();
     const router = useRouter();
     const [isAuthorized, setIsAuthorized] = useState(false);
+    const [menus, setMenus] = useState<any[]>([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -35,28 +37,29 @@ export default function PermissionGuard({ children }: { children: React.ReactNod
                 return;
             }
 
-            try {
+                try {
                 // Check cache first
                 const cacheKey = `menus_roles_${roles.join('_')}`;
                 const cachedMenus = sessionStorage.getItem(cacheKey);
-                let menus = [];
+                let fetchedMenus = [];
 
                 if (cachedMenus) {
-                    menus = JSON.parse(cachedMenus);
+                    fetchedMenus = JSON.parse(cachedMenus);
                 } else {
                     const result = await getMenusByRoleIds(roles);
                     if (result.success) {
-                        menus = result.data;
-                        sessionStorage.setItem(cacheKey, JSON.stringify(menus));
+                        fetchedMenus = result.data;
+                        sessionStorage.setItem(cacheKey, JSON.stringify(fetchedMenus));
                     }
                 }
 
-                const hasAccess = menus.some((menu: any) => {
+                const hasAccess = fetchedMenus.some((menu: any) => {
                     if (!menu.route_path) return false;
                     return pathname === menu.route_path || pathname.startsWith(menu.route_path + "/");
                 });
 
                 if (isMounted) {
+                    setMenus(fetchedMenus);
                     if (hasAccess) {
                         setIsAuthorized(true);
                     } else {
@@ -86,5 +89,9 @@ export default function PermissionGuard({ children }: { children: React.ReactNod
         );
     }
 
-    return <>{children}</>;
+    return (
+        <PermissionsProvider menus={menus}>
+            {children}
+        </PermissionsProvider>
+    );
 }
