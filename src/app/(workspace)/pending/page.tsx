@@ -23,7 +23,7 @@ export default function PendingPage() {
             try {
                 setIsLoading(true);
 
-                const result = await getMyBookings();
+                const result = await getMyBookings(undefined, true);
                 if (result.success && result.data) {
                     const formattedList = result.data.map((b: any) => ({
                         id: String(b.request_id),

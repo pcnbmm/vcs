@@ -71,20 +71,18 @@ export async function createBooking(formData: FormData) {
   }
 }
 
-export async function getMyBookings(userid?: number) {
+export async function getMyBookings(userid?: number, personalOnly: boolean = false) {
   try {
     let filterId = userid;
 
-    // If no specific userid is passed, try to get it from the current session
-    if (!filterId) {
+    // If personalOnly is true and no userid is passed, get it from the session
+    if (personalOnly && !filterId) {
       const session = await getServerSession(authOptions);
       if (session?.user?.id) {
         filterId = parseInt(session.user.id);
       }
     }
 
-    // If we have a filterId, filter by it. Otherwise show all (Admin fallback or unauthenticated)
-    // Note: To be strict, we could return empty if no filterId found for non-admin users.
     const bookings = await prisma.vc_order_item.findMany({
       where: filterId ? { userid: filterId } : undefined,
       include: {
