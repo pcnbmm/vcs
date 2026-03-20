@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, X, Loader2, Save } from 'lucide-react';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function DriverTab() {
+    const { hasAccess } = usePermissions();
     const [drivers, setDrivers] = useState<any[]>([]);
     const [options, setOptions] = useState<any>({});
     const [isLoading, setIsLoading] = useState(true);
@@ -179,10 +181,12 @@ export default function DriverTab() {
                         className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
                     />
                 </div>
-                <button onClick={() => openModal('add')} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
-                    <Plus className="w-5 h-5" />
-                    เพิ่มข้อมูลคนขับ
-                </button>
+                {hasAccess('create') && (
+                    <button onClick={() => openModal('add')} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
+                        <Plus className="w-5 h-5" />
+                        เพิ่มข้อมูลคนขับ
+                    </button>
+                )}
             </div>
 
             {/* Table */}
@@ -259,15 +263,21 @@ export default function DriverTab() {
                                         </td>
                                         <td className="py-4 px-6 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => openModal('view', driver)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={() => openModal('edit', driver)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors">
-                                                    <Edit2 className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={() => handleDelete(driver.driver_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                                {hasAccess('view') && (
+                                                    <button onClick={() => openModal('view', driver)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                                                        <Eye className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                                {hasAccess('update') && (
+                                                    <button onClick={() => openModal('edit', driver)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors">
+                                                        <Edit2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                                {hasAccess('delete') && (
+                                                    <button onClick={() => handleDelete(driver.driver_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
