@@ -67,7 +67,7 @@ export async function getAvailableCars() {
   try {
     const cars = await prisma.vc_car_master.findMany({
       where: {
-        flag: { equals: null } // ใช้รูปแบบ Filter ให้ชัดเจน
+        flag: { equals: null }
       },
       include: {
         vc_car_brand: true,
@@ -106,58 +106,62 @@ export async function assignResource(data: {
   carId: number;
   driverId: number | null;
 }) {
-  console.log("Starting assignResource for Request:", data.requestId, "New Car:", data.carId);
+  // สรุปข้อมูลที่ได้รับมา
+  console.log("=== API ASSIGN RESOURCE ===");
+  console.log("Request ID:", data.requestId);
+  console.log("Selected Car ID:", data.carId);
+  console.log("Selected Driver ID:", data.driverId);
+  console.log("===========================");
   
   try {
-    // 1. ตรวจสอบข้อมูลปัจจุบันก่อน
+    // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
         where: { request_id: data.requestId },
-        select: { car_id: true }
+        select: { car_id: true, driver_id: true }
     });
 
-    console.log("Current assigned car in DB:", existingOrder?.car_id);
-
-    // 2. ใช้ Transaction เพื่อความปลอดภัย
+    // 2. ใช้ Transaction
     const result = await prisma.$transaction(async (tx) => {
         
-        // ถ้าคันเก่าไม่ใช่คันใหม่ ให้ปลดล็อกคันเก่า (เป็นว่าง)
+        // จัดการเรื่องสถานะรถคันเก่า (ถ้ามี)
         if (existingOrder?.car_id && existingOrder.car_id !== data.carId) {
-            console.log("Releasing old car:", existingOrder.car_id);
+            console.log("Release old car flag:", existingOrder.car_id);
             await tx.vc_car_master.update({
                 where: { car_id: existingOrder.car_id },
-                data: { flag: null } // ตั้งเป็น null เพื่อให้ว่าง
+                data: { flag: null }
             });
         }
 
-        // ล็อกคันใหม่ (เป็น 'x')
-        console.log("Locking new car:", data.carId);
-        await tx.vc_car_master.update({
-            where: { car_id: data.carId },
-            data: { flag: "x" } // ตั้งเป็น 'x' เพื่อให้ไม่ว่าง
-        });
+        // ล็อกคันใหม่
+        if (data.carId) {
+            console.log("Setting busy flag for car:", data.carId);
+            await tx.vc_car_master.update({
+                where: { car_id: data.carId },
+                data: { flag: "x" }
+            });
+        }
 
-        // อัปเดตรายการจองรถ
+        // อัปเดตรายการจองรถ (ตัวหลักที่เรามีปัญหา)
+        console.log("Updating Order with Driver ID:", data.driverId);
         const orderUpdate = await tx.vc_order_item.update({
             where: { request_id: data.requestId },
             data: {
                 car_id: data.carId,
-                driver_id: data.driverId,
-                status_use_id: 4,
+                driver_id: data.driverId, // มั่นใจว่าค่านี้ไม่เป็น NaN (ตัวเลขหรือ null เท่านั้น)
+                status_use_id: 5, // บันทึกเป็นสำเร็จทันที (ไม่ต้องรอ Confirm)
                 upd_date: new Date(),
             },
         });
         
         return orderUpdate;
-    }, {
-        timeout: 10000 // เพิ่ม Timeout เผื่อ Database ช้า
     });
 
-    console.log("Assignment successful for Request:", data.requestId);
+    console.log("✅ Update Complete in DB");
     revalidatePath("/assign");
     return { success: true, data: result };
   } catch (error: any) {
-    console.error("FAILED to assign resource:", error.message);
-    return { success: false, error: "เกิดข้อผิดพลาด: " + error.message };
+    console.error("❌ FAILED:", error.message);
+    return { success: false, error: "เกิดข้อผิดพลาดในการบันทึก: " + error.message };
   }
 }
 
