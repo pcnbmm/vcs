@@ -32,7 +32,9 @@ model vc_order_item {
   car_spec_id        Int?
   is_urgent          Boolean             @default(false)
   start_place        Int?
+  driver_id          Int?
   vc_car_spec        vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_driver          vc_driver?          @relation(fields: [driver_id], references: [driver_id])
   vc_start_place     vc_start_place?     @relation(fields: [start_place], references: [start_place_id])
   vc_status_use_code vc_status_use_code? @relation(fields: [status_use_id], references: [status_use_id])
   vc_user            vc_users?           @relation(fields: [userid], references: [userid])
@@ -382,7 +384,6 @@ model vc_use {
   use_id            Int            @id @default(autoincrement())
   request_id        Int?
   car_id            Int?
-  emp_id            String?
   drive_type        String?        @db.VarChar(50)
   approved_by       Int?
   journey_real_time String?        @db.VarChar(50)
@@ -396,6 +397,7 @@ model vc_use {
   upd_by            Int?
   upd_date          DateTime?      @db.Date
   recorder_id       Int?
+  driver_id         String?
   vc_order_item     vc_order_item? @relation(fields: [request_id], references: [request_id])
 }
 
@@ -441,6 +443,7 @@ model vc_driver {
   vc_users               vc_users?               @relation(fields: [driver_code], references: [userid])
   vc_driver_license_type vc_driver_license_type? @relation(fields: [licence_type], references: [license_type_id])
   vc_fuel_item           vc_fuel_item[]
+  vc_order_item          vc_order_item[]
 }
 
 model vc_driver_license_type {
