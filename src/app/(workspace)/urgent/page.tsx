@@ -1,5 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { createBooking } from "@/app/actions/bookingActions";
+import { getStartPlaces } from "@/app/actions/startPlaceActions";
+import { getCarSpecs } from "@/app/actions/carSpecActions";
+import { getOrgs } from "@/app/actions/orgActions";
+import { useRouter } from "next/navigation";
+import LongdoMapBox from "@/components/ui/LongdoMapBox";
+import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
   Car,
@@ -15,67 +22,28 @@ import {
   Loader2,
   Navigation as NavIcon,
   Map as MapIcon,
-  AlertCircle,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-import LongdoMapBox from "@/components/ui/LongdoMapBox";
-
-// Import Server Actions
-import {
-  getUrgentRequesters,
-  createUrgentBooking,
-} from "@/app/actions/urgentBookingActions";
-
-export default function UrgentRequestPage() {
+export default function VehicleRequestPage() {
   const router = useRouter();
-
+  const [startPlaces, setStartPlaces] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [requesters, setRequesters] = useState<
-    {
-      userid: number;
-      firstname: string | null;
-      lastname: string | null;
-      departmentid: string | null;
-    }[]
-  >([]);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-
-  // Fetch requesters on mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setIsLoadingUsers(true);
-      const result = await getUrgentRequesters();
-      if (result.success && result.data) {
-        setRequesters(result.data);
-        // Set default to first user if available
-        if (result.data.length > 0) {
-          setFormData((prev) => ({
-            ...prev,
-            requester_id: result.data[0].userid.toString(),
-          }));
-        }
-      } else {
-        console.error("Failed to fetch users");
-      }
-      setIsLoadingUsers(false);
-    };
-    fetchUsers();
-  }, []);
-
-  // Helper to get today's date in YYYY-MM-DD format
+  const [carSpecs, setCarSpecs] = useState<any[]>([]);
+  const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
+  const [provinceList, setProvinceList] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [driverSearch, setDriverSearch] = useState('');
+
   const getCurrentTime = () => {
     const now = new Date();
     return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
   };
 
-  // Form States
   const [formData, setFormData] = useState({
-    requester_id: "", // User ID from DB
-    ownerDept: "ฝ่ายบริหาร",
-    vehicleType: "รถเก๋ง 1500 cc",
-    origin: "หลักสี่",
+    ownerDept: "",
+    vehicleType: "",
+    origin: "",
     province: "กรุงเทพมหานคร",
     destination: "",
     lat: 0,
@@ -88,6 +56,8 @@ export default function UrgentRequestPage() {
     passengers: 1,
     phone: "",
     selfDrive: false,
+    driverId: 0,
+    isUrgent: true,
   });
 
   const handleInputChange = (field: string, value: any) => {
@@ -96,14 +66,15 @@ export default function UrgentRequestPage() {
 
   const handleSave = async () => {
     if (
-      !formData.requester_id ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
-      !formData.objective
+      !formData.objective ||
+      (formData.selfDrive && !formData.driverId)
+
     ) {
       alert(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ผู้ขอใช้งาน, จุดหมาย, วันที่/เวลาเริ่ม, วัตถุประสงค์)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
       return;
     }
@@ -111,23 +82,22 @@ export default function UrgentRequestPage() {
     setIsSubmitting(true);
 
     try {
-      // สร้าง FormData ส่งให้ Server Action
       const dataToSubmit = new FormData();
-      dataToSubmit.append("requester_id", formData.requester_id);
       dataToSubmit.append("use_div_code", formData.ownerDept);
-      dataToSubmit.append("car_spec_id", formData.vehicleType); // ตรงนี้ยังเป็น mock ของ vehicle types (รถเก๋ง 1500 cc) ถ้าในระบบจริง car_spec_id เป็น Int อาจจะต้องแก้ให้ตรงกัน
-      dataToSubmit.append("start_place", formData.origin);
+      dataToSubmit.append("car_spec_id", formData.vehicleType);
+      dataToSubmit.append(
+        "start_place",
+        String(startPlaceMap[formData.origin] ?? 1),
+      );
       dataToSubmit.append("journey_province", formData.province);
       dataToSubmit.append("journey_place", formData.destination);
       dataToSubmit.append("journey_lat", formData.lat.toString());
       dataToSubmit.append("journey_long", formData.lon.toString());
 
-      // รวม start date และ time เพื่อให้เป็น Date string สำหรับ Prisma
       const combinedDateTime = `${formData.startDate}T${formData.startTime}:00`;
       dataToSubmit.append("journey_date", combinedDateTime);
       dataToSubmit.append("journey_time", formData.startTime);
 
-      // รวม end date และ time
       const combinedEndDateTime = `${formData.endDate}T${formData.endTime || "00:00"}:00`;
       dataToSubmit.append("return_date", combinedEndDateTime);
       dataToSubmit.append("return_time", formData.endTime || "00:00");
@@ -136,32 +106,33 @@ export default function UrgentRequestPage() {
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
       dataToSubmit.append("self_drive", formData.selfDrive.toString());
+      dataToSubmit.append("is_urgent", "true");
 
-      const result = await createUrgentBooking(dataToSubmit);
+      if (formData.selfDrive && formData.driverId) {
+        dataToSubmit.append("driver_id", formData.driverId.toString());
+      }
+
+      const result = await createBooking(dataToSubmit);
 
       if (result.success) {
-        alert("บันทึกคำขอด่วนลงฐานข้อมูลสำเร็จ!");
+        alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
         resetForm();
-        // Redirect ไปหน้าจัดรถและคนขับ (หรือหน้าแรกของนายเวร)
-        router.push("/assign");
       } else {
         alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Error saving booking:", error);
       alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   const resetForm = () => {
     setFormData({
-      requester_id:
-        requesters.length > 0 ? requesters[0].userid.toString() : "",
-      ownerDept: "ฝ่ายบริหาร",
+      ownerDept: "",
       vehicleType: "รถเก๋ง 1500 cc",
-      origin: "หลักสี่",
+      origin: startPlaces[0]?.start_place_name ?? "",
       province: "กรุงเทพมหานคร",
       destination: "",
       lat: 0,
@@ -174,41 +145,72 @@ export default function UrgentRequestPage() {
       passengers: 1,
       phone: "",
       selfDrive: false,
+      driverId: 0,
+      isUrgent: true,
     });
+    setDriverSearch('');
   };
 
-  // Helper: Lock province based on origin
   useEffect(() => {
-    if (formData.origin === "บางรัก" || formData.origin === "หลักสี่") {
-      handleInputChange("province", "กรุงเทพมหานคร");
-    } else if (formData.origin === "แจ้งวัฒนะ") {
-      handleInputChange("province", "นนทบุรี");
+    const fetchStartPlaces = async () => {
+      const result = await getStartPlaces();
+      if (result.success) setStartPlaces(result.data);
+    };
+    fetchStartPlaces();
+  }, []);
+  useEffect(() => {
+    const fetchCarSpecs = async () => {
+      const result = await getCarSpecs();
+      if (result.success) setCarSpecs(result.data);
+    };
+    fetchCarSpecs();
+  }, []);
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      const result = await getOrgs();
+      if (result.success) setOrgs(result.data);
+    };
+    fetchOrgs();
+  }, []);
+  useEffect(() => {
+    const selected = startPlaces.find(
+      (sp) => sp.start_place_name === formData.origin,
+    );
+    if (selected?.province_id) {
+      handleInputChange("province", selected.province_id);
     }
-  }, [formData.origin]);
+  }, [formData.origin, startPlaces]);
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      const result = await getDrivers();
+      if (result.success) setDrivers(result.data);
+    };
+    fetchDrivers();
+  }, []);
+
+  const startPlaceMap = startPlaces.reduce(
+    (acc, sp) => {
+      acc[sp.start_place_name] = sp.start_place_id;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-10">
-      {/* Banner/Alert Box สำหรับงานด่วน */}
-      <div className="bg-red-100 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm flex items-center gap-3">
-        <AlertCircle className="w-6 h-6 text-red-600 animate-pulse" />
-        <p className="text-red-800 font-bold text-lg">
-          🚨 โหมดบันทึกคำขอด่วน (สำหรับนายเวรเท่านั้น)
-        </p>
-      </div>
-
+    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-4xl shadow-sm border border-red-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
         <div className="flex items-center gap-5">
           <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-200">
             <FileText className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold text-red-600 tracking-tight">
-              คำขอใช้งานด่วน
+            <h1 className="text-3xl font-extrabold text-black tracking-tight">
+              ขอใช้งานยานพาหนะ
             </h1>
             <p className="text-gray-700 font-bold flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-              ระบบจัดการคำขอใช้รถยนต์ส่วนกลาง
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              ระบบจัดการคำขอใช้รถยนต์ด่วนกรณีพิเศษ
             </p>
           </div>
         </div>
@@ -217,49 +219,20 @@ export default function UrgentRequestPage() {
       <div className="grid grid-cols-1 gap-8">
         {/* Main Form */}
         <div className="w-full space-y-8">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-red-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
-              <Car size={200} className="text-red-900" />
+          <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
+              <Car size={200} />
             </div>
 
             <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-b border-red-200 pb-6">
-                <div className="w-2 h-8 bg-red-600 rounded-full shadow-sm"></div>
-                <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+              <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
+                <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
+                <h2 className="text-2xl font-black text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
-                {/* Requester (ผู้ขอใช้งาน) - Database Driven */}
-                <div className="md:col-span-2">
-                  <FormField
-                    label="ผู้ขอใช้งาน (Data from DB)"
-                    icon={User}
-                    required
-                  >
-                    <select
-                      value={formData.requester_id}
-                      onChange={(e) =>
-                        handleInputChange("requester_id", e.target.value)
-                      }
-                      disabled={isLoadingUsers}
-                      className="w-full bg-red-50 border-red-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-gray-900 shadow-sm disabled:opacity-50"
-                    >
-                      {isLoadingUsers ? (
-                        <option>กำลังโหลดรายชื่อ...</option>
-                      ) : (
-                        requesters.map((r) => (
-                          <option key={r.userid} value={r.userid}>
-                            {r.firstname} {r.lastname}{" "}
-                            {r.departmentid ? `(${r.departmentid})` : ""}
-                          </option>
-                        ))
-                      )}
-                    </select>
-                  </FormField>
-                </div>
-
                 {/* Row 1 */}
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
                   <select
@@ -269,8 +242,11 @@ export default function UrgentRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    {departments.map((d: string) => (
-                      <option key={d}>{d}</option>
+                    <option value="">-- เลือกสังกัด --</option>
+                    {orgs.map((org) => (
+                      <option key={org.orgid} value={org.orgid}>
+                        {org.orgname}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -283,10 +259,10 @@ export default function UrgentRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    <option value="">กรุณาเลือกประเภทรถ</option>
-                    {vehicleTypes.map((v: string) => (
-                      <option key={v} value={v}>
-                        {v}
+                    <option value="">-- เลือกประเภทรถ --</option>
+                    {carSpecs.map((cs) => (
+                      <option key={cs.car_spec_id} value={cs.car_spec_id}>
+                        {cs.car_spec_name}
                       </option>
                     ))}
                   </select>
@@ -301,26 +277,26 @@ export default function UrgentRequestPage() {
                     }
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    <option value="หลักสี่">หลักสี่</option>
-                    <option value="แจ้งวัฒนะ">แจ้งวัฒนะ</option>
-                    <option value="บางรัก">บางรัก</option>
+                    {startPlaces.map((sp) => (
+                      <option
+                        key={sp.start_place_id}
+                        value={sp.start_place_name}
+                      >
+                        {sp.start_place_name}
+                      </option>
+                    ))}
                   </select>
                 </FormField>
 
                 <FormField label="จังหวัด" icon={MapIcon} required>
                   <select
                     value={formData.province}
-                    onChange={(e) =>
-                      handleInputChange("province", e.target.value)
-                    }
-                    disabled={["บางรัก", "แจ้งวัฒนะ", "หลักสี่"].includes(
-                      formData.origin,
-                    )}
-                    className={`w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm ${["บางรัก", "แจ้งวัฒนะ", "หลักสี่"].includes(formData.origin) ? "opacity-60 cursor-not-allowed bg-gray-100" : ""}`}
+                    disabled={true} // ← auto-set จาก start_place ไม่ให้ user เลือกเอง
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
-                    {provinces.map((p: string) => (
-                      <option key={p} className="text-black">
-                        {p}
+                    {startPlaces.map((sp) => (
+                      <option key={sp.start_place_id} value={sp.province_id}>
+                        {sp.province?.province_name ?? "-"}
                       </option>
                     ))}
                   </select>
@@ -331,9 +307,13 @@ export default function UrgentRequestPage() {
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
                     <LongdoMapBox
                       onLocationSelect={(loc: any) => {
-                        handleInputChange("destination", loc.name);
-                        handleInputChange("lat", loc.lat);
-                        handleInputChange("lon", loc.lon);
+                        // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
+                        setFormData((prev) => ({
+                          ...prev,
+                          destination: loc.name,
+                          lat: loc.lat,
+                          lon: loc.lon,
+                        }));
                       }}
                       placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
                     />
@@ -343,7 +323,7 @@ export default function UrgentRequestPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-red-500" />
+                        <NavIcon size={12} className="text-blue-500" />
                         Latitude
                       </label>
                       <input
@@ -356,7 +336,7 @@ export default function UrgentRequestPage() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-red-500" />
+                        <NavIcon size={12} className="text-blue-500" />
                         Longitude
                       </label>
                       <input
@@ -380,7 +360,7 @@ export default function UrgentRequestPage() {
                       handleInputChange("startDate", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
@@ -391,7 +371,7 @@ export default function UrgentRequestPage() {
                       handleInputChange("startTime", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
 
@@ -405,7 +385,7 @@ export default function UrgentRequestPage() {
                       handleInputChange("endDate", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
@@ -416,108 +396,175 @@ export default function UrgentRequestPage() {
                       handleInputChange("endTime", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
 
-                {/* Self Drive Checkbox */}
-                <div className="md:col-span-2">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-red-50 transition-colors cursor-pointer border border-transparent hover:border-red-200">
-                    <input
-                      type="checkbox"
-                      checked={formData.selfDrive}
-                      onChange={(e) =>
-                        handleInputChange("selfDrive", e.target.checked)
-                      }
-                      className="w-5 h-5 text-red-600 border-red-300 rounded focus:ring-red-500 focus:ring-2 cursor-pointer"
-                    />
-                    <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-red-600" />
-                      <span className="font-bold text-red-900">
-                        ขอขับเอง (Self Drive)
-                      </span>
-                    </div>
-                  </label>
-                </div>
-
-                {/* Message/Reason */}
-                <div className="md:col-span-2">
-                  <FormField
-                    label={
-                      <div className="flex items-center gap-2">
-                        <span>หมายเหตุ</span>
-                        <span className="text-red-500 font-bold text-xs">
-                          (** ในกรณีที่ต้องการขับเอง โปรดระบุชื่อผู้ขับในช่องนี้
-                          **)
-                        </span>
-                      </div>
-                    }
-                    icon={MessageSquare}
-                    required
-                  >
-                    <textarea
-                      rows={3}
-                      value={formData.objective}
-                      onChange={(e) =>
-                        handleInputChange("objective", e.target.value)
-                      }
-                      placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
-                      className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
-                    />
-                  </FormField>
-                </div>
-
-                {/* Passengers & Phone */}
-                <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={formData.passengers}
-                      onChange={(e) =>
-                        handleInputChange("passengers", e.target.value)
-                      }
-                      placeholder="0"
-                      min="1"
-                      className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
-                      คน
+                {/* Self Drive Checkbox + Driver Combobox */}
+                <div className="md:col-span-2 space-y-3 relative"></div>
+                <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                  <input
+                    type="checkbox"
+                    checked={formData.selfDrive}
+                    onChange={(e) => {
+                      handleInputChange("selfDrive", e.target.checked);
+                      handleInputChange("driverId", 0);
+                      setDriverSearch('');
+                    }}
+                    className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-emerald-600" />
+                    <span className="font-bold text-emerald-900">
+                      ขอขับเอง (Self Drive)
                     </span>
                   </div>
-                </FormField>
-                <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    placeholder="0x-xxxx-xxxx"
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                </label>
+
+                {formData.selfDrive && (
+                  <div className="px-4">
+                    <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
+                      <input
+                        type="text"
+                        value={
+                          formData.driverId
+                            ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
+                            : driverSearch
+                        }
+                        onChange={(e) => {
+                          setDriverSearch(e.target.value);
+                          handleInputChange("driverId", 0); // reset เมื่อพิมพ์ใหม่
+                        }}
+                        placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
+                        className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      />
+                      {/* Dropdown ผลการค้นหา */}
+                      {driverSearch && !formData.driverId && (
+                        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-48 overflow-y-auto">
+                          {drivers
+                            .filter((d) => {
+                              const fullName =
+                                `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                              return (
+                                fullName
+                                  .toLowerCase()
+                                  .includes(driverSearch.toLowerCase()) ||
+                                String(d.driver_code).includes(driverSearch)
+                              );
+                            })
+                            .map((d) => (
+                              <button
+                                key={d.driver_id}
+                                type="button"
+                                onClick={() => {
+                                  handleInputChange("driverId", d.driver_id);
+                                  setDriverSearch("");
+                                }}
+                                className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors"
+                              >
+                                {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
+                                <span className="text-xs text-gray-400 ml-2">
+                                  ({d.driver_code})
+                                </span>
+                              </button>
+                            ))}
+                          {drivers.filter((d) => {
+                            const fullName =
+                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                            return fullName
+                              .toLowerCase()
+                              .includes(driverSearch.toLowerCase());
+                          }).length === 0 && (
+                              <div className="px-4 py-3 text-sm text-gray-400">
+                                ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
+                              </div>
+                            )}
+                        </div>
+                      )}
+                      {!formData.driverId && !driverSearch && (
+                        <p className="text-xs text-red-500 font-medium mt-1">
+                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
+                          กรุณาติดต่อ Admin
+                        </p>
+                      )}
+                    </FormField>
+                  </div>
+                )}
+              </div>
+
+              {/* Message/Reason */}
+              <div className="md:col-span-2">
+                <FormField
+                  label={
+                    <div className="flex items-center gap-2">
+                      <span>หมายเหตุ</span>
+                    </div>
+                  }
+                  icon={MessageSquare}
+                  required
+                >
+                  <textarea
+                    rows={3}
+                    value={formData.objective}
+                    onChange={(e) =>
+                      handleInputChange("objective", e.target.value)
+                    }
+                    placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
                   />
                 </FormField>
               </div>
 
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
-                <button
-                  onClick={resetForm}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
-                >
-                  <X className="w-4 h-4" />
-                  ยกเลิกเนื้อหา
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-10 py-3.5 bg-red-600 text-white rounded-2xl font-bold text-sm hover:bg-red-700 shadow-xl shadow-red-200 transition-all disabled:opacity-70"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอด่วน"}
-                </button>
-              </div>
+              {/* Passengers & Phone */}
+              <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={formData.passengers}
+                    onChange={(e) =>
+                      handleInputChange("passengers", e.target.value)
+                    }
+                    placeholder="0"
+                    min="1"
+                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
+                    คน
+                  </span>
+                </div>
+              </FormField>
+              <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                  placeholder="0x-xxxx-xxxx"
+                  className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                />
+              </FormField>
+            </div>
+
+            <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
+              <button
+                onClick={resetForm}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
+              >
+                <X className="w-4 h-4" />
+                ยกเลิกเนื้อหา
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-10 py-3.5 bg-red-600 text-white rounded-2xl font-bold text-sm hover:bg-red-700 shadow-xl shadow-red-200 transition-all disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอ"}
+              </button>
             </div>
           </div>
         </div>
@@ -541,7 +588,7 @@ function FormField({
   return (
     <div className="space-y-2">
       <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-        <Icon className="w-4 h-4 text-red-500" />
+        <Icon className="w-4 h-4 text-blue-500" />
         {label}
         {required && <span className="text-red-500">*</span>}
       </label>
