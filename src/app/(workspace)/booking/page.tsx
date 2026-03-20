@@ -5,7 +5,7 @@ import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
 import { useRouter } from "next/navigation";
-import LongdoMapBox from "@/components/ui/LongdoMapBox";
+import MapBox from '@/components/ui/LongdoMapBox';
 import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
@@ -300,7 +300,7 @@ export default function VehicleRequestPage() {
                 {/* Row 3 - Destination & Map (Full Width) */}
                 <div className="md:col-span-2 space-y-4">
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
-                    <LongdoMapBox
+                    <MapBox
                       onLocationSelect={(loc: any) => {
                         // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
                         setFormData((prev) => ({
