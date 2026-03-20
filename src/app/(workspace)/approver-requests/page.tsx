@@ -159,7 +159,8 @@ export default function ApproverRequestsPage() {
         fetchBookings();
     }, []);
 
-    const pendingCount = bookings.filter((b) => b.status === 'PENDING').length;
+    const pendingBookings = bookings.filter((b) => b.status === 'PENDING');
+    const pendingCount = pendingBookings.length;
 
     const handleApprove = async (id: string) => {
         const res = await updateRequestStatus(Number(id), 2);
@@ -214,8 +215,8 @@ export default function ApproverRequestsPage() {
                     <div className="w-5 shrink-0" />
                 </div>
 
-                {bookings.length > 0 ? (
-                    bookings.map((booking: Booking) => (
+                {pendingBookings.length > 0 ? (
+                    pendingBookings.map((booking: Booking) => (
                         <BookingRow
                             key={booking.id}
                             booking={booking}
@@ -224,7 +225,7 @@ export default function ApproverRequestsPage() {
                     ))
                 ) : (
                     <div className="py-16 text-center text-slate-400 text-sm">
-                        ไม่พบรายการที่ค้นหา
+                        ไม่มีรายการที่รอการพิจารณาในขณะนี้
                     </div>
                 )}
             </div>
