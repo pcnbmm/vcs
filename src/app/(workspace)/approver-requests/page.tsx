@@ -137,19 +137,34 @@ export default function ApproverRequestsPage() {
         setIsLoading(true);
         const result = await getMyBookings();
         if (result.success && result.data) {
-            const mapped: Booking[] = result.data.map((b: any) => ({
-                id: String(b.request_id),
-                requesterName: 'ผู้ใช้งานระบบ', // Placeholder since DB might not have name
-                department: b.use_div_code || '-',
-                objective: b.journey_causes || '-',
-                origin: b.start_place || '-',
-                destination: b.journey_place || '-',
-                requestDate: b.cre_date ? b.cre_date.toISOString() : new Date().toISOString(),
-                startDateTime: b.journey_date ? b.journey_date.toISOString() : '',
-                endDateTime: b.return_date ? b.return_date.toISOString() : '',
-                passengerCount: b.passenger_amount || 0,
-                status: mapStatus(b.status_use_id),
-            }));
+            const mapped: Booking[] = result.data.map((b: any) => {
+                // Combine Date and Time correctly
+                const journeyDateStr = b.journey_date ? b.journey_date.toISOString().split('T')[0] : '';
+                const journeyTimeStr = b.journey_time || '00:00';
+                const startDT = journeyDateStr ? `${journeyDateStr}T${journeyTimeStr}:00` : '';
+
+                const returnDateStr = b.return_date ? b.return_date.toISOString().split('T')[0] : '';
+                const returnTimeStr = b.return_time || '00:00';
+                const endDT = returnDateStr ? `${returnDateStr}T${returnTimeStr}:00` : '';
+
+                return {
+                    id: String(b.request_id),
+                    requesterName: b.vc_user ? `${b.vc_user.firstname} ${b.vc_user.lastname}` : 'ไม่ระบุชื่อ',
+                    department: b.vc_org?.orgname || b.use_div_code || '-',
+                    objective: b.journey_causes || '-',
+                    origin: b.vc_start_place?.start_place_name || String(b.start_place || '-'),
+                    destination: b.journey_place || '-',
+                    requestDate: b.cre_date ? b.cre_date.toISOString() : new Date().toISOString(),
+                    startDateTime: startDT,
+                    endDateTime: endDT,
+                    passengerCount: b.passenger_amount || 0,
+                    status: mapStatus(b.status_use_id),
+                    // Adding extra metadata for the modal to be richer
+                    phone: b.user_mobile || '-',
+                    carType: b.vc_car_spec?.car_spec_name || '-',
+                    selfDrive: b.self_drive ? 'ใช่ (ขับเอง)' : 'ไม่ใช่ (ขอคนขับ)'
+                };
+            });
             setBookings(mapped);
         }
         setIsLoading(false);

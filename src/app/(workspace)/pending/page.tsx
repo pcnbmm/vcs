@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getMyBookings } from '@/app/actions/bookingActions';
 import {
     Calendar, MapPin, Search, Clock, ChevronRight,
-    RefreshCw, CheckCircle2, XCircle, AlertCircle, Users, Loader2
+    RefreshCw, CheckCircle2, XCircle, AlertCircle, Users, Loader2, Navigation
 } from 'lucide-react';
 
 export default function PendingPage() {
@@ -27,24 +27,24 @@ export default function PendingPage() {
                 if (result.success && result.data) {
                     const formattedList = result.data.map((b: any) => ({
                         id: String(b.request_id),
-                        requester: 'ผู้ใช้งานระบบ',
-                        department: b.use_div_code || 'ฝ่ายบริหาร',
+                        requester: b.vc_user ? `${b.vc_user.firstname} ${b.vc_user.lastname}` : 'ไม่ระบุชื่อ',
+                        department: b.vc_org?.orgname || b.use_div_code || 'ไม่ระบุแผนก',
                         destination: b.journey_place,
                         date: b.journey_date ? new Date(b.journey_date).toLocaleDateString('th-TH', {
                             day: 'numeric', month: 'short', year: 'numeric'
                         }) : 'N/A',
-                        time: b.journer_time || 'N/A',
+                        time: b.journey_time || 'N/A',
                         objective: b.journey_causes || '-',
                         status: b.status_use_id ? String(b.status_use_id) : '1',
                         // เพิ่ม fields สำหรับนำไปแสดงใน Modal Detail
-                        carType: b.car_spec_id,
-                        origin: b.start_place,
+                        carType: b.vc_car_spec?.car_spec_name || b.car_spec_id,
+                        origin: b.vc_start_place?.start_place_name || String(b.start_place || '-'),
                         province: b.journey_province,
                         passengers: b.passenger_amount,
-                        phone: b.user_mobile,
+                        phone: b.user_mobile || '-',
                         selfDrive: b.self_drive ? 'ใช่ (ขับเอง)' : 'ไม่ใช่ (ขอพนักงานขับ)',
                         endDate: b.return_date ? new Date(b.return_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
-                        endTime: b.return_time || '-',
+                        endTime: b.return_time || 'N/A',
                     }));
                     setRequests(formattedList);
                 } else {
@@ -63,11 +63,32 @@ export default function PendingPage() {
         fetchRequests();
     }, []); // <-- ลบ currentUser ออกจาก dependency array แล้ว
 
-    // 4. ฟังก์ชันจัดการค้นหา (ทำงานจริง)
-    const filteredRequests = requests.filter(req =>
-        req.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        req.destination?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const [statusFilter, setStatusFilter] = useState('ALL');
+
+    // 4. ฟังก์ชันจัดการค้นหาและสถานะ (ทำงานจริง)
+    const filteredRequests = requests.filter(req => {
+        const matchesSearch = 
+            req.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            req.destination?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            req.requester?.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        const matchesStatus = 
+            statusFilter === 'ALL' || 
+            (statusFilter === 'PENDING' && req.status === '1') ||
+            (statusFilter === 'APPROVED' && req.status === '2') ||
+            (statusFilter === 'REJECTED' && (req.status === '3' || req.status === '5')) ||
+            (statusFilter === 'COMPLETED' && req.status === '4');
+
+        return matchesSearch && matchesStatus;
+    });
+
+    const tabs = [
+        { id: 'ALL', label: 'ทั้งหมด', icon: RefreshCw },
+        { id: 'PENDING', label: 'รออนุมัติ', icon: Clock, color: 'amber' },
+        { id: 'APPROVED', label: 'อนุมัติแล้ว', icon: CheckCircle2, color: 'emerald' },
+        { id: 'COMPLETED', label: 'เสร็จสิ้น', icon: CheckCircle2, color: 'blue' },
+        { id: 'REJECTED', label: 'ยกเลิก/ปฏิเสธ', icon: XCircle, color: 'rose' },
+    ];
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-10">
@@ -75,11 +96,11 @@ export default function PendingPage() {
             <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-5">
                     <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <RefreshCw className="w-8 h-8 text-white" />
+                        <Navigation className="w-8 h-8 text-white" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-black text-gray-900 tracking-tight">ติดตามสถานะคำขอ</h1>
-                        <p className="text-gray-500 font-medium mt-1">ตรวจสอบความคืบหน้าของรายการจองรถของคุณ</p>
+                        <p className="text-gray-500 font-medium mt-1">ตรวจสอบความคืบหน้าของรายการจองรถทั้งหมดของคุณ</p>
                     </div>
                 </div>
 
@@ -93,6 +114,34 @@ export default function PendingPage() {
                     />
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 </div>
+            </div>
+
+            {/* Status Tabs */}
+            <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-2xl overflow-x-auto no-scrollbar border border-gray-100">
+                {tabs.map((tab) => {
+                    const isActive = statusFilter === tab.id;
+                    const Icon = tab.icon;
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => setStatusFilter(tab.id)}
+                            className={`
+                                flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black transition-all shrink-0
+                                ${isActive 
+                                    ? 'bg-white text-blue-600 shadow-md scale-[1.02]' 
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'}
+                            `}
+                        >
+                            <Icon size={16} />
+                            {tab.label}
+                            {isActive && (
+                                <span className="ml-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px]">
+                                    {filteredRequests.length}
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* List Section */}
@@ -203,63 +252,75 @@ export default function PendingPage() {
 
             {/* ส่วน Detail Modal */}
             {selectedRequest && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white p-8 rounded-[2rem] shadow-xl w-full max-w-2xl relative overflow-hidden">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setSelectedRequest(null)}>
+                    <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-2xl relative overflow-hidden" onClick={e => e.stopPropagation()}>
                         <button
                             onClick={() => setSelectedRequest(null)}
-                            className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                            className="absolute top-8 right-8 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                         >
                             <XCircle className="w-6 h-6" />
                         </button>
 
-                        <div className="mb-6 border-b border-gray-100 pb-6">
+                        <div className="mb-8 border-b border-gray-100 pb-6">
                             <span className="text-xs font-black text-blue-600 uppercase tracking-widest">{selectedRequest.id}</span>
-                            <h2 className="text-2xl font-black text-gray-900 mt-1">รายละเอียดคำขอจองรถ</h2>
+                            <h2 className="text-3xl font-black text-gray-900 mt-1 tracking-tight">รายละเอียดคำขอจองรถ</h2>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mt-4">
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">ชื่อผู้ขอ</p>
+                                    <p className="text-lg font-bold text-gray-900">{selectedRequest.requester}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <RefreshCw size={12} className="text-blue-500" />
+                                        <p className="text-sm font-semibold text-blue-600 tracking-tight">{selectedRequest.phone}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">สังกัด / แผนก</p>
+                                    <p className="text-lg font-bold text-gray-900">{selectedRequest.department}</p>
+                                </div>
+                            </div>
+
                             <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ชื่อผู้ขอ</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.requester}</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">เส้นทางที่ต้องการเดินทาง</p>
+                                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                                    <span className="bg-white px-3 py-1.5 rounded-xl text-sm font-bold text-gray-600 border border-gray-100 shadow-sm">{selectedRequest.origin}</span>
+                                    <ChevronRight className="w-5 h-5 text-gray-300 shrink-0" />
+                                    <span className="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-100">{selectedRequest.destination}</span>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">สังกัด</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.department}</p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">วันเวลาเดินทาง</p>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-bold text-gray-700">ไป: <span className="text-gray-900">{selectedRequest.date} - {selectedRequest.time} น.</span></p>
+                                        <p className="text-sm font-bold text-gray-700">กลับ: <span className="text-gray-900">{selectedRequest.endDate} - {selectedRequest.endTime} น.</span></p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">ประเภทรถ / ลักษณะการขับ</p>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-bold text-gray-900">{selectedRequest.carType}</p>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">ผู้โดยสาร {selectedRequest.passengers} คน</span>
+                                            <span className="text-[10px] font-black bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-md uppercase tracking-tight italic">{selectedRequest.selfDrive}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="md:col-span-2">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">เส้นทาง</p>
-                                <p className="text-lg font-bold text-gray-900 flex items-center gap-2 flex-wrap">
-                                    <span className="bg-gray-100 px-3 py-1 rounded-xl text-sm">{selectedRequest.origin}</span>
-                                    <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
-                                    <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-xl text-sm">{selectedRequest.destination}</span>
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วันเดินทางไป</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.date} - {selectedRequest.time} น.</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วันเดินทางกลับ</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.endDate} - {selectedRequest.endTime} น.</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ประเภทรถ / ผู้โดยสาร</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.carType} <span className="text-sm font-medium text-gray-500">({selectedRequest.passengers} คน)</span></p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ลักษณะการขับ</p>
-                                <p className="text-lg font-bold text-gray-900">{selectedRequest.selfDrive}</p>
-                            </div>
-                            <div className="md:col-span-2 bg-gray-50 p-4 rounded-xl mt-2">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">วัตถุประสงค์ / หมายเหตุ</p>
-                                <p className="text-base font-bold text-gray-800 mt-1 whitespace-pre-wrap">{selectedRequest.objective}</p>
+
+                            <div className="bg-gray-50 p-6 rounded-[1.5rem] border border-gray-100">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">วัตถุประสงค์ / หมายเหตุ</p>
+                                <p className="text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedRequest.objective}</p>
                             </div>
                         </div>
 
-                        <div className="mt-8 flex justify-end pt-6 border-t border-gray-100">
+                        <div className="mt-10 flex justify-end">
                             <button
                                 onClick={() => setSelectedRequest(null)}
-                                className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors"
+                                className="px-8 py-3 bg-gray-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl shadow-slate-200"
                             >
                                 ปิดหน้าต่าง
                             </button>

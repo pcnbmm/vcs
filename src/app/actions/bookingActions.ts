@@ -75,9 +75,28 @@ export async function getMyBookings(userid?: number) {
   try {
     const bookings = await prisma.vc_order_item.findMany({
       where: userid ? { userid } : undefined,
+      include: {
+        vc_user: true,
+        vc_car_spec: true,
+        vc_start_place: true,
+      },
       orderBy: { request_id: "desc" },
     });
-    return { success: true, data: bookings };
+
+    // Manual mapping for org names since there's no direct relation
+    const orgs = await prisma.vc_orgs.findMany({
+      where: { status: 'X' }
+    });
+    
+    const enrichedBookings = bookings.map(b => {
+      const org = orgs.find(o => String(o.orgid) === b.use_div_code);
+      return {
+        ...b,
+        vc_org: org || null
+      };
+    });
+
+    return { success: true, data: enrichedBookings };
   } catch (error) {
     console.error("Error fetching bookings:", error);
     return { success: false, error: "Failed to fetch bookings" };

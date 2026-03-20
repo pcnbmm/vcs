@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
-import { searchLocation, suggestLocation } from "@/app/actions/mapActions";
+import { searchLocation, suggestLocation, getAddressFromLatLon } from "@/app/actions/mapActions";
 
 interface LongdoMapBoxProps {
   onLocationSelect: (loc: { name: string; lat: number; lon: number }) => void;
@@ -67,9 +67,30 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
       }).addTo(map);
 
       // ปักหมุดเมื่อคลิก
-      map.on("click", (e: any) => {
+      map.on("click", async (e: any) => {
         const { lat, lng } = e.latlng;
-        updatePin(map, L, lat, lng, "ตำแหน่งที่เลือก");
+        let locationName = "ตำแหน่งที่เลือก";
+        
+        try {
+          // ดึงชื่อสถานที่จริงมาแสดงแทนข้อความ "ตำแหน่งที่เลือก"
+          const addr = await getAddressFromLatLon(lat, lng);
+          if (addr && !addr.error) {
+              const parts = [];
+              if (addr.aoi) parts.push(addr.aoi);
+              else {
+                  if (addr.road) parts.push(addr.road);
+                  if (addr.district) parts.push(addr.district);
+              }
+              if (parts.length > 0) {
+                  locationName = parts.join(', ');
+              }
+          }
+        } catch (err) {
+            console.error('Reverse Geocode failed', err);
+        }
+
+        updatePin(map, L, lat, lng, locationName);
+        setSearchTerm(locationName); // อัปเดตช่องค้นหาด้วยชื่อที่เจอ
       });
 
       mapRef.current = { map, L };
