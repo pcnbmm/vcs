@@ -18,12 +18,10 @@ import {
   Search
 } from "lucide-react";
 import { 
-  getPendingDispatch, 
+  getPendingDispatch,
   getAvailableCars, 
   getDrivers, 
   assignResource, 
-  getAssignedOrders,
-  confirmAssignment
 } from "./actions";
 
 // Types
@@ -31,7 +29,6 @@ type DispatchType = "with_driver" | "self_drive" | "taxi";
 
 export default function AssignPage() {
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
-  const [assignedOrders, setAssignedOrders] = useState<any[]>([]);
   const [cars, setCars] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,14 +49,12 @@ export default function AssignPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [pending, assigned, carList, driverList] = await Promise.all([
+      const [pending, carList, driverList] = await Promise.all([
         getPendingDispatch(),
-        getAssignedOrders(),
         getAvailableCars(),
         getDrivers(),
       ]);
       setPendingOrders(pending);
-      setAssignedOrders(assigned);
       setCars(carList);
       setDrivers(driverList);
     } catch (err) {
@@ -76,20 +71,30 @@ export default function AssignPage() {
   // Handle Logic: "Self-Drive"
   useEffect(() => {
     if (dispatchType === "self_drive" && selectedOrder) {
-      // Logic: If self-drive, auto set driver to requester and disable dropdown
-      // We'll set the driver ID equal to the requester's user ID if they are a driver
-      // Actually, just showing their name and disabling the dropdown is the key.
-      
-      // Look for a driver with the same user_id as the requester
-      const requesterDriver = drivers.find(d => d.driver_code === selectedOrder.userid);
+      console.log("--- SELF-DRIVE MATCHING CHECK ---");
+      console.log("Current Order UserID (Requester):", selectedOrder.userid);
+      console.log("All Driver Codes in DB:", drivers.map(d => d.driver_code));
+
+      // ค้นหาแบบยืดหยุ่น (ตัดช่องว่าง และเช็คทั้ง driver_code และ user_id)
+      const reqId = String(selectedOrder.userid || "").trim();
+
+      const requesterDriver = drivers.find(d => {
+        const dCode = String(d.driver_code || "").trim();
+        const dUserId = String(d.user_id || "").trim();
+        const oUserId = String(selectedOrder.vc_user?.id || "").trim();
+
+        // เช็คว่า รหัสพนักงานตรงกัน หรือ User ID ตรงกัน
+        return (dCode !== "" && dCode === reqId) || (dUserId !== "" && dUserId === oUserId);
+      });
+
       if (requesterDriver) {
+        console.log("MATCH FOUND! ✅ Driver ID:", requesterDriver.driver_id);
         setSelectedDriver(String(requesterDriver.driver_id));
       } else {
-        // If not found, we still keep it locked but might need to handle the ID
-        setSelectedDriver("self"); // Marker for backend logic or handled here
+        console.log("MATCH NOT FOUND ❌ (Checked against all driver_codes)");
+        setSelectedDriver("self"); 
       }
-    } else if (dispatchType === "with_driver") {
-       setSelectedDriver("");
+      console.log("---------------------------------");
     }
   }, [dispatchType, selectedOrder, drivers]);
 
@@ -115,14 +120,25 @@ export default function AssignPage() {
       return;
     }
 
-    setIsSubmitting(true);
+    console.log("Submitting with Car ID:", selectedCar, "Driver ID:", selectedDriver);
+    
+    // แปลงค่าและเตรียมข้อมูล
+    const finalCarId = parseInt(selectedCar);
+    let finalDriverId: number | null = null;
+    
+    if (dispatchType === "self_drive") {
+      finalDriverId = (selectedDriver === "self" ? null : parseInt(selectedDriver));
+    } else {
+      finalDriverId = parseInt(selectedDriver);
+    }
+
+    console.log("Processed Data -> Car ID:", finalCarId, "Driver ID:", finalDriverId);
+
     try {
       const result = await assignResource({
         requestId: selectedOrder.request_id,
-        carId: parseInt(selectedCar),
-        driverId: dispatchType === "self_drive" 
-            ? (selectedDriver === "self" ? null : parseInt(selectedDriver)) 
-            : parseInt(selectedDriver)
+        carId: finalCarId,
+        driverId: finalDriverId
       });
 
       if (result.success) {
@@ -139,8 +155,7 @@ export default function AssignPage() {
   };
 
   const handleConfirm = async (requestId: number) => {
-    const success = await confirmAssignment(requestId);
-    if (success) fetchData();
+    // No longer used, handled by assignResource directly setting status 5
   };
 
   return (
@@ -216,77 +231,6 @@ export default function AssignPage() {
         )}
       </section>
 
-      {/* --- (SECTION 2: CONFIRM & NOTIFY) --- */}
-      <section>
-        <div className="flex items-center gap-3 mb-4 px-2">
-          <div className="w-1.5 h-6 bg-emerald-600 rounded-full"></div>
-          <h2 className="text-lg font-bold text-slate-900">
-            รอแจ้งผลผู้ขอ (CONFIRM & NOTIFY)
-          </h2>
-          <span className="bg-emerald-100 text-emerald-700 px-3 py-0.5 rounded-full text-sm font-bold">
-            {assignedOrders.length}
-          </span>
-        </div>
-
-        {assignedOrders.length === 0 && !loading ? (
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-12 flex items-center justify-center shadow-sm">
-            <p className="text-slate-400">ไม่มีรายการรอยืนยัน</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {assignedOrders.map((order) => (
-              <div key={order.request_id} className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-50 flex flex-col gap-6 relative overflow-hidden group">
-                {/* Badge for Type */}
-                <div className="absolute top-6 left-8 flex gap-2">
-                    <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase">
-                      {order.self_drive ? "Self Drive" : "Standard Dispatch"}
-                    </span>
-                </div>
-
-                <div className="flex flex-col gap-1 pt-6">
-                    <div className="flex justify-between items-start">
-                        <h3 className="font-extrabold text-slate-800 text-xl tracking-tight">{order.journey_place}</h3>
-                        <span className="text-slate-300 font-bold text-sm">REQ-{new Date().getFullYear()}-{String(order.request_id).padStart(3, '0')}</span>
-                    </div>
-                </div>
-
-                <div className="bg-slate-50 rounded-2xl p-5 flex flex-col gap-3 border border-slate-100/50">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-400">ทะเบียนรถ</span>
-                        <span className="text-slate-700 font-bold">{order.vc_car_master?.car_number || "-"}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-400">พนักงานขับรถ</span>
-                        <span className="text-slate-700 font-bold">
-                            {order.vc_driver?.vc_users 
-                                ? `${order.vc_driver.vc_users.firstname} ${order.vc_driver.vc_users.lastname}`
-                                : (order.self_drive ? "ผู้ขอขับเอง" : "-")
-                            }
-                        </span>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 mt-auto">
-                    <button 
-                        onClick={() => openAssignModal(order)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all"
-                    >
-                        <Edit2 size={16} />
-                        แก้ไข
-                    </button>
-                    <button 
-                        onClick={() => handleConfirm(order.request_id)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-all"
-                    >
-                        <Bell size={16} />
-                        CONFIRM
-                    </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
 
       {/* --- ASSIGNMENT MODAL --- */}
       {isModalOpen && (
@@ -361,14 +305,22 @@ export default function AssignPage() {
                 {/* Searchable Menu */}
                 {isCarListOpen && (
                   <div className="absolute z-[60] left-0 right-0 mt-2 bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
-                    {/* Search Field */}
-                    <div className="p-4 border-b border-slate-50 bg-slate-50/50">
+                    {/* Search Field & Filtering Helper */}
+                    <div className="p-4 border-b border-slate-50 bg-slate-50/50 space-y-3">
+                        {/* Requested Type Badge */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ประเภทที่ขอมา:</span>
+                            <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                {selectedOrder?.vc_car_spec?.car_spec_name || "ไม่ระบุ"}
+                            </span>
+                        </div>
+
                         <div className="relative">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input 
                                     autoFocus
                                     type="text"
-                                    placeholder="พิมพ์เพื่อค้นหา (ทะเบียน, ยี่ห้อ)..."
+                                    placeholder="พิมพ์เลขทะเบียน หรือยี่ห้อรถ..."
                                     value={carSearchQuery}
                                     onChange={(e) => setCarSearchQuery(e.target.value)}
                                     className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 transition-all placeholder:text-slate-400 placeholder:font-normal"
@@ -379,10 +331,15 @@ export default function AssignPage() {
                     {/* Scrollable List */}
                     <div className="max-h-64 overflow-y-auto custom-scrollbar">
                         {cars
-                        .filter(car => 
-                            car.car_number?.toLowerCase().includes(carSearchQuery.toLowerCase()) ||
-                            car.vc_car_brand?.car_brand_name?.toLowerCase().includes(carSearchQuery.toLowerCase())
-                        )
+                        .filter(car => {
+                            const matchesSearch = car.car_number?.toLowerCase().includes(carSearchQuery.toLowerCase()) ||
+                                                car.vc_car_brand?.car_brand_name?.toLowerCase().includes(carSearchQuery.toLowerCase());
+                            
+                            // กรองตามประเภทรถที่ขอมา (car_spec_id)
+                            const matchesSpec = !selectedOrder?.car_spec_id || car.car_spec_id === selectedOrder.car_spec_id;
+                            
+                            return matchesSearch && matchesSpec;
+                        })
                         .map(car => (
                             <div 
                                 key={car.car_id}
@@ -404,14 +361,18 @@ export default function AssignPage() {
                                 </span>
                             </div>
                         ))}
-                        {cars.length === 0 && (
-                            <div className="p-8 text-center text-slate-400 italic text-sm">ไม่มีรถว่างในขณะนี้</div>
-                        )}
-                        {cars.length > 0 && cars.filter(car => 
-                            car.car_number?.toLowerCase().includes(carSearchQuery.toLowerCase()) ||
-                            car.vc_car_brand?.car_brand_name?.toLowerCase().includes(carSearchQuery.toLowerCase())
-                        ).length === 0 && (
-                            <div className="p-8 text-center text-slate-400 italic text-sm">ไม่พบรถที่ค้นหา...</div>
+                        
+                        {/* กรณีไม่พบรถที่ตรงตามประเภทหรือคำค้นหา */}
+                        {cars.filter(car => {
+                            const matchesSearch = car.car_number?.toLowerCase().includes(carSearchQuery.toLowerCase()) ||
+                                                car.vc_car_brand?.car_brand_name?.toLowerCase().includes(carSearchQuery.toLowerCase());
+                            const matchesSpec = !selectedOrder?.car_spec_id || car.car_spec_id === selectedOrder.car_spec_id;
+                            return matchesSearch && matchesSpec;
+                        }).length === 0 && (
+                            <div className="p-10 text-center text-slate-400 italic text-sm space-y-2">
+                                <p>ไม่พบรถว่างของประเภท "{selectedOrder?.vc_car_spec?.car_spec_name}" ที่กรองไว้</p>
+                                <p className="text-[10px] font-normal not-italic">หากต้องการรถประเภทอื่น รบกวนแจ้งผู้ขอแก้ไขคำขอครับ</p>
+                            </div>
                         )}
                     </div>
                   </div>
