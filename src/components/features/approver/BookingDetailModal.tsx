@@ -92,71 +92,71 @@ export default function BookingDetailModal({
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl overflow-hidden relative"
+                className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden relative"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 z-10"
+                    className="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 z-10"
                 >
-                    <X size={20} />
+                    <X size={18} />
                 </button>
 
                 {/* Content Container */}
-                <div className="p-10">
+                <div className="p-8">
                     {/* Header */}
-                    <div className="mb-8">
-                        <span className="text-xs font-black text-blue-600 uppercase tracking-widest">{booking.id}</span>
-                        <h2 className="text-3xl font-black text-slate-900 mt-1 tracking-tight">รายละเอียดคำขอจองรถ</h2>
-                        <div className="flex items-center gap-4 mt-4">
+                    <div className="mb-6">
+                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{booking.id}</span>
+                        <h2 className="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">รายละเอียดคำขอจองรถ</h2>
+                        <div className="flex items-center gap-3 mt-3">
                             <StatusBadge status={booking.status} />
-                            <span className="text-sm text-slate-400 font-medium">
+                            <span className="text-xs text-slate-400 font-medium">
                                 ยื่นคำขอเมื่อ {formatThaiDate(booking.requestDate)}
                             </span>
                         </div>
                     </div>
 
-                    <div className="space-y-8">
+                    <div className="space-y-5">
                         {/* ผู้ขอ & สังกัด */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <Section title="ผู้ขอใช้รถ" icon={User}>
                                 <div>
-                                    <p className="text-lg font-bold text-slate-900">{booking.requesterName}</p>
-                                    <div className="flex items-center gap-2 mt-1">
+                                    <p className="text-base font-bold text-slate-900">{booking.requesterName}</p>
+                                    <div className="flex items-center gap-2 mt-0.5">
                                         <Phone size={12} className="text-blue-500" />
-                                        <p className="text-sm font-semibold text-blue-600">{booking.phone || '-'}</p>
+                                        <p className="text-xs font-semibold text-blue-600">{booking.phone || '-'}</p>
                                     </div>
                                 </div>
                             </Section>
                             <Section title="สังกัด / แผนก" icon={ShieldCheck}>
-                                <p className="text-lg font-bold text-slate-900">{booking.department}</p>
+                                <p className="text-base font-bold text-slate-900">{booking.department}</p>
                             </Section>
                         </div>
 
                         {/* เส้นทาง */}
                         <Section title="เส้นทางที่ต้องการเดินทาง" icon={MapPin}>
-                            <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                <span className="bg-white px-3 py-1.5 rounded-xl text-sm font-bold text-slate-600 shadow-sm border border-slate-100">{booking.origin}</span>
-                                <ArrowRight size={16} className="text-slate-300 shrink-0" />
-                                <span className="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-100">{booking.destination}</span>
+                            <div className="flex items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <span className="bg-white px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 shadow-sm border border-slate-100 truncate max-w-[150px]">{booking.origin}</span>
+                                <ArrowRight size={14} className="text-slate-300 shrink-0" />
+                                <span className="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg shadow-blue-100 truncate">{booking.destination}</span>
                             </div>
                         </Section>
 
                         {/* วันเวลา & ประเภทรถ */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <Section title="วันเวลาเดินทาง" icon={Calendar}>
-                                <div className="space-y-2">
-                                    <p className="text-sm font-bold text-slate-700">ไป: <span className="text-slate-900">{formatThaiDateTime(booking.startDateTime)}</span></p>
-                                    <p className="text-sm font-bold text-slate-700">กลับ: <span className="text-slate-900">{formatThaiDateTime(booking.endDateTime)}</span></p>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-slate-700">ไป: <span className="text-slate-900 font-black">{formatThaiDateTime(booking.startDateTime)}</span></p>
+                                    <p className="text-xs font-bold text-slate-700">กลับ: <span className="text-slate-900 font-black">{formatThaiDateTime(booking.endDateTime)}</span></p>
                                 </div>
                             </Section>
                             <Section title="รถและผู้โดยสาร" icon={Car}>
-                                <div className="space-y-1">
-                                    <p className="text-sm font-bold text-slate-900">{booking.carType}</p>
-                                    <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-tight">
+                                <div className="space-y-0.5">
+                                    <p className="text-xs font-bold text-slate-900">{booking.carType}</p>
+                                    <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight">
                                         <span className="text-slate-400">ผู้โดยสาร {booking.passengerCount} คน</span>
-                                        <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">{booking.selfDrive}</span>
+                                        <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md italic">{booking.selfDrive}</span>
                                     </div>
                                 </div>
                             </Section>
@@ -164,63 +164,63 @@ export default function BookingDetailModal({
 
                         {/* วัตถุประสงค์ */}
                         <Section title="วัตถุประสงค์ / หมายเหตุ" icon={ClipboardList}>
-                            <div className="bg-slate-50 p-5 rounded-[1.5rem] border border-slate-100">
-                                <p className="text-sm font-medium text-slate-700 leading-relaxed whitespace-pre-wrap">{booking.objective}</p>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <p className="text-xs font-medium text-slate-700 leading-relaxed whitespace-pre-wrap">{booking.objective}</p>
                             </div>
                         </Section>
 
                         {/* Reject Reason (แสดงเฉพาะ REJECTED) */}
                         {booking.status === 'REJECTED' && booking.rejectReason && (
-                            <div className="bg-rose-50 border border-rose-100 rounded-2xl p-5">
-                                <p className="text-xs font-black text-rose-600 uppercase tracking-widest mb-2">เหตุผลที่ปฏิเสธ</p>
-                                <p className="text-sm font-bold text-rose-700">{booking.rejectReason}</p>
+                            <div className="bg-rose-50 border border-rose-100 rounded-xl p-4">
+                                <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-1.5">เหตุผลที่ปฏิเสธ</p>
+                                <p className="text-xs font-bold text-rose-700">{booking.rejectReason}</p>
                             </div>
                         )}
                     </div>
 
                     {/* Footer Actions */}
                     {booking.status === 'PENDING' && (
-                        <div className="mt-10 pt-8 border-t border-slate-100">
+                        <div className="mt-6 pt-6 border-t border-slate-100">
                             {isRejecting ? (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <textarea
                                         value={rejectReason}
                                         onChange={(e) => setRejectReason(e.target.value)}
                                         placeholder="ระบุเหตุผลที่ปฏิเสธคำขอนี้..."
-                                        rows={3}
-                                        className="w-full text-sm font-medium p-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-rose-50 text-slate-700 placeholder:text-slate-400 resize-none transition-all"
+                                        rows={2}
+                                        className="w-full text-xs font-medium p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-rose-50 text-slate-700 placeholder:text-slate-400 resize-none transition-all"
                                     />
-                                    <div className="flex items-center justify-end gap-3">
+                                    <div className="flex items-center justify-end gap-2">
                                         <button
                                             onClick={() => { setIsRejecting(false); setRejectReason(''); }}
-                                            className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-sm font-bold"
+                                            className="px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-xs font-bold"
                                         >
                                             ยกเลิก
                                         </button>
                                         <button
                                             onClick={() => onReject(booking.id, rejectReason)}
                                             disabled={!rejectReason.trim()}
-                                            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-rose-500 hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-white shadow-lg shadow-rose-100 transition-all text-sm font-bold"
+                                            className="flex items-center gap-2 px-6 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-white shadow-lg shadow-rose-100 transition-all text-xs font-bold"
                                         >
-                                            <XCircle size={18} />
+                                            <XCircle size={14} />
                                             ยืนยันปฏิเสธ
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-end gap-4">
+                                <div className="flex items-center justify-end gap-3">
                                     <button
                                         onClick={() => setIsRejecting(true)}
-                                        className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-rose-100 text-rose-500 hover:bg-rose-50 transition-all text-sm font-black uppercase tracking-tight"
+                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-rose-100 text-rose-500 hover:bg-rose-50 transition-all text-[11px] font-black uppercase tracking-tight"
                                     >
-                                        <XCircle size={18} />
+                                        <XCircle size={16} />
                                         ปฏิเสธ
                                     </button>
                                     <button
                                         onClick={() => onApprove(booking.id)}
-                                        className="flex items-center gap-2 px-10 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-100 transition-all text-sm font-black uppercase tracking-tight"
+                                        className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-100 transition-all text-[11px] font-black uppercase tracking-tight"
                                     >
-                                        <CheckCircle2 size={18} />
+                                        <CheckCircle2 size={16} />
                                         อนุมัติคำขอ
                                     </button>
                                 </div>
