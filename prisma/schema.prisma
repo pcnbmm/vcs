@@ -116,6 +116,7 @@ model vc_car_master {
   vc_color           vc_color?        @relation(fields: [color_id], references: [color_id])
   vc_oil_type        vc_oil_type?     @relation(fields: [oil_type_id], references: [oil_type_id])
   vc_nt_car          vc_nt_car[]
+  vc_order_item      vc_order_item[]
   vc_replacement     vc_replacement[]
   vc_order_item      vc_order_item[]
 }

@@ -35,6 +35,7 @@ export async function createBooking(formData: FormData) {
     );
     const user_mobile = formData.get("user_mobile") as string;
     const self_drive = formData.get("self_drive") === "true";
+    const is_urgent = formData.get("is_urgent") === "true";
 
     const booking = await prisma.vc_order_item.create({
       data: {
@@ -54,6 +55,7 @@ export async function createBooking(formData: FormData) {
         passenger_amount,
         user_mobile,
         self_drive,
+        is_urgent,
         status_use_id: 1, // Default to Pending
         cre_date: new Date(),
       },
