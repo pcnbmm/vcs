@@ -19,14 +19,8 @@ import {
 // ประกาศ Status ไว้ใช้ในหน้านี้ (หรือสามารถแยกไปไว้ในไฟล์ utils/constants.ts ได้)
 const REQUEST_STATUS = {
     REJECTED: 3,
-    CANCELLED: 4,
-    DISPATCH_REJECTED: 7,
-    DISPATCH_CANCELLED: 8,
-    RETURN_APPROVED: 11, // Completed
-    RETURN_REJECTED: 12,
-    RETURN_CANCELLED: 13,
-    DISPATCH_APPROVAL_CANCELLED: 14,
-    NOT_RECEIVED: 15
+    IN_USE: 4,
+    RETURN_APPROVED: 5, // Completed
 };
 
 export default function HistoryPage() {
@@ -78,16 +72,8 @@ export default function HistoryPage() {
     const historyRequests = requests.filter(req => {
         // กรองสถานะที่ถือว่าเป็น "ประวัติ"
         const isHistoryStatus = [
-            2, // Approved (แสดงในประวัติด้วย)
             REQUEST_STATUS.REJECTED,
-            REQUEST_STATUS.CANCELLED,
-            REQUEST_STATUS.DISPATCH_REJECTED,
-            REQUEST_STATUS.DISPATCH_CANCELLED,
-            REQUEST_STATUS.RETURN_APPROVED,
-            REQUEST_STATUS.RETURN_REJECTED,
-            REQUEST_STATUS.RETURN_CANCELLED,
-            REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED,
-            REQUEST_STATUS.NOT_RECEIVED
+            REQUEST_STATUS.RETURN_APPROVED
         ].includes(Number(req.status));
 
         // กรองตามคำค้นหา
@@ -337,20 +323,13 @@ const getStatusName = (status: number | string) => {
     const numStatus = Number(status);
     switch (numStatus) {
         case REQUEST_STATUS.REJECTED:
-        case REQUEST_STATUS.DISPATCH_REJECTED:
-        case REQUEST_STATUS.RETURN_REJECTED:
             return 'ไม่อนุมัติ';
-        case REQUEST_STATUS.CANCELLED:
-        case REQUEST_STATUS.DISPATCH_CANCELLED:
-        case REQUEST_STATUS.RETURN_CANCELLED:
-        case REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED:
-            return 'ยกเลิก';
         case REQUEST_STATUS.RETURN_APPROVED:
             return 'เสร็จสิ้นสมบูรณ์';
+        case REQUEST_STATUS.IN_USE:
+            return 'กำลังใช้งาน';
         case 2:
             return 'อนุมัติแล้ว';
-        case REQUEST_STATUS.NOT_RECEIVED:
-            return 'ไม่ได้รับรถ';
         default:
             return 'สถานะไม่ระบุ';
     }
@@ -360,17 +339,11 @@ const getStatusColor = (status: number | string) => {
     const numStatus = Number(status);
     switch (numStatus) {
         case REQUEST_STATUS.REJECTED:
-        case REQUEST_STATUS.DISPATCH_REJECTED:
-        case REQUEST_STATUS.RETURN_REJECTED:
             return 'text-rose-600 bg-rose-50 border-rose-200';
-        case REQUEST_STATUS.CANCELLED:
-        case REQUEST_STATUS.DISPATCH_CANCELLED:
-        case REQUEST_STATUS.RETURN_CANCELLED:
-        case REQUEST_STATUS.DISPATCH_APPROVAL_CANCELLED:
-        case REQUEST_STATUS.NOT_RECEIVED:
-            return 'text-slate-500 bg-slate-100 border-slate-200';
         case REQUEST_STATUS.RETURN_APPROVED:
             return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+        case REQUEST_STATUS.IN_USE:
+            return 'text-blue-600 bg-blue-50 border-blue-200';
         default:
             return 'text-gray-600 bg-gray-50 border-gray-100';
     }

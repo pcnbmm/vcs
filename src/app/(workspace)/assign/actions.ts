@@ -21,7 +21,7 @@ export async function getPendingDispatch() {
         vc_car_spec: true
       },
       orderBy: {
-        journey_date: "asc"
+        request_id: "desc"
       }
     });
     return orders;
@@ -148,7 +148,7 @@ export async function assignResource(data: {
             data: {
                 car_id: data.carId,
                 driver_id: data.driverId, // มั่นใจว่าค่านี้ไม่เป็น NaN (ตัวเลขหรือ null เท่านั้น)
-                status_use_id: 5, // บันทึกเป็นสำเร็จทันที (ไม่ต้องรอ Confirm)
+                status_use_id: 4, // 4 = in_use (เพื่อให้ไปปรากฏในหน้าคืนรถ)
                 upd_date: new Date(),
             },
         });
@@ -173,7 +173,7 @@ export async function confirmAssignment(requestId: number) {
       await prisma.vc_order_item.update({
         where: { request_id: requestId },
         data: {
-          status_use_id: 5,
+          status_use_id: 4, // 4 = in_use
           upd_date: new Date(),
         },
       });

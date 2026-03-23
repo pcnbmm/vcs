@@ -76,8 +76,8 @@ export default function PendingPage() {
             statusFilter === 'ALL' || 
             (statusFilter === 'PENDING' && req.status === '1') ||
             (statusFilter === 'APPROVED' && req.status === '2') ||
-            (statusFilter === 'REJECTED' && (req.status === '3' || req.status === '5')) ||
-            (statusFilter === 'COMPLETED' && req.status === '4');
+            (statusFilter === 'REJECTED' && req.status === '3') ||
+            (statusFilter === 'COMPLETED' && req.status === '5');
 
         return matchesSearch && matchesStatus;
     });
@@ -350,11 +350,11 @@ export const getStatusName = (status: number | string) => {
         case 'REJECTED':
             return 'ไม่อนุมัติ';
         case '4':
+        case 'IN_USE':
+            return 'กำลังใช้งาน';
+        case '5':
         case 'COMPLETED':
             return 'เสร็จสิ้น';
-        case '5':
-        case 'CANCELED':
-            return 'ยกเลิก';
         default:
             return 'สถานะไม่ระบุ';
     }
@@ -374,11 +374,11 @@ export const getStatusColor = (status: number | string) => {
         case 'REJECTED':
             return 'text-rose-600 bg-rose-50 border-rose-200';
         case '4':
-        case 'COMPLETED':
+        case 'IN_USE':
             return 'text-blue-600 bg-blue-50 border-blue-200';
         case '5':
-        case 'CANCELED':
-            return 'text-gray-600 bg-gray-100 border-gray-200';
+        case 'COMPLETED':
+            return 'text-emerald-600 bg-emerald-50 border-emerald-200';
         default:
             return 'text-gray-600 bg-gray-50 border-gray-100';
     }
