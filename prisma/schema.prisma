@@ -72,6 +72,7 @@ model vc_users {
   userid        Int             @id @default(autoincrement())
   vc_driver     vc_driver?
   vc_order_item vc_order_item[]
+  vc_session    vc_session[]
   vc_user_roles vc_user_roles[]
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
@@ -524,4 +525,12 @@ model vc_orgs {
   short_name2 String? @db.VarChar(50)
   status      String? @db.VarChar(50)
   upd_date    String? @db.VarChar(50)
+}
+
+model vc_session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  vc_users     vc_users @relation(fields: [userId], references: [userid], onDelete: Cascade)
 }
