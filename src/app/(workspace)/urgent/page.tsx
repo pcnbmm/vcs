@@ -4,6 +4,7 @@ import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
+import { getUrgentRequesters, createUrgentBooking } from "@/app/actions/urgentBookingActions";
 import { useRouter } from "next/navigation";
 import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
@@ -34,6 +35,8 @@ export default function VehicleRequestPage() {
   const [provinceList, setProvinceList] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [driverSearch, setDriverSearch] = useState('');
+  const [requesters, setRequesters] = useState<any[]>([]);
+  const [requesterSearch, setRequesterSearch] = useState('');
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -58,6 +61,7 @@ export default function VehicleRequestPage() {
     selfDrive: false,
     driverId: 0,
     isUrgent: true,
+    requesterId: 0,
   });
 
   const handleInputChange = (field: string, value: any) => {
@@ -66,15 +70,15 @@ export default function VehicleRequestPage() {
 
   const handleSave = async () => {
     if (
+      !formData.requesterId ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
       !formData.objective ||
       (formData.selfDrive && !formData.driverId)
-
     ) {
       alert(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วัตถุประสงค์, ชื่อผู้ขับ)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ผู้ขอใช้รถ, จุดหมาย, วันที่/เวลาเริ่ม, วัตถุประสงค์)",
       );
       return;
     }
@@ -111,8 +115,10 @@ export default function VehicleRequestPage() {
       if (formData.selfDrive && formData.driverId) {
         dataToSubmit.append("driver_id", formData.driverId.toString());
       }
+      
+      dataToSubmit.append("requester_id", formData.requesterId.toString());
 
-      const result = await createBooking(dataToSubmit);
+      const result = await createUrgentBooking(dataToSubmit);
 
       if (result.success) {
         alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
@@ -147,8 +153,10 @@ export default function VehicleRequestPage() {
       selfDrive: false,
       driverId: 0,
       isUrgent: true,
+      requesterId: 0,
     });
     setDriverSearch('');
+    setRequesterSearch('');
   };
 
   useEffect(() => {
@@ -186,6 +194,14 @@ export default function VehicleRequestPage() {
       if (result.success) setDrivers(result.data);
     };
     fetchDrivers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRequesters = async () => {
+      const result = await getUrgentRequesters();
+      if (result.success && result.data) setRequesters(result.data);
+    };
+    fetchRequesters();
   }, []);
 
   const startPlaceMap = startPlaces.reduce(
@@ -230,6 +246,67 @@ export default function VehicleRequestPage() {
                 <h2 className="text-2xl font-black text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
+              </div>
+
+              {/* Requester Selection Section */}
+              <div className="bg-red-50 p-6 rounded-3xl border border-red-100 space-y-4">
+                <div className="flex items-center gap-2 text-red-800 font-black uppercase text-sm tracking-wider">
+                  <User size={18} />
+                  ข้อมูลผู้ร้องขอรถด่วน
+                </div>
+                <div className="relative">
+                  <FormField label="พนักงานผู้ขอใช้รถ" icon={User} required>
+                    <input
+                      type="text"
+                      value={
+                        formData.requesterId
+                          ? `${requesters.find((r) => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find((r) => r.userid === formData.requesterId)?.lastname ?? ""}`.trim()
+                          : requesterSearch
+                      }
+                      onChange={(e) => {
+                        setRequesterSearch(e.target.value);
+                        handleInputChange("requesterId", 0);
+                      }}
+                      placeholder="พิมพ์ชื่อหรือนามสกุลพนักงานเพื่อค้นหา..."
+                      className="w-full bg-white border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    />
+                    {/* Requesters Dropdown */}
+                    {requesterSearch && !formData.requesterId && (
+                      <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-60 overflow-y-auto">
+                        {requesters
+                          .filter((r) => {
+                            const fullName = `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim();
+                            return fullName.toLowerCase().includes(requesterSearch.toLowerCase());
+                          })
+                          .slice(0, 10) // Limit results for performance
+                          .map((r) => (
+                            <button
+                              key={r.userid}
+                              type="button"
+                              onClick={() => {
+                                handleInputChange("requesterId", r.userid);
+                                setRequesterSearch("");
+                                // Auto-fill department if possible
+                                if (r.departmentid) {
+                                  handleInputChange("ownerDept", String(r.departmentid));
+                                }
+                              }}
+                              className="w-full text-left px-4 py-3 hover:bg-red-50 text-sm font-medium text-gray-700 hover:text-red-700 transition-colors border-b border-gray-50 last:border-0"
+                            >
+                              <div className="font-bold">{r.firstname} {r.lastname}</div>
+                              <div className="text-xs text-gray-400">ID: {r.userid}</div>
+                            </button>
+                          ))}
+                        {requesters.filter((r) => {
+                          const fullName = `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim();
+                          return fullName.toLowerCase().includes(requesterSearch.toLowerCase());
+                        }).length === 0 && (
+                          <div className="px-4 py-3 text-sm text-gray-400">ไม่พบพนักงานที่ค้นหา</div>
+                        )}
+                      </div>
+                    )}
+                  </FormField>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
