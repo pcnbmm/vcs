@@ -1,13 +1,12 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
   session: {
     strategy: "jwt",
+    maxAge: 30 * 60,
   },
   providers: [
     CredentialsProvider({
@@ -28,16 +27,40 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (!user) return null;
+        if (!user) {
+          await prisma.vc_login_log.create({
+            data: {
+              username: credentials.username,
+              status: "FAILED",
+            },
+          });
+          return null;
+        }
 
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.username2 ?? "",
         );
 
-        if (!isPasswordValid) return null;
+        if (!isPasswordValid) {
+          await prisma.vc_login_log.create({
+            data: {
+              userid: user.userid,
+              username: user.username,
+              status: "FAILED",
+            },
+          });
+          return null;
+        }
 
-        // ── ดึง roles จาก vc_user_roles ───────────────────────
+        await prisma.vc_login_log.create({
+          data: {
+            userid: user.userid,
+            username: user.username,
+            status: "SUCCESS",
+          },
+        });
+
         const roles = user.vc_user_roles
           .map((ur) => ur.roles_id)
           .filter(Boolean) as number[];
@@ -58,7 +81,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.username = (user as any).username;
         token.roles = (user as any).roles;
-        token.userRoleId = (user as any).userRoleId; // ← เพิ่ม
       }
       return token;
     },

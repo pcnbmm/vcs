@@ -73,6 +73,7 @@ model vc_users {
   Session       Session[]
   vc_driver     vc_driver?
   vc_order_item vc_order_item[]
+  vc_login_log  vc_login_log[]
   vc_user_roles vc_user_roles[]
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
@@ -527,10 +528,11 @@ model vc_orgs {
   upd_date    String? @db.VarChar(50)
 }
 
-model Session {
-  id           String   @id
-  sessionToken String   @unique
-  userId       Int
-  expires      DateTime
-  vc_users     vc_users @relation(fields: [userId], references: [userid], onDelete: Cascade)
+model vc_login_log {
+  log_id   Int       @id @default(autoincrement())
+  userid   Int?
+  username String?   @db.VarChar(50)
+  login_at DateTime  @default(now())
+  status   String    @db.VarChar(10) // SUCCESS, FAILED
+  vc_users vc_users? @relation(fields: [userid], references: [userid])
 }
