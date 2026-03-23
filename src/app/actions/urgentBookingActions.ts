@@ -27,10 +27,10 @@ export async function getUrgentRequesters() {
 // Create Urgent Booking
 export async function createUrgentBooking(formData: FormData) {
     try {
-        const requester_id = formData.get('requester_id') as string;
+        const requester_id = parseInt(formData.get('requester_id') as string || '0');
         const use_div_code = formData.get('use_div_code') as string;
         const car_spec_id = formData.get('car_spec_id') ? parseInt(formData.get('car_spec_id') as string) : null;
-        const start_place = formData.get('start_place') as string;
+        const start_place = formData.get('start_place') ? parseInt(formData.get('start_place') as string) : null;
         const journey_province = formData.get('journey_province') as string;
         const journey_place = formData.get('journey_place') as string;
         const journey_lat = parseFloat(formData.get('journey_lat') as string || '0');
