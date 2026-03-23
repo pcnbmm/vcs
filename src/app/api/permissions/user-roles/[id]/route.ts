@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma";
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     // We will repurpose this to delete ALL roles for a specific user_id
     try {
-        const userId = parseInt(params.id);
+        const { id: idStr } = await params;
+        const userId = parseInt(idStr);
         if (isNaN(userId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
         await prisma.vc_user_roles.deleteMany({ 

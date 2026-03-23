@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma";
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     // Repurposed to delete all mappings for a specific roles_id
     try {
-        const rolesId = parseInt(params.id);
+        const { id: idStr } = await params;
+        const rolesId = parseInt(idStr);
         if (isNaN(rolesId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
         await prisma.vc_menu_role.deleteMany({ 
