@@ -2,6 +2,8 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Fetch all users for the requester dropdown
 export async function getUrgentRequesters() {
@@ -27,6 +29,9 @@ export async function getUrgentRequesters() {
 // Create Urgent Booking
 export async function createUrgentBooking(formData: FormData) {
     try {
+        const session = await getServerSession(authOptions);
+        const dispatcherId = session?.user?.id || '99999999';
+
         const requester_id = parseInt(formData.get('requester_id') as string || '0');
         const use_div_code = formData.get('use_div_code') as string;
         const car_spec_id = formData.get('car_spec_id') ? parseInt(formData.get('car_spec_id') as string) : null;
@@ -43,10 +48,7 @@ export async function createUrgentBooking(formData: FormData) {
         const passenger_amount = parseInt(formData.get('passenger_amount') as string || '1');
         const user_mobile = formData.get('user_mobile') as string;
         const self_drive = formData.get('self_drive') === 'true';
-
-        // Assuming approve_id is the string representation of an admin/นายเวร. 
-        // We hardcode it to 'ADMIN' or session user ID for now as requested.
-        const mockApproveId = '99999999';
+        const driver_id = formData.get('driver_id') ? parseInt(formData.get('driver_id') as string) : null;
 
         const booking = await prisma.vc_order_item.create({
             data: {
@@ -66,9 +68,10 @@ export async function createUrgentBooking(formData: FormData) {
                 passenger_amount,
                 user_mobile,
                 self_drive,
+                driver_id, // Store driver if self-drive
                 status_use_id: 2, // 2 = Approved/Pending Dispatch (ข้ามการอนุมัติ)
-                approve_id: mockApproveId, // บันทึก ID ของนายเวร
-                is_urgent: true,  // <-- ฟิลด์ใหม่ที่เพิ่มใน Schema
+                approve_id: dispatcherId, // บันทึก ID ของผู้คีย์ (Dispatcher) ในช่องผู้อนุมัติ
+                is_urgent: true,
                 cre_date: new Date(),
             }
         });
@@ -84,3 +87,4 @@ export async function createUrgentBooking(formData: FormData) {
         return { success: false, error: 'Failed to create urgent booking' };
     }
 }
+
