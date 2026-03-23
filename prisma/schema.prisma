@@ -70,9 +70,9 @@ model vc_users {
   checkupdate   String?         @db.VarChar(50)
   upd_date      String?         @db.VarChar(50)
   userid        Int             @id @default(autoincrement())
+  Session       Session[]
   vc_driver     vc_driver?
   vc_order_item vc_order_item[]
-  vc_session    vc_session[]
   vc_user_roles vc_user_roles[]
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
@@ -527,8 +527,8 @@ model vc_orgs {
   upd_date    String? @db.VarChar(50)
 }
 
-model vc_session {
-  id           String   @id @default(cuid())
+model Session {
+  id           String   @id
   sessionToken String   @unique
   userId       Int
   expires      DateTime
