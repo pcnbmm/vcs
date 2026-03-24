@@ -24,7 +24,7 @@ export default function ReturnsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"view" | "edit">("view");
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  
+
   const [returnOrders, setReturnOrders] = useState<any[]>([]);
   const [dispatchers, setDispatchers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ export default function ReturnsPage() {
   const handleOpenViewModal = (item: any) => {
     setSelectedItem(item);
     setModalMode("view");
-    
+
     // ดึงข้อมูลจาก vc_use (ถ้ามี) มาแสดงผลในหน้าดีเทล
     const usage = item.vc_use?.[0];
     setReturnFormData({
@@ -92,7 +92,7 @@ export default function ReturnsPage() {
       note: usage?.note ?? "",
       drive_type: usage?.drive_type ?? (item.self_drive ? "self" : "staff"),
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -168,9 +168,6 @@ export default function ReturnsPage() {
           <h1 className="text-2xl font-bold text-slate-900">
             การบันทึกการคืนรถ (Return)
           </h1>
-          <p className="text-slate-500 mt-1 text-sm font-medium">
-            บันทึกการรับคืนและตรวจสอบความถูกต้องของภารกิจหลังการเดินทาง
-          </p>
         </div>
       </div>
 
@@ -204,11 +201,10 @@ export default function ReturnsPage() {
                     setSelectedFilter(option);
                     setIsFilterOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                    selectedFilter === option
+                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${selectedFilter === option
                       ? "bg-emerald-600 text-white"
                       : "text-slate-700 hover:bg-slate-50 font-medium"
-                  }`}
+                    }`}
                 >
                   {option}
                 </button>
@@ -245,10 +241,10 @@ export default function ReturnsPage() {
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                   <td colSpan={5} className="px-6 py-16 text-center">
+                  <td colSpan={5} className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-2">
-                       <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-                       <p className="text-slate-400 font-medium italic text-sm">กำลังโหลดข้อมูล...</p>
+                      <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                      <p className="text-slate-400 font-medium italic text-sm">กำลังโหลดข้อมูล...</p>
                     </div>
                   </td>
                 </tr>
@@ -269,7 +265,7 @@ export default function ReturnsPage() {
                         {item.vc_user?.firstname} {item.vc_user?.lastname}
                       </p>
                       <p className="text-xs text-slate-400 mt-1 font-medium italic">
-                        {item.use_div_code || "-"}
+                        {item.use_div_name || "-"}
                       </p>
                     </td>
                     <td className="px-6 py-5 align-top">
@@ -319,7 +315,7 @@ export default function ReturnsPage() {
                 <tr>
                   <td colSpan={5} className="px-6 py-16 text-center">
                     <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Car className="text-slate-200" size={32} />
+                      <Car className="text-slate-200" size={32} />
                     </div>
                     <p className="text-slate-400 font-bold italic">
                       ยังไม่มีข้อมูลรายการรอส่งคืนรถในขณะนี้
@@ -372,7 +368,7 @@ export default function ReturnsPage() {
                       เอาจากไหน (ORIGIN)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
-                        {selectedItem?.vc_start_place?.start_place_name || "ไม่ระบุ"}
+                      {selectedItem?.vc_start_place?.start_place_name || "ไม่ระบุ"}
                     </div>
                   </div>
                   <div className="group">
@@ -380,7 +376,7 @@ export default function ReturnsPage() {
                       ไปกลับ (DESTINATION)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
-                        {selectedItem?.journey_place || "-"}
+                      {selectedItem?.journey_place || "-"}
                     </div>
                   </div>
                 </div>
@@ -389,8 +385,8 @@ export default function ReturnsPage() {
               {/* 2. ผู้รับผิดชอบ */}
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
-                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                   <h3 className="font-black text-sm uppercase tracking-widest">ผู้รับผิดชอบ (PERSONNEL)</h3>
+                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                  <h3 className="font-black text-sm uppercase tracking-widest">ผู้รับผิดชอบ (PERSONNEL)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
@@ -398,7 +394,7 @@ export default function ReturnsPage() {
                       ใครอนุมัติใช้รถตอนแรก (APPROVER)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
-                        {selectedItem?.approver_name || "(ไม่มีข้อมูลในระบบ)"}
+                      {selectedItem?.approver_name || "(ไม่มีข้อมูลในระบบ)"}
                     </div>
                   </div>
                   <div>
@@ -416,8 +412,8 @@ export default function ReturnsPage() {
                           disabled={true}
                           className={`
                             flex-1 text-center py-2.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all cursor-not-allowed
-                            ${returnFormData.drive_type === type.id 
-                              ? `bg-white text-${type.color}-600 shadow-md ring-1 ring-slate-200` 
+                            ${returnFormData.drive_type === type.id
+                              ? `bg-white text-${type.color}-600 shadow-md ring-1 ring-slate-200`
                               : "text-slate-400 opacity-50"
                             }
                           `}
@@ -432,7 +428,11 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
-                        {selectedItem?.self_drive ? "ผู้ขอขับเอง" : (selectedItem?.vc_driver?.vc_users?.firstname ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}` : "ไม่ระบุพนักงานขับรถ")}
+                      {selectedItem?.self_drive 
+                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}` 
+                        : (selectedItem?.vc_driver?.vc_users?.firstname 
+                            ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}` 
+                            : "ไม่ระบุพนักงานขับรถ")}
                     </div>
                   </div>
                   <div className="group">
@@ -440,7 +440,7 @@ export default function ReturnsPage() {
                       ทะเบียน / ประเภทรถ ที่ใช้จริง
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
-                        {selectedItem?.vc_car_master?.car_number || "-"} • {selectedItem?.vc_car_spec?.car_spec_name}
+                      {selectedItem?.vc_car_master?.car_number || "-"} • {selectedItem?.vc_car_spec?.car_spec_name}
                     </div>
                   </div>
                 </div>
@@ -449,8 +449,8 @@ export default function ReturnsPage() {
               {/* 3. วันเวลาเดินทาง */}
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
-                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                   <h3 className="font-black text-sm uppercase tracking-widest">วันเวลาเดินทาง (TRIP DATE &amp; TIME)</h3>
+                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                  <h3 className="font-black text-sm uppercase tracking-widest">วันเวลาเดินทาง (TRIP DATE &amp; TIME)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
@@ -466,7 +466,15 @@ export default function ReturnsPage() {
                       เวลาออกตามแผน
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
-                        {selectedItem?.journey_time || "00:00"} น.
+                      {selectedItem?.journey_time || "00:00"} น.
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                      วันที่คืนรถตามแผน
+                    </label>
+                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                      {selectedItem?.return_date ? new Date(selectedItem.return_date).toLocaleDateString('th-TH') : "-"}
                     </div>
                   </div>
                   <div>
@@ -474,7 +482,7 @@ export default function ReturnsPage() {
                       เวลาคืนรถตามแผน (PLANNED RETURN)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
-                        {selectedItem?.return_date ? new Date(selectedItem.return_date).toLocaleDateString('th-TH') : "-"} • {selectedItem?.return_time || "00:00"} น.
+                      {selectedItem?.return_time || "00:00"} น.
                     </div>
                   </div>
                   <div className="col-span-2 border-t border-slate-100 my-4 pt-4"></div>
@@ -508,8 +516,8 @@ export default function ReturnsPage() {
               {/* 4. เลขไมล์ */}
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
-                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                   <h3 className="font-black text-sm uppercase tracking-widest">เลขไมล์ (MILEAGE RECORD)</h3>
+                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                  <h3 className="font-black text-sm uppercase tracking-widest">เลขไมล์ (MILEAGE RECORD)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8 ring-4 ring-emerald-50/50 p-6 rounded-4xl bg-emerald-50/20">
                   <div className="space-y-2">
@@ -517,16 +525,23 @@ export default function ReturnsPage() {
                       เลขไมล์เริ่มต้น (ก่อนใช้)
                     </label>
                     <div className="relative">
-                        <Gauge className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input
-                            type="number"
-                            readOnly={modalMode === "view"}
-                            value={returnFormData.mile_begin}
-                            onChange={(e) => setReturnFormData(prev => ({ ...prev, mile_begin: e.target.value }))}
-                            placeholder="ระบุเลขไมล์เริ่มต้น"
-                            className="w-full bg-white border-2 border-emerald-100 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm"
-                        />
-                         <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase">KM</span>
+                      <Gauge className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
+                      <input
+                        type="number"
+                        min="1"
+                        readOnly={modalMode === "view"}
+                        value={returnFormData.mile_begin}
+                        onKeyDown={(e) => {
+                          if (e.key === "-" || e.key === "e" || e.key === "E") e.preventDefault();
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setReturnFormData(prev => ({ ...prev, mile_begin: val }));
+                        }}
+                        placeholder="ระบุเลขไมล์เริ่มต้น"
+                        className="w-full bg-white border-2 border-emerald-100 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm"
+                      />
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase">KM</span>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -534,24 +549,31 @@ export default function ReturnsPage() {
                       เลขไมล์สิ้นสุด (หลังใช้) *
                     </label>
                     <div className="relative">
-                        <Gauge className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
-                        <input
-                            type="number"
-                            readOnly={modalMode === "view"}
-                            value={returnFormData.mile_end}
-                            onChange={(e) => setReturnFormData(prev => ({ ...prev, mile_end: e.target.value }))}
-                            placeholder="ระบุเลขไมล์สิ้นสุด"
-                            className="w-full bg-white border-2 border-emerald-500/30 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-emerald-700 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
-                        />
-                        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-400 uppercase">KM</span>
+                      <Gauge className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
+                      <input
+                        type="number"
+                        min="1"
+                        readOnly={modalMode === "view"}
+                        value={returnFormData.mile_end}
+                        onKeyDown={(e) => {
+                          if (e.key === "-" || e.key === "e" || e.key === "E") e.preventDefault();
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setReturnFormData(prev => ({ ...prev, mile_end: val }));
+                        }}
+                        placeholder="ระบุเลขไมล์สิ้นสุด"
+                        className="w-full bg-white border-2 border-emerald-500/30 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-emerald-700 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
+                      />
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-400 uppercase">KM</span>
                     </div>
                   </div>
                   <div className="col-span-2">
                     <div className="bg-emerald-600 rounded-2xl p-4 flex justify-between items-center text-white shadow-xl shadow-emerald-100">
-                        <span className="text-xs font-black uppercase tracking-widest opacity-80">ระยะทางรวมทั้งสิ้น (TOTAL DISTANCE)</span>
-                        <span className="text-2xl font-black tracking-tighter">
-                            {Math.max(0, (Number(returnFormData.mile_end) || 0) - (Number(returnFormData.mile_begin) || 0)).toLocaleString()} <span className="text-xs">กม.</span>
-                        </span>
+                      <span className="text-xs font-black uppercase tracking-widest opacity-80">ระยะทางรวมทั้งสิ้น (TOTAL DISTANCE)</span>
+                      <span className="text-2xl font-black tracking-tighter">
+                        {Math.max(0, (Number(returnFormData.mile_end) || 0) - (Number(returnFormData.mile_begin) || 0)).toLocaleString()} <span className="text-xs">กม.</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -560,8 +582,8 @@ export default function ReturnsPage() {
               {/* 5. ผู้บันทึก */}
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
-                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                   <h3 className="font-black text-sm uppercase tracking-widest">การตรวจรับและบันทึก (RECORDER)</h3>
+                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                  <h3 className="font-black text-sm uppercase tracking-widest">การตรวจรับและบันทึก (RECORDER)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="col-span-2">
@@ -574,22 +596,22 @@ export default function ReturnsPage() {
                       </div>
                     ) : (
                       <div className="relative">
-                          <UserCircle className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
-                          <select 
-                            value={returnFormData.approved_by}
-                            onChange={(e) => setReturnFormData(prev => ({ ...prev, approved_by: parseInt(e.target.value) }))}
-                            className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl py-4 pl-16 pr-10 outline-none focus:border-emerald-500 focus:bg-white text-sm font-black text-slate-800 appearance-none transition-all"
-                          >
-                            <option value="0">--- เลือกนายเวรผู้อนุมัติรับคืน ---</option>
-                            {dispatchers.map(d => (
-                                <option key={d.userid} value={d.userid}>
-                                    {d.firstname} {d.lastname}
-                                </option>
-                            ))}
-                          </select>
-                          <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                              <span className="text-[10px] font-black">SELECT</span>
-                          </div>
+                        <UserCircle className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
+                        <select
+                          value={returnFormData.approved_by}
+                          onChange={(e) => setReturnFormData(prev => ({ ...prev, approved_by: parseInt(e.target.value) }))}
+                          className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl py-4 pl-16 pr-10 outline-none focus:border-emerald-500 focus:bg-white text-sm font-black text-slate-800 appearance-none transition-all"
+                        >
+                          <option value="0">--- เลือกนายเวรผู้อนุมัติรับคืน ---</option>
+                          {dispatchers.map(d => (
+                            <option key={d.userid} value={d.userid}>
+                              {d.firstname} {d.lastname}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                          <span className="text-[10px] font-black">SELECT</span>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -633,9 +655,9 @@ export default function ReturnsPage() {
                     className="flex items-center gap-3 px-12 py-4 text-sm font-black uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-700 rounded-3xl transition-all shadow-2xl shadow-emerald-200 ring-4 ring-emerald-50 active:scale-95 disabled:opacity-50"
                   >
                     {isSubmitting ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
-                        <Save size={20} />
+                      <Save size={20} />
                     )}
                     {isSubmitting ? "Processing..." : "Finish Task & Save Record"}
                   </button>

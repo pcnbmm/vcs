@@ -32,23 +32,31 @@ export async function getOrdersForReturn() {
                 request_id: 'desc'
             }
         });
-        // Fetch all users to map approver names (since there's no direct Prisma relation)
         const users = await prisma.vc_users.findMany({
             select: {
                 userid: true,
                 firstname: true,
                 lastname: true,
-                username: true
             }
         });
 
-        const userMap = new Map(users.map(u => [u.userid.toString(), u]));
+        const orgs = await prisma.vc_orgs.findMany({
+            select: {
+                orgid: true,
+                orgname: true
+            }
+        });
+
+        const userMap = new Map(users.map((u: any) => [u.userid.toString(), u]));
+        const orgMap = new Map(orgs.map((o: any) => [o.orgid.toString(), o.orgname]));
 
         const ordersWithApprover = orders.map(order => {
             const approver = order.approve_id ? userMap.get(order.approve_id.trim()) : null;
+            const orgName = order.use_div_code ? orgMap.get(order.use_div_code.trim()) : null;
             return {
                 ...order,
-                approver_name: approver ? `${approver.firstname} ${approver.lastname}` : (order.approve_id || "-")
+                approver_name: approver ? `${approver.firstname} ${approver.lastname}` : (order.approve_id || "-"),
+                use_div_name: orgName || order.use_div_code || "ฝ่ายบริหาร"
             };
         });
 
