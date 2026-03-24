@@ -34,6 +34,7 @@ export default function VehicleRequestPage() {
   const [provinceList, setProvinceList] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [driverSearch, setDriverSearch] = useState('');
+  const [mapKey, setMapKey] = useState(0);
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -68,12 +69,29 @@ export default function VehicleRequestPage() {
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
+      !formData.endDate ||
+      !formData.endTime ||
       !formData.objective ||
       (formData.selfDrive && !formData.driverId)
     ) {
       alert(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วัตถุประสงค์, ชื่อผู้ขับ)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
+      return;
+    }
+
+    if (!/^\d{10}$/.test(formData.phone)) {
+      alert("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+      return;
+    }
+
+    if (formData.startDate > formData.endDate) {
+      alert("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
+      return;
+    }
+
+    if (formData.startDate === formData.endDate && formData.endTime <= formData.startTime) {
+      alert("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
       return;
     }
 
@@ -144,6 +162,7 @@ export default function VehicleRequestPage() {
       driverId: 0,
     });
     setDriverSearch('');
+    setMapKey(prev => prev + 1);
   };
 
   useEffect(() => {
@@ -301,6 +320,7 @@ export default function VehicleRequestPage() {
                 <div className="md:col-span-2 space-y-4">
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
                     <MapBox
+                      key={mapKey}
                       onLocationSelect={(loc: any) => {
                         // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
                         setFormData((prev) => ({
@@ -396,7 +416,7 @@ export default function VehicleRequestPage() {
                 </FormField>
 
                 {/* Self Drive Checkbox + Driver Combobox */}
-                <div className="md:col-span-2 space-y-3 relative"></div>
+                <div className="md:col-span-2 space-y-3 relative">
                   <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                     <input
                       type="checkbox"
@@ -511,32 +531,37 @@ export default function VehicleRequestPage() {
                 </div>
 
                 {/* Passengers & Phone */}
-                <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
-                  <div className="relative">
+                <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4 md:gap-x-8">
+                  <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={formData.passengers}
+                        onChange={(e) =>
+                          handleInputChange("passengers", e.target.value)
+                        }
+                        placeholder="0"
+                        min="1"
+                        className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      />
+                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
+                        คน
+                      </span>
+                    </div>
+                  </FormField>
+                  <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
                     <input
-                      type="number"
-                      value={formData.passengers}
-                      onChange={(e) =>
-                        handleInputChange("passengers", e.target.value)
-                      }
-                      placeholder="0"
-                      min="1"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        handleInputChange("phone", val);
+                      }}
+                      placeholder="0x-xxxx-xxxx"
                       className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
-                      คน
-                    </span>
-                  </div>
-                </FormField>
-                <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    placeholder="0x-xxxx-xxxx"
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                  />
-                </FormField>
+                  </FormField>
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
@@ -565,6 +590,7 @@ export default function VehicleRequestPage() {
           </div>
         </div>
       </div>
+    </div>
   );
 }
 

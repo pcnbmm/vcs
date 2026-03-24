@@ -42,7 +42,7 @@ export default function PendingPage() {
                         province: b.journey_province,
                         passengers: b.passenger_amount,
                         phone: b.user_mobile || '-',
-                        selfDrive: b.self_drive ? 'ใช่ (ขับเอง)' : 'ไม่ใช่ (ขอพนักงานขับ)',
+                        selfDrive: b.self_drive ? 'ขับเอง' : 'พนักงานขับ',
                         endDate: b.return_date ? new Date(b.return_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
                         endTime: b.return_time || 'N/A',
                     }));
@@ -86,8 +86,8 @@ export default function PendingPage() {
         { id: 'ALL', label: 'ทั้งหมด', icon: RefreshCw },
         { id: 'PENDING', label: 'รออนุมัติ', icon: Clock, color: 'amber' },
         { id: 'APPROVED', label: 'อนุมัติแล้ว', icon: CheckCircle2, color: 'emerald' },
+        { id: 'REJECTED', label: 'ยกเลิก/ไม่อนุมัติ', icon: XCircle, color: 'rose' },
         { id: 'COMPLETED', label: 'เสร็จสิ้น', icon: CheckCircle2, color: 'blue' },
-        { id: 'REJECTED', label: 'ยกเลิก/ปฏิเสธ', icon: XCircle, color: 'rose' },
     ];
 
     return (
@@ -100,19 +100,7 @@ export default function PendingPage() {
                     </div>
                     <div>
                         <h1 className="text-3xl font-black text-gray-900 tracking-tight">ติดตามสถานะคำขอ</h1>
-                        <p className="text-gray-500 font-medium mt-1">ตรวจสอบความคืบหน้าของรายการจองรถทั้งหมดของคุณ</p>
                     </div>
-                </div>
-
-                <div className="relative w-full md:w-auto">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="ค้นหาเลขที่คำขอ หรือ สถานที่..."
-                        className="w-full md:w-80 pl-12 pr-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium"
-                    />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 </div>
             </div>
 
@@ -193,14 +181,14 @@ export default function PendingPage() {
                                 >
                                     {/* Request Info */}
                                     <div className="flex-1 min-w-[200px]">
-                                        <span className="text-xs font-black text-blue-600 uppercase tracking-widest mb-1 block">
+                                        <span className="text-base font-black text-blue-600 uppercase tracking-widest mb-1 block">
                                             {req.id}
                                         </span>
                                         <h3 className="text-lg font-black text-gray-900 leading-tight">
-                                            {req.requester}
+                                            {req.department}
                                         </h3>
                                         <p className="text-sm text-gray-400 font-bold mt-0.5">
-                                            {req.department}
+                                            {req.requester}
                                         </p>
                                     </div>
 
@@ -253,7 +241,7 @@ export default function PendingPage() {
             {/* ส่วน Detail Modal */}
             {selectedRequest && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setSelectedRequest(null)}>
-                    <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-2xl relative overflow-hidden" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-2xl relative overflow-y-auto max-h-[90vh] custom-scrollbar" onClick={e => e.stopPropagation()}>
                         <button
                             onClick={() => setSelectedRequest(null)}
                             className="absolute top-8 right-8 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
@@ -262,23 +250,22 @@ export default function PendingPage() {
                         </button>
 
                         <div className="mb-8 border-b border-gray-100 pb-6">
-                            <span className="text-xs font-black text-blue-600 uppercase tracking-widest">{selectedRequest.id}</span>
+                            <span className="text-base font-black text-blue-600 uppercase tracking-widest">{selectedRequest.id}</span>
                             <h2 className="text-3xl font-black text-gray-900 mt-1 tracking-tight">รายละเอียดคำขอจองรถ</h2>
                         </div>
 
                         <div className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">ชื่อผู้ขอ</p>
-                                    <p className="text-lg font-bold text-gray-900">{selectedRequest.requester}</p>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <RefreshCw size={12} className="text-blue-500" />
-                                        <p className="text-sm font-semibold text-blue-600 tracking-tight">{selectedRequest.phone}</p>
-                                    </div>
-                                </div>
-                                <div>
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">สังกัด / แผนก</p>
                                     <p className="text-lg font-bold text-gray-900">{selectedRequest.department}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">ชื่อผู้ขอ</p>
+                                    <p className="text-sm font-bold text-gray-700">{selectedRequest.requester}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <p className="text-sm font-semibold text-blue-600 tracking-tight">{selectedRequest.phone}</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -315,15 +302,15 @@ export default function PendingPage() {
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">วัตถุประสงค์ / หมายเหตุ</p>
                                 <p className="text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedRequest.objective}</p>
                             </div>
-                        </div>
 
-                        <div className="mt-10 flex justify-end">
-                            <button
-                                onClick={() => setSelectedRequest(null)}
-                                className="px-8 py-3 bg-gray-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl shadow-slate-200"
-                            >
-                                ปิดหน้าต่าง
-                            </button>
+                            {selectedRequest.status === '3' && (
+                                <div className="bg-rose-50 border border-rose-100 p-6 rounded-[1.5rem] mt-6">
+                                    <p className="text-[10px] font-black text-rose-600 uppercase tracking-[0.15em] mb-2">เหตุผลที่ไม่อนุมัติ</p>
+                                    <p className="text-sm font-medium text-rose-700 leading-relaxed whitespace-pre-wrap">
+                                        {selectedRequest.rejectReason || "ไม่ระบุเหตุผลในการไม่อนุมัติ (ไม่ได้บันทึกไว้ในระบบ)"}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -348,7 +335,7 @@ export const getStatusName = (status: number | string) => {
             return 'อนุมัติแล้ว';
         case '3':
         case 'REJECTED':
-            return 'ไม่อนุมัติ';
+            return 'ยกเลิก/ไม่อนุมัติ';
         case '4':
         case 'IN_USE':
             return 'กำลังใช้งาน';
