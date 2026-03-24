@@ -70,10 +70,9 @@ model vc_users {
   checkupdate   String?         @db.VarChar(50)
   upd_date      String?         @db.VarChar(50)
   userid        Int             @id @default(autoincrement())
-  Session       Session[]
   vc_driver     vc_driver?
-  vc_order_item vc_order_item[]
   vc_login_log  vc_login_log[]
+  vc_order_item vc_order_item[]
   vc_user_roles vc_user_roles[]
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
@@ -533,6 +532,6 @@ model vc_login_log {
   userid   Int?
   username String?   @db.VarChar(50)
   login_at DateTime  @default(now())
-  status   String    @db.VarChar(10) // SUCCESS, FAILED
+  status   String    @db.VarChar(10)
   vc_users vc_users? @relation(fields: [userid], references: [userid])
 }
