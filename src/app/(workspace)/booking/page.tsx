@@ -5,7 +5,7 @@ import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
 import { useRouter } from "next/navigation";
-import MapBox from '@/components/ui/LongdoMapBox';
+import MapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
@@ -222,10 +222,6 @@ export default function VehicleRequestPage() {
             <h1 className="text-3xl font-extrabold text-black tracking-tight">
               ขอใช้งานยานพาหนะ
             </h1>
-            <p className="text-gray-700 font-bold flex items-center gap-2">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              ระบบจัดการคำขอใช้รถยนต์ส่วนกลาง
-            </p>
           </div>
         </div>
       </div>
@@ -486,34 +482,69 @@ export default function VehicleRequestPage() {
                             {drivers.filter((d) => {
                               const fullName =
                                 `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                              return fullName
-                                .toLowerCase()
-                                .includes(driverSearch.toLowerCase());
-                            }).length === 0 && (
-                              <div className="px-4 py-3 text-sm text-gray-400">
-                                ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {!formData.driverId && !driverSearch && (
-                          <p className="text-xs text-red-500 font-medium mt-1">
-                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
-                            กรุณาติดต่อ Admin
-                          </p>
-                        )}
-                      </FormField>
-                    </div>
-                  )}
-                </div>
+                              return (
+                                fullName
+                                  .toLowerCase()
+                                  .includes(driverSearch.toLowerCase()) ||
+                                String(d.driver_code).includes(driverSearch)
+                              );
+                            })
+                            .map((d) => (
+                              <button
+                                key={d.driver_id}
+                                type="button"
+                                onClick={() => {
+                                  handleInputChange("driverId", d.driver_id);
+                                  setDriverSearch("");
+                                }}
+                                className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors"
+                              >
+                                {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
+                                <span className="text-xs text-gray-400 ml-2">
+                                  ({d.driver_code})
+                                </span>
+                              </button>
+                            ))}
+                          {drivers.filter((d) => {
+                            const fullName =
+                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                            return fullName
+                              .toLowerCase()
+                              .includes(driverSearch.toLowerCase());
+                          }).length === 0 && (
+                            <div className="px-4 py-3 text-sm text-gray-400">
+                              ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {!formData.driverId && !driverSearch && (
+                        <p className="text-xs text-red-500 font-medium mt-1">
+                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ
+                          Admin
+                        </p>
+                      )}
+                    </FormField>
+                  </div>
+                )}
+              </div>
 
-                {/* Message/Reason */}
-                <div className="md:col-span-2">
-                  <FormField
-                    label={
-                      <div className="flex items-center gap-2">
-                        <span>หมายเหตุ</span>
-                      </div>
+              {/* Message/Reason */}
+              <div className="md:col-span-2">
+                <FormField
+                  label={
+                    <div className="flex items-center gap-2">
+                      <span>หมายเหตุ</span>
+                    </div>
+                  }
+                  icon={MessageSquare}
+                  required
+                >
+                  <textarea
+                    rows={3}
+                    value={formData.objective}
+                    onChange={(e) =>
+                      handleInputChange("objective", e.target.value)
                     }
                     icon={MessageSquare}
                     required
@@ -564,28 +595,27 @@ export default function VehicleRequestPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
-                <button
-                  onClick={resetForm}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
-                >
-                  <X className="w-4 h-4" />
-                  ยกเลิกเนื้อหา
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอ"}
-                </button>
-              </div>
+            <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
+              <button
+                onClick={resetForm}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
+              >
+                <X className="w-4 h-4" />
+                ยกเลิกเนื้อหา
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอ"}
+              </button>
             </div>
           </div>
         </div>
