@@ -23,12 +23,9 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800 flex-shrink-0">
-      {/* Logo */}
       <div className="flex items-center p-4 justify-center h-20 border-b border-slate-800 flex-shrink-0">
-        <div className="text-xl font-bold text-white">VCS SYSTEM</div>
+        <div className="text-xl font-bold text-white">VCS</div>
       </div>
-
-      {/* Menu */}
       <nav className="flex-1 overflow-y-auto py-4 px-3 sidebar-scrollbar">
         <ul className="space-y-1.5">
           {menuItems.map((item) => {
@@ -51,7 +48,6 @@ export default function Sidebar() {
                     {item.menuname}
                   </span>
 
-                  {/* Active Indicator */}
                   {isActive && (
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-r-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
                   )}
