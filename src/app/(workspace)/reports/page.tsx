@@ -20,7 +20,7 @@ import {
   Text,
   View,
   StyleSheet,
-  PDFDownloadLink,
+  pdf,
   Font,
 } from "@react-pdf/renderer";
 
@@ -42,76 +42,202 @@ import {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    padding: 40,
     fontFamily: "Sarabun",
+    fontSize: 10,
+    color: "#333",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingBottom: 10,
+  },
+  logoPlaceholder: {
+    width: 60,
+    height: 60,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderStyle: "dashed",
+  },
+  orgInfo: {
+    textAlign: "right",
+  },
+  orgName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  printDate: {
+    fontSize: 9,
+    color: "#666",
+  },
+  titleSection: {
+    marginBottom: 25,
+    textAlign: "center",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: "center",
+    fontSize: 20,
     fontWeight: "bold",
+    textDecoration: "underline",
+    marginBottom: 5,
   },
   table: {
-    display: "flex",
-    width: "auto",
+    width: "100%",
     borderStyle: "solid",
     borderWidth: 1,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
+    borderColor: "#000",
   },
   tableRow: {
-    margin: "auto",
     flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    minHeight: 25,
+    alignItems: "center",
   },
   tableColHeader: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#f5f5f5",
+    fontWeight: "bold",
     padding: 5,
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    justifyContent: "center",
+    textAlign: "center",
   },
   tableCol: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
     padding: 5,
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    justifyContent: "center",
   },
   tableCellHeader: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: "bold",
   },
   tableCell: {
-    fontSize: 8,
+    fontSize: 9,
+  },
+  signatureSection: {
+    marginTop: 50,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  signatureBox: {
+    width: "40%",
+    textAlign: "center",
+  },
+  signatureLine: {
+    marginTop: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    marginBottom: 8,
+  },
+  pageNumber: {
+    position: "absolute",
+    fontSize: 9,
+    bottom: 30,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    color: "#999",
   },
 });
 
-const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[], data: any[] }) => (
-  <Document>
-    <Page size="A4" orientation="landscape" style={styles.page}>
-      <Text style={styles.title}>{title}</Text>
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-          {columns.map((col, i) => (
-            <View key={i} style={[styles.tableColHeader, { width: `${100 / columns.length}%` }]}>
-              <Text style={styles.tableCellHeader}>{col.header}</Text>
-            </View>
-          ))}
+const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[], data: any[] }) => {
+  const currentDate = new Intl.DateTimeFormat('th-TH', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  }).format(new Date());
+
+  return (
+    <Document>
+      <Page size="A4" orientation="landscape" style={styles.page}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <View style={styles.logoPlaceholder}>
+            <Text style={{ fontSize: 8 }}>LOGO</Text>
+          </View>
+          <View style={styles.orgInfo}>
+            <Text style={styles.orgName}>ระบบจัดการยานพาหนะ (VCS)</Text>
+            <Text style={styles.printDate}>วันที่พิมพ์: {currentDate}</Text>
+          </View>
         </View>
-        {data.map((item, index) => (
-          <View style={styles.tableRow} key={index}>
+
+        {/* Title Section */}
+        <View style={styles.titleSection}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+
+        {/* Table Section */}
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
             {columns.map((col, i) => (
-              <View key={i} style={[styles.tableCol, { width: `${100 / columns.length}%` }]}>
-                <Text style={styles.tableCell}>{item[col.key] || "-"}</Text>
+              <View 
+                key={i} 
+                style={[
+                  styles.tableColHeader, 
+                  { width: `${100 / columns.length}%` },
+                  i === columns.length - 1 ? { borderRightWidth: 0 } : {}
+                ]}
+              >
+                <Text style={styles.tableCellHeader}>{col.header}</Text>
               </View>
             ))}
           </View>
-        ))}
-      </View>
-    </Page>
-  </Document>
-);
+          {data.map((item, index) => (
+            <View 
+              style={[
+                styles.tableRow,
+                index === data.length - 1 ? { borderBottomWidth: 0 } : {}
+              ]} 
+              key={index}
+            >
+              {columns.map((col, i) => (
+                <View 
+                  key={i} 
+                  style={[
+                    styles.tableCol, 
+                    { width: `${100 / columns.length}%` },
+                    i === columns.length - 1 ? { borderRightWidth: 0 } : {}
+                  ]}
+                >
+                  <Text style={styles.tableCell}>{item[col.key] || "-"}</Text>
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
+
+        {/* Signature Section */}
+        <View style={styles.signatureSection} wrap={false}>
+          <View style={styles.signatureBox}>
+            <View style={styles.signatureLine} />
+            <Text>(..........................................................)</Text>
+            <Text style={{ marginTop: 4 }}>ผู้จัดทำ</Text>
+          </View>
+          <View style={styles.signatureBox}>
+            <View style={styles.signatureLine} />
+            <Text>(..........................................................)</Text>
+            <Text style={{ marginTop: 4 }}>ผู้อนุมัติ</Text>
+          </View>
+        </View>
+
+        {/* Footer Section */}
+        <Text 
+          style={styles.pageNumber} 
+          render={({ pageNumber, totalPages }) => `หน้า ${pageNumber} / ${totalPages}`} 
+          fixed 
+        />
+      </Page>
+    </Document>
+  );
+};
 
 const REPORT_TYPES = [
   { id: "summary_performance", name: "รายงานสรุปการปฏิบัติงานของพนักงาน" },
@@ -210,7 +336,11 @@ export default function ReportsPage() {
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), `${selectedReportName}.xlsx`);
+    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    saveAs(
+      new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }),
+      `${fileName}.xlsx`
+    );
   };
 
   const exportToWord = async () => {
@@ -258,7 +388,15 @@ export default function ReportsPage() {
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `${selectedReportName}.docx`);
+    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    saveAs(blob, `${fileName}.docx`);
+  };
+
+  const exportToPDF = async () => {
+    const doc = <MyPDFDocument title={selectedReportName} columns={columns} data={data} />;
+    const blob = await pdf(doc).toBlob();
+    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    saveAs(blob, `${fileName}.pdf`);
   };
 
   return (
@@ -276,12 +414,9 @@ export default function ReportsPage() {
           <button onClick={exportToWord} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
             <FileText size={18} /> Word
           </button>
-          <PDFDownloadLink document={<MyPDFDocument title={selectedReportName} columns={columns} data={data} />} fileName={`${selectedReportName}.pdf`} className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
-             {/* @ts-ignore */}
-            {({ loading }) => (
-              <>{loading ? <span className="animate-pulse">...</span> : <><FileIcon size={18} /> PDF</>}</>
-            )}
-          </PDFDownloadLink>
+          <button onClick={exportToPDF} className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
+            <FileIcon size={18} /> PDF
+          </button>
         </div>
       </div>
 
