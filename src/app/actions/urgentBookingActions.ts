@@ -22,7 +22,7 @@ export async function getUrgentRequesters() {
         return { success: true, data: users };
     } catch (error) {
         console.error('Error fetching requesters:', error);
-        return { success: false, error: 'Failed to fetch requesters' };
+        return { success: false, data: [], error: 'Failed to fetch requesters' };
     }
 }
 

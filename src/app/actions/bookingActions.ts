@@ -109,7 +109,7 @@ export async function getMyBookings(userid?: number, personalOnly: boolean = fal
     return { success: true, data: enrichedBookings };
   } catch (error) {
     console.error("Error fetching bookings:", error);
-    return { success: false, error: "Failed to fetch bookings" };
+    return { success: false, data: [], error: "Failed to fetch bookings" };
   }
 }
 
