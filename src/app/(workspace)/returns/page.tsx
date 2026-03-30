@@ -15,7 +15,7 @@ import {
   Save,
   Loader2,
 } from "lucide-react";
-import { getOrdersForReturn, saveReturnRecord, getDispatchers } from "./actions";
+import { getOrdersForReturn, saveReturnRecord, getDispatchers, getLatestCarMileage } from "./actions";
 
 export default function ReturnsPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -96,11 +96,21 @@ export default function ReturnsPage() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEditModal = (item: any) => {
+  const handleOpenEditModal = async (item: any) => {
     setSelectedItem(item);
     setModalMode("edit");
+
+    // Fetch latest mileage for this car
+    let lastMileEnd = 0;
+    if (item.car_id) {
+      const res = await getLatestCarMileage(item.car_id);
+      if (res.success) {
+        lastMileEnd = res.mile_end || 0;
+      }
+    }
+
     setReturnFormData({
-      mile_begin: "",
+      mile_begin: lastMileEnd || "",
       mile_end: "",
       return_real_date: new Date().toISOString().split('T')[0],
       return_real_time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
@@ -202,8 +212,8 @@ export default function ReturnsPage() {
                     setIsFilterOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${selectedFilter === option
-                      ? "bg-emerald-600 text-white"
-                      : "text-slate-700 hover:bg-slate-50 font-medium"
+                    ? "bg-emerald-600 text-white"
+                    : "text-slate-700 hover:bg-slate-50 font-medium"
                     }`}
                 >
                   {option}
@@ -428,11 +438,11 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
-                      {selectedItem?.self_drive 
-                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}` 
-                        : (selectedItem?.vc_driver?.vc_users?.firstname 
-                            ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}` 
-                            : "ไม่ระบุพนักงานขับรถ")}
+                      {selectedItem?.self_drive
+                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
+                        : (selectedItem?.vc_driver?.vc_users?.firstname
+                          ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}`
+                          : "ไม่ระบุพนักงานขับรถ")}
                     </div>
                   </div>
                   <div className="group">
