@@ -16,15 +16,23 @@ export default function Sidebar() {
       const roles = session?.user?.roles ?? [];
       if (roles.length === 0) return;
       const result = await getMenusByRoleIds(roles);
-      if (result.success) setMenuItems(result.data);
+      if (result.success) {
+        // Sort menus: "อนุมัติคำขอ" first, then the rest
+        const sortedMenus = [...result.data].sort((a, b) => {
+          if (a.menuname === "อนุมัติคำขอ") return -1;
+          if (b.menuname === "อนุมัติคำขอ") return 1;
+          return 0;
+        });
+        setMenuItems(sortedMenus);
+      }
     };
     fetchMenus();
   }, [session]);
 
   return (
-    <div className="w-64 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800 flex-shrink-0">
-      <div className="flex items-center p-4 justify-center h-20 border-b border-slate-800 flex-shrink-0">
-        <div className="text-xl font-bold text-white">VCS</div>
+    <div className="w-60 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800 shrink-0">
+      <div className="flex items-center p-3 justify-center h-16 border-b border-slate-800 shrink-0">
+        <div className="text-xl font-bold text-white tracking-widest">VCS</div>
       </div>
       <nav className="flex-1 overflow-y-auto py-4 px-3 sidebar-scrollbar">
         <ul className="space-y-1.5">

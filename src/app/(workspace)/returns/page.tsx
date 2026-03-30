@@ -168,7 +168,7 @@ export default function ReturnsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12 relative animate-in fade-in duration-500">
+    <div className="max-w-6xl mx-auto space-y-4 pb-4 relative animate-in fade-in duration-500">
 
 
       {/* Search Bar */}
@@ -219,20 +219,20 @@ export default function ReturnsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/80 text-slate-500 text-xs tracking-widest uppercase border-b border-slate-100">
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+              <tr className="bg-slate-50/80 text-slate-500 text-[10px] tracking-widest uppercase border-b border-slate-100">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   ID / ทะเบียนรถ
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   ผู้เดินทาง / หน่วยงาน
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   พนักงานขับ / ประเภทรถ
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   สถานะการคืน
                 </th>
-                <th className="px-6 py-5 font-black text-center whitespace-nowrap">
+                <th className="px-4 py-3 font-black text-center whitespace-nowrap">
                   จัดการรายการ
                 </th>
               </tr>
@@ -254,13 +254,13 @@ export default function ReturnsPage() {
                     key={index}
                     className="bg-white hover:bg-slate-50 transition-colors group"
                   >
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-black text-slate-900 italic tracking-tighter">REQ-{String(item.request_id).padStart(4, '0')}</p>
                       <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
                         {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
                         {item.vc_user?.firstname} {item.vc_user?.lastname}
                       </p>
@@ -268,7 +268,7 @@ export default function ReturnsPage() {
                         {item.use_div_name || "-"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
                         {item.self_drive ? "(ขับเอง)" : (item.vc_driver?.vc_users?.firstname ? `นาย ${item.vc_driver.vc_users.firstname}` : "-")}
                       </p>
@@ -276,7 +276,7 @@ export default function ReturnsPage() {
                         {item.vc_car_spec?.car_spec_name || "-"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       {item.status_use_id === 5 ? (
                         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -289,7 +289,7 @@ export default function ReturnsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <div className="flex items-center justify-center gap-3">
                         <button
                           onClick={() => handleOpenViewModal(item)}

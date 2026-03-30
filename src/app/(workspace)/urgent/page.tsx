@@ -238,18 +238,18 @@ export default function VehicleRequestPage() {
       <div className="grid grid-cols-1 gap-8">
         {/* Main Form */}
         <div className="w-full space-y-8">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
-              <Car size={200} />
-            </div>
+      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none select-none">
+          <Car size={150} />
+        </div>
 
-            <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
-                <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
-                <h2 className="text-2xl font-black text-black uppercase tracking-tight">
-                  รายละเอียดแผนการเดินทาง
-                </h2>
-              </div>
+        <div className="relative space-y-6">
+          <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+            <div className="w-1.5 h-6 bg-black rounded-full shadow-sm"></div>
+            <h2 className="text-xl font-black text-black uppercase tracking-tight">
+              รายละเอียดแผนการเดินทาง
+            </h2>
+          </div>
 
               {/* Requester Selection Section */}
               <div className="bg-red-50 p-6 rounded-3xl border border-red-100 space-y-4">
