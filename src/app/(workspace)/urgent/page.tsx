@@ -233,23 +233,7 @@ export default function VehicleRequestPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-200">
-            <FileText className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-extrabold text-black tracking-tight">
-              ขอใช้งานยานพาหนะ
-            </h1>
-            <p className="text-gray-700 font-bold flex items-center gap-2">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              ระบบจัดการคำขอใช้รถยนต์ด่วนกรณีพิเศษ
-            </p>
-          </div>
-        </div>
-      </div>
+
 
       <div className="grid grid-cols-1 gap-8">
         {/* Main Form */}
