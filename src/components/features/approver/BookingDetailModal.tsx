@@ -104,11 +104,11 @@ export default function BookingDetailModal({
                 </button>
 
                 {/* Content Container */}
-                <div className="p-8">
+                <div className="p-5">
                     {/* Header */}
-                    <div className="mb-6">
+                    <div className="mb-4">
                         <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{booking.id}</span>
-                        <h2 className="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">รายละเอียดคำขอจองรถ</h2>
+                        <h2 className="text-xl font-black text-slate-900 mt-0.5 tracking-tight">รายละเอียดคำขอจองรถ</h2>
                         <div className="flex items-center gap-3 mt-3">
                             <StatusBadge status={booking.status} />
                             <span className="text-xs text-slate-400 font-medium">
@@ -119,7 +119,7 @@ export default function BookingDetailModal({
 
                     <div className="space-y-5">
                         {/* ผู้ขอ & สังกัด */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Section title="ผู้ขอใช้รถ" icon={User}>
                                 <div>
                                     <p className="text-base font-bold text-slate-900">{booking.requesterName}</p>

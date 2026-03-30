@@ -88,7 +88,7 @@ export async function saveReturnRecord(data: {
             // 1. Update Order Status to 5 (completed - ตามรูปจาก Prisma Studio)
             await tx.vc_order_item.update({
                 where: { request_id: data.request_id },
-                data: { 
+                data: {
                     status_use_id: 5,
                     upd_date: new Date(),
                     upd_by: session?.user?.name || 'system'
@@ -153,5 +153,20 @@ export async function getDispatchers() {
     } catch (error) {
         console.error("Error fetching dispatchers:", error);
         return { success: false, error: "Failed to fetch dispatchers" };
+    }
+}
+
+export async function getLatestCarMileage(carId: number | null) {
+    if (!carId) return { success: false, mile_end: 0 };
+    try {
+        const latestUse = await prisma.vc_use.findFirst({
+            where: { car_id: carId },
+            orderBy: { use_id: 'desc' },
+            select: { mile_end: true }
+        });
+        return { success: true, mile_end: latestUse?.mile_end ?? 0 };
+    } catch (error) {
+        console.error("Error fetching latest car mileage:", error);
+        return { success: false, error: "Failed to fetch mileage", mile_end: 0 };
     }
 }

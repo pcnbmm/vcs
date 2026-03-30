@@ -15,7 +15,7 @@ import {
   Save,
   Loader2,
 } from "lucide-react";
-import { getOrdersForReturn, saveReturnRecord, getDispatchers } from "./actions";
+import { getOrdersForReturn, saveReturnRecord, getDispatchers, getLatestCarMileage } from "./actions";
 
 export default function ReturnsPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -96,11 +96,21 @@ export default function ReturnsPage() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEditModal = (item: any) => {
+  const handleOpenEditModal = async (item: any) => {
     setSelectedItem(item);
     setModalMode("edit");
+
+    // Fetch latest mileage for this car
+    let lastMileEnd = 0;
+    if (item.car_id) {
+      const res = await getLatestCarMileage(item.car_id);
+      if (res.success) {
+        lastMileEnd = res.mile_end || 0;
+      }
+    }
+
     setReturnFormData({
-      mile_begin: "",
+      mile_begin: lastMileEnd || "",
       mile_end: "",
       return_real_date: new Date().toISOString().split('T')[0],
       return_real_time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
@@ -158,7 +168,7 @@ export default function ReturnsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12 relative animate-in fade-in duration-500">
+    <div className="max-w-6xl mx-auto space-y-4 pb-4 relative animate-in fade-in duration-500">
 
 
       {/* Search Bar */}
@@ -192,8 +202,8 @@ export default function ReturnsPage() {
                     setIsFilterOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${selectedFilter === option
-                      ? "bg-emerald-600 text-white"
-                      : "text-slate-700 hover:bg-slate-50 font-medium"
+                    ? "bg-emerald-600 text-white"
+                    : "text-slate-700 hover:bg-slate-50 font-medium"
                     }`}
                 >
                   {option}
@@ -209,20 +219,20 @@ export default function ReturnsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/80 text-slate-500 text-xs tracking-widest uppercase border-b border-slate-100">
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+              <tr className="bg-slate-50/80 text-slate-500 text-[10px] tracking-widest uppercase border-b border-slate-100">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   ID / ทะเบียนรถ
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   ผู้เดินทาง / หน่วยงาน
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   พนักงานขับ / ประเภทรถ
                 </th>
-                <th className="px-6 py-5 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-black whitespace-nowrap">
                   สถานะการคืน
                 </th>
-                <th className="px-6 py-5 font-black text-center whitespace-nowrap">
+                <th className="px-4 py-3 font-black text-center whitespace-nowrap">
                   จัดการรายการ
                 </th>
               </tr>
@@ -244,13 +254,13 @@ export default function ReturnsPage() {
                     key={index}
                     className="bg-white hover:bg-slate-50 transition-colors group"
                   >
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-black text-slate-900 italic tracking-tighter">REQ-{String(item.request_id).padStart(4, '0')}</p>
                       <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
                         {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
                         {item.vc_user?.firstname} {item.vc_user?.lastname}
                       </p>
@@ -258,7 +268,7 @@ export default function ReturnsPage() {
                         {item.use_div_name || "-"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
                         {item.self_drive ? "(ขับเอง)" : (item.vc_driver?.vc_users?.firstname ? `นาย ${item.vc_driver.vc_users.firstname}` : "-")}
                       </p>
@@ -266,7 +276,7 @@ export default function ReturnsPage() {
                         {item.vc_car_spec?.car_spec_name || "-"}
                       </p>
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       {item.status_use_id === 5 ? (
                         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -279,7 +289,7 @@ export default function ReturnsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-5 align-top">
+                    <td className="px-4 py-3 align-top">
                       <div className="flex items-center justify-center gap-3">
                         <button
                           onClick={() => handleOpenViewModal(item)}
@@ -418,11 +428,11 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
-                      {selectedItem?.self_drive 
-                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}` 
-                        : (selectedItem?.vc_driver?.vc_users?.firstname 
-                            ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}` 
-                            : "ไม่ระบุพนักงานขับรถ")}
+                      {selectedItem?.self_drive
+                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
+                        : (selectedItem?.vc_driver?.vc_users?.firstname
+                          ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}`
+                          : "ไม่ระบุพนักงานขับรถ")}
                     </div>
                   </div>
                   <div className="group">
