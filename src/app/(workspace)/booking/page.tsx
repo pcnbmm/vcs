@@ -132,7 +132,7 @@ export default function VehicleRequestPage() {
 
       if (result.success) {
         alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
-        resetForm();
+        router.push("/pending");
       } else {
         alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }
