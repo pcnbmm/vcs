@@ -1,5 +1,5 @@
 "use client";
-
+import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
 import {
@@ -92,7 +92,8 @@ export default function PendingPage() {
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1") ||
       (statusFilter === "APPROVED" && req.status === "2") ||
-      (statusFilter === "REJECTED" && req.status === "3") ||
+      (statusFilter === "REJECTED" &&
+        (req.status === "3" || req.status === "6")) ||
       (statusFilter === "COMPLETED" && req.status === "5");
 
     return matchesStatus; // ส่งค่าแค่ matchesStatus กลับไป
@@ -401,15 +402,74 @@ export default function PendingPage() {
                 </p>
               </div>
             </div>
-
-            <div className="mt-10 flex justify-end">
-              <button
-                onClick={() => setSelectedRequest(null)}
-                className="px-8 py-3 bg-gray-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl shadow-slate-200"
-              >
-                ปิดหน้าต่าง
-              </button>
-            </div>
+            {selectedRequest?.status === "1" && (
+              <div className="mt-10 flex justify-end">
+                <button
+                  onClick={async () => {
+                    if (!confirm("ยืนยันการยกเลิกคำขอนี้?")) return;
+                    const res = await cancelRequest(Number(selectedRequest.id));
+                    if (res.success) {
+                      setSelectedRequest(null);
+                      const result = await getMyBookings(undefined, true);
+                      if (result.success && result.data) {
+                        const formattedList = result.data.map((b: any) => ({
+                          id: String(b.request_id),
+                          requester: b.vc_user
+                            ? `${b.vc_user.firstname} ${b.vc_user.lastname}`
+                            : "ไม่ระบุชื่อ",
+                          department:
+                            b.vc_org?.orgname ||
+                            b.use_div_code ||
+                            "ไม่ระบุแผนก",
+                          destination: b.journey_place,
+                          date: b.journey_date
+                            ? new Date(b.journey_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )
+                            : "N/A",
+                          time: b.journey_time || "N/A",
+                          objective: b.journey_causes || "-",
+                          status: b.status_use_id
+                            ? String(b.status_use_id)
+                            : "1",
+                          carType:
+                            b.vc_car_spec?.car_spec_name || b.car_spec_id,
+                          origin:
+                            b.vc_start_place?.start_place_name ||
+                            String(b.start_place || "-"),
+                          province: b.journey_province,
+                          passengers: b.passenger_amount,
+                          phone: b.user_mobile || "-",
+                          selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
+                          endDate: b.return_date
+                            ? new Date(b.return_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-",
+                          endTime: b.return_time || "N/A",
+                        }));
+                        setRequests(formattedList);
+                      }
+                    } else {
+                      alert(res.error);
+                    }
+                  }}
+                  className="px-8 py-3 bg-rose-600 text-white rounded-2xl font-black text-sm hover:bg-rose-700 transition-all uppercase tracking-widest shadow-xl shadow-rose-200"
+                >
+                  ยกเลิกคำขอ
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -440,6 +500,9 @@ export const getStatusName = (status: number | string) => {
     case "5":
     case "COMPLETED":
       return "เสร็จสิ้น";
+    case "6":
+    case "CANCELLED":
+      return "ยกเลิกโดยผู้ขอ";
     default:
       return "สถานะไม่ระบุ";
   }
@@ -464,6 +527,9 @@ export const getStatusColor = (status: number | string) => {
     case "5":
     case "COMPLETED":
       return "text-emerald-600 bg-emerald-50 border-emerald-200";
+    case "6":
+    case "CANCELLED":
+      return "text-rose-600 bg-rose-50 border-rose-200";
     default:
       return "text-gray-600 bg-gray-50 border-gray-100";
   }
