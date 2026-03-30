@@ -159,17 +159,7 @@ export default function ReturnsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 relative animate-in fade-in duration-500">
-      {/* Header Square */}
-      <div className="bg-white rounded-4xl p-6 shadow-sm border border-slate-100 flex items-center gap-6">
-        <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center shrink-0 shadow-md">
-          <Car className="text-white" size={32} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            การบันทึกการคืนรถ (Return)
-          </h1>
-        </div>
-      </div>
+
 
       {/* Search Bar */}
       <div className="bg-white rounded-full p-2 shadow-sm border border-slate-100 flex items-center gap-4">

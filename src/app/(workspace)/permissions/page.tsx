@@ -21,22 +21,7 @@ export default function PermissionsPage() {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pb-10">
-            {/* Header */}
-            <div className="bg-white p-6 sm:p-8 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-blue-900 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <ShieldCheck className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">
-                            จัดการสิทธิ์การใช้งาน (Permissions)
-                        </h1>
-                        <p className="text-gray-500 font-medium mt-1">
-                            กำหนดบทบาท เมนู และมอบหมายสิทธิ์การเข้าถึงระบบให้กับผู้ใช้
-                        </p>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Tab Navigation */}
             <div className="flex flex-wrap bg-white rounded-2xl p-1 shadow-sm border border-gray-100 w-full">

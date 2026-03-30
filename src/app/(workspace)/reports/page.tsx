@@ -402,10 +402,7 @@ export default function ReportsPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-800">ระบบรายงานกลาง</h1>
-          <p className="text-gray-500 mt-2">เลือกประเภทรายงานที่ต้องการตรวจสอบและส่งออกข้อมูล</p>
-        </div>
+        <div className="flex-1"></div>
 
         <div className="flex flex-wrap gap-3">
           <button onClick={exportToExcel} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">

@@ -177,17 +177,7 @@ export default function AssignPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
-      {/* Header Square */}
-      <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex items-center gap-6">
-        <div className="bg-slate-900 w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-          <Car className="text-white" size={32} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            จัดรถและคนขับ (Dispatch)
-          </h1>
-        </div>
-      </div>
+
 
       {/* --- (SECTION 1: PENDING ASSIGNMENT) --- */}
       <section>
