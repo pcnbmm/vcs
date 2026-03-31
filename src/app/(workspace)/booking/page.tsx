@@ -4,8 +4,8 @@ import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
-import { useRouter } from "next/navigation";
 import MapBox from "@/components/ui/LongdoMapBox";
+import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 
 export default function VehicleRequestPage() {
-  const router = useRouter();
   const [startPlaces, setStartPlaces] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [carSpecs, setCarSpecs] = useState<any[]>([]);
@@ -33,8 +32,9 @@ export default function VehicleRequestPage() {
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [drivers, setDrivers] = useState<any[]>([]);
   const [driverSearch, setDriverSearch] = useState("");
+  const [driverDropdownOpen, setDriverDropdownOpen] = useState(false);
   const [mapKey, setMapKey] = useState(0);
-
+  const router = useRouter();
   const getCurrentTime = () => {
     const now = new Date();
     return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -44,7 +44,7 @@ export default function VehicleRequestPage() {
     ownerDept: "",
     vehicleType: "",
     origin: "",
-    province: "กรุงเทพมหานคร",
+    province: "",
     destination: "",
     lat: 0,
     lon: 0,
@@ -58,10 +58,16 @@ export default function VehicleRequestPage() {
     selfDrive: false,
     driverId: 0,
   });
-
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+  const startPlaceMap = startPlaces.reduce(
+    (acc, sp) => {
+      acc[sp.start_place_name] = sp.start_place_id;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const handleSave = async () => {
     if (
@@ -74,7 +80,7 @@ export default function VehicleRequestPage() {
       (formData.selfDrive && !formData.driverId)
     ) {
       alert(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน ได้แก่ จุดหมายปลายทาง วันและเวลาเริ่มต้น วันและเวลากลับ วัตถุประสงค์ และชื่อผู้ขับรถ",
       );
       return;
     }
@@ -131,7 +137,7 @@ export default function VehicleRequestPage() {
       const result = await createBooking(dataToSubmit);
 
       if (result.success) {
-        alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
+        alert("บันทึกคำขอใช้รถเรียบร้อยแล้ว!");
         router.push("/pending");
       } else {
         alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -147,9 +153,9 @@ export default function VehicleRequestPage() {
   const resetForm = () => {
     setFormData({
       ownerDept: "",
-      vehicleType: carSpecs[0]?.car_spec_id ?? "",
-      origin: startPlaces[0]?.start_place_name ?? "",
-      province: "กรุงเทพมหานคร",
+      vehicleType: "",
+      origin: "",
+      province: "",
       destination: "",
       lat: 0,
       lon: 0,
@@ -164,6 +170,7 @@ export default function VehicleRequestPage() {
       driverId: 0,
     });
     setDriverSearch("");
+    setDriverDropdownOpen(false);
     setMapKey((prev) => prev + 1);
   };
 
@@ -185,6 +192,10 @@ export default function VehicleRequestPage() {
   }, []);
 
   useEffect(() => {
+    if (!formData.origin) {
+      handleInputChange("province", "");
+      return;
+    }
     const selected = startPlaces.find(
       (sp) => sp.start_place_name === formData.origin,
     );
@@ -193,26 +204,13 @@ export default function VehicleRequestPage() {
     }
   }, [formData.origin, startPlaces]);
 
-  const startPlaceMap = startPlaces.reduce(
-    (acc, sp) => {
-      acc[sp.start_place_name] = sp.start_place_id;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="grid grid-cols-1 gap-8">
         <div className="w-full space-y-8">
           <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
-              <Car size={200} />
-            </div>
-
             <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
-                <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
+              <div className="flex items-center gap-3 border-gray-200">
                 <h2 className="text-2xl font-black text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
@@ -281,6 +279,7 @@ export default function VehicleRequestPage() {
                     disabled={true}
                     className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
+                    <option value="">-- จังหวัด --</option>
                     {startPlaces.map((sp) => (
                       <option key={sp.start_place_id} value={sp.province_id}>
                         {sp.province?.province_name ?? "-"}
@@ -396,12 +395,11 @@ export default function VehicleRequestPage() {
                         handleInputChange("driverId", 0);
                         setDriverSearch("");
                       }}
-                      className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                      className="w-5 h-5 cursor-pointer"
                     />
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-emerald-900">
-                        ขอขับเอง (Self Drive)
+                      <span className="w-full text-sm font-bold text-black">
+                        ขับรถด้วยตนเอง
                       </span>
                     </div>
                   </label>
@@ -409,61 +407,83 @@ export default function VehicleRequestPage() {
                   {formData.selfDrive && (
                     <div className="px-4">
                       <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
-                        <input
-                          type="text"
-                          value={
-                            formData.driverId
-                              ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
-                              : driverSearch
-                          }
-                          onChange={(e) => {
-                            setDriverSearch(e.target.value);
-                            handleInputChange("driverId", 0);
-                          }}
-                          placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                          className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                        />
-                        {driverSearch && !formData.driverId && (
-                          <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-48 overflow-y-auto">
-                            {drivers
-                              .filter((d) => {
-                                const fullName =
-                                  `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                return (
-                                  fullName
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={
+                              formData.driverId
+                                ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
+                                : driverSearch
+                            }
+                            onChange={(e) => {
+                              setDriverSearch(e.target.value);
+                              handleInputChange("driverId", 0);
+                              setDriverDropdownOpen(true);
+                            }}
+                            onFocus={() => {
+                              if (formData.driverId)
+                                handleInputChange("driverId", 0);
+                              setDriverSearch("");
+                              setDriverDropdownOpen(true);
+                            }}
+                            onBlur={() => {
+                              setDriverDropdownOpen(false);
+                            }}
+                            placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
+                            className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                          />
+
+                          {/* Dropdown — แสดงเมื่อ focus และยังไม่ได้เลือก */}
+                          {driverDropdownOpen && !formData.driverId && (
+                            <div className="absolute z-50 w-full bg-white border-2 border-gray-200 rounded-2xl shadow-xl mt-1 overflow-hidden">
+                              <div className="max-h-48 overflow-y-auto">
+                                {drivers
+                                  .filter((d) => {
+                                    if (!driverSearch) return true;
+                                    const fullName =
+                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                                    return fullName
+                                      .toLowerCase()
+                                      .includes(driverSearch.toLowerCase());
+                                  })
+                                  .map((d) => {
+                                    const fullName =
+                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                                    return (
+                                      <button
+                                        key={d.driver_id}
+                                        type="button"
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={() => {
+                                          handleInputChange(
+                                            "driverId",
+                                            d.driver_id,
+                                          );
+                                          setDriverSearch("");
+                                          setDriverDropdownOpen(false);
+                                        }}
+                                        className="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border-b border-gray-50 last:border-0"
+                                      >
+                                        {fullName || "ไม่ระบุชื่อ"}
+                                      </button>
+                                    );
+                                  })}
+                                {drivers.filter((d) => {
+                                  if (!driverSearch) return true;
+                                  const fullName =
+                                    `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                                  return fullName
                                     .toLowerCase()
-                                    .includes(driverSearch.toLowerCase()) ||
-                                  String(d.driver_code).includes(driverSearch)
-                                );
-                              })
-                              .map((d) => (
-                                <button
-                                  key={d.driver_id}
-                                  type="button"
-                                  onClick={() => {
-                                    handleInputChange("driverId", d.driver_id);
-                                    setDriverSearch("");
-                                  }}
-                                  className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors"
-                                >
-                                  {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
-                                  <span className="text-xs text-gray-400 ml-2">
-                                    ({d.driver_code})
-                                  </span>
-                                </button>
-                              ))}
-                            {drivers.filter((d) =>
-                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`
-                                .trim()
-                                .toLowerCase()
-                                .includes(driverSearch.toLowerCase()),
-                            ).length === 0 && (
-                              <div className="px-4 py-3 text-sm text-gray-400">
-                                ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
+                                    .includes(driverSearch.toLowerCase());
+                                }).length === 0 ? (
+                                  <div className="px-4 py-6 text-sm text-gray-400 text-center">
+                                    ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
+                                  </div>
+                                ) : null}
                               </div>
-                            )}
-                          </div>
-                        )}
+                            </div>
+                          )}
+                        </div>
                       </FormField>
                     </div>
                   )}
@@ -477,7 +497,7 @@ export default function VehicleRequestPage() {
                       onChange={(e) =>
                         handleInputChange("objective", e.target.value)
                       }
-                      placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
+                      placeholder="ระบุหมายเหตุในการเดินทาง..."
                       className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
                     />
                   </FormField>
