@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, X, Loader2, Save, Filter } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -163,21 +165,21 @@ export default function VehicleTab() {
             closeModal();
         } catch (error) {
             console.error('Error saving vehicle:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            showError('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('ยืนยันการลบข้อมูลรถยนต์คันนี้ ใช่หรือไม่?')) return;
+        if (!(await showConfirm('ยืนยันการลบข้อมูลรถยนต์คันนี้ ใช่หรือไม่?'))) return;
         try {
             const res = await fetch(`/api/vehicles/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Deletion failed');
             await fetchData();
         } catch (error) {
             console.error('Error deleting vehicle:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            showError('เกิดข้อผิดพลาดในการลบข้อมูล');
         }
     };
 

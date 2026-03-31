@@ -1,4 +1,6 @@
 'use client';
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Trash2, Edit2, X, Loader2, Save, Component, LayoutList } from 'lucide-react';
@@ -124,7 +126,7 @@ export default function MenuRoleTab() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.roles_id) return alert('กรุณาเลือกบทบาท');
+        if (!formData.roles_id) return showWarning('กรุณาเลือกบทบาท');
 
         setIsSaving(true);
         try {
@@ -140,21 +142,21 @@ export default function MenuRoleTab() {
             closeModal();
         } catch (error) {
             console.error('Error saving menu roles:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            showError('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (rolesId: number) => {
-        if (!confirm('ยืนยันการลบสิทธิ์เมนูและฟังก์ชันทั้งหมดของบทบาทนี้ ใช่หรือไม่?')) return;
+        if (!(await showConfirm('ยืนยันการลบสิทธิ์เมนูและฟังก์ชันทั้งหมดของบทบาทนี้ ใช่หรือไม่?'))) return;
         try {
             const res = await fetch(`/api/permissions/menu-roles/${rolesId}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Deletion failed');
             await fetchData();
         } catch (error) {
             console.error('Error deleting menu roles:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            showError('เกิดข้อผิดพลาดในการลบข้อมูล');
         }
     };
 

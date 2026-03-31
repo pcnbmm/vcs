@@ -1,4 +1,6 @@
 'use client';
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Trash2, Edit2, X, Loader2, Save, Users, ShieldCheck } from 'lucide-react';
@@ -104,7 +106,7 @@ export default function UserRoleTab() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.user_id) return alert('กรุณาเลือกผู้ใช้');
+        if (!formData.user_id) return showWarning('กรุณาเลือกผู้ใช้');
 
         setIsSaving(true);
         try {
@@ -120,21 +122,21 @@ export default function UserRoleTab() {
             closeModal();
         } catch (error) {
             console.error('Error saving user roles:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            showError('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (userId: number) => {
-        if (!confirm('ยืนยันการลบสิทธิ์ทั้งหมดของผู้ใช้นี้ ใช่หรือไม่?')) return;
+        if (!(await showConfirm('ยืนยันการลบสิทธิ์ทั้งหมดของผู้ใช้นี้ ใช่หรือไม่?'))) return;
         try {
             const res = await fetch(`/api/permissions/user-roles/${userId}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Deletion failed');
             await fetchData();
         } catch (error) {
             console.error('Error deleting user roles:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            showError('เกิดข้อผิดพลาดในการลบข้อมูล');
         }
     };
 
