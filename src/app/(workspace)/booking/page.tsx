@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
@@ -73,19 +75,19 @@ export default function VehicleRequestPage() {
       !formData.objective ||
       (formData.selfDrive && !formData.driverId)
     ) {
-      alert(
+      showWarning(
         "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
       return;
     }
 
     if (!/^\d{10}$/.test(formData.phone)) {
-      alert("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
       return;
     }
 
     if (formData.startDate > formData.endDate) {
-      alert("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
+      showWarning("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
       return;
     }
 
@@ -93,7 +95,7 @@ export default function VehicleRequestPage() {
       formData.startDate === formData.endDate &&
       formData.endTime <= formData.startTime
     ) {
-      alert("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
+      showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
       return;
     }
 
@@ -131,14 +133,14 @@ export default function VehicleRequestPage() {
       const result = await createBooking(dataToSubmit);
 
       if (result.success) {
-        alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
+        showSuccess("บันทึกคำขอใช้รถเรียบร้อยแล้ว!");
         router.push("/pending");
       } else {
-        alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        showError(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }
     } catch (error) {
       console.error("Error saving booking:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+      showError("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }

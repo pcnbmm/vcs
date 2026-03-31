@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
@@ -394,7 +396,7 @@ export default function PendingPage() {
               <div className="mt-10 flex justify-end">
                 <button
                   onClick={async () => {
-                    if (!confirm("ยืนยันการยกเลิกคำขอนี้?")) return;
+                    if (!(await showConfirm("ยืนยันการยกเลิกคำขอนี้?"))) return;
                     const res = await cancelRequest(Number(selectedRequest.id));
                     if (res.success) {
                       setSelectedRequest(null);
@@ -449,7 +451,7 @@ export default function PendingPage() {
                         setRequests(formattedList);
                       }
                     } else {
-                      alert(res.error);
+                      showError(res.error);
                     }
                   }}
                   className="px-8 py-3 bg-rose-600 text-white rounded-2xl font-black text-sm hover:bg-rose-700 transition-all uppercase tracking-widest shadow-xl shadow-rose-200"

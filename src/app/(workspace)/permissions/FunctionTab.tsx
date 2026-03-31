@@ -1,4 +1,6 @@
 'use client';
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, X, Loader2, Save } from 'lucide-react';
@@ -72,7 +74,7 @@ export default function FunctionTab() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.func_name) return alert('กรุณาระบุชื่อฟังก์ชัน');
+        if (!formData.func_name) return showWarning('กรุณาระบุชื่อฟังก์ชัน');
 
         setIsSaving(true);
         try {
@@ -91,21 +93,21 @@ export default function FunctionTab() {
             closeModal();
         } catch (error) {
             console.error('Error saving function:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            showError('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('ยืนยันการลบฟังก์ชันนี้ ใช่หรือไม่?')) return;
+        if (!(await showConfirm('ยืนยันการลบฟังก์ชันนี้ ใช่หรือไม่?'))) return;
         try {
             const res = await fetch(`/api/permissions/functions/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Deletion failed');
             await fetchFunctions();
         } catch (error) {
             console.error('Error deleting function:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            showError('เกิดข้อผิดพลาดในการลบข้อมูล');
         }
     };
 

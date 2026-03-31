@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import React, { useState, useEffect } from "react";
 import {
   Car,
@@ -129,13 +131,16 @@ export default function ReturnsPage() {
   const handleSaveReturn = async () => {
     if (!selectedItem) return;
     if (Number(returnFormData.mile_end) <= 0) {
-      alert("กรุณาระบุเลขไมล์สิ้นสุด");
+      showWarning("กรุณาระบุเลขไมล์สิ้นสุด");
       return;
     }
     if (returnFormData.approved_by <= 0) {
-      alert("กรุณาเลือกผู้อนุมัติ (นายเวร)");
+      showWarning("กรุณาเลือกผู้อนุมัติ (นายเวร)");
       return;
     }
+
+    const isConfirmed = await showConfirm("ยืนยันการรับคืนรถ", "คุณต้องการบันทึกการรับคืนรถเข้าสู่ระบบใช่หรือไม่?");
+    if (!isConfirmed) return;
 
     setIsSubmitting(true);
     try {
@@ -154,14 +159,14 @@ export default function ReturnsPage() {
       });
 
       if (result.success) {
-        alert("บันทึกการคืนรถสำเร็จ!");
+        showSuccess("บันทึกการคืนรถสำเร็จ!");
         handleCloseModal();
         fetchData();
       } else {
-        alert(result.error);
+        showError(result.error);
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      showError("เกิดข้อผิดพลาดในการบันทึก");
     } finally {
       setIsSubmitting(false);
     }
