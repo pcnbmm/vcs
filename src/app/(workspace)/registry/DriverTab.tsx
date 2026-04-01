@@ -170,7 +170,7 @@ export default function DriverTab() {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Header & Search */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-md shadow-sm border border-gray-100">
                 <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
@@ -178,11 +178,11 @@ export default function DriverTab() {
                         placeholder="ค้นหาชื่อ, นามสกุล, รหัสประจำตัว, เบอร์โทร..." 
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
                     />
                 </div>
                 {hasAccess('create') && (
-                    <button onClick={() => openModal('add')} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
+                    <button onClick={() => openModal('add')} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
                         <Plus className="w-5 h-5" />
                         เพิ่มข้อมูลคนขับ
                     </button>
@@ -190,24 +190,24 @@ export default function DriverTab() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
-                                <th onClick={() => handleSort('driver_code')} className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
+                                <th onClick={() => handleSort('driver_code')} className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
                                     รหัสคนขับ {sortConfig?.key === 'driver_code' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
                                 </th>
-                                <th onClick={() => handleSort('firstname')} className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
+                                <th onClick={() => handleSort('firstname')} className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
                                     ชื่อ - นามสกุล {sortConfig?.key === 'firstname' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
                                 </th>
-                                <th onClick={() => handleSort('tel')} className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
+                                <th onClick={() => handleSort('tel')} className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
                                     เบอร์โทรศัพท์ {sortConfig?.key === 'tel' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
                                 </th>
-                                <th onClick={() => handleSort('driver_status')} className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
+                                <th onClick={() => handleSort('driver_status')} className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none">
                                     สถานะ {sortConfig?.key === 'driver_status' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
                                 </th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider text-right">จัดการ</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -264,17 +264,17 @@ export default function DriverTab() {
                                         <td className="py-4 px-6 text-right">
                                             <div className="flex justify-end gap-2">
                                                 {hasAccess('view') && (
-                                                    <button onClick={() => openModal('view', driver)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                                                    <button onClick={() => openModal('view', driver)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors">
                                                         <Eye className="w-4 h-4" />
                                                     </button>
                                                 )}
                                                 {hasAccess('update') && (
-                                                    <button onClick={() => openModal('edit', driver)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors">
+                                                    <button onClick={() => openModal('edit', driver)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors">
                                                         <Edit2 className="w-4 h-4" />
                                                     </button>
                                                 )}
                                                 {hasAccess('delete') && (
-                                                    <button onClick={() => handleDelete(driver.driver_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                                                    <button onClick={() => handleDelete(driver.driver_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors">
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 )}
@@ -325,9 +325,9 @@ export default function DriverTab() {
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeModal} />
-                    <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300">
+                    <div className="relative bg-white rounded-md shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300">
                         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white z-10">
-                            <h2 className="text-xl font-black text-gray-900">
+                            <h2 className="text-xl font-semibold text-gray-900">
                                 {modalMode === 'add' ? 'เพิ่มข้อมูลคนขับรถ' : modalMode === 'edit' ? 'แก้ไขข้อมูลคนขับรถ' : 'รายละเอียดคนขับรถ'}
                             </h2>
                             <button onClick={closeModal} className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors">
@@ -359,10 +359,10 @@ export default function DriverTab() {
 
                         {modalMode !== 'view' && (
                             <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3 z-10">
-                                <button type="button" onClick={closeModal} className="px-6 py-2.5 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">
+                                <button type="button" onClick={closeModal} className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">
                                     ยกเลิก
                                 </button>
-                                <button type="button" onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70">
+                                <button type="button" onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-md font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70">
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                                     {isSaving ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'}
                                 </button>
@@ -378,8 +378,8 @@ export default function DriverTab() {
 // Components เสริมภายในไฟล์
 function FormSection({ title, children }: { title: string, children: React.ReactNode }) {
     return (
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm col-span-1 lg:col-span-3">
-            <h3 className="text-sm font-black text-blue-900 mb-4 border-b border-gray-50 pb-3 flex items-center gap-2">
+        <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm col-span-1 lg:col-span-3">
+            <h3 className="text-sm font-semibold text-blue-900 mb-4 border-b border-gray-50 pb-3 flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
                 {title}
             </h3>
@@ -402,7 +402,7 @@ function InputField({ label, type = "text", value, onChange, placeholder, disabl
                 onChange={(e) => onChange(e.target.value)} 
                 placeholder={placeholder}
                 disabled={disabled}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
+                className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
             />
         </div>
     );
@@ -418,7 +418,7 @@ function SelectField({ label, value, onChange, options, valueKey, labelKey, labe
                 value={value || ''} 
                 onChange={(e) => onChange(e.target.value)}
                 disabled={disabled}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
+                className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
             >
                 <option value="">-- เลือก --</option>
                 {options?.map((opt:any) => (

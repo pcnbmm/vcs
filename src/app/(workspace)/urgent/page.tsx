@@ -238,7 +238,7 @@ export default function VehicleRequestPage() {
       <div className="grid grid-cols-1 gap-8">
         {/* Main Form */}
         <div className="w-full space-y-8">
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+      <div className="bg-white p-4 rounded-md shadow-sm border border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none select-none">
           <Car size={150} />
         </div>
@@ -246,14 +246,14 @@ export default function VehicleRequestPage() {
         <div className="relative space-y-6">
           <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
             <div className="w-1.5 h-6 bg-black rounded-full shadow-sm"></div>
-            <h2 className="text-xl font-black text-black uppercase tracking-tight">
+            <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
               รายละเอียดแผนการเดินทาง
             </h2>
           </div>
 
               {/* Requester Selection Section */}
-              <div className="bg-red-50 p-6 rounded-3xl border border-red-100 space-y-4">
-                <div className="flex items-center gap-2 text-red-800 font-black uppercase text-sm tracking-wider">
+              <div className="bg-red-50 p-6 rounded-md border border-red-100 space-y-4">
+                <div className="flex items-center gap-2 text-red-800 font-semibold uppercase text-sm tracking-wider">
                   <User size={18} />
                   ข้อมูลผู้ร้องขอรถด่วน
                 </div>
@@ -271,11 +271,11 @@ export default function VehicleRequestPage() {
                         handleInputChange("requesterId", 0);
                       }}
                       placeholder="พิมพ์ชื่อหรือนามสกุลพนักงานเพื่อค้นหา..."
-                      className="w-full bg-white border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      className="w-full bg-white border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                     />
                     {/* Requesters Dropdown */}
                     {requesterSearch && !formData.requesterId && (
-                      <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-60 overflow-y-auto">
+                      <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto">
                         {requesters
                           .filter((r) => {
                             const fullName = `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim();
@@ -320,7 +320,7 @@ export default function VehicleRequestPage() {
                     onChange={(e) =>
                       handleInputChange("ownerDept", e.target.value)
                     }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     <option value="">-- เลือกสังกัด --</option>
                     {orgs.map((org) => (
@@ -337,7 +337,7 @@ export default function VehicleRequestPage() {
                     onChange={(e) =>
                       handleInputChange("vehicleType", e.target.value)
                     }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     <option value="">-- เลือกประเภทรถ --</option>
                     {carSpecs.map((cs) => (
@@ -355,7 +355,7 @@ export default function VehicleRequestPage() {
                     onChange={(e) =>
                       handleInputChange("origin", e.target.value)
                     }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     {startPlaces.map((sp) => (
                       <option
@@ -372,7 +372,7 @@ export default function VehicleRequestPage() {
                   <select
                     value={formData.province}
                     disabled={true} // ← auto-set จาก start_place ไม่ให้ user เลือกเอง
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
                     {startPlaces.map((sp) => (
                       <option key={sp.start_place_id} value={sp.province_id}>
@@ -403,7 +403,7 @@ export default function VehicleRequestPage() {
                   {/* Lat/Long Display Fields */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" />
                         Latitude
                       </label>
@@ -412,11 +412,11 @@ export default function VehicleRequestPage() {
                         value={formData.lat || ""}
                         readOnly
                         placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" />
                         Longitude
                       </label>
@@ -425,7 +425,7 @@ export default function VehicleRequestPage() {
                         value={formData.lon || ""}
                         readOnly
                         placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
                       />
                     </div>
                   </div>
@@ -441,7 +441,7 @@ export default function VehicleRequestPage() {
                       handleInputChange("startDate", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
@@ -452,7 +452,7 @@ export default function VehicleRequestPage() {
                       handleInputChange("startTime", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
 
@@ -466,7 +466,7 @@ export default function VehicleRequestPage() {
                       handleInputChange("endDate", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
@@ -477,13 +477,13 @@ export default function VehicleRequestPage() {
                       handleInputChange("endTime", e.target.value)
                     }
                     onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
 
                 {/* Self Drive Checkbox + Driver Combobox */}
                 <div className="md:col-span-2 space-y-3 relative"></div>
-                <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                   <input
                     type="checkbox"
                     checked={formData.selfDrive}
@@ -517,11 +517,11 @@ export default function VehicleRequestPage() {
                           handleInputChange("driverId", 0); // reset เมื่อพิมพ์ใหม่
                         }}
                         placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                        className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                       />
                       {/* Dropdown ผลการค้นหา */}
                       {driverSearch && !formData.driverId && (
-                        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-48 overflow-y-auto">
+                        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-48 overflow-y-auto">
                           {drivers
                             .filter((d) => {
                               const fullName =
@@ -591,7 +591,7 @@ export default function VehicleRequestPage() {
                       handleInputChange("objective", e.target.value)
                     }
                     placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
                   />
                 </FormField>
               </div>
@@ -608,7 +608,7 @@ export default function VehicleRequestPage() {
                       }
                       placeholder="0"
                       min="1"
-                      className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                     />
                     <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
                       คน
@@ -624,7 +624,7 @@ export default function VehicleRequestPage() {
                       handleInputChange("phone", val);
                     }}
                     placeholder="0x-xxxx-xxxx"
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                   />
                 </FormField>
               </div>
@@ -634,7 +634,7 @@ export default function VehicleRequestPage() {
               <button
                 onClick={resetForm}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
               >
                 <X className="w-4 h-4" />
                 ยกเลิกเนื้อหา
@@ -642,7 +642,7 @@ export default function VehicleRequestPage() {
               <button
                 onClick={handleSave}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-10 py-3.5 bg-red-600 text-white rounded-2xl font-bold text-sm hover:bg-red-700 shadow-xl shadow-red-200 transition-all disabled:opacity-70"
+                className="flex items-center gap-2 px-10 py-3.5 bg-red-600 text-white rounded-lg font-bold text-sm hover:bg-red-700 shadow-xl shadow-red-200 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
