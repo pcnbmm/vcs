@@ -1,4 +1,6 @@
 'use client';
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, X, Loader2, Save } from 'lucide-react';
@@ -74,7 +76,7 @@ export default function MenuTab() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.menuname) return alert('กรุณาระบุชื่อเมนู');
+        if (!formData.menuname) return showWarning('กรุณาระบุชื่อเมนู');
 
         setIsSaving(true);
         try {
@@ -93,21 +95,21 @@ export default function MenuTab() {
             closeModal();
         } catch (error) {
             console.error('Error saving menu:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            showError('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('ยืนยันการลบเมนูนี้ ใช่หรือไม่?')) return;
+        if (!(await showConfirm('ยืนยันการลบเมนูนี้ ใช่หรือไม่?'))) return;
         try {
             const res = await fetch(`/api/permissions/menus/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Deletion failed');
             await fetchMenus();
         } catch (error) {
             console.error('Error deleting menu:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            showError('เกิดข้อผิดพลาดในการลบข้อมูล');
         }
     };
 

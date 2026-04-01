@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import React, { useState, useEffect } from "react";
 import {
   Car,
@@ -122,7 +124,7 @@ export default function AssignPage() {
 
   const handleAssignSubmit = async () => {
     if (!selectedCar || (dispatchType === "with_driver" && !selectedDriver)) {
-      alert("กรุณาเลือกข้อมูลให้ครบถ้วน");
+      showWarning("กรุณาเลือกข้อมูลให้ครบถ้วน");
       return;
     }
 
@@ -151,6 +153,9 @@ export default function AssignPage() {
       finalDriverId,
     );
 
+    const isConfirmed = await showConfirm("ยืนยันการจัดรถ", "คุณต้องการบันทึกการจัดรถและคนขับใช่หรือไม่?");
+    if (!isConfirmed) return;
+
     try {
       const result = await assignResource({
         requestId: selectedOrder.request_id,
@@ -159,10 +164,11 @@ export default function AssignPage() {
       });
 
       if (result.success) {
+        showSuccess("จัดรถสำเร็จ!");
         setIsModalOpen(false);
         fetchData(); // Refresh list
       } else {
-        alert(result.error);
+        showError(result.error);
       }
     } catch (err) {
       console.error(err);

@@ -1,11 +1,13 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import { getOrgs } from "@/app/actions/orgActions";
-import { useRouter } from "next/navigation";
 import MapBox from "@/components/ui/LongdoMapBox";
+import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
 import {
   FileText,
@@ -25,16 +27,16 @@ import {
 } from "lucide-react";
 
 export default function VehicleRequestPage() {
-  const router = useRouter();
   const [startPlaces, setStartPlaces] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [carSpecs, setCarSpecs] = useState<any[]>([]);
   const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [drivers, setDrivers] = useState<any[]>([]);
-  const [driverSearch, setDriverSearch] = useState('');
+  const [driverSearch, setDriverSearch] = useState("");
+  const [driverDropdownOpen, setDriverDropdownOpen] = useState(false);
   const [mapKey, setMapKey] = useState(0);
-
+  const router = useRouter();
   const getCurrentTime = () => {
     const now = new Date();
     return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -44,7 +46,7 @@ export default function VehicleRequestPage() {
     ownerDept: "",
     vehicleType: "",
     origin: "",
-    province: "กรุงเทพมหานคร",
+    province: "",
     destination: "",
     lat: 0,
     lon: 0,
@@ -58,10 +60,16 @@ export default function VehicleRequestPage() {
     selfDrive: false,
     driverId: 0,
   });
-
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+  const startPlaceMap = startPlaces.reduce(
+    (acc, sp) => {
+      acc[sp.start_place_name] = sp.start_place_id;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const handleSave = async () => {
     if (
@@ -73,24 +81,27 @@ export default function VehicleRequestPage() {
       !formData.objective ||
       (formData.selfDrive && !formData.driverId)
     ) {
-      alert(
+      showWarning(
         "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
       return;
     }
 
     if (!/^\d{10}$/.test(formData.phone)) {
-      alert("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
       return;
     }
 
     if (formData.startDate > formData.endDate) {
-      alert("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
+      showWarning("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
       return;
     }
 
-    if (formData.startDate === formData.endDate && formData.endTime <= formData.startTime) {
-      alert("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
+    if (
+      formData.startDate === formData.endDate &&
+      formData.endTime <= formData.startTime
+    ) {
+      showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
       return;
     }
 
@@ -128,14 +139,14 @@ export default function VehicleRequestPage() {
       const result = await createBooking(dataToSubmit);
 
       if (result.success) {
-        alert("บันทึกคำขอใช้รถลงฐานข้อมูลเรียบร้อยแล้ว!");
-        resetForm();
+        showSuccess("บันทึกคำขอใช้รถเรียบร้อยแล้ว!");
+        router.push("/pending");
       } else {
-        alert(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        showError(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }
     } catch (error) {
       console.error("Error saving booking:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+      showError("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -144,9 +155,9 @@ export default function VehicleRequestPage() {
   const resetForm = () => {
     setFormData({
       ownerDept: "",
-      vehicleType: carSpecs[0]?.car_spec_id ?? "",
-      origin: startPlaces[0]?.start_place_name ?? "",
-      province: "กรุงเทพมหานคร",
+      vehicleType: "",
+      origin: "",
+      province: "",
       destination: "",
       lat: 0,
       lon: 0,
@@ -160,8 +171,9 @@ export default function VehicleRequestPage() {
       selfDrive: false,
       driverId: 0,
     });
-    setDriverSearch('');
-    setMapKey(prev => prev + 1);
+    setDriverSearch("");
+    setDriverDropdownOpen(false);
+    setMapKey((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -170,9 +182,9 @@ export default function VehicleRequestPage() {
         getStartPlaces(),
         getCarSpecs(),
         getOrgs(),
-        getDrivers()
+        getDrivers(),
       ]);
-      
+
       if (startRes.success) setStartPlaces(startRes.data);
       if (specRes.success) setCarSpecs(specRes.data);
       if (orgRes.success) setOrgs(orgRes.data);
@@ -182,6 +194,10 @@ export default function VehicleRequestPage() {
   }, []);
 
   useEffect(() => {
+    if (!formData.origin) {
+      handleInputChange("province", "");
+      return;
+    }
     const selected = startPlaces.find(
       (sp) => sp.start_place_name === formData.origin,
     );
@@ -190,25 +206,11 @@ export default function VehicleRequestPage() {
     }
   }, [formData.origin, startPlaces]);
 
-  const startPlaceMap = startPlaces.reduce(
-    (acc, sp) => {
-      acc[sp.start_place_name] = sp.start_place_id;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-
-
       <div className="grid grid-cols-1 gap-8">
         <div className="w-full space-y-8">
           <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
-              <Car size={200} />
-            </div>
-
             <div className="relative space-y-10">
               <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
                 <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
@@ -227,7 +229,9 @@ export default function VehicleRequestPage() {
                   >
                     <option value="">-- เลือกสังกัด --</option>
                     {orgs.map((org) => (
-                      <option key={org.orgid} value={org.orgid}>{org.orgname}</option>
+                      <option key={org.orgid} value={org.orgid}>
+                        {org.orgname}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -240,7 +244,9 @@ export default function VehicleRequestPage() {
                   >
                     <option value="">-- เลือกประเภทรถ --</option>
                     {carSpecs.map((cs) => (
-                      <option key={cs.car_spec_id} value={cs.car_spec_id}>{cs.car_spec_name}</option>
+                      <option key={cs.car_spec_id} value={cs.car_spec_id}>
+                        {cs.car_spec_name}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -252,8 +258,14 @@ export default function VehicleRequestPage() {
                     onChange={(e) => handleInputChange("origin", e.target.value)}
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
-                    {startPlaces.map((sp) => (
-                      <option key={sp.start_place_id} value={sp.start_place_name}>{sp.start_place_name}</option>
+                    <option value="">-- โปรดเลือก --</option>
+                    {startPlaces.map((cs) => (
+                      <option
+                        key={cs.start_place_id}
+                        value={cs.start_place_name}
+                      >
+                        {cs.start_place_name}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -264,8 +276,11 @@ export default function VehicleRequestPage() {
                     disabled={true}
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
+                    <option value="">-- จังหวัด --</option>
                     {startPlaces.map((sp) => (
-                      <option key={sp.start_place_id} value={sp.province_id}>{sp.province?.province_name ?? "-"}</option>
+                      <option key={sp.start_place_id} value={sp.province_id}>
+                        {sp.province?.province_name ?? "-"}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -324,8 +339,9 @@ export default function VehicleRequestPage() {
                   <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                     <input type="checkbox" checked={formData.selfDrive} onChange={(e) => { handleInputChange("selfDrive", e.target.checked); handleInputChange("driverId", 0); setDriverSearch(''); }} className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer" />
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-emerald-900">ขอขับเอง (Self Drive)</span>
+                      <span className="w-full text-sm font-bold text-black">
+                        ขับรถด้วยตนเอง
+                      </span>
                     </div>
                   </label>
 
@@ -396,7 +412,17 @@ export default function VehicleRequestPage() {
   );
 }
 
-function FormField({ label, icon: Icon, required, children }: { label: React.ReactNode; icon: any; required?: boolean; children: React.ReactNode; }) {
+function FormField({
+  label,
+  icon: Icon,
+  required,
+  children,
+}: {
+  label: React.ReactNode;
+  icon: any;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-2">
       <label className="flex items-center gap-2 text-sm font-bold text-gray-700">

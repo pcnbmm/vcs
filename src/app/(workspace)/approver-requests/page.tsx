@@ -1,4 +1,6 @@
 "use client";
+import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+
 import { useEffect, useState } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
 import { updateRequestStatus } from "@/app/actions/requestActions";
@@ -215,24 +217,30 @@ export default function ApproverRequestsPage() {
   const pendingCount = pendingBookings.length;
 
   const handleApprove = async (id: string) => {
+    const isConfirmed = await showConfirm("ยืนยันการอนุมัติ", "คุณต้องการอนุมัติคำขอใช้รถนี้ใช่หรือไม่?");
+    if (!isConfirmed) return;
     const res = await updateRequestStatus(Number(id), 2);
     if (res.success) {
+      showSuccess("อนุมัติคำขอสำเร็จ");
       setSelectedBooking(null);
       fetchBookings(); // Refresh list
     } else {
-      alert(res.error);
+      showError(res.error);
     }
   };
 
   const handleReject = async (id: string, reason: string) => {
+    const isConfirmed = await showConfirm("ยืนยันการปฏิเสธ", "คุณต้องการปฏิเสธคำขอนี้ใช่หรือไม่?");
+    if (!isConfirmed) return;
     // We don't save reason in DB yet based on user request "no approve_id",
     // but we update status to 3.
     const res = await updateRequestStatus(Number(id), 3);
     if (res.success) {
+      showSuccess("ปฏิเสธคำขอสำเร็จ");
       setSelectedBooking(null);
       fetchBookings(); // Refresh list
     } else {
-      alert(res.error);
+      showError(res.error);
     }
   };
 

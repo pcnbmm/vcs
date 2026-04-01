@@ -2,12 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
-import { searchLocation, suggestLocation, getAddressFromLatLon } from "@/app/actions/mapActions";
+import { searchLocation, suggestLocation } from "@/app/actions/mapActions";
 
 interface LongdoMapBoxProps {
   onLocationSelect: (loc: { name: string; lat: number; lon: number }) => void;
   placeholder?: string;
 }
+
+const LONGDO_KEY = process.env.NEXT_PUBLIC_LONGDO_MAP_KEY;
 
 const MapBox: React.FC<LongdoMapBoxProps> = ({
   onLocationSelect,
@@ -34,91 +36,81 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return;
 
-    // โหลด Leaflet CSS
-    if (!document.getElementById("leaflet-css")) {
-      const link = document.createElement("link");
-      link.id = "leaflet-css";
-      link.rel = "stylesheet";
-      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      document.head.appendChild(link);
+    // โหลด Longdo Map SDK
+    if (!document.getElementById("longdo-map-script")) {
+      const script = document.createElement("script");
+      script.id = "longdo-map-script";
+      script.src = `https://api.longdo.com/map/?key=${LONGDO_KEY}`;
+      script.async = true;
+      script.onload = () => initMap();
+      document.head.appendChild(script);
+    } else {
+      initMap();
     }
 
-    import("leaflet").then((L) => {
-      if (mapRef.current) return;
-
-      // แก้ icon path สำหรับ Next.js
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        iconRetinaUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        shadowUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-
-      const map = L.map(containerRef.current!, {
-        center: [13.7563, 100.5018], // กรุงเทพ
-        zoom: 12,
-        zoomControl: false,
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap",
-      }).addTo(map);
-
-      // ปักหมุดเมื่อคลิก
-      map.on("click", async (e: any) => {
-        const { lat, lng } = e.latlng;
-        let locationName = "ตำแหน่งที่เลือก";
-        
-        try {
-          // ดึงชื่อสถานที่จริงมาแสดงแทนข้อความ "ตำแหน่งที่เลือก"
-          const addr = await getAddressFromLatLon(lat, lng);
-          if (addr && !addr.error) {
-              const parts = [];
-              if (addr.aoi) parts.push(addr.aoi);
-              else {
-                  if (addr.road) parts.push(addr.road);
-                  if (addr.district) parts.push(addr.district);
-              }
-              if (parts.length > 0) {
-                  locationName = parts.join(', ');
-              }
-          }
-        } catch (err) {
-            console.error('Reverse Geocode failed', err);
-        }
-
-        updatePin(map, L, lat, lng, locationName);
-        setSearchTerm(locationName); // อัปเดตช่องค้นหาด้วยชื่อที่เจอ
-      });
-
-      mapRef.current = { map, L };
-    });
-
     return () => {
-      if (mapRef.current?.map) {
-        mapRef.current.map.remove();
+      if (mapRef.current) {
         mapRef.current = null;
       }
     };
   }, []);
 
+  const initMap = () => {
+    const longdo = (window as any).longdo;
+    if (!longdo || !containerRef.current || mapRef.current) return;
+
+    const map = new longdo.Map({
+      placeholder: containerRef.current,
+      language: "th",
+      location: { lon: 100.5018, lat: 13.7563 },
+      zoom: 12,
+    });
+
+    map.Event.bind("click", async () => {
+      const location = map.location();
+      const lat = location.lat;
+      const lon = location.lon;
+
+      try {
+        const res = await fetch(
+          `https://api.longdo.com/map/services/address?lat=${lat}&lon=${lon}&key=${LONGDO_KEY}`,
+        );
+        const addr = await res.json();
+        const parts = [];
+        if (addr.aoi) parts.push(addr.aoi);
+        else {
+          if (addr.road) parts.push(addr.road);
+          if (addr.district) parts.push(addr.district);
+        }
+        const name = parts.length > 0 ? parts.join(", ") : "ตำแหน่งที่เลือก";
+        updatePin(map, longdo, lat, lon, name);
+        setSearchTerm(name);
+      } catch {
+        updatePin(map, longdo, lat, lon, "ตำแหน่งที่เลือก");
+      }
+    });
+
+    mapRef.current = { map, longdo };
+  };
+
   const updatePin = (
     map: any,
-    L: any,
+    longdo: any,
     lat: number,
-    lng: number,
+    lon: number,
     name: string,
   ) => {
     if (markerRef.current) {
-      markerRef.current.remove();
+      map.Overlays.remove(markerRef.current);
     }
-    const marker = L.marker([lat, lng]).addTo(map);
-    marker.bindPopup(name).openPopup();
+    const marker = new longdo.Marker(
+      { lon, lat },
+      { title: name, detail: name },
+    );
+    map.Overlays.add(marker);
     markerRef.current = marker;
-    setSelectedPos({ lat, lon: lng });
-    onLocationSelectRef.current({ name, lat, lon: lng });
+    setSelectedPos({ lat, lon });
+    onLocationSelectRef.current({ name, lat, lon });
   };
 
   const executeSearch = async (keyword: string) => {
@@ -131,10 +123,11 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
       if (data && data.length > 0) {
         const first = data[0];
         const lat = parseFloat(first.lat);
-        const lng = parseFloat(first.lon);
-        const { map, L } = mapRef.current;
-        map.setView([lat, lng], 16); // ← เลื่อนไปตำแหน่ง
-        updatePin(map, L, lat, lng, first.w || first.name || keyword);
+        const lon = parseFloat(first.lon);
+        const { map, longdo } = mapRef.current;
+        map.location({ lon, lat }, true);
+        map.zoom(16, true);
+        updatePin(map, longdo, lat, lon, first.w || first.name || keyword);
         setSearchTerm(first.w || first.name || keyword);
       } else {
         alert("ไม่พบสถานที่นี้ครับ");
