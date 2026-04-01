@@ -423,7 +423,7 @@ export default function ReportsPage() {
           <select
             value={selectedReportId}
             onChange={(e) => setSelectedReportId(e.target.value)}
-            className="w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all text-gray-700"
+            className="w-full appearance-none bg-white border border-gray-200 rounded-md px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all text-gray-700"
           >
             {REPORT_TYPES.map((report) => (
               <option key={report.id} value={report.id}>{report.name}</option>
@@ -461,7 +461,7 @@ export default function ReportsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden">
         <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="font-bold text-gray-800 text-lg flex items-center gap-2">
             <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
@@ -469,7 +469,7 @@ export default function ReportsPage() {
           </h2>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input type="text" placeholder="ค้นหาในตาราง..." className="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64" />
+            <input type="text" placeholder="ค้นหาในตาราง..." className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64" />
           </div>
         </div>
 

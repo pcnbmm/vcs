@@ -212,8 +212,9 @@ export default function VehicleRequestPage() {
         <div className="w-full space-y-8">
           <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
             <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-gray-200">
-                <h2 className="text-2xl font-black text-black uppercase tracking-tight">
+              <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
+                <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
+                <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
               </div>
@@ -223,10 +224,8 @@ export default function VehicleRequestPage() {
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
                   <select
                     value={formData.ownerDept}
-                    onChange={(e) =>
-                      handleInputChange("ownerDept", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    onChange={(e) => handleInputChange("ownerDept", e.target.value)}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     <option value="">-- เลือกสังกัด --</option>
                     {orgs.map((org) => (
@@ -240,10 +239,8 @@ export default function VehicleRequestPage() {
                 <FormField label="ประเภทรถที่ต้องการ" icon={Car} required>
                   <select
                     value={formData.vehicleType}
-                    onChange={(e) =>
-                      handleInputChange("vehicleType", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    onChange={(e) => handleInputChange("vehicleType", e.target.value)}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     <option value="">-- เลือกประเภทรถ --</option>
                     {carSpecs.map((cs) => (
@@ -258,10 +255,8 @@ export default function VehicleRequestPage() {
                 <FormField label="สถานที่ (ต้นทาง)" icon={NavIcon} required>
                   <select
                     value={formData.origin}
-                    onChange={(e) =>
-                      handleInputChange("origin", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
+                    onChange={(e) => handleInputChange("origin", e.target.value)}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
                   >
                     <option value="">-- โปรดเลือก --</option>
                     {startPlaces.map((cs) => (
@@ -279,7 +274,7 @@ export default function VehicleRequestPage() {
                   <select
                     value={formData.province}
                     disabled={true}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
                   >
                     <option value="">-- จังหวัด --</option>
                     {startPlaces.map((sp) => (
@@ -309,96 +304,40 @@ export default function VehicleRequestPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" /> Latitude
                       </label>
-                      <input
-                        type="text"
-                        value={formData.lat || ""}
-                        readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
-                      />
+                      <input type="text" value={formData.lat || ""} readOnly placeholder="0.000000" className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />{" "}
-                        Longitude
+                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <NavIcon size={12} className="text-blue-500" /> Longitude
                       </label>
-                      <input
-                        type="text"
-                        value={formData.lon || ""}
-                        readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
-                      />
+                      <input type="text" value={formData.lon || ""} readOnly placeholder="0.000000" className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner" />
                     </div>
                   </div>
                 </div>
 
                 {/* Departure */}
                 <FormField label="วันที่เดินทางไป" icon={Calendar} required>
-                  <input
-                    type="date"
-                    value={formData.startDate}
-                    min={getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("startDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                  />
+                  <input type="date" value={formData.startDate} min={getTodayDate()} onChange={(e) => handleInputChange("startDate", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
-                  <input
-                    type="time"
-                    value={formData.startTime}
-                    onChange={(e) =>
-                      handleInputChange("startTime", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                  />
+                  <input type="time" value={formData.startTime} onChange={(e) => handleInputChange("startTime", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
                 </FormField>
 
                 {/* Return */}
                 <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
-                  <input
-                    type="date"
-                    value={formData.endDate}
-                    min={formData.startDate || getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("endDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                  />
+                  <input type="date" value={formData.endDate} min={formData.startDate || getTodayDate()} onChange={(e) => handleInputChange("endDate", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
-                  <input
-                    type="time"
-                    value={formData.endTime}
-                    onChange={(e) =>
-                      handleInputChange("endTime", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                  />
+                  <input type="time" value={formData.endTime} onChange={(e) => handleInputChange("endTime", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
                 </FormField>
 
                 {/* Self Drive */}
                 <div className="md:col-span-2 space-y-3 relative">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
-                    <input
-                      type="checkbox"
-                      checked={formData.selfDrive}
-                      onChange={(e) => {
-                        handleInputChange("selfDrive", e.target.checked);
-                        handleInputChange("driverId", 0);
-                        setDriverSearch("");
-                      }}
-                      className="w-5 h-5 cursor-pointer"
-                    />
+                  <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                    <input type="checkbox" checked={formData.selfDrive} onChange={(e) => { handleInputChange("selfDrive", e.target.checked); handleInputChange("driverId", 0); setDriverSearch(''); }} className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer" />
                     <div className="flex items-center gap-2">
                       <span className="w-full text-sm font-bold text-black">
                         ขับรถด้วยตนเอง
@@ -409,83 +348,29 @@ export default function VehicleRequestPage() {
                   {formData.selfDrive && (
                     <div className="px-4">
                       <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            value={
-                              formData.driverId
-                                ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
-                                : driverSearch
-                            }
-                            onChange={(e) => {
-                              setDriverSearch(e.target.value);
-                              handleInputChange("driverId", 0);
-                              setDriverDropdownOpen(true);
-                            }}
-                            onFocus={() => {
-                              if (formData.driverId)
-                                handleInputChange("driverId", 0);
-                              setDriverSearch("");
-                              setDriverDropdownOpen(true);
-                            }}
-                            onBlur={() => {
-                              setDriverDropdownOpen(false);
-                            }}
-                            placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                            className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                          />
-
-                          {/* Dropdown — แสดงเมื่อ focus และยังไม่ได้เลือก */}
-                          {driverDropdownOpen && !formData.driverId && (
-                            <div className="absolute z-50 w-full bg-white border-2 border-gray-200 rounded-2xl shadow-xl mt-1 overflow-hidden">
-                              <div className="max-h-48 overflow-y-auto">
-                                {drivers
-                                  .filter((d) => {
-                                    if (!driverSearch) return true;
-                                    const fullName =
-                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                    return fullName
-                                      .toLowerCase()
-                                      .includes(driverSearch.toLowerCase());
-                                  })
-                                  .map((d) => {
-                                    const fullName =
-                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                    return (
-                                      <button
-                                        key={d.driver_id}
-                                        type="button"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => {
-                                          handleInputChange(
-                                            "driverId",
-                                            d.driver_id,
-                                          );
-                                          setDriverSearch("");
-                                          setDriverDropdownOpen(false);
-                                        }}
-                                        className="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border-b border-gray-50 last:border-0"
-                                      >
-                                        {fullName || "ไม่ระบุชื่อ"}
-                                      </button>
-                                    );
-                                  })}
-                                {drivers.filter((d) => {
-                                  if (!driverSearch) return true;
-                                  const fullName =
-                                    `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                  return fullName
-                                    .toLowerCase()
-                                    .includes(driverSearch.toLowerCase());
-                                }).length === 0 ? (
-                                  <div className="px-4 py-6 text-sm text-gray-400 text-center">
-                                    ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
-                                  </div>
-                                ) : null}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        <input
+                          type="text"
+                          value={formData.driverId ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() : driverSearch}
+                          onChange={(e) => { setDriverSearch(e.target.value); handleInputChange("driverId", 0); }}
+                          placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
+                          className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                        />
+                        {driverSearch && !formData.driverId && (
+                          <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-48 overflow-y-auto">
+                            {drivers.filter((d) => {
+                              const fullName = `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
+                              return fullName.toLowerCase().includes(driverSearch.toLowerCase()) || String(d.driver_code).includes(driverSearch);
+                            }).map((d) => (
+                              <button key={d.driver_id} type="button" onClick={() => { handleInputChange("driverId", d.driver_id); setDriverSearch(""); }} className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors">
+                                {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
+                                <span className="text-xs text-gray-400 ml-2">({d.driver_code})</span>
+                              </button>
+                            ))}
+                            {drivers.filter((d) => `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim().toLowerCase().includes(driverSearch.toLowerCase())).length === 0 && (
+                              <div className="px-4 py-3 text-sm text-gray-400">ไม่พบชื่อในระบบ กรุณาติดต่อ Admin</div>
+                            )}
+                          </div>
+                        )}
                       </FormField>
                     </div>
                   )}
@@ -493,76 +378,30 @@ export default function VehicleRequestPage() {
 
                 <div className="md:col-span-2">
                   <FormField label="หมายเหตุ" icon={MessageSquare} required>
-                    <textarea
-                      rows={3}
-                      value={formData.objective}
-                      onChange={(e) =>
-                        handleInputChange("objective", e.target.value)
-                      }
-                      placeholder="ระบุหมายเหตุในการเดินทาง..."
-                      className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
-                    />
+                    <textarea rows={3} value={formData.objective} onChange={(e) => handleInputChange("objective", e.target.value)} placeholder="ระบุวัตถุประสงค์ในการเดินทาง..." className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none" />
                   </FormField>
                 </div>
 
                 <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4 md:gap-x-8">
                   <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
                     <div className="relative">
-                      <input
-                        type="number"
-                        value={formData.passengers}
-                        onChange={(e) =>
-                          handleInputChange("passengers", e.target.value)
-                        }
-                        placeholder="0"
-                        min="1"
-                        className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                      />
-                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
-                        คน
-                      </span>
+                      <input type="number" value={formData.passengers} onChange={(e) => handleInputChange("passengers", e.target.value)} placeholder="0" min="1" className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">คน</span>
                     </div>
                   </FormField>
-                  <FormField
-                    label="หมายเลขโทรศัพท์ติดต่อ"
-                    icon={Phone}
-                    required
-                  >
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => {
-                        const val = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10);
-                        handleInputChange("phone", val);
-                      }}
-                      placeholder="0x-xxxx-xxxx"
-                      className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                    />
+                  <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
+                    <input type="tel" value={formData.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleInputChange("phone", val); }} placeholder="0x-xxxx-xxxx" className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
                   </FormField>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
-              <button
-                onClick={resetForm}
-                disabled={isSubmitting}
-                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
-              >
+              <button onClick={resetForm} disabled={isSubmitting} className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50">
                 <X className="w-4 h-4" /> ยกเลิกเนื้อหา
               </button>
-              <button
-                onClick={handleSave}
-                disabled={isSubmitting}
-                className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
+              <button onClick={handleSave} disabled={isSubmitting} className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70">
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอ"}
               </button>
             </div>

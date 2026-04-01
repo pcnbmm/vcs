@@ -163,7 +163,7 @@ export default function MenuRoleTab() {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Action Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-md shadow-sm border border-gray-100">
                 <div className="relative w-full md:w-[400px]">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
@@ -171,24 +171,24 @@ export default function MenuRoleTab() {
                         placeholder="ค้นหาชื่อบทบาท, เมนู..." 
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none"
                     />
                 </div>
-                <button onClick={() => openModal()} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-2xl font-bold text-sm hover:bg-rose-700 shadow-lg shadow-rose-200 transition-all">
+                <button onClick={() => openModal()} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-lg shadow-rose-200 transition-all">
                     <Plus className="w-5 h-5" />
                     กำหนดสิทธิ์เมนูและฟังก์ชัน
                 </button>
             </div>
 
             {/* Data Table */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider w-[20%]">บทบาท (Role)</th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider w-[65%]">สิทธิ์เมนูและฟังก์ชันที่ได้รับ (Menus & Functions)</th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider text-right w-[15%]">จัดการ</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider w-[20%]">บทบาท (Role)</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider w-[65%]">สิทธิ์เมนูและฟังก์ชันที่ได้รับ (Menus & Functions)</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right w-[15%]">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -207,14 +207,14 @@ export default function MenuRoleTab() {
                                 currentMenuRoles.map((mr) => (
                                     <tr key={mr.roles_id} className="hover:bg-rose-50/30 transition-colors">
                                         <td className="py-4 px-6 align-top">
-                                            <span className="inline-flex py-1.5 px-3 rounded-xl bg-gray-100 text-gray-800 font-black text-sm border border-gray-200 shadow-sm">
+                                            <span className="inline-flex py-1.5 px-3 rounded-md bg-gray-100 text-gray-800 font-semibold text-sm border border-gray-200 shadow-sm">
                                                 {mr.roles_name || '-'}
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex flex-col gap-3">
                                                 {mr.menus.map((m: any) => (
-                                                    <div key={m.menu_id} className="bg-gray-50 border border-gray-100 p-3 rounded-2xl w-fit min-w-[300px]">
+                                                    <div key={m.menu_id} className="bg-gray-50 border border-gray-100 p-3 rounded-lg w-fit min-w-[300px]">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <LayoutList className="w-4 h-4 text-rose-500" />
                                                             <span className="font-bold text-sm text-gray-900">{m.menuname}</span>
@@ -238,10 +238,10 @@ export default function MenuRoleTab() {
                                         </td>
                                         <td className="py-4 px-6 text-right align-top">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => openModal(mr)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors shrink-0">
+                                                <button onClick={() => openModal(mr)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors shrink-0">
                                                     <Edit2 className="w-4 h-4" />
                                                 </button>
-                                                <button onClick={() => handleDelete(mr.roles_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors shrink-0">
+                                                <button onClick={() => handleDelete(mr.roles_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors shrink-0">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
@@ -283,7 +283,7 @@ export default function MenuRoleTab() {
                     <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
                         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                                     <div className="w-1.5 h-8 bg-rose-500 rounded-full"></div>
                                     กำหนดสิทธิ์การเข้าถึงเมนู
                                 </h2>
@@ -296,14 +296,14 @@ export default function MenuRoleTab() {
 
                         <form onSubmit={handleSave} className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30 p-8 flex flex-col gap-6">
                             
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-2 shrink-0">
-                                <label className="text-sm font-black text-gray-800">1. บทบาท (Role) <span className="text-rose-500">*</span></label>
+                            <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-2 shrink-0">
+                                <label className="text-sm font-semibold text-gray-800">1. บทบาท (Role) <span className="text-rose-500">*</span></label>
                                 <select 
                                     required
                                     value={formData.roles_id}
                                     onChange={e => setFormData({...formData, roles_id: e.target.value})}
                                     disabled={!!groupedMenuRoles.find(m => String(m.roles_id) === formData.roles_id) && formData.mappings.length > 0} // Disable if editing existing
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <option value="">-- ค้นหาและเลือกบทบาท --</option>
                                     {roles.map(r => (
@@ -314,9 +314,9 @@ export default function MenuRoleTab() {
                                 </select>
                             </div>
                             
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+                            <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-sm font-black text-gray-800">2. กำหนดเมนูและฟังก์ชันย่อย <span className="text-rose-500">*</span></label>
+                                    <label className="text-sm font-semibold text-gray-800">2. กำหนดเมนูและฟังก์ชันย่อย <span className="text-rose-500">*</span></label>
                                     <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">
                                         เลือกไว้ {formData.mappings.length} การเข้าถึง
                                     </span>
@@ -328,19 +328,19 @@ export default function MenuRoleTab() {
                                         const hasMenuAccess = hasMapping(menu.menu_id, null);
                                         
                                         return (
-                                            <div key={menu.menu_id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+                                            <div key={menu.menu_id} className="bg-gray-50 rounded-lg border border-gray-100 overflow-hidden">
                                                 {/* Menu Header */}
                                                 <div 
                                                     onClick={() => toggleMapping(menu.menu_id, null)}
                                                     className="px-5 py-4 bg-white border-b border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-rose-50/30 transition-colors group"
                                                 >
                                                     <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
-                                                        hasMenuAccess ? 'bg-rose-500 text-white' : 'border-2 border-gray-300 group-hover:border-rose-400'
+                                                        hasMenuAccess ? 'bg-rose-500 text-white' : 'border border-gray-300 group-hover:border-rose-400'
                                                     }`}>
                                                         {hasMenuAccess && <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5"><path d="M3 7.5L5.5 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="font-black text-gray-900 text-sm flex items-center gap-2">
+                                                        <span className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                                                             <LayoutList className="w-4 h-4 text-rose-500" />
                                                             เมนู: {menu.menuname}
                                                         </span>
@@ -356,7 +356,7 @@ export default function MenuRoleTab() {
                                                             <div 
                                                                 key={func.function_id}
                                                                 onClick={() => toggleMapping(menu.menu_id, func.function_id)}
-                                                                className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer select-none group bg-white ${
+                                                                className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${
                                                                     hasFuncAccess ? 'border-gray-800 shadow-sm' : 'border-gray-100 hover:border-gray-300'
                                                                 }`}
                                                             >
@@ -378,16 +378,16 @@ export default function MenuRoleTab() {
                                         );
                                     })}
                                     {menus.length === 0 && (
-                                        <p className="text-sm text-gray-500 text-center py-8 bg-white rounded-xl border border-gray-100">โปรดเพิ่มเมนูในแท็บจัดการเมนูก่อน</p>
+                                        <p className="text-sm text-gray-500 text-center py-8 bg-white rounded-md border border-gray-100">โปรดเพิ่มเมนูในแท็บจัดการเมนูก่อน</p>
                                     )}
                                 </div>
                             </div>
                             
                             <div className="flex justify-end gap-3 pt-4 sticky bottom-0 bg-gray-50/90 backdrop-blur-sm -mx-8 px-8 -mb-8 pb-8 z-10">
-                                <button type="button" onClick={closeModal} className="px-6 py-3 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-200 bg-gray-100 transition-colors shadow-sm">
+                                <button type="button" onClick={closeModal} className="px-6 py-3 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-200 bg-gray-100 transition-colors shadow-sm">
                                     ยกเลิก
                                 </button>
-                                <button type="submit" disabled={isSaving || formData.mappings.length === 0} className="flex items-center gap-2 px-8 py-3 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button type="submit" disabled={isSaving || formData.mappings.length === 0} className="flex items-center gap-2 px-8 py-3 bg-rose-600 text-white rounded-md font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                     {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                     {isSaving ? 'กำลังบันทึก...' : 'บันทึกข้อมูลและอัปเดตสิทธิ์'}
                                 </button>

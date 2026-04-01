@@ -266,7 +266,7 @@ export default function ApproverRequestsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
         {/* ... Column Header เหมือนเดิม */}
         <div className="flex items-center gap-4 px-6 py-3 bg-slate-50 border-b border-slate-200">
           <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">

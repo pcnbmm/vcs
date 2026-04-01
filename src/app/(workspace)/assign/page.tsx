@@ -198,7 +198,7 @@ export default function AssignPage() {
         </div>
 
         {pendingOrders.length === 0 && !loading ? (
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-12 flex items-center justify-center shadow-sm">
+          <div className="bg-white rounded-md border border-slate-100 p-12 flex items-center justify-center shadow-sm">
             <p className="text-slate-400">ไม่มีรายการรอจัดสรร</p>
           </div>
         ) : (
@@ -206,11 +206,11 @@ export default function AssignPage() {
             {pendingOrders.map((order) => (
               <div
                 key={order.request_id}
-                className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-all duration-300"
+                className="bg-white rounded-md p-6 shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-all duration-300"
               >
                 <div className="flex items-center gap-6">
                   {/* ID Tag */}
-                  <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-blue-600 font-bold">
+                  <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
                     <span className="text-[10px] text-slate-400">REQ</span>
                     <span>{String(order.request_id).padStart(3, "0")}</span>
                   </div>
@@ -237,7 +237,7 @@ export default function AssignPage() {
 
                 <button
                   onClick={() => openAssignModal(order)}
-                  className="bg-slate-900 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
+                  className="bg-slate-900 text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
                 >
                   <Settings size={18} />
                   <span className="font-medium">จัดรถ / คนขับ</span>
@@ -254,7 +254,7 @@ export default function AssignPage() {
           <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
             <div className="bg-slate-900 px-10 py-8 flex justify-between items-center text-white">
-              <h2 className="text-2xl font-bold tracking-tight">
+              <h2 className="text-xl font-bold tracking-tight">
                 การระบุทรัพยากร
               </h2>
               <button
@@ -298,7 +298,7 @@ export default function AssignPage() {
                       key={type.id}
                       onClick={() => setDispatchType(type.id as DispatchType)}
                       className={`
-                        flex flex-col items-center justify-center gap-3 p-6 rounded-3xl border-2 transition-all duration-300
+                        flex flex-col items-center justify-center gap-3 p-6 rounded-md border transition-all duration-300
                         ${
                           dispatchType === type.id
                             ? `bg-${type.color}-600 border-${type.color}-600 text-white shadow-xl shadow-${type.color}-100 scale-105`
@@ -323,7 +323,7 @@ export default function AssignPage() {
                 <div
                   onClick={() => setIsCarListOpen(!isCarListOpen)}
                   className={`
-                    w-full bg-slate-50 border-2 rounded-2xl px-6 py-4 flex justify-between items-center cursor-pointer transition-all
+                    w-full bg-slate-50 border rounded-lg px-6 py-4 flex justify-between items-center cursor-pointer transition-all
                     ${isCarListOpen ? "border-blue-500 bg-white ring-4 ring-blue-50" : "border-slate-50/50 hover:border-slate-200"}
                   `}
                 >
@@ -346,7 +346,7 @@ export default function AssignPage() {
 
                 {/* Searchable Menu */}
                 {isCarListOpen && (
-                  <div className="absolute z-[60] left-0 right-0 mt-2 bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute z-[60] left-0 right-0 mt-2 bg-white border border-slate-200 rounded-md shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
                     {/* Search Field & Filtering Helper */}
                     <div className="p-4 border-b border-slate-50 bg-slate-50/50 space-y-3">
                       {/* Requested Type Badge */}
@@ -371,7 +371,7 @@ export default function AssignPage() {
                           placeholder="พิมพ์เลขทะเบียน หรือยี่ห้อรถ..."
                           value={carSearchQuery}
                           onChange={(e) => setCarSearchQuery(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 transition-all placeholder:text-slate-400 placeholder:font-normal"
+                          className="w-full bg-white border border-slate-200 rounded-md py-3 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 transition-all placeholder:text-slate-400 placeholder:font-normal"
                         />
                       </div>
                     </div>
@@ -465,7 +465,7 @@ export default function AssignPage() {
                     }
                     onChange={(e) => setSelectedDriver(e.target.value)}
                     className={`
-                            w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 outline-none transition-all appearance-none text-slate-800 font-bold
+                            w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 outline-none transition-all appearance-none text-slate-800 font-bold
                             ${dispatchType !== "self_drive" ? "focus:border-blue-500 focus:bg-white" : "text-slate-400"}
                         `}
                   >
@@ -499,7 +499,7 @@ export default function AssignPage() {
               <button
                 onClick={handleAssignSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white font-extrabold py-5 rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 hover:shadow-blue-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                className="w-full bg-blue-600 text-white font-extrabold py-5 rounded-lg shadow-xl shadow-blue-100 hover:bg-blue-700 hover:shadow-blue-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
               >
                 <Save size={20} />
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกและดำเนินการต่อ"}

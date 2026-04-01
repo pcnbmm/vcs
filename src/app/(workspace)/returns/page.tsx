@@ -198,7 +198,7 @@ export default function ReturnsPage() {
           </button>
 
           {isFilterOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-20">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden z-20">
               {filterOptions.map((option) => (
                 <button
                   key={option}
@@ -220,24 +220,24 @@ export default function ReturnsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-4xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 text-slate-500 text-[10px] tracking-widest uppercase border-b border-slate-100">
-                <th className="px-4 py-3 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">
                   ID / ทะเบียนรถ
                 </th>
-                <th className="px-4 py-3 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">
                   ผู้เดินทาง / หน่วยงาน
                 </th>
-                <th className="px-4 py-3 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">
                   พนักงานขับ / ประเภทรถ
                 </th>
-                <th className="px-4 py-3 font-black whitespace-nowrap">
+                <th className="px-4 py-3 font-semibold whitespace-nowrap">
                   สถานะการคืน
                 </th>
-                <th className="px-4 py-3 font-black text-center whitespace-nowrap">
+                <th className="px-4 py-3 font-semibold text-center whitespace-nowrap">
                   จัดการรายการ
                 </th>
               </tr>
@@ -260,7 +260,7 @@ export default function ReturnsPage() {
                     className="bg-white hover:bg-slate-50 transition-colors group"
                   >
                     <td className="px-4 py-3 align-top">
-                      <p className="font-black text-slate-900 italic tracking-tighter">REQ-{String(item.request_id).padStart(4, '0')}</p>
+                      <p className="font-semibold text-slate-900 italic tracking-tighter">REQ-{String(item.request_id).padStart(4, '0')}</p>
                       <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
                         {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
                       </p>
@@ -283,12 +283,12 @@ export default function ReturnsPage() {
                     </td>
                     <td className="px-4 py-3 align-top">
                       {item.status_use_id === 5 ? (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
+                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                           คืนรถแล้ว (เสร็จสิ้น)
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-black uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
+                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
                           อนุมัติให้ใช้งาน (รอส่งคืน)
                         </span>
@@ -298,7 +298,7 @@ export default function ReturnsPage() {
                       <div className="flex items-center justify-center gap-3">
                         <button
                           onClick={() => handleOpenViewModal(item)}
-                          className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl transition-all"
+                          className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
                           title="ดูรายละเอียด"
                         >
                           <Eye size={20} />
@@ -306,7 +306,7 @@ export default function ReturnsPage() {
                         {item.status_use_id !== 5 && (
                           <button
                             onClick={() => handleOpenEditModal(item)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
                           >
                             <FileEdit size={18} />
                             บันทึกรับคืน
@@ -336,17 +336,17 @@ export default function ReturnsPage() {
       {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 border-white border-8">
-            <div className="bg-[#1a2332] px-10 py-8 flex items-center justify-between text-white rounded-[1.8rem]">
+          <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 border-white border-2">
+            <div className="bg-[#1a2332] px-6 py-4 flex items-center justify-between text-white rounded-xl">
               <div className="flex items-center gap-5">
-                <div className="bg-emerald-500 p-3 rounded-2xl shadow-lg ring-4 ring-emerald-500/20">
+                <div className="bg-emerald-500 p-3 rounded-lg shadow-lg ring-4 ring-emerald-500/20">
                   <Car size={28} className="text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black tracking-tight leading-none">
+                  <h2 className="text-xl font-semibold tracking-tight leading-none">
                     {modalMode === "view" ? "VIEW TRIP RECORD" : "RECORD VEHICLE RETURN"}
                   </h2>
-                  <p className="text-[11px] text-slate-400 mt-2 font-black uppercase tracking-widest opacity-60">
+                  <p className="text-[11px] text-slate-400 mt-2 font-semibold uppercase tracking-widest opacity-60">
                     เลขที่คำขอ: REQ-{String(selectedItem?.request_id).padStart(4, '0')}
                   </p>
                 </div>
@@ -365,22 +365,22 @@ export default function ReturnsPage() {
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-black text-sm uppercase tracking-widest">ข้อมูลเส้นทาง (ROUTE INFO)</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-widest">ข้อมูลเส้นทาง (ROUTE INFO)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       เอาจากไหน (ORIGIN)
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
                       {selectedItem?.vc_start_place?.start_place_name || "ไม่ระบุ"}
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       ไปกลับ (DESTINATION)
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
                       {selectedItem?.journey_place || "-"}
                     </div>
                   </div>
@@ -391,22 +391,22 @@ export default function ReturnsPage() {
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-black text-sm uppercase tracking-widest">ผู้รับผิดชอบ (PERSONNEL)</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-widest">ผู้รับผิดชอบ (PERSONNEL)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 italic">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1 italic">
                       ใครอนุมัติใช้รถตอนแรก (APPROVER)
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
                       {selectedItem?.approver_name || "(ไม่มีข้อมูลในระบบ)"}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       ลักษณะการขับขี่ที่ใช้จริง
                     </label>
-                    <div className="flex bg-slate-100 border-2 border-slate-100 p-1.5 rounded-3xl shadow-inner">
+                    <div className="flex bg-slate-100 border border-slate-100 p-1.5 rounded-md shadow-inner">
                       {[
                         { id: "self", label: "ขับเอง", color: "indigo" },
                         { id: "staff", label: "มีคนขับ", color: "emerald" },
@@ -416,7 +416,7 @@ export default function ReturnsPage() {
                           key={type.id}
                           disabled={true}
                           className={`
-                            flex-1 text-center py-2.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all cursor-not-allowed
+                            flex-1 text-center py-2.5 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all cursor-not-allowed
                             ${returnFormData.drive_type === type.id
                               ? `bg-white text-${type.color}-600 shadow-md ring-1 ring-slate-200`
                               : "text-slate-400 opacity-50"
@@ -429,10 +429,10 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       ใครขับ (DRIVER)
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
                       {selectedItem?.self_drive
                         ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
                         : (selectedItem?.vc_driver?.vc_users?.firstname
@@ -441,10 +441,10 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       ทะเบียน / ประเภทรถ ที่ใช้จริง
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
                       {selectedItem?.vc_car_master?.car_number || "-"} • {selectedItem?.vc_car_spec?.car_spec_name}
                     </div>
                   </div>
@@ -455,44 +455,44 @@ export default function ReturnsPage() {
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-black text-sm uppercase tracking-widest">วันเวลาเดินทาง (TRIP DATE &amp; TIME)</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-widest">วันเวลาเดินทาง (TRIP DATE &amp; TIME)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       วันที่ออกเดินทางตามแผน
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
                       {selectedItem?.journey_date ? new Date(selectedItem.journey_date).toLocaleDateString('th-TH') : "-"}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       เวลาออกตามแผน
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
                       {selectedItem?.journey_time || "00:00"} น.
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       วันที่คืนรถตามแผน
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
                       {selectedItem?.return_date ? new Date(selectedItem.return_date).toLocaleDateString('th-TH') : "-"}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       เวลาคืนรถตามแผน (PLANNED RETURN)
                     </label>
-                    <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
                       {selectedItem?.return_time || "00:00"} น.
                     </div>
                   </div>
                   <div className="col-span-2 border-t border-slate-100 my-4 pt-4"></div>
                   <div>
-                    <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
                       วันที่คืนรถจริง (ACTUAL RETURN DATE) *
                     </label>
                     <input
@@ -500,11 +500,11 @@ export default function ReturnsPage() {
                       readOnly={modalMode === "view"}
                       value={returnFormData.return_real_date}
                       onChange={(e) => setReturnFormData(prev => ({ ...prev, return_real_date: e.target.value }))}
-                      className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-black text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
                       เวลากลับจริง (ACTUAL RETURN TIME) *
                     </label>
                     <input
@@ -512,7 +512,7 @@ export default function ReturnsPage() {
                       readOnly={modalMode === "view"}
                       value={returnFormData.return_real_time}
                       onChange={(e) => setReturnFormData(prev => ({ ...prev, return_real_time: e.target.value }))}
-                      className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-black text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
                     />
                   </div>
                 </div>
@@ -522,11 +522,11 @@ export default function ReturnsPage() {
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-black text-sm uppercase tracking-widest">เลขไมล์ (MILEAGE RECORD)</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-widest">เลขไมล์ (MILEAGE RECORD)</h3>
                 </div>
-                <div className="grid grid-cols-2 gap-8 ring-4 ring-emerald-50/50 p-6 rounded-4xl bg-emerald-50/20">
+                <div className="grid grid-cols-2 gap-8 ring-4 ring-emerald-50/50 p-6 rounded-xl bg-emerald-50/20">
                   <div className="space-y-2">
-                    <label className="block text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-1 ml-1">
+                    <label className="block text-[11px] font-semibold text-emerald-700 uppercase tracking-widest mb-1 ml-1">
                       เลขไมล์เริ่มต้น (ก่อนใช้)
                     </label>
                     <div className="relative">
@@ -544,13 +544,13 @@ export default function ReturnsPage() {
                           setReturnFormData(prev => ({ ...prev, mile_begin: val }));
                         }}
                         placeholder="ระบุเลขไมล์เริ่มต้น"
-                        className="w-full bg-white border-2 border-emerald-100 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm"
+                        className="w-full bg-white border border-emerald-100 rounded-lg py-4 pl-16 pr-6 text-xl font-semibold text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm"
                       />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase">KM</span>
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-slate-300 uppercase">KM</span>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-1 ml-1">
+                    <label className="block text-[11px] font-semibold text-emerald-700 uppercase tracking-widest mb-1 ml-1">
                       เลขไมล์สิ้นสุด (หลังใช้) *
                     </label>
                     <div className="relative">
@@ -568,15 +568,15 @@ export default function ReturnsPage() {
                           setReturnFormData(prev => ({ ...prev, mile_end: val }));
                         }}
                         placeholder="ระบุเลขไมล์สิ้นสุด"
-                        className="w-full bg-white border-2 border-emerald-500/30 rounded-2xl py-4 pl-16 pr-6 text-xl font-black text-emerald-700 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
+                        className="w-full bg-white border border-emerald-500/30 rounded-lg py-4 pl-16 pr-6 text-xl font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
                       />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-400 uppercase">KM</span>
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-emerald-400 uppercase">KM</span>
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <div className="bg-emerald-600 rounded-2xl p-4 flex justify-between items-center text-white shadow-xl shadow-emerald-100">
-                      <span className="text-xs font-black uppercase tracking-widest opacity-80">ระยะทางรวมทั้งสิ้น (TOTAL DISTANCE)</span>
-                      <span className="text-2xl font-black tracking-tighter">
+                    <div className="bg-emerald-600 rounded-lg p-4 flex justify-between items-center text-white shadow-xl shadow-emerald-100">
+                      <span className="text-xs font-semibold uppercase tracking-widest opacity-80">ระยะทางรวมทั้งสิ้น (TOTAL DISTANCE)</span>
+                      <span className="text-xl font-semibold tracking-tighter">
                         {Math.max(0, (Number(returnFormData.mile_end) || 0) - (Number(returnFormData.mile_begin) || 0)).toLocaleString()} <span className="text-xs">กม.</span>
                       </span>
                     </div>
@@ -588,15 +588,15 @@ export default function ReturnsPage() {
               <section className="space-y-6">
                 <div className="flex items-center gap-3 text-emerald-600">
                   <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-black text-sm uppercase tracking-widest">การตรวจรับและบันทึก (RECORDER)</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-widest">การตรวจรับและบันทึก (RECORDER)</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="col-span-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       นายเวรผู้อนุมัติรับคืนรถ (APPROVED BY) *
                     </label>
                     {modalMode === "view" ? (
-                      <div className="bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800">
+                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
                         {dispatchers.find(d => d.userid === returnFormData.approved_by)?.firstname || "-"} {dispatchers.find(d => d.userid === returnFormData.approved_by)?.lastname || ""}
                       </div>
                     ) : (
@@ -605,7 +605,7 @@ export default function ReturnsPage() {
                         <select
                           value={returnFormData.approved_by}
                           onChange={(e) => setReturnFormData(prev => ({ ...prev, approved_by: parseInt(e.target.value) }))}
-                          className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl py-4 pl-16 pr-10 outline-none focus:border-emerald-500 focus:bg-white text-sm font-black text-slate-800 appearance-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100/50 rounded-lg py-4 pl-16 pr-10 outline-none focus:border-emerald-500 focus:bg-white text-sm font-semibold text-slate-800 appearance-none transition-all"
                         >
                           <option value="0">--- เลือกนายเวรผู้อนุมัติรับคืน ---</option>
                           {dispatchers.map(d => (
@@ -615,13 +615,13 @@ export default function ReturnsPage() {
                           ))}
                         </select>
                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                          <span className="text-[10px] font-black">SELECT</span>
+                          <span className="text-[10px] font-semibold">SELECT</span>
                         </div>
                       </div>
                     )}
                   </div>
                   <div className="col-span-2 mt-4">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
                       หมายเหตุบรรยาย (RETURN NOTE)
                     </label>
                     <textarea
@@ -630,7 +630,7 @@ export default function ReturnsPage() {
                       onChange={(e) => setReturnFormData(prev => ({ ...prev, note: e.target.value.substring(0, 64) }))}
                       placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)..."
                       rows={3}
-                      className="w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -638,11 +638,11 @@ export default function ReturnsPage() {
             </div>
 
             {/* Footer ของ Modal */}
-            <div className="px-10 py-8 bg-slate-50 flex items-center justify-end gap-6 rounded-b-[2.5rem]">
+            <div className="px-6 py-6 bg-slate-50 flex items-center justify-end gap-6 rounded-b-xl">
               {modalMode === "view" ? (
                 <button
                   onClick={handleCloseModal}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-2xl transition-all active:scale-95"
+                  className="px-8 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-lg transition-all active:scale-95"
                 >
                   Close Detail
                 </button>
@@ -650,14 +650,14 @@ export default function ReturnsPage() {
                 <>
                   <button
                     onClick={handleCloseModal}
-                    className="px-8 py-3.5 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all"
+                    className="px-8 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all"
                   >
                     Discard Change
                   </button>
                   <button
                     onClick={handleSaveReturn}
                     disabled={isSubmitting}
-                    className="flex items-center gap-3 px-12 py-4 text-sm font-black uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-700 rounded-3xl transition-all shadow-2xl shadow-emerald-200 ring-4 ring-emerald-50 active:scale-95 disabled:opacity-50"
+                    className="flex items-center gap-3 px-12 py-4 text-sm font-semibold uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-all shadow-2xl shadow-emerald-200 ring-4 ring-emerald-50 active:scale-95 disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
