@@ -535,3 +535,16 @@ model vc_login_log {
   status   String    @db.VarChar(10)
   vc_users vc_users? @relation(fields: [userid], references: [userid])
 }
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model vc_own_div_prop {
+  own_div_prop_id Int     @id @default(autoincrement())
+  own_div_code    String? @db.VarChar
+  own_group       Int?
+  flag_owner      Int?
+  flag_del        String? @db.VarChar(50)
+  cre_by          Int?
+  cre_date        String? @db.VarChar(50)
+  upd_by          Int?
+  upd_date        String? @db.VarChar(50)
+}
