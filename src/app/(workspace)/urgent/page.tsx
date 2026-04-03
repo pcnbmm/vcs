@@ -10,6 +10,7 @@ import { getUrgentRequesters, createUrgentBooking } from "@/app/actions/urgentBo
 import { useRouter } from "next/navigation";
 import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
+import Select from "react-select";
 import {
   FileText,
   Car,
@@ -36,9 +37,42 @@ export default function VehicleRequestPage() {
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [provinceList, setProvinceList] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
-  const [driverSearch, setDriverSearch] = useState('');
   const [requesters, setRequesters] = useState<any[]>([]);
-  const [requesterSearch, setRequesterSearch] = useState('');
+
+  const reactSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      padding: '0.3rem 0.5rem',
+      borderColor: state.isFocused ? '#ef4444' : 'transparent',
+      backgroundColor: state.isFocused ? '#ffffff' : '#f8fafc',
+      boxShadow: state.isFocused ? '0 0 0 4px #fee2e2' : 'none',
+      borderWidth: '2px',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        borderColor: state.isFocused ? '#ef4444' : '#fca5a5'
+      }
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#fee2e2' : state.isFocused ? '#fef2f2' : '#ffffff',
+      color: state.isSelected ? '#7f1d1d' : '#1e293b',
+      cursor: 'pointer',
+      padding: '0.75rem 1.5rem',
+    }),
+    singleValue: (base: any) => ({ ...base, fontWeight: 'bold', color: '#000000' }),
+    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    menu: (base: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      overflow: 'hidden',
+      zIndex: 100,
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    }),
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+  };
   const [mapKey, setMapKey] = useState(0);
 
   const getCurrentTime = () => {
@@ -175,8 +209,7 @@ export default function VehicleRequestPage() {
       isUrgent: true,
       requesterId: 0,
     });
-    setDriverSearch('');
-    setRequesterSearch('');
+    // States removed
     setMapKey(prev => prev + 1);
   };
 
@@ -261,55 +294,23 @@ export default function VehicleRequestPage() {
                 </div>
                 <div className="relative">
                   <FormField label="พนักงานผู้ขอใช้รถ" icon={User} required>
-                    <input
-                      type="text"
-                      value={
-                        formData.requesterId
-                          ? `${requesters.find((r) => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find((r) => r.userid === formData.requesterId)?.lastname ?? ""}`.trim()
-                          : requesterSearch
-                      }
-                      onChange={(e) => {
-                        setRequesterSearch(e.target.value);
-                        handleInputChange("requesterId", 0);
+                    <Select
+                      options={requesters.map(r => ({ value: r.userid, label: `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim() + ` (ID: ${r.userid})`, dept: r.departmentid }))}
+                      value={formData.requesterId ? { value: formData.requesterId, label: `${requesters.find(r => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find(r => r.userid === formData.requesterId)?.lastname ?? ""}`.trim() + ` (ID: ${formData.requesterId})` } : null}
+                      onChange={(sel: any) => {
+                        handleInputChange("requesterId", sel ? sel.value : 0);
+                        if (sel && sel.dept) {
+                          handleInputChange("ownerDept", String(sel.dept));
+                        }
                       }}
                       placeholder="พิมพ์ชื่อหรือนามสกุลพนักงานเพื่อค้นหา..."
-                      className="w-full bg-white border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      isClearable
+                      isSearchable
+                      styles={reactSelectStyles}
+                      menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                      menuPosition="fixed"
+                      noOptionsMessage={() => "ไม่พบพนักงานที่ค้นหา"}
                     />
-                    {/* Requesters Dropdown */}
-                    {requesterSearch && !formData.requesterId && (
-                      <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-60 overflow-y-auto">
-                        {requesters
-                          .filter((r) => {
-                            const fullName = `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim();
-                            return fullName.toLowerCase().includes(requesterSearch.toLowerCase());
-                          })
-                          .slice(0, 10) // Limit results for performance
-                          .map((r) => (
-                            <button
-                              key={r.userid}
-                              type="button"
-                              onClick={() => {
-                                handleInputChange("requesterId", r.userid);
-                                setRequesterSearch("");
-                                // Auto-fill department if possible
-                                if (r.departmentid) {
-                                  handleInputChange("ownerDept", String(r.departmentid));
-                                }
-                              }}
-                              className="w-full text-left px-4 py-3 hover:bg-red-50 text-sm font-medium text-gray-700 hover:text-red-700 transition-colors border-b border-gray-50 last:border-0"
-                            >
-                              <div className="font-bold">{r.firstname} {r.lastname}</div>
-                              <div className="text-xs text-gray-400">ID: {r.userid}</div>
-                            </button>
-                          ))}
-                        {requesters.filter((r) => {
-                          const fullName = `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim();
-                          return fullName.toLowerCase().includes(requesterSearch.toLowerCase());
-                        }).length === 0 && (
-                            <div className="px-4 py-3 text-sm text-gray-400">ไม่พบพนักงานที่ค้นหา</div>
-                          )}
-                      </div>
-                    )}
                   </FormField>
                 </div>
               </div>
@@ -317,57 +318,46 @@ export default function VehicleRequestPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
                 {/* Row 1 */}
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
-                  <select
-                    value={formData.ownerDept}
-                    onChange={(e) =>
-                      handleInputChange("ownerDept", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    <option value="">-- เลือกสังกัด --</option>
-                    {orgs.map((org) => (
-                      <option key={org.orgid} value={org.orgid}>
-                        {org.orgname}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={orgs.map(org => ({ value: String(org.orgid), label: org.orgname }))}
+                    value={formData.ownerDept ? { value: String(formData.ownerDept), label: orgs.find(o => String(o.orgid) === String(formData.ownerDept))?.orgname } : null}
+                    onChange={(sel: any) => handleInputChange("ownerDept", sel ? sel.value : "")}
+                    placeholder="-- เลือกสังกัด --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 <FormField label="ประเภทรถที่ต้องการ" icon={Car} required>
-                  <select
-                    value={formData.vehicleType}
-                    onChange={(e) =>
-                      handleInputChange("vehicleType", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    <option value="">-- เลือกประเภทรถ --</option>
-                    {carSpecs.map((cs) => (
-                      <option key={cs.car_spec_id} value={cs.car_spec_id}>
-                        {cs.car_spec_name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={carSpecs.map(cs => ({ value: String(cs.car_spec_id), label: cs.car_spec_name }))}
+                    value={formData.vehicleType ? { value: String(formData.vehicleType), label: carSpecs.find(c => String(c.car_spec_id) === String(formData.vehicleType))?.car_spec_name } : null}
+                    onChange={(sel: any) => handleInputChange("vehicleType", sel ? sel.value : "")}
+                    placeholder="-- เลือกประเภทรถ --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 {/* Row 2 */}
                 <FormField label="สถานที่ (ต้นทาง)" icon={NavIcon} required>
-                  <select
-                    value={formData.origin}
-                    onChange={(e) =>
-                      handleInputChange("origin", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    {startPlaces.map((sp) => (
-                      <option
-                        key={sp.start_place_id}
-                        value={sp.start_place_name}
-                      >
-                        {sp.start_place_name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={startPlaces.map(sp => ({ value: sp.start_place_name, label: sp.start_place_name }))}
+                    value={formData.origin ? { value: formData.origin, label: formData.origin } : null}
+                    onChange={(sel: any) => handleInputChange("origin", sel ? sel.value : "")}
+                    placeholder="-- โปรดเลือกสถานที่ --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 <FormField label="จังหวัด" icon={MapIcon} required>
@@ -492,7 +482,6 @@ export default function VehicleRequestPage() {
                     onChange={(e) => {
                       handleInputChange("selfDrive", e.target.checked);
                       handleInputChange("driverId", 0);
-                      setDriverSearch('');
                     }}
                     className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
                   />
@@ -507,67 +496,21 @@ export default function VehicleRequestPage() {
                 {formData.selfDrive && (
                   <div className="px-4">
                     <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
-                      <input
-                        type="text"
-                        value={
-                          formData.driverId
-                            ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
-                            : driverSearch
-                        }
-                        onChange={(e) => {
-                          setDriverSearch(e.target.value);
-                          handleInputChange("driverId", 0); // reset เมื่อพิมพ์ใหม่
-                        }}
+                      <Select
+                        options={drivers.map(d => ({ value: d.driver_id, label: `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() + ` (${d.driver_code})` }))}
+                        value={formData.driverId ? { value: formData.driverId, label: `${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() + ` (${drivers.find(d => d.driver_id === formData.driverId)?.driver_code})` } : null}
+                        onChange={(sel: any) => handleInputChange("driverId", sel ? sel.value : 0)}
                         placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                        className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                        isClearable
+                        isSearchable
+                        styles={reactSelectStyles}
+                        menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                        menuPosition="fixed"
+                        noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
                       />
-                      {/* Dropdown ผลการค้นหา */}
-                      {driverSearch && !formData.driverId && (
-                        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-2xl shadow-xl mt-1 max-h-48 overflow-y-auto">
-                          {drivers
-                            .filter((d) => {
-                              const fullName =
-                                `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                              return (
-                                fullName
-                                  .toLowerCase()
-                                  .includes(driverSearch.toLowerCase()) ||
-                                String(d.driver_code).includes(driverSearch)
-                              );
-                            })
-                            .map((d) => (
-                              <button
-                                key={d.driver_id}
-                                type="button"
-                                onClick={() => {
-                                  handleInputChange("driverId", d.driver_id);
-                                  setDriverSearch("");
-                                }}
-                                className="w-full text-left px-4 py-3 hover:bg-emerald-50 text-sm font-medium text-gray-700 hover:text-emerald-700 transition-colors"
-                              >
-                                {`${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim()}
-                                <span className="text-xs text-gray-400 ml-2">
-                                  ({d.driver_code})
-                                </span>
-                              </button>
-                            ))}
-                          {drivers.filter((d) => {
-                            const fullName =
-                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                            return fullName
-                              .toLowerCase()
-                              .includes(driverSearch.toLowerCase());
-                          }).length === 0 && (
-                              <div className="px-4 py-3 text-sm text-gray-400">
-                                ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
-                              </div>
-                            )}
-                        </div>
-                      )}
-                      {!formData.driverId && !driverSearch && (
+                      {!formData.driverId && (
                         <p className="text-xs text-red-500 font-medium mt-1">
-                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
-                          กรุณาติดต่อ Admin
+                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ Admin
                         </p>
                       )}
                     </FormField>

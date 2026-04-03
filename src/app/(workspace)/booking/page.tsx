@@ -9,6 +9,7 @@ import { getOrgs } from "@/app/actions/orgActions";
 import MapBox from "@/components/ui/LongdoMapBox";
 import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
+import Select from "react-select";
 import {
   FileText,
   Car,
@@ -33,8 +34,41 @@ export default function VehicleRequestPage() {
   const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [drivers, setDrivers] = useState<any[]>([]);
-  const [driverSearch, setDriverSearch] = useState("");
-  const [driverDropdownOpen, setDriverDropdownOpen] = useState(false);
+
+  const reactSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      padding: '0.3rem 0.5rem',
+      borderColor: state.isFocused ? '#3b82f6' : 'transparent',
+      backgroundColor: state.isFocused ? '#ffffff' : '#f8fafc',
+      boxShadow: state.isFocused ? '0 0 0 4px #eff6ff' : 'none',
+      borderWidth: '2px',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        borderColor: state.isFocused ? '#3b82f6' : '#e2e8f0'
+      }
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f8fafc' : '#ffffff',
+      color: '#1e293b',
+      cursor: 'pointer',
+      padding: '0.75rem 1.5rem',
+    }),
+    singleValue: (base: any) => ({ ...base, fontWeight: 'bold', color: '#000000' }),
+    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    menu: (base: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      overflow: 'hidden',
+      zIndex: 100,
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    }),
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+  };
   const [mapKey, setMapKey] = useState(0);
   const router = useRouter();
   const getCurrentTime = () => {
@@ -171,8 +205,6 @@ export default function VehicleRequestPage() {
       selfDrive: false,
       driverId: 0,
     });
-    setDriverSearch("");
-    setDriverDropdownOpen(false);
     setMapKey((prev) => prev + 1);
   };
 
@@ -221,58 +253,46 @@ export default function VehicleRequestPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
                 {/* Row 1 */}
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
-                  <select
-                    value={formData.ownerDept}
-                    onChange={(e) =>
-                      handleInputChange("ownerDept", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    <option value="">-- เลือกสังกัด --</option>
-                    {orgs.map((org) => (
-                      <option key={org.orgid} value={org.orgid}>
-                        {org.orgname}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={orgs.map(org => ({ value: String(org.orgid), label: org.orgname }))}
+                    value={formData.ownerDept ? { value: String(formData.ownerDept), label: orgs.find(o => String(o.orgid) === String(formData.ownerDept))?.orgname } : null}
+                    onChange={(sel: any) => handleInputChange("ownerDept", sel ? sel.value : "")}
+                    placeholder="-- เลือกสังกัด --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 <FormField label="ประเภทรถที่ต้องการ" icon={Car} required>
-                  <select
-                    value={formData.vehicleType}
-                    onChange={(e) =>
-                      handleInputChange("vehicleType", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    <option value="">-- เลือกประเภทรถ --</option>
-                    {carSpecs.map((cs) => (
-                      <option key={cs.car_spec_id} value={cs.car_spec_id}>
-                        {cs.car_spec_name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={carSpecs.map(cs => ({ value: String(cs.car_spec_id), label: cs.car_spec_name }))}
+                    value={formData.vehicleType ? { value: String(formData.vehicleType), label: carSpecs.find(c => String(c.car_spec_id) === String(formData.vehicleType))?.car_spec_name } : null}
+                    onChange={(sel: any) => handleInputChange("vehicleType", sel ? sel.value : "")}
+                    placeholder="-- เลือกประเภทรถ --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 {/* Row 2 */}
                 <FormField label="สถานที่ (ต้นทาง)" icon={NavIcon} required>
-                  <select
-                    value={formData.origin}
-                    onChange={(e) =>
-                      handleInputChange("origin", e.target.value)
-                    }
-                    className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all appearance-none font-bold text-black shadow-sm"
-                  >
-                    <option value="">-- โปรดเลือก --</option>
-                    {startPlaces.map((cs) => (
-                      <option
-                        key={cs.start_place_id}
-                        value={cs.start_place_name}
-                      >
-                        {cs.start_place_name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={startPlaces.map(sp => ({ value: sp.start_place_name, label: sp.start_place_name }))}
+                    value={formData.origin ? { value: formData.origin, label: formData.origin } : null}
+                    onChange={(sel: any) => handleInputChange("origin", sel ? sel.value : "")}
+                    placeholder="-- โปรดเลือกสถานที่ --"
+                    isClearable
+                    isSearchable
+                    styles={reactSelectStyles}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                  />
                 </FormField>
 
                 <FormField label="จังหวัด" icon={MapIcon} required>
@@ -395,7 +415,6 @@ export default function VehicleRequestPage() {
                       onChange={(e) => {
                         handleInputChange("selfDrive", e.target.checked);
                         handleInputChange("driverId", 0);
-                        setDriverSearch("");
                       }}
                       className="w-5 h-5 cursor-pointer"
                     />
@@ -409,83 +428,18 @@ export default function VehicleRequestPage() {
                   {formData.selfDrive && (
                     <div className="px-4">
                       <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            value={
-                              formData.driverId
-                                ? `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim()
-                                : driverSearch
-                            }
-                            onChange={(e) => {
-                              setDriverSearch(e.target.value);
-                              handleInputChange("driverId", 0);
-                              setDriverDropdownOpen(true);
-                            }}
-                            onFocus={() => {
-                              if (formData.driverId)
-                                handleInputChange("driverId", 0);
-                              setDriverSearch("");
-                              setDriverDropdownOpen(true);
-                            }}
-                            onBlur={() => {
-                              setDriverDropdownOpen(false);
-                            }}
-                            placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                            className="w-full bg-gray-50 border-gray-300 border-2 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
-                          />
-
-                          {/* Dropdown — แสดงเมื่อ focus และยังไม่ได้เลือก */}
-                          {driverDropdownOpen && !formData.driverId && (
-                            <div className="absolute z-50 w-full bg-white border-2 border-gray-200 rounded-2xl shadow-xl mt-1 overflow-hidden">
-                              <div className="max-h-48 overflow-y-auto">
-                                {drivers
-                                  .filter((d) => {
-                                    if (!driverSearch) return true;
-                                    const fullName =
-                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                    return fullName
-                                      .toLowerCase()
-                                      .includes(driverSearch.toLowerCase());
-                                  })
-                                  .map((d) => {
-                                    const fullName =
-                                      `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                    return (
-                                      <button
-                                        key={d.driver_id}
-                                        type="button"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => {
-                                          handleInputChange(
-                                            "driverId",
-                                            d.driver_id,
-                                          );
-                                          setDriverSearch("");
-                                          setDriverDropdownOpen(false);
-                                        }}
-                                        className="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border-b border-gray-50 last:border-0"
-                                      >
-                                        {fullName || "ไม่ระบุชื่อ"}
-                                      </button>
-                                    );
-                                  })}
-                                {drivers.filter((d) => {
-                                  if (!driverSearch) return true;
-                                  const fullName =
-                                    `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim();
-                                  return fullName
-                                    .toLowerCase()
-                                    .includes(driverSearch.toLowerCase());
-                                }).length === 0 ? (
-                                  <div className="px-4 py-6 text-sm text-gray-400 text-center">
-                                    ไม่พบชื่อในระบบ กรุณาติดต่อ Admin
-                                  </div>
-                                ) : null}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        <Select
+                          options={drivers.map(d => ({ value: d.driver_id, label: `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() }))}
+                          value={formData.driverId ? { value: formData.driverId, label: `${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() } : null}
+                          onChange={(sel: any) => handleInputChange("driverId", sel ? sel.value : 0)}
+                          placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
+                          isClearable
+                          isSearchable
+                          styles={reactSelectStyles}
+                          menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                          menuPosition="fixed"
+                          noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
+                        />
                       </FormField>
                     </div>
                   )}

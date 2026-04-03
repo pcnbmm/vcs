@@ -2,6 +2,7 @@
 import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
 
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { Search, Plus, Edit2, Trash2, Eye, X, Loader2, Save, Filter } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -211,7 +212,7 @@ export default function VehicleTab() {
                         placeholder="ค้นหาทะเบียน, ยี่ห้อ, สถานะ..." 
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-500 placeholder:font-medium"
                     />
                 </div>
                 {hasAccess('create') && (
@@ -446,22 +447,96 @@ export default function VehicleTab() {
 }
 
 // Components เสริมภายในไฟล์
+const filterReactSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderRadius: '0.5rem',
+      padding: '0',
+      minHeight: '38px',
+      borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
+      backgroundColor: '#ffffff',
+      boxShadow: state.isFocused ? '0 0 0 2px rgba(59, 130, 246, 0.2)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        borderColor: state.isFocused ? '#3b82f6' : '#d1d5db'
+      }
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f8fafc' : '#ffffff',
+      color: '#000000',
+      cursor: 'pointer',
+      fontSize: '0.875rem',
+      fontWeight: 'bold',
+      padding: '0.5rem 1rem',
+    }),
+    singleValue: (base: any) => ({ ...base, fontWeight: 'bold', color: '#374151', fontSize: '0.875rem' }),
+    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold', fontSize: '0.875rem' }),
+    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold', fontSize: '0.875rem' }),
+    menu: (base: any) => ({
+      ...base,
+      borderRadius: '0.5rem',
+      overflow: 'hidden',
+      zIndex: 100,
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    }),
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+};
+
+const popupReactSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderRadius: '0.75rem',
+      padding: '0.25rem 0.5rem',
+      borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
+      backgroundColor: state.isDisabled ? '#f3f4f6' : state.isFocused ? '#ffffff' : '#f9fafb',
+      boxShadow: state.isFocused ? '0 0 0 2px rgba(59, 130, 246, 0.2)' : 'none',
+      cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        borderColor: state.isFocused ? '#3b82f6' : '#d1d5db'
+      }
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f8fafc' : '#ffffff',
+      color: '#000000',
+      cursor: 'pointer',
+      padding: '0.5rem 1rem',
+    }),
+    singleValue: (base: any, state: any) => ({ ...base, fontWeight: 'bold', color: state.isDisabled ? '#9ca3af' : '#000000' }),
+    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    menu: (base: any) => ({
+      ...base,
+      borderRadius: '0.75rem',
+      overflow: 'hidden',
+      zIndex: 100,
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    }),
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+};
+
 function SelectFilter({ label, value, onChange, options, valKey, lblKey }: any) {
+    const formattedOptions = [
+        { value: "", label: "ทั้งหมด (All)" },
+        ...(options?.map((opt:any) => ({ value: String(opt[valKey]), label: opt[lblKey] })) || [])
+    ];
+    const currentValue = formattedOptions.find((o: any) => o.value === String(value)) || formattedOptions[0];
+
     return (
         <div className="space-y-1.5 focus-within:z-10">
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</label>
-            <select 
-                value={value} 
-                onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
-            >
-                <option value="">ทั้งหมด (All)</option>
-                {options?.map((opt:any) => (
-                    <option key={opt[valKey]} value={opt[valKey]}>
-                        {opt[lblKey]}
-                    </option>
-                ))}
-            </select>
+            <Select 
+                value={currentValue} 
+                onChange={(sel:any) => onChange(sel ? sel.value : "")}
+                options={formattedOptions}
+                isSearchable
+                styles={filterReactSelectStyles}
+                menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                menuPosition="fixed"
+            />
         </div>
     );
 }
@@ -498,24 +573,29 @@ function InputField({ label, type = "text", value, onChange, placeholder, disabl
 }
 
 function SelectField({ label, value, onChange, options, valueKey, labelKey, disabled, required }: any) {
+    const formattedOptions = options?.map((opt:any) => ({ 
+        value: String(opt[valueKey]), 
+        label: opt[labelKey] || ''
+    })) || [];
+    const currentValue = formattedOptions.find((o: any) => o.value === String(value)) || null;
+
     return (
         <div className="space-y-1.5 group">
             <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
                 {label} {required && <span className="text-rose-500">*</span>}
             </label>
-            <select 
-                value={value || ''} 
-                onChange={(e) => onChange(e.target.value)}
-                disabled={disabled}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100 cursor-pointer"
-            >
-                <option value="">-- เลือก --</option>
-                {options?.map((opt:any) => (
-                    <option key={opt[valueKey]} value={opt[valueKey]}>
-                        {opt[labelKey]}
-                    </option>
-                ))}
-            </select>
+            <Select 
+                value={currentValue} 
+                onChange={(sel:any) => onChange(sel ? sel.value : "")}
+                options={formattedOptions}
+                isSearchable
+                isClearable
+                placeholder="-- เลือก --"
+                isDisabled={disabled}
+                styles={popupReactSelectStyles}
+                menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                menuPosition="fixed"
+            />
         </div>
     );
 }

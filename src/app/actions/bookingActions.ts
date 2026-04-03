@@ -135,7 +135,13 @@ export async function getBookings(): Promise<Booking[]> {
           ? "APPROVED"
           : b.status_use_id === 3
             ? "REJECTED"
-            : ("PENDING" as Booking["status"]),
+            : b.status_use_id === 4
+              ? "IN_USE"
+              : b.status_use_id === 5
+                ? "COMPLETED"
+                : b.status_use_id === 6
+                  ? "CANCELLED"
+                  : ("PENDING" as Booking["status"]),
       rejectReason: undefined,
     }));
   } catch (error) {

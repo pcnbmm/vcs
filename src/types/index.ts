@@ -28,7 +28,7 @@ export interface Booking {
     startDateTime: string;
     endDateTime: string;
     passengerCount: number;
-    status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_USE' | 'COMPLETED';
+    status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_USE' | 'COMPLETED' | 'CANCELLED';
     rejectReason?: string;
     vehicleId?: string;
     driverId?: string;

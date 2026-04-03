@@ -25,6 +25,7 @@ import {
   getDrivers,
   assignResource,
 } from "./actions";
+import Select from "react-select";
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
@@ -43,9 +44,74 @@ export default function AssignPage() {
   const [selectedDriver, setSelectedDriver] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Searchable Dropdown States
-  const [carSearchQuery, setCarSearchQuery] = useState("");
-  const [isCarListOpen, setIsCarListOpen] = useState(false);
+  // React-Select styles mapping
+  const reactSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      padding: '0.3rem 0.5rem',
+      borderColor: state.isFocused ? '#3b82f6' : 'transparent',
+      backgroundColor: state.isFocused ? '#ffffff' : '#f8fafc',
+      boxShadow: state.isFocused ? '0 0 0 4px #eff6ff' : 'none',
+      borderWidth: '2px',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        borderColor: state.isFocused ? '#3b82f6' : '#e2e8f0'
+      }
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f8fafc' : '#ffffff',
+      color: '#1e293b',
+      cursor: 'pointer',
+      padding: '0.75rem 1.5rem',
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      fontWeight: 'bold',
+      color: '#000000',
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: '#000000',
+      fontWeight: 'bold'
+    }),
+    input: (base: any) => ({
+      ...base,
+      color: '#000000',
+      fontWeight: 'bold'
+    }),
+    menu: (base: any) => ({
+      ...base,
+      borderRadius: '1rem',
+      overflow: 'hidden',
+      zIndex: 100,
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    }),
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+  };
+
+  const formatCarOptionLabel = (option: any, { context }: any) => {
+    if (context === "value") {
+      return (
+        <span className="font-bold text-slate-800">
+          {option.number} ({option.brand || "ไม่ระบุ"})
+        </span>
+      );
+    }
+    return (
+      <div className="flex flex-col gap-0.5 w-full">
+        <div className="flex justify-between items-center">
+          <span className="font-bold text-slate-800">{option.number}</span>
+          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
+        </div>
+        <span className="text-xs text-slate-500 uppercase tracking-wide font-semibold">
+          {option.brand || "ไม่ระบุ"} • {option.spec || "ไม่ระบุสเปค"}
+        </span>
+      </div>
+    );
+  };
 
   // Load Initial Data
   const fetchData = async () => {
@@ -110,8 +176,7 @@ export default function AssignPage() {
     setSelectedOrder(order);
     setSelectedCar(order.car_id ? String(order.car_id) : "");
     setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
-    setCarSearchQuery(""); // Reset search on open
-    setIsCarListOpen(false); // Close dropdown on open
+    // React-select handles its own query state
 
     if (order.self_drive) {
       setDispatchType("self_drive");
@@ -313,183 +378,94 @@ export default function AssignPage() {
                 </div>
               </div>
 
-              {/* Vehicle Selection (Searchable & Scrollable) */}
-              <div className="space-y-4 relative">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
-                  เลือกยานพาหนะ
-                </label>
-
-                {/* Custom Dropdown Trigger */}
-                <div
-                  onClick={() => setIsCarListOpen(!isCarListOpen)}
-                  className={`
-                    w-full bg-slate-50 border-2 rounded-2xl px-6 py-4 flex justify-between items-center cursor-pointer transition-all
-                    ${isCarListOpen ? "border-blue-500 bg-white ring-4 ring-blue-50" : "border-slate-50/50 hover:border-slate-200"}
-                  `}
-                >
-                  <span
-                    className={`font-bold ${selectedCar ? "text-slate-800" : "text-slate-400"}`}
-                  >
-                    {selectedCar
-                      ? cars.find((c) => String(c.car_id) === selectedCar)
-                          ?.car_number +
-                        " (" +
-                        (cars.find((c) => String(c.car_id) === selectedCar)
-                          ?.vc_car_brand?.car_brand_name || "ไม่ระบุยี่ห้อ") +
-                        ")"
-                      : "กรุณาเลือกรถยนต์..."}
-                  </span>
-                  <ChevronDown
-                    className={`text-slate-400 transition-transform ${isCarListOpen ? "rotate-180" : ""}`}
-                  />
+              {/* Vehicle Selection (Searchable & Scrollable) Using React-Select */}
+              <div className="space-y-4 relative z-[55]">
+                <div className="flex items-center justify-between">
+                  <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
+                    เลือกยานพาหนะ
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      ประเภทที่ขอมา:
+                    </span>
+                    <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                      {selectedOrder?.vc_car_spec?.car_spec_name || "ไม่ระบุ"}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Searchable Menu */}
-                {isCarListOpen && (
-                  <div className="absolute z-[60] left-0 right-0 mt-2 bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
-                    {/* Search Field & Filtering Helper */}
-                    <div className="p-4 border-b border-slate-50 bg-slate-50/50 space-y-3">
-                      {/* Requested Type Badge */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                          ประเภทที่ขอมา:
-                        </span>
-                        <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold">
-                          {selectedOrder?.vc_car_spec?.car_spec_name ||
-                            "ไม่ระบุ"}
-                        </span>
-                      </div>
-
-                      <div className="relative">
-                        <Search
-                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                          size={18}
-                        />
-                        <input
-                          autoFocus
-                          type="text"
-                          placeholder="พิมพ์เลขทะเบียน หรือยี่ห้อรถ..."
-                          value={carSearchQuery}
-                          onChange={(e) => setCarSearchQuery(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 transition-all placeholder:text-slate-400 placeholder:font-normal"
-                        />
-                      </div>
+                <Select
+                  options={cars
+                    .filter((car) => !selectedOrder?.car_spec_id || car.car_spec_id === selectedOrder.car_spec_id)
+                    .map(car => ({
+                      value: String(car.car_id),
+                      label: `${car.car_number} (${car.vc_car_brand?.car_brand_name || "ไม่ระบุยี่ห้อ"})`,
+                      number: car.car_number,
+                      brand: car.vc_car_brand?.car_brand_name,
+                      spec: car.vc_car_spec?.car_spec_name
+                    }))
+                  }
+                  value={
+                    selectedCar 
+                      ? { 
+                          value: selectedCar, 
+                          label: cars.find(c => String(c.car_id) === selectedCar)?.car_number + " (" + (cars.find(c => String(c.car_id) === selectedCar)?.vc_car_brand?.car_brand_name || "ไม่ระบุยี่ห้อ") + ")",
+                          number: cars.find(c => String(c.car_id) === selectedCar)?.car_number,
+                          brand: cars.find(c => String(c.car_id) === selectedCar)?.vc_car_brand?.car_brand_name
+                        } 
+                      : null
+                  }
+                  onChange={(selectedOption: any) => setSelectedCar(selectedOption ? selectedOption.value : "")}
+                  formatOptionLabel={formatCarOptionLabel}
+                  placeholder="ค้นหาทะเบียน หรือยี่ห้อรถ..."
+                  isClearable
+                  isSearchable
+                  menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                  menuPosition="fixed"
+                  styles={reactSelectStyles}
+                  noOptionsMessage={() => (
+                    <div className="p-4 text-center text-slate-400 italic text-sm space-y-2">
+                       <p>ไม่พบรถว่างของประเภท "{selectedOrder?.vc_car_spec?.car_spec_name}" ที่ค้นหา</p>
                     </div>
-
-                    {/* Scrollable List */}
-                    <div className="max-h-64 overflow-y-auto custom-scrollbar">
-                      {cars
-                        .filter((car) => {
-                          const matchesSearch =
-                            car.car_number
-                              ?.toLowerCase()
-                              .includes(carSearchQuery.toLowerCase()) ||
-                            car.vc_car_brand?.car_brand_name
-                              ?.toLowerCase()
-                              .includes(carSearchQuery.toLowerCase());
-
-                          // กรองตามประเภทรถที่ขอมา (car_spec_id)
-                          const matchesSpec =
-                            !selectedOrder?.car_spec_id ||
-                            car.car_spec_id === selectedOrder.car_spec_id;
-
-                          return matchesSearch && matchesSpec;
-                        })
-                        .map((car) => (
-                          <div
-                            key={car.car_id}
-                            onClick={() => {
-                              setSelectedCar(String(car.car_id));
-                              setIsCarListOpen(false);
-                            }}
-                            className={`
-                                    px-6 py-4 cursor-pointer hover:bg-blue-50 transition-colors flex flex-col gap-0.5
-                                    ${selectedCar === String(car.car_id) ? "bg-blue-50 border-r-4 border-blue-600" : ""}
-                                `}
-                          >
-                            <div className="flex justify-between items-center">
-                              <span className="font-bold text-slate-800">
-                                {car.car_number}
-                              </span>
-                              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
-                            </div>
-                            <span className="text-xs text-slate-500 uppercase tracking-wide font-semibold">
-                              {car.vc_car_brand?.car_brand_name || "ไม่ระบุ"} •{" "}
-                              {car.vc_car_spec?.car_spec_name || "ไม่ระบุสเปค"}
-                            </span>
-                          </div>
-                        ))}
-
-                      {/* กรณีไม่พบรถที่ตรงตามประเภทหรือคำค้นหา */}
-                      {cars.filter((car) => {
-                        const matchesSearch =
-                          car.car_number
-                            ?.toLowerCase()
-                            .includes(carSearchQuery.toLowerCase()) ||
-                          car.vc_car_brand?.car_brand_name
-                            ?.toLowerCase()
-                            .includes(carSearchQuery.toLowerCase());
-                        const matchesSpec =
-                          !selectedOrder?.car_spec_id ||
-                          car.car_spec_id === selectedOrder.car_spec_id;
-                        return matchesSearch && matchesSpec;
-                      }).length === 0 && (
-                        <div className="p-10 text-center text-slate-400 italic text-sm space-y-2">
-                          <p>
-                            ไม่พบรถว่างของประเภท "
-                            {selectedOrder?.vc_car_spec?.car_spec_name}"
-                            ที่กรองไว้
-                          </p>
-                          <p className="text-[10px] font-normal not-italic">
-                            หากต้องการรถประเภทอื่น รบกวนแจ้งผู้ขอแก้ไขคำขอครับ
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+                  )}
+                />
               </div>
 
-              {/* Driver Selection */}
-              <div className="space-y-4">
+              {/* Driver Selection Using React-Select */}
+              <div className="space-y-4 relative z-[50]">
                 <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
                   เลือกพนักงานขับรถ
                 </label>
-                <div
-                  className={`relative group ${dispatchType === "self_drive" ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  <select
-                    disabled={dispatchType === "self_drive"}
-                    value={
-                      dispatchType === "self_drive" ? "self" : selectedDriver
+                <div className={`relative group ${dispatchType === "self_drive" ? "opacity-50 cursor-not-allowed" : "z-40"}`}>
+                  <Select
+                    isDisabled={dispatchType === "self_drive"}
+                    options={
+                      dispatchType === "self_drive"
+                        ? [{ value: "self", label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname}` }]
+                        : drivers.map(driver => ({
+                            value: String(driver.driver_id),
+                            label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`
+                          }))
                     }
-                    onChange={(e) => setSelectedDriver(e.target.value)}
-                    className={`
-                            w-full bg-slate-50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 outline-none transition-all appearance-none text-slate-800 font-bold
-                            ${dispatchType !== "self_drive" ? "focus:border-blue-500 focus:bg-white" : "text-slate-400"}
-                        `}
-                  >
-                    {dispatchType === "self_drive" ? (
-                      <option value="self">
-                        นาย {selectedOrder?.vc_user?.firstname}{" "}
-                        {selectedOrder?.vc_user?.lastname}
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">กรุณาเลือกชื่อคนขับ...</option>
-                        {drivers.map((driver) => (
-                          <option
-                            key={driver.driver_id}
-                            value={driver.driver_id}
-                          >
-                            นาย {driver.vc_users?.firstname}{" "}
-                            {driver.vc_users?.lastname}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
-                  <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    value={
+                      dispatchType === "self_drive"
+                        ? { value: "self", label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname}` }
+                        : selectedDriver
+                          ? { 
+                              value: selectedDriver, 
+                              label: `นาย ${drivers.find(d => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find(d => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`
+                            }
+                          : null
+                    }
+                    onChange={(selectedOption: any) => setSelectedDriver(selectedOption ? selectedOption.value : "")}
+                    placeholder="พิมพ์ค้นหาชื่อคนขับ..."
+                    isClearable={dispatchType !== "self_drive"}
+                    isSearchable
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                    styles={reactSelectStyles}
+                    noOptionsMessage={() => "ไม่พบชื่อพนักงานขับรถ"}
+                  />
                 </div>
               </div>
             </div>
