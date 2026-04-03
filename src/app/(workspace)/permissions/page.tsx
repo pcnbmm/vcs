@@ -24,10 +24,10 @@ export default function PermissionsPage() {
 
 
             {/* Tab Navigation */}
-            <div className="flex flex-wrap bg-white rounded-2xl p-1 shadow-sm border border-gray-100 w-full">
+            <div className="flex flex-wrap bg-white rounded-lg p-1 shadow-sm border border-gray-100 w-full">
                 <button
                     onClick={() => setActiveTab('roles')}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'roles'
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -38,7 +38,7 @@ export default function PermissionsPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('menus')}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'menus'
                             ? 'bg-emerald-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -49,7 +49,7 @@ export default function PermissionsPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('functions')}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'functions'
                             ? 'bg-indigo-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -60,7 +60,7 @@ export default function PermissionsPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('user-roles')}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'user-roles'
                             ? 'bg-amber-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -71,7 +71,7 @@ export default function PermissionsPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('menu-roles')}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[140px] py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'menu-roles'
                             ? 'bg-rose-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'

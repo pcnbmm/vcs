@@ -17,10 +17,10 @@ export default function RegistryPage() {
 
 
             {/* Tab Navigation */}
-            <div className="flex bg-white rounded-2xl p-1 shadow-sm border border-gray-100 w-full sm:w-fit">
+            <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-100 w-full sm:w-fit">
                 <button
                     onClick={() => setActiveTab('vehicles')}
-                    className={`flex items-center justify-center gap-2 flex-1 sm:w-48 py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 sm:w-48 py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'vehicles'
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -31,7 +31,7 @@ export default function RegistryPage() {
                 </button>
                 <button
                     onClick={() => setActiveTab('drivers')}
-                    className={`flex items-center justify-center gap-2 flex-1 sm:w-48 py-3 rounded-xl font-bold text-sm transition-all ${
+                    className={`flex items-center justify-center gap-2 flex-1 sm:w-48 py-3 rounded-md font-bold text-sm transition-all ${
                         activeTab === 'drivers'
                             ? 'bg-emerald-600 text-white shadow-md'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'

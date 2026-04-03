@@ -143,7 +143,7 @@ export default function UserRoleTab() {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Action Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-md shadow-sm border border-gray-100">
                 <div className="relative w-full md:w-[400px]">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
@@ -151,25 +151,25 @@ export default function UserRoleTab() {
                         placeholder="ค้นหาชื่อผู้ใช้, ชื่อ-สกุล หรือบทบาท..." 
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none"
                     />
                 </div>
-                <button onClick={() => openModal()} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-2xl font-bold text-sm hover:bg-amber-700 shadow-lg shadow-amber-200 transition-all">
+                <button onClick={() => openModal()} className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-lg font-bold text-sm hover:bg-amber-700 shadow-lg shadow-amber-200 transition-all">
                     <Plus className="w-5 h-5" />
                     มอบหมายบทบาทให้ผู้ใช้
                 </button>
             </div>
 
             {/* Data Table */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">ชื่อผู้ใช้ (Username)</th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">ชื่อ-สกุล (พนักงาน)</th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">บทบาททั้งหมด (Roles)</th>
-                                <th className="py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider text-right">จัดการ</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อผู้ใช้ (Username)</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อ-สกุล (พนักงาน)</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">บทบาททั้งหมด (Roles)</th>
+                                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -210,10 +210,10 @@ export default function UserRoleTab() {
                                         </td>
                                         <td className="py-4 px-6 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => openModal(ur)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors shrink-0">
+                                                <button onClick={() => openModal(ur)} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors shrink-0">
                                                     <Edit2 className="w-4 h-4" />
                                                 </button>
-                                                <button onClick={() => handleDelete(ur.user_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors shrink-0">
+                                                <button onClick={() => handleDelete(ur.user_id)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors shrink-0">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
@@ -255,7 +255,7 @@ export default function UserRoleTab() {
                     <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
                         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                                     <div className="w-1.5 h-8 bg-amber-500 rounded-full"></div>
                                     เพิ่ม/แก้ไขสิทธิ์บทบาทให้ผู้ใช้
                                 </h2>
@@ -268,14 +268,14 @@ export default function UserRoleTab() {
 
                         <form onSubmit={handleSave} className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30 p-8 flex flex-col gap-6">
                             
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-2">
-                                <label className="text-sm font-black text-gray-800">1. ผู้ใช้ (User) <span className="text-rose-500">*</span></label>
+                            <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-2">
+                                <label className="text-sm font-semibold text-gray-800">1. ผู้ใช้ (User) <span className="text-rose-500">*</span></label>
                                 <select 
                                     required
                                     value={formData.user_id}
                                     onChange={e => setFormData({...formData, user_id: e.target.value})}
                                     disabled={!!groupedUserRoles.find(u => String(u.user_id) === formData.user_id) && formData.roles_ids.length > 0} // Disable if editing existing
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <option value="">-- ค้นหาและเลือกผู้ใช้ --</option>
                                     {users.map(u => (
@@ -286,9 +286,9 @@ export default function UserRoleTab() {
                                 </select>
                             </div>
                             
-                            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+                            <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-sm font-black text-gray-800">2. กำหนดบทบาทที่ได้รับ (Multiple Roles) <span className="text-rose-500">*</span></label>
+                                    <label className="text-sm font-semibold text-gray-800">2. กำหนดบทบาทที่ได้รับ (Multiple Roles) <span className="text-rose-500">*</span></label>
                                     <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
                                         เลือกไว้ {formData.roles_ids.length} รายการ
                                     </span>
@@ -300,12 +300,12 @@ export default function UserRoleTab() {
                                             <div 
                                                 key={r.roles_id}
                                                 onClick={() => handleRoleToggle(r.roles_id)}
-                                                className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer select-none group ${
+                                                className={`flex items-start gap-3 p-4 rounded-md border transition-all cursor-pointer select-none group ${
                                                     isSelected ? 'border-amber-500 bg-amber-50' : 'border-gray-100 bg-white hover:border-amber-200 hover:bg-amber-50/50'
                                                 }`}
                                             >
                                                 <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
-                                                    isSelected ? 'bg-amber-500 text-white' : 'border-2 border-gray-300 group-hover:border-amber-400'
+                                                    isSelected ? 'bg-amber-500 text-white' : 'border border-gray-300 group-hover:border-amber-400'
                                                 }`}>
                                                     {isSelected && <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5"><path d="M3 7.5L5.5 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                                                 </div>
@@ -329,10 +329,10 @@ export default function UserRoleTab() {
                             </div>
                             
                             <div className="flex justify-end gap-3 mt-4">
-                                <button type="button" onClick={closeModal} className="px-6 py-3 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">
+                                <button type="button" onClick={closeModal} className="px-6 py-3 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">
                                     ยกเลิก
                                 </button>
-                                <button type="submit" disabled={isSaving || formData.roles_ids.length === 0} className="flex items-center gap-2 px-8 py-3 bg-amber-600 text-white rounded-xl font-bold text-sm hover:bg-amber-700 shadow-md shadow-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button type="submit" disabled={isSaving || formData.roles_ids.length === 0} className="flex items-center gap-2 px-8 py-3 bg-amber-600 text-white rounded-md font-bold text-sm hover:bg-amber-700 shadow-md shadow-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                     {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                     {isSaving ? 'กำลังบันทึก...' : 'บันทึกข้อมูลและอัปเดตสิทธิ์'}
                                 </button>

@@ -1,6 +1,5 @@
 "use client";
-import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
-
+import {showError, showConfirm, } from "@/lib/sweetalert";
 import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
@@ -56,7 +55,6 @@ export default function PendingPage() {
             origin:
               b.vc_start_place?.start_place_name ||
               String(b.start_place || "-"),
-            province: b.journey_province,
             passengers: b.passenger_amount,
             phone: b.user_mobile || "-",
             selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
@@ -93,12 +91,12 @@ export default function PendingPage() {
     const matchesStatus =
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1") ||
-      (statusFilter === "APPROVED" && req.status === "2") ||
+      (statusFilter === "APPROVED" &&
+        (req.status === "2" || req.status === "5")) ||
       (statusFilter === "REJECTED" &&
-        (req.status === "3" || req.status === "6")) ||
-      (statusFilter === "COMPLETED" && req.status === "5");
+        (req.status === "3" || req.status === "6"));
 
-    return matchesStatus; // ส่งค่าแค่ matchesStatus กลับไป
+    return matchesStatus;
   });
 
   const tabs = [
@@ -116,15 +114,12 @@ export default function PendingPage() {
       icon: XCircle,
       color: "rose",
     },
-    { id: "COMPLETED", label: "เสร็จสิ้น", icon: CheckCircle2, color: "blue" },
   ];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-
-
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-2xl overflow-x-auto no-scrollbar border border-gray-100">
+      <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-lg overflow-x-auto no-scrollbar border border-gray-100">
         {tabs.map((tab) => {
           const isActive = statusFilter === tab.id;
           const Icon = tab.icon;
@@ -133,7 +128,7 @@ export default function PendingPage() {
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
               className={`
-                                flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black transition-all shrink-0
+                                flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold transition-all shrink-0
                                 ${
                                   isActive
                                     ? "bg-white text-blue-600 shadow-md scale-[1.02]"
@@ -161,7 +156,7 @@ export default function PendingPage() {
             <h2 className="text-xl font-bold text-gray-900">
               รายการคำขอทั้งหมด
             </h2>
-            <span className="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest ml-2">
+            <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest ml-2">
               {filteredRequests.length}
             </span>
           </div>
@@ -169,7 +164,7 @@ export default function PendingPage() {
 
         {/* สถานะ Loading */}
         {isLoading ? (
-          <div className="bg-white p-20 rounded-[3rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+          <div className="bg-white p-20 rounded-md text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
             <Loader2 size={48} className="text-blue-500 animate-spin" />
             <p className="font-bold text-lg text-gray-500">
               กำลังโหลดข้อมูล...
@@ -177,15 +172,15 @@ export default function PendingPage() {
           </div>
         ) : error ? (
           /* สถานะ Error */
-          <div className="bg-rose-50 p-20 rounded-[3rem] text-center border border-rose-100 shadow-sm flex flex-col items-center gap-4">
+          <div className="bg-rose-50 p-20 rounded-md text-center border border-rose-100 shadow-sm flex flex-col items-center gap-4">
             <AlertCircle size={48} className="text-rose-500" />
             <p className="font-bold text-lg text-rose-600">{error}</p>
           </div>
         ) : filteredRequests.length === 0 ? (
           /* สถานะไม่พบข้อมูล */
-          <div className="bg-white p-20 rounded-[3rem] text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+          <div className="bg-white p-20 rounded-md text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
             <AlertCircle size={48} className="text-gray-200" />
-            <p className="font-black text-xl text-gray-400 uppercase tracking-widest">
+            <p className="font-semibold text-xl text-gray-400 uppercase tracking-widest">
               ไม่พบรายการคำขอในหมวดนี้
             </p>
           </div>
@@ -204,14 +199,14 @@ export default function PendingPage() {
                 <div
                   key={req.id}
                   onClick={() => setSelectedRequest(req)}
-                  className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6"
+                  className="bg-white p-4 rounded-md border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6"
                 >
                   {/* Request Info */}
                   <div className="flex-1 min-w-[200px]">
-                    <span className="text-xs font-black text-blue-600 uppercase tracking-widest mb-1 block">
+                    <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-1 block">
                       {req.id}
                     </span>
-                    <h3 className="text-lg font-black text-gray-900 leading-tight">
+                    <h3 className="text-lg font-semibold text-gray-900 leading-tight">
                       {req.requester}
                     </h3>
                     <p className="text-sm text-gray-400 font-bold mt-0.5">
@@ -221,11 +216,11 @@ export default function PendingPage() {
 
                   {/* Destination */}
                   <div className="flex-1 flex items-start gap-3 min-w-[250px]">
-                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                    <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
                       <MapPin className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-base font-black text-gray-800 line-clamp-1 flex items-center gap-2">
+                      <p className="text-base font-semibold text-gray-800 line-clamp-1 flex items-center gap-2">
                         <span>{req.origin}</span>
                         <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
                         <span className="text-blue-600">{req.destination}</span>
@@ -241,7 +236,7 @@ export default function PendingPage() {
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-blue-500" />
-                        <span className="text-base font-black text-gray-700">
+                        <span className="text-base font-semibold text-gray-700">
                           {req.date}
                         </span>
                       </div>
@@ -257,12 +252,12 @@ export default function PendingPage() {
                   {/* Status & Action */}
                   <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0 lg:w-auto mt-4 lg:mt-0">
                     <div
-                      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border text-[10px] sm:text-[11px] font-black uppercase tracking-tight shadow-sm ${statusColor} whitespace-normal text-center min-h-[32px] max-w-[200px] sm:max-w-none`}
+                      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md border text-[10px] sm:text-[11px] font-semibold uppercase tracking-tight shadow-sm ${statusColor} whitespace-normal text-center min-h-[32px] max-w-[200px] sm:max-w-none`}
                     >
                       <StatusIcon size={14} className="shrink-0" />
                       <span className="leading-tight">{statusName}</span>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shrink-0">
+                    <div className="w-10 h-10 rounded-md bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shrink-0">
                       <ChevronRight
                         size={20}
                         className="group-hover:translate-x-0.5 transition-transform"
@@ -294,10 +289,10 @@ export default function PendingPage() {
             </button>
 
             <div className="mb-8 border-b border-gray-100 pb-6">
-              <span className="text-xs font-black text-blue-600 uppercase tracking-widest">
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
                 {selectedRequest.id}
               </span>
-              <h2 className="text-3xl font-black text-gray-900 mt-1 tracking-tight">
+              <h2 className="text-xl font-semibold text-gray-900 mt-1 tracking-tight">
                 รายละเอียดคำขอจองรถ
               </h2>
             </div>
@@ -305,7 +300,7 @@ export default function PendingPage() {
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                     ชื่อผู้ขอ
                   </p>
                   <p className="text-lg font-bold text-gray-900">
@@ -319,7 +314,7 @@ export default function PendingPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                     สังกัด / แผนก
                   </p>
                   <p className="text-lg font-bold text-gray-900">
@@ -329,15 +324,15 @@ export default function PendingPage() {
               </div>
 
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                   เส้นทางที่ต้องการเดินทาง
                 </p>
-                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                  <span className="bg-white px-3 py-1.5 rounded-xl text-sm font-bold text-gray-600 border border-gray-100 shadow-sm">
+                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="bg-white px-3 py-1.5 rounded-md text-sm font-bold text-gray-600 border border-gray-100 shadow-sm">
                     {selectedRequest.origin}
                   </span>
                   <ChevronRight className="w-5 h-5 text-gray-300 shrink-0" />
-                  <span className="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-100">
+                  <span className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-lg shadow-blue-100">
                     {selectedRequest.destination}
                   </span>
                 </div>
@@ -345,7 +340,7 @@ export default function PendingPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                     วันเวลาเดินทาง
                   </p>
                   <div className="space-y-1">
@@ -364,7 +359,7 @@ export default function PendingPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                     ประเภทรถ / ลักษณะการขับ
                   </p>
                   <div className="space-y-1">
@@ -375,7 +370,7 @@ export default function PendingPage() {
                       <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">
                         ผู้โดยสาร {selectedRequest.passengers} คน
                       </span>
-                      <span className="text-[10px] font-black bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-md uppercase tracking-tight italic">
+                      <span className="text-[10px] font-semibold bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-md uppercase tracking-tight italic">
                         {selectedRequest.selfDrive}
                       </span>
                     </div>
@@ -384,7 +379,7 @@ export default function PendingPage() {
               </div>
 
               <div className="bg-gray-50 p-6 rounded-[1.5rem] border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">
+                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                   วัตถุประสงค์ / หมายเหตุ
                 </p>
                 <p className="text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
@@ -432,7 +427,6 @@ export default function PendingPage() {
                           origin:
                             b.vc_start_place?.start_place_name ||
                             String(b.start_place || "-"),
-                          province: b.journey_province,
                           passengers: b.passenger_amount,
                           phone: b.user_mobile || "-",
                           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
@@ -451,10 +445,10 @@ export default function PendingPage() {
                         setRequests(formattedList);
                       }
                     } else {
-                      showError(res.error);
+                      showError(res.error || "เกิดข้อผิดพลาด");
                     }
                   }}
-                  className="px-8 py-3 bg-rose-600 text-white rounded-2xl font-black text-sm hover:bg-rose-700 transition-all uppercase tracking-widest shadow-xl shadow-rose-200"
+                  className="px-8 py-3 bg-rose-600 text-white rounded-lg font-semibold text-sm hover:bg-rose-700 transition-all uppercase tracking-widest shadow-xl shadow-rose-200"
                 >
                   ยกเลิกคำขอ
                 </button>
@@ -489,7 +483,7 @@ export const getStatusName = (status: number | string) => {
       return "กำลังใช้งาน";
     case "5":
     case "COMPLETED":
-      return "เสร็จสิ้น";
+      return "อนุมัติแล้ว";
     case "6":
     case "CANCELLED":
       return "ยกเลิกโดยผู้ขอ";
