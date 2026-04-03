@@ -26,6 +26,8 @@ const mapStatus = (id: number | null): Booking["status"] => {
       return "IN_USE";
     case 5:
       return "COMPLETED";
+    case 6:
+      return "CANCELLED";
     default:
       return "PENDING";
   }
@@ -53,7 +55,7 @@ function formatThaiDateTime(dateStr: string | null): string {
 }
 
 function StatusBadge({ status }: { status: Booking["status"] }) {
-  const config = {
+  const config: Record<Booking["status"], { label: string; className: string }> = {
     PENDING: { label: "รอพิจารณา", className: "bg-amber-100 text-amber-700" },
     APPROVED: {
       label: "อนุมัติแล้ว",
@@ -62,6 +64,7 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
     REJECTED: { label: "ปฏิเสธแล้ว", className: "bg-rose-100 text-rose-700" },
     IN_USE: { label: "กำลังใช้งาน", className: "bg-blue-100 text-blue-700" },
     COMPLETED: { label: "เสร็จสิ้น", className: "bg-slate-100 text-slate-600" },
+    CANCELLED: { label: "ยกเลิกแล้ว", className: "bg-slate-200 text-slate-500 line-through" },
   };
 
   const { label, className } = config[status] || config.PENDING;
