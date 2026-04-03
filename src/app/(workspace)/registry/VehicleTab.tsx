@@ -277,7 +277,7 @@ export default function VehicleTab() {
                                                 let colorClass = 'bg-slate-50 text-slate-700 border-slate-100';
                                                 let dotClass = 'bg-slate-500';
 
-                                                if (status.includes('ปกติ') || status.includes('พร้อม')) {
+                                                if (status.includes('ปกติ') || status.includes('พร้อม') || status.includes('ใช้งานอยู่')) {
                                                     colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
                                                     dotClass = 'bg-emerald-500';
                                                 } else if (status.includes('ซ่อม') || status.includes('บำรุง')) {
@@ -286,7 +286,7 @@ export default function VehicleTab() {
                                                 } else if (status.includes('ยกเลิก') || status.includes('จำหน่าย')) {
                                                     colorClass = 'bg-rose-50 text-rose-700 border-rose-100';
                                                     dotClass = 'bg-rose-500';
-                                                } else if (status.includes('จอง') || status.includes('ใช้งานอยู่')) {
+                                                } else if (status.includes('จอง')) {
                                                     colorClass = 'bg-indigo-50 text-indigo-700 border-indigo-100';
                                                     dotClass = 'bg-indigo-500';
                                                 }
