@@ -210,20 +210,37 @@ export default function VehicleRequestPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [startRes, specRes, orgRes, driverRes] = await Promise.all([
+      const [startRes, orgRes, driverRes] = await Promise.all([
         getStartPlaces(),
-        getCarSpecs(),
         getOrgs(),
         getDrivers(),
       ]);
 
       if (startRes.success) setStartPlaces(startRes.data);
-      if (specRes.success) setCarSpecs(specRes.data);
-      if (orgRes.success) setOrgs(orgRes.data);
       if (driverRes.success) setDrivers(driverRes.data);
+      
+      if (orgRes.success) {
+        const targetOrgs = orgRes.data.filter((o: any) => o.orgname && o.orgname.includes('ยานพาหนะ'));
+        setOrgs(targetOrgs);
+        if (targetOrgs.length > 0) {
+            setFormData(prev => ({ ...prev, ownerDept: String(targetOrgs[0].orgid) }));
+        }
+      }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchSpecs = async () => {
+      if (formData.ownerDept) {
+        const specRes = await getCarSpecs(formData.ownerDept);
+        if (specRes.success) setCarSpecs(specRes.data);
+      } else {
+        setCarSpecs([]);
+      }
+    };
+    fetchSpecs();
+  }, [formData.ownerDept]);
 
   useEffect(() => {
     if (!formData.origin) {
