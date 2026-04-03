@@ -1,6 +1,5 @@
 "use client";
-import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
-
+import {showError, showConfirm, } from "@/lib/sweetalert";
 import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
@@ -56,7 +55,6 @@ export default function PendingPage() {
             origin:
               b.vc_start_place?.start_place_name ||
               String(b.start_place || "-"),
-            province: b.journey_province,
             passengers: b.passenger_amount,
             phone: b.user_mobile || "-",
             selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
@@ -93,12 +91,12 @@ export default function PendingPage() {
     const matchesStatus =
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1") ||
-      (statusFilter === "APPROVED" && req.status === "2") ||
+      (statusFilter === "APPROVED" &&
+        (req.status === "2" || req.status === "5")) ||
       (statusFilter === "REJECTED" &&
-        (req.status === "3" || req.status === "6")) ||
-      (statusFilter === "COMPLETED" && req.status === "5");
+        (req.status === "3" || req.status === "6"));
 
-    return matchesStatus; // ส่งค่าแค่ matchesStatus กลับไป
+    return matchesStatus;
   });
 
   const tabs = [
@@ -116,13 +114,10 @@ export default function PendingPage() {
       icon: XCircle,
       color: "rose",
     },
-    { id: "COMPLETED", label: "เสร็จสิ้น", icon: CheckCircle2, color: "blue" },
   ];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-
-
       {/* Status Tabs */}
       <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-lg overflow-x-auto no-scrollbar border border-gray-100">
         {tabs.map((tab) => {
@@ -432,7 +427,6 @@ export default function PendingPage() {
                           origin:
                             b.vc_start_place?.start_place_name ||
                             String(b.start_place || "-"),
-                          province: b.journey_province,
                           passengers: b.passenger_amount,
                           phone: b.user_mobile || "-",
                           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
@@ -451,7 +445,7 @@ export default function PendingPage() {
                         setRequests(formattedList);
                       }
                     } else {
-                      showError(res.error);
+                      showError(res.error || "เกิดข้อผิดพลาด");
                     }
                   }}
                   className="px-8 py-3 bg-rose-600 text-white rounded-lg font-semibold text-sm hover:bg-rose-700 transition-all uppercase tracking-widest shadow-xl shadow-rose-200"
@@ -489,7 +483,7 @@ export const getStatusName = (status: number | string) => {
       return "กำลังใช้งาน";
     case "5":
     case "COMPLETED":
-      return "เสร็จสิ้น";
+      return "อนุมัติแล้ว";
     case "6":
     case "CANCELLED":
       return "ยกเลิกโดยผู้ขอ";
