@@ -200,8 +200,8 @@ export default function UserRoleTab() {
                                         </td>
                                         <td className="py-4 px-6 max-w-[300px]">
                                             <div className="flex flex-wrap gap-2">
-                                                {ur.roles.map((r: any) => (
-                                                    <span key={r.roles_id} className="inline-flex items-center gap-1 py-1 px-3 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold shadow-sm">
+                                                {ur.roles.map((r: any, i: number) => (
+                                                    <span key={`${r.roles_id}-${i}`} className="inline-flex items-center gap-1 py-1 px-3 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold shadow-sm">
                                                         <ShieldCheck className="w-3 h-3" />
                                                         {r.roles_name}
                                                     </span>
