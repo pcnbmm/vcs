@@ -47,6 +47,7 @@ function StatusBadge({ status }: { status: Booking['status'] }) {
         REJECTED: { label: 'ปฏิเสธแล้ว', className: 'bg-rose-100 text-rose-700' },
         IN_USE: { label: 'กำลังใช้งาน', className: 'bg-blue-100 text-blue-700' },
         COMPLETED: { label: 'เสร็จสิ้น', className: 'bg-slate-100 text-slate-600' },
+        CANCELLED: { label: "ยกเลิก", className: "bg-gray-100 text-gray-600" },
     };
     const { label, className } = config[status] || config.PENDING;
     return (
