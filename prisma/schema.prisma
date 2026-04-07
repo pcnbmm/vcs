@@ -74,6 +74,11 @@ model vc_users {
   vc_login_log  vc_login_log[]
   vc_order_item vc_order_item[]
   vc_user_roles vc_user_roles[]
+  company_id    vc_orgs?        @relation("CompanyIdRelation", fields: [companyid], references: [orgid])
+  department_id vc_orgs?        @relation("DepartmentIdRelation", fields: [departmentid], references: [orgid])
+  group_id      vc_orgs?        @relation("GroupIdRelation", fields: [groupid], references: [orgid])
+  line_id       vc_orgs?        @relation("LineIdRelation", fields: [lineid], references: [orgid])
+  section_id    vc_orgs?        @relation("SectionIdRelation", fields: [sectionid], references: [orgid])
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
 
@@ -526,8 +531,13 @@ model vc_orgs {
   status        String?           @db.VarChar(50)
   upd_date      String?           @db.VarChar(50)
   div_code      String?           @db.VarChar(50)
-  vcOwnDivProps vc_own_div_prop[]
   vc_car_master vc_car_master[]
+  vcOwnDivProps vc_own_div_prop[]
+  company_id    vc_users[]        @relation("CompanyIdRelation")
+  department_id vc_users[]        @relation("DepartmentIdRelation")
+  group_id      vc_users[]        @relation("GroupIdRelation")
+  line_id       vc_users[]        @relation("LineIdRelation")
+  section_id    vc_users[]        @relation("SectionIdRelation")
 }
 
 model vc_login_log {
