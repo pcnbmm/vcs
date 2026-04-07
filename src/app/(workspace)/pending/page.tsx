@@ -1,5 +1,5 @@
 "use client";
-import {showError, showConfirm, } from "@/lib/sweetalert";
+import { showError, showConfirm } from "@/lib/sweetalert";
 import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
@@ -13,7 +13,6 @@ import {
   XCircle,
   AlertCircle,
   Loader2,
-  Navigation,
 } from "lucide-react";
 
 export default function PendingPage() {
@@ -85,6 +84,8 @@ export default function PendingPage() {
   }, []); // <-- ลบ currentUser ออกจาก dependency array แล้ว
 
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // 4. ฟังก์ชันจัดการค้นหาและสถานะ (ทำงานจริง)
   const filteredRequests = requests.filter((req) => {
@@ -98,7 +99,11 @@ export default function PendingPage() {
 
     return matchesStatus;
   });
-
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const paginatedRequests = filteredRequests.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
   const tabs = [
     { id: "ALL", label: "ทั้งหมด", icon: RefreshCw },
     { id: "PENDING", label: "รออนุมัติ", icon: Clock, color: "amber" },
@@ -115,11 +120,14 @@ export default function PendingPage() {
       color: "rose",
     },
   ];
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-lg overflow-x-auto no-scrollbar border border-gray-100">
+      <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-2xl overflow-x-auto no-scrollbar border border-gray-100">
         {tabs.map((tab) => {
           const isActive = statusFilter === tab.id;
           const Icon = tab.icon;
@@ -128,7 +136,7 @@ export default function PendingPage() {
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
               className={`
-                                flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold transition-all shrink-0
+                                flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shrink-0
                                 ${
                                   isActive
                                     ? "bg-white text-blue-600 shadow-md scale-[1.02]"
@@ -150,18 +158,6 @@ export default function PendingPage() {
 
       {/* List Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-            <h2 className="text-xl font-bold text-gray-900">
-              รายการคำขอทั้งหมด
-            </h2>
-            <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest ml-2">
-              {filteredRequests.length}
-            </span>
-          </div>
-        </div>
-
         {/* สถานะ Loading */}
         {isLoading ? (
           <div className="bg-white p-20 rounded-md text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
@@ -187,7 +183,7 @@ export default function PendingPage() {
         ) : (
           /* แสดงข้อมูลจริง */
           <div className="grid grid-cols-1 gap-4">
-            {filteredRequests.map((req) => {
+            {paginatedRequests.map((req) => {
               const status = Number(req.status);
               const statusName = getStatusName(status) || "สถานะไม่ระบุ";
               const statusColor =
@@ -199,69 +195,71 @@ export default function PendingPage() {
                 <div
                   key={req.id}
                   onClick={() => setSelectedRequest(req)}
-                  className="bg-white p-4 rounded-md border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6"
+                  className="bg-white px-6 py-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
                 >
-                  {/* Request Info */}
-                  <div className="flex-1 min-w-[200px]">
-                    <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-1 block">
+                  <div className="flex items-center gap-4">
+                    {/* ID */}
+                    <span className="text-xs font-bold text-gray-800 w-8 shrink-0">
                       {req.id}
                     </span>
-                    <h3 className="text-lg font-semibold text-gray-900 leading-tight">
-                      {req.requester}
-                    </h3>
-                    <p className="text-sm text-gray-400 font-bold mt-0.5">
-                      {req.department}
-                    </p>
-                  </div>
 
-                  {/* Destination */}
-                  <div className="flex-1 flex items-start gap-3 min-w-[250px]">
-                    <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
-                      <MapPin className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-base font-semibold text-gray-800 line-clamp-1 flex items-center gap-2">
-                        <span>{req.origin}</span>
-                        <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
-                        <span className="text-blue-600">{req.destination}</span>
+                    {/* Requester */}
+                    <div className="w-44 shrink-0">
+                      <p className="text-sm font-bold text-gray-800 leading-tight">
+                        {req.requester}
                       </p>
-                      <p className="text-xs text-gray-400 font-medium line-clamp-1 uppercase tracking-tight">
-                        {req.objective}
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {req.department}
                       </p>
                     </div>
-                  </div>
 
-                  {/* Date-Time */}
-                  <div className="flex-1 flex items-start gap-4 min-w-[200px]">
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-blue-500" />
-                        <span className="text-base font-semibold text-gray-700">
+                    {/* Origin → Destination */}
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                        <MapPin className="w-4 h-4 text-gray-400 group-hover:text-blue-500" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">
+                          <span className="text-gray-500 shrink-0">
+                            {req.origin}
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                          <span className="text-blue-600 truncate">
+                            {req.destination}
+                          </span>
+                        </p>
+                        <p className="text-xs text-gray-400 truncate mt-0.5">
+                          {req.objective}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="shrink-0 w-40 space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                        <span className="text-sm font-semibold text-gray-700">
                           {req.date}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-400 font-bold">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                        <span className="text-xs text-gray-400 font-medium">
                           {req.time} น.
                         </span>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Status & Action */}
-                  <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0 lg:w-auto mt-4 lg:mt-0">
-                    <div
-                      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md border text-[10px] sm:text-[11px] font-semibold uppercase tracking-tight shadow-sm ${statusColor} whitespace-normal text-center min-h-[32px] max-w-[200px] sm:max-w-none`}
-                    >
-                      <StatusIcon size={14} className="shrink-0" />
-                      <span className="leading-tight">{statusName}</span>
-                    </div>
-                    <div className="w-10 h-10 rounded-md bg-gray-50 border border-gray-200 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shrink-0">
-                      <ChevronRight
-                        size={20}
-                        className="group-hover:translate-x-0.5 transition-transform"
-                      />
+                    {/* Status */}
+                    <div className="shrink-0 flex items-center justify-end gap-3 w-44">
+                      <div
+                        className={`inline-flex items-center justify-center min-w-[120px] px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide ${statusColor}`}
+                      >
+                        {statusName}
+                      </div>
+                      <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <ChevronRight className="w-4 h-4 text-white" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -270,6 +268,33 @@ export default function PendingPage() {
           </div>
         )}
       </div>
+      {/* Pagination — อยู่นอก List Section */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1 pt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-9 h-9 rounded-full text-sm font-bold transition-all
+                ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
+            >
+              {page}
+            </button>
+          ))}
+          {currentPage < totalPages && (
+            <button
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="px-4 h-9 rounded-full text-sm font-bold text-blue-600 hover:bg-blue-50 transition-all"
+            >
+              Next
+            </button>
+          )}
+        </div>
+      )}
 
       {/* ส่วน Detail Modal */}
       {selectedRequest && (
@@ -278,7 +303,7 @@ export default function PendingPage() {
           onClick={() => setSelectedRequest(null)}
         >
           <div
-            className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-2xl relative overflow-hidden"
+            className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-2xl relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -378,7 +403,7 @@ export default function PendingPage() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-6 rounded-[1.5rem] border border-gray-100">
+              <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                 <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
                   วัตถุประสงค์ / หมายเหตุ
                 </p>

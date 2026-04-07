@@ -22,7 +22,8 @@ export default function PageHeader() {
         const currentMenu = result.data.find(
           (item) =>
             item.route_path &&
-            (pathname === item.route_path || pathname.startsWith(item.route_path + "/"))
+            (pathname === item.route_path ||
+              pathname.startsWith(item.route_path + "/")),
         );
         if (currentMenu && currentMenu.menuname) {
           setMenuTitle(currentMenu.menuname);
@@ -40,12 +41,8 @@ export default function PageHeader() {
     <div className="mb-4 overflow-hidden rounded-2xl shadow-sm border border-slate-200 bg-white relative">
       {/* Background Graphic */}
       <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none select-none bg-linear-to-l from-blue-600 to-transparent"></div>
-      
       <div className="px-6 py-4 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-linear-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <LayoutDashboard className="w-6 h-6 text-white" />
-          </div>
           <div>
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">
               {menuTitle}

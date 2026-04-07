@@ -281,10 +281,9 @@ export default function VehicleRequestPage() {
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="grid grid-cols-1 gap-8">
         <div className="w-full space-y-8">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
+          <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
             <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-b border-gray-200 pb-6">
-                <div className="w-2 h-8 bg-black rounded-full shadow-sm"></div>
+              <div className="flex items-center gap-3 border-gray-200">
                 <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
