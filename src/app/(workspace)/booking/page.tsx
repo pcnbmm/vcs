@@ -237,14 +237,11 @@ export default function VehicleRequestPage() {
       if (driverRes.success) setDrivers(driverRes.data);
 
       if (orgRes.success) {
-        const targetOrgs = orgRes.data.filter(
-          (o: any) => o.orgname && o.orgname.includes("ยานพาหนะ"),
-        );
-        setOrgs(targetOrgs);
-        if (targetOrgs.length > 0) {
+        setOrgs(orgRes.data);
+        if (orgRes.data.length === 1) {
           setFormData((prev) => ({
             ...prev,
-            ownerDept: String(targetOrgs[0].orgid),
+            ownerDept: String(orgRes.data[0].orgid),
           }));
         }
       }
@@ -257,8 +254,10 @@ export default function VehicleRequestPage() {
       if (formData.ownerDept) {
         const specRes = await getCarSpecs(formData.ownerDept);
         if (specRes.success) setCarSpecs(specRes.data);
+        setFormData(prev => ({ ...prev, vehicleType: "" }));
       } else {
         setCarSpecs([]);
+        setFormData(prev => ({ ...prev, vehicleType: "" }));
       }
     };
     fetchSpecs();
