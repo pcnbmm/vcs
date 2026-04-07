@@ -1,5 +1,10 @@
 "use client";
-import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+import {
+  showSuccess,
+  showError,
+  showWarning,
+  showConfirm,
+} from "@/lib/sweetalert";
 
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
@@ -38,36 +43,48 @@ export default function VehicleRequestPage() {
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      borderRadius: '1rem',
-      padding: '0.3rem 0.5rem',
-      borderColor: state.isFocused ? '#3b82f6' : 'transparent',
-      backgroundColor: state.isFocused ? '#ffffff' : '#f8fafc',
-      boxShadow: state.isFocused ? '0 0 0 4px #eff6ff' : 'none',
-      borderWidth: '2px',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      '&:hover': {
-        borderColor: state.isFocused ? '#3b82f6' : '#e2e8f0'
-      }
+      borderRadius: "1rem",
+      padding: "0.3rem 0.5rem",
+      borderColor: state.isFocused ? "#3b82f6" : "transparent",
+      backgroundColor: state.isFocused ? "#ffffff" : "#f8fafc",
+      boxShadow: state.isFocused ? "0 0 0 4px #eff6ff" : "none",
+      borderWidth: "2px",
+      cursor: "pointer",
+      transition: "all 0.2s",
+      "&:hover": {
+        borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
+      },
     }),
     option: (base: any, state: any) => ({
       ...base,
-      backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f8fafc' : '#ffffff',
-      color: '#1e293b',
-      cursor: 'pointer',
-      padding: '0.75rem 1.5rem',
+      backgroundColor: state.isSelected
+        ? "#eff6ff"
+        : state.isFocused
+          ? "#f8fafc"
+          : "#ffffff",
+      color: "#1e293b",
+      cursor: "pointer",
+      padding: "0.75rem 1.5rem",
     }),
-    singleValue: (base: any) => ({ ...base, fontWeight: 'bold', color: '#000000' }),
-    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
-    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    singleValue: (base: any) => ({
+      ...base,
+      fontWeight: "bold",
+      color: "#000000",
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: "#000000",
+      fontWeight: "bold",
+    }),
+    input: (base: any) => ({ ...base, color: "#000000", fontWeight: "bold" }),
     menu: (base: any) => ({
       ...base,
-      borderRadius: '1rem',
-      overflow: 'hidden',
+      borderRadius: "1rem",
+      overflow: "hidden",
       zIndex: 100,
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
     }),
-    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
   };
   const [mapKey, setMapKey] = useState(0);
   const router = useRouter();
@@ -218,11 +235,17 @@ export default function VehicleRequestPage() {
 
       if (startRes.success) setStartPlaces(startRes.data);
       if (driverRes.success) setDrivers(driverRes.data);
-      
+
       if (orgRes.success) {
-        setOrgs(orgRes.data);
-        if (orgRes.data.length === 1) {
-            setFormData(prev => ({ ...prev, ownerDept: String(orgRes.data[0].orgid) }));
+        const targetOrgs = orgRes.data.filter(
+          (o: any) => o.orgname && o.orgname.includes("ยานพาหนะ"),
+        );
+        setOrgs(targetOrgs);
+        if (targetOrgs.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            ownerDept: String(targetOrgs[0].orgid),
+          }));
         }
       }
     };
@@ -271,28 +294,63 @@ export default function VehicleRequestPage() {
                 {/* Row 1 */}
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
                   <Select
-                    options={orgs.map(org => ({ value: String(org.orgid), label: org.orgname }))}
-                    value={formData.ownerDept ? { value: String(formData.ownerDept), label: orgs.find(o => String(o.orgid) === String(formData.ownerDept))?.orgname } : null}
-                    onChange={(sel: any) => handleInputChange("ownerDept", sel ? sel.value : "")}
+                    options={orgs.map((org) => ({
+                      value: String(org.orgid),
+                      label: org.orgname,
+                    }))}
+                    value={
+                      formData.ownerDept
+                        ? {
+                            value: String(formData.ownerDept),
+                            label: orgs.find(
+                              (o) =>
+                                String(o.orgid) === String(formData.ownerDept),
+                            )?.orgname,
+                          }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("ownerDept", sel ? sel.value : "")
+                    }
                     placeholder="-- เลือกสังกัด --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
 
                 <FormField label="ประเภทรถที่ต้องการ" icon={Car} required>
                   <Select
-                    options={carSpecs.map(cs => ({ value: String(cs.car_spec_id), label: cs.car_spec_name }))}
-                    value={formData.vehicleType ? { value: String(formData.vehicleType), label: carSpecs.find(c => String(c.car_spec_id) === String(formData.vehicleType))?.car_spec_name } : null}
-                    onChange={(sel: any) => handleInputChange("vehicleType", sel ? sel.value : "")}
+                    options={carSpecs.map((cs) => ({
+                      value: String(cs.car_spec_id),
+                      label: cs.car_spec_name,
+                    }))}
+                    value={
+                      formData.vehicleType
+                        ? {
+                            value: String(formData.vehicleType),
+                            label: carSpecs.find(
+                              (c) =>
+                                String(c.car_spec_id) ===
+                                String(formData.vehicleType),
+                            )?.car_spec_name,
+                          }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("vehicleType", sel ? sel.value : "")
+                    }
                     placeholder="-- เลือกประเภทรถ --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
@@ -300,14 +358,25 @@ export default function VehicleRequestPage() {
                 {/* Row 2 */}
                 <FormField label="สถานที่ (ต้นทาง)" icon={NavIcon} required>
                   <Select
-                    options={startPlaces.map(sp => ({ value: sp.start_place_name, label: sp.start_place_name }))}
-                    value={formData.origin ? { value: formData.origin, label: formData.origin } : null}
-                    onChange={(sel: any) => handleInputChange("origin", sel ? sel.value : "")}
+                    options={startPlaces.map((sp) => ({
+                      value: sp.start_place_name,
+                      label: sp.start_place_name,
+                    }))}
+                    value={
+                      formData.origin
+                        ? { value: formData.origin, label: formData.origin }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("origin", sel ? sel.value : "")
+                    }
                     placeholder="-- โปรดเลือกสถานที่ --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
@@ -349,31 +418,78 @@ export default function VehicleRequestPage() {
                       <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" /> Latitude
                       </label>
-                      <input type="text" value={formData.lat || ""} readOnly placeholder="0.000000" className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner" />
+                      <input
+                        type="text"
+                        value={formData.lat || ""}
+                        readOnly
+                        placeholder="0.000000"
+                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" /> Longitude
+                        <NavIcon size={12} className="text-blue-500" />{" "}
+                        Longitude
                       </label>
-                      <input type="text" value={formData.lon || ""} readOnly placeholder="0.000000" className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner" />
+                      <input
+                        type="text"
+                        value={formData.lon || ""}
+                        readOnly
+                        placeholder="0.000000"
+                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                      />
                     </div>
                   </div>
                 </div>
 
                 {/* Departure */}
                 <FormField label="วันที่เดินทางไป" icon={Calendar} required>
-                  <input type="date" value={formData.startDate} min={getTodayDate()} onChange={(e) => handleInputChange("startDate", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                  <input
+                    type="date"
+                    value={formData.startDate}
+                    min={getTodayDate()}
+                    onChange={(e) =>
+                      handleInputChange("startDate", e.target.value)
+                    }
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                  />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
-                  <input type="time" value={formData.startTime} onChange={(e) => handleInputChange("startTime", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                  <input
+                    type="time"
+                    value={formData.startTime}
+                    onChange={(e) =>
+                      handleInputChange("startTime", e.target.value)
+                    }
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                  />
                 </FormField>
 
                 {/* Return */}
                 <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
-                  <input type="date" value={formData.endDate} min={formData.startDate || getTodayDate()} onChange={(e) => handleInputChange("endDate", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                  <input
+                    type="date"
+                    value={formData.endDate}
+                    min={formData.startDate || getTodayDate()}
+                    onChange={(e) =>
+                      handleInputChange("endDate", e.target.value)
+                    }
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                  />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
-                  <input type="time" value={formData.endTime} onChange={(e) => handleInputChange("endTime", e.target.value)} onClick={(e) => (e.target as any).showPicker?.()} className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                  <input
+                    type="time"
+                    value={formData.endTime}
+                    onChange={(e) =>
+                      handleInputChange("endTime", e.target.value)
+                    }
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                  />
                 </FormField>
 
                 {/* Self Drive */}
@@ -399,14 +515,32 @@ export default function VehicleRequestPage() {
                     <div className="px-4">
                       <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
                         <Select
-                          options={drivers.map(d => ({ value: d.driver_id, label: `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() }))}
-                          value={formData.driverId ? { value: formData.driverId, label: `${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() } : null}
-                          onChange={(sel: any) => handleInputChange("driverId", sel ? sel.value : 0)}
+                          options={drivers.map((d) => ({
+                            value: d.driver_id,
+                            label:
+                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim(),
+                          }))}
+                          value={
+                            formData.driverId
+                              ? {
+                                  value: formData.driverId,
+                                  label:
+                                    `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
+                                }
+                              : null
+                          }
+                          onChange={(sel: any) =>
+                            handleInputChange("driverId", sel ? sel.value : 0)
+                          }
                           placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
                           isClearable
                           isSearchable
                           styles={reactSelectStyles}
-                          menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                          menuPortalTarget={
+                            typeof document !== "undefined"
+                              ? document.body
+                              : null
+                          }
                           menuPosition="fixed"
                           noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
                         />
@@ -417,30 +551,76 @@ export default function VehicleRequestPage() {
 
                 <div className="md:col-span-2">
                   <FormField label="หมายเหตุ" icon={MessageSquare} required>
-                    <textarea rows={3} value={formData.objective} onChange={(e) => handleInputChange("objective", e.target.value)} placeholder="ระบุวัตถุประสงค์ในการเดินทาง..." className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none" />
+                    <textarea
+                      rows={3}
+                      value={formData.objective}
+                      onChange={(e) =>
+                        handleInputChange("objective", e.target.value)
+                      }
+                      placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
+                    />
                   </FormField>
                 </div>
 
                 <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4 md:gap-x-8">
                   <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
                     <div className="relative">
-                      <input type="number" value={formData.passengers} onChange={(e) => handleInputChange("passengers", e.target.value)} placeholder="0" min="1" className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
-                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">คน</span>
+                      <input
+                        type="number"
+                        value={formData.passengers}
+                        onChange={(e) =>
+                          handleInputChange("passengers", e.target.value)
+                        }
+                        placeholder="0"
+                        min="1"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      />
+                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
+                        คน
+                      </span>
                     </div>
                   </FormField>
-                  <FormField label="หมายเลขโทรศัพท์ติดต่อ" icon={Phone} required>
-                    <input type="tel" value={formData.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleInputChange("phone", val); }} placeholder="0x-xxxx-xxxx" className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm" />
+                  <FormField
+                    label="หมายเลขโทรศัพท์ติดต่อ"
+                    icon={Phone}
+                    required
+                  >
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const val = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10);
+                        handleInputChange("phone", val);
+                      }}
+                      placeholder="0x-xxxx-xxxx"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    />
                   </FormField>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
-              <button onClick={resetForm} disabled={isSubmitting} className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50">
+              <button
+                onClick={resetForm}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
+              >
                 <X className="w-4 h-4" /> ยกเลิกเนื้อหา
               </button>
-              <button onClick={handleSave} disabled={isSubmitting} className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70">
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              <button
+                onClick={handleSave}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-10 py-3.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูลคำขอ"}
               </button>
             </div>
