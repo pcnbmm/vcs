@@ -74,6 +74,11 @@ model vc_users {
   vc_login_log  vc_login_log[]
   vc_order_item vc_order_item[]
   vc_user_roles vc_user_roles[]
+  company_id    vc_orgs?        @relation("CompanyIdRelation", fields: [companyid], references: [orgid])
+  department_id vc_orgs?        @relation("DepartmentIdRelation", fields: [departmentid], references: [orgid])
+  group_id      vc_orgs?        @relation("GroupIdRelation", fields: [groupid], references: [orgid])
+  line_id       vc_orgs?        @relation("LineIdRelation", fields: [lineid], references: [orgid])
+  section_id    vc_orgs?        @relation("SectionIdRelation", fields: [sectionid], references: [orgid])
   vc_roles      vc_roles?       @relation(fields: [user_role_id], references: [roles_id])
 }
 
@@ -116,6 +121,7 @@ model vc_car_master {
   vc_type_regis      vc_type_regis?   @relation(fields: [car_type_regis_id], references: [type_regis_id])
   vc_color           vc_color?        @relation(fields: [color_id], references: [color_id])
   vc_oil_type        vc_oil_type?     @relation(fields: [oil_type_id], references: [oil_type_id])
+  vc_orgs            vc_orgs?         @relation(fields: [own_div_code], references: [orgid])
   vc_nt_car          vc_nt_car[]
   vc_order_item      vc_order_item[]
   vc_replacement     vc_replacement[]
@@ -513,18 +519,25 @@ model vc_menu_role {
   vc_roles      vc_roles?    @relation(fields: [roles_id], references: [roles_id])
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model vc_orgs {
-  orgid       Int     @id @default(autoincrement())
-  orgname     String? @db.VarChar(255)
-  priority    String? @db.VarChar(50)
-  short_name  String? @db.VarChar(50)
-  mom_org     Int?
-  index_org   Int?
-  free_check  String? @db.VarChar(50)
-  short_name2 String? @db.VarChar(50)
-  status      String? @db.VarChar(50)
-  upd_date    String? @db.VarChar(50)
+  orgid         String            @id @db.VarChar(255)
+  orgname       String?           @db.VarChar(255)
+  priority      String?           @db.VarChar(50)
+  short_name    String?           @db.VarChar(50)
+  mom_org       String?           @db.VarChar(255)
+  index_org     Int?
+  free_check    String?           @db.VarChar(50)
+  short_name2   String?           @db.VarChar(50)
+  status        String?           @db.VarChar(50)
+  upd_date      String?           @db.VarChar(50)
+  div_code      String?           @db.VarChar(50)
+  vc_car_master vc_car_master[]
+  vcOwnDivProps vc_own_div_prop[]
+  company_id    vc_users[]        @relation("CompanyIdRelation")
+  department_id vc_users[]        @relation("DepartmentIdRelation")
+  group_id      vc_users[]        @relation("GroupIdRelation")
+  line_id       vc_users[]        @relation("LineIdRelation")
+  section_id    vc_users[]        @relation("SectionIdRelation")
 }
 
 model vc_login_log {
@@ -534,4 +547,17 @@ model vc_login_log {
   login_at DateTime  @default(now())
   status   String    @db.VarChar(10)
   vc_users vc_users? @relation(fields: [userid], references: [userid])
+}
+
+model vc_own_div_prop {
+  own_div_prop_id Int      @id @default(autoincrement())
+  own_div_code    String?  @db.VarChar
+  own_group       Int?
+  flag_owner      Int?
+  flag_del        String?  @db.VarChar(50)
+  cre_by          Int?
+  cre_date        String?  @db.VarChar(50)
+  upd_by          Int?
+  upd_date        String?  @db.VarChar(50)
+  div_code        vc_orgs? @relation(fields: [own_div_code], references: [orgid])
 }
