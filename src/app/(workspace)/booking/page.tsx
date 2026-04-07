@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
-import { getOrgs } from "@/app/actions/orgActions";
+import { getMyOrgs } from "@/app/actions/orgActions";
 import MapBox from "@/components/ui/LongdoMapBox";
 import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
@@ -212,7 +212,7 @@ export default function VehicleRequestPage() {
     const fetchData = async () => {
       const [startRes, orgRes, driverRes] = await Promise.all([
         getStartPlaces(),
-        getOrgs(),
+        getMyOrgs(),
         getDrivers(),
       ]);
 
@@ -220,10 +220,9 @@ export default function VehicleRequestPage() {
       if (driverRes.success) setDrivers(driverRes.data);
       
       if (orgRes.success) {
-        const targetOrgs = orgRes.data.filter((o: any) => o.orgname && o.orgname.includes('ยานพาหนะ'));
-        setOrgs(targetOrgs);
-        if (targetOrgs.length > 0) {
-            setFormData(prev => ({ ...prev, ownerDept: String(targetOrgs[0].orgid) }));
+        setOrgs(orgRes.data);
+        if (orgRes.data.length === 1) {
+            setFormData(prev => ({ ...prev, ownerDept: String(orgRes.data[0].orgid) }));
         }
       }
     };
