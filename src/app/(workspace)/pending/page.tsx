@@ -195,69 +195,74 @@ export default function PendingPage() {
                 <div
                   key={req.id}
                   onClick={() => setSelectedRequest(req)}
-                  className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col lg:flex-row lg:items-center gap-6"
+                  className="bg-white px-6 py-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
                 >
-                  {/* ID */}
-                  <div className="w-10 shrink-0">
-                    <p className="text-sm font-bold text-gray-400">{req.id}</p>
-                  </div>
-                  {/* Request Info */}
-                  <div className="flex-1 min-w-[200px]">
-                    <h3 className="text-lg font-semibold text-gray-900 leading-tight">
-                      {req.requester}
-                    </h3>
-                    <p className="text-sm text-gray-400 font-bold mt-0.5">
-                      {req.department}
-                    </p>
-                  </div>
+                  <div className="flex items-center gap-4">
+                    {/* ID */}
+                    <span className="text-xs font-bold text-gray-800 w-8 shrink-0">
+                      {req.id}
+                    </span>
 
-                  {/* Destination */}
-                  <div className="flex-1 flex items-start gap-3 min-w-[250px]">
-                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
-                      <MapPin className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-base font-semibold text-gray-800 line-clamp-1 flex items-center gap-2">
-                        <span>{req.origin}</span>
-                        <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
-                        <span className="text-blue-600">{req.destination}</span>
+                    {/* Requester */}
+                    <div className="w-44 shrink-0">
+                      <p className="text-sm font-bold text-gray-800 leading-tight">
+                        {req.requester}
                       </p>
-                      <p className="text-xs text-gray-400 font-medium line-clamp-1 uppercase tracking-tight">
-                        {req.objective}
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {req.department}
                       </p>
                     </div>
-                  </div>
 
-                  {/* Date-Time */}
-                  <div className="flex-1 flex items-start gap-4 min-w-[200px]">
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-blue-500" />
-                        <span className="text-base font-semibold text-gray-700">
+                    {/* Origin → Destination */}
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                        <MapPin className="w-4 h-4 text-gray-400 group-hover:text-blue-500" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">
+                          <span className="text-gray-500 shrink-0">
+                            {req.origin}
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                          <span className="text-blue-600 truncate">
+                            {req.destination}
+                          </span>
+                        </p>
+                        <p className="text-xs text-gray-400 truncate mt-0.5">
+                          {req.objective}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="shrink-0 w-40 space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                        <span className="text-sm font-semibold text-gray-700">
                           {req.date}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-400 font-bold">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                        <span className="text-xs text-gray-400 font-medium">
                           {req.time} น.
                         </span>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Status & Action */}
-                  <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0 lg:w-auto mt-4 lg:mt-0">
-                    <div
-                      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border text-[10px] sm:text-[11px] font-semibold uppercase tracking-tight shadow-sm ${statusColor} whitespace-normal text-center min-h-[32px] max-w-[200px] sm:max-w-none`}
-                    >
-                      <StatusIcon size={14} className="shrink-0" />
-                      <span className="leading-tight">{statusName}</span>
-                    </div>
-                    
+                    {/* Status */}
+                    <div className="shrink-0 flex items-center justify-end gap-3 w-44">
+                      <div
+                        className={`inline-flex items-center justify-center min-w-[120px] px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide ${statusColor}`}
+                      >
+                        {statusName}
+                      </div>
+                      <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <ChevronRight className="w-4 h-4 text-white" />
+                      </div>
                     </div>
                   </div>
-                
+                </div>
               );
             })}
           </div>
