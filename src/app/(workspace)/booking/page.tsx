@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
-import { getOrgs } from "@/app/actions/orgActions";
+import { getMyOrgs } from "@/app/actions/orgActions";
 import MapBox from "@/components/ui/LongdoMapBox";
 import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
@@ -229,7 +229,7 @@ export default function VehicleRequestPage() {
     const fetchData = async () => {
       const [startRes, orgRes, driverRes] = await Promise.all([
         getStartPlaces(),
-        getOrgs(),
+        getMyOrgs(),
         getDrivers(),
       ]);
 
