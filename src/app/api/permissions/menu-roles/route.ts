@@ -86,9 +86,9 @@ export async function POST(request: Request) {
                 roles_id: rolesId,
                 menu_id: parseInt(m.menu_id),
                 function_id: m.function_id ? parseInt(m.function_id) : null,
-                cre_by: data.cre_by || 'system',
+                cre_by: data.cre_by ? parseInt(data.cre_by) : null,
                 cre_date: new Date(),
-                upd_by: data.cre_by || 'system',
+                upd_by: data.cre_by ? parseInt(data.cre_by) : null,
                 upd_date: new Date()
             }));
 
