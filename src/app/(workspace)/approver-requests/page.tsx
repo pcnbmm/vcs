@@ -1,6 +1,6 @@
 "use client";
 import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
-
+import { isBookingExpired } from "@/lib/bookingUtils";
 import { useEffect, useState } from "react";
 import { getMyBookings } from "@/app/actions/bookingActions";
 import { updateRequestStatus } from "@/app/actions/requestActions";
@@ -54,25 +54,27 @@ function formatThaiDateTime(dateStr: string | null): string {
   });
 }
 
-function StatusBadge({ status }: { status: Booking["status"] }) {
+function StatusBadge({ status, isExpired }: { status: Booking["status"]; isExpired?: boolean }) {
   const config: Record<Booking["status"], { label: string; className: string }> = {
     PENDING: { label: "รอพิจารณา", className: "bg-amber-100 text-amber-700" },
-    APPROVED: {
-      label: "อนุมัติแล้ว",
-      className: "bg-emerald-100 text-emerald-700",
-    },
+    APPROVED: { label: "อนุมัติแล้ว", className: "bg-emerald-100 text-emerald-700" },
     REJECTED: { label: "ปฏิเสธแล้ว", className: "bg-rose-100 text-rose-700" },
     IN_USE: { label: "กำลังใช้งาน", className: "bg-blue-100 text-blue-700" },
     COMPLETED: { label: "เสร็จสิ้น", className: "bg-slate-100 text-slate-600" },
     CANCELLED: { label: "ยกเลิกแล้ว", className: "bg-slate-200 text-slate-500 line-through" },
   };
 
-  const { label, className } = config[status] || config.PENDING;
+  if (isExpired) {
+    return (
+      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-orange-100 text-orange-700">
+        เกินกำหนด
+      </span>
+    );
+  }
 
+  const { label, className } = config[status] || config.PENDING;
   return (
-    <span
-      className={`text-xs font-medium px-2.5 py-1 rounded-full ${className}`}
-    >
+    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${className}`}>
       {label}
     </span>
   );
@@ -85,6 +87,7 @@ function BookingRow({
   booking: Booking;
   onClick: () => void;
 }) {
+  const isExpired = isBookingExpired(booking.startDateTime ?? "", booking.status);
   return (
     <div
       onClick={onClick}
@@ -145,7 +148,7 @@ function BookingRow({
 
       {/* Col 6: Status */}
       <div className="w-30 shrink-0 flex justify-center">
-        <StatusBadge status={booking.status} />
+        <StatusBadge status={booking.status} isExpired={isExpired} />
       </div>
 
       {/* Col 7: Arrow */}
@@ -216,7 +219,9 @@ export default function ApproverRequestsPage() {
     fetchBookings();
   }, []);
 
-  const pendingBookings = bookings.filter((b) => b.status === "PENDING");
+  const pendingBookings = bookings.filter(
+  (b) => b.status === "PENDING" && !isBookingExpired(b.startDateTime ?? "", b.status)
+);
   const pendingCount = pendingBookings.length;
 
   const handleApprove = async (id: string) => {
@@ -228,7 +233,7 @@ export default function ApproverRequestsPage() {
       setSelectedBooking(null);
       fetchBookings(); // Refresh list
     } else {
-      showError(res.error);
+      showError(res.error ?? "เกิดข้อผิดพลาด");
     }
   };
 
@@ -243,7 +248,7 @@ export default function ApproverRequestsPage() {
       setSelectedBooking(null);
       fetchBookings(); // Refresh list
     } else {
-      showError(res.error);
+      showError(res.error ?? "เกิดข้อผิดพลาด");
     }
   };
 

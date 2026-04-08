@@ -1,4 +1,5 @@
 "use client";
+import { isBookingExpired } from "@/lib/bookingUtils";
 import { showError, showConfirm } from "@/lib/sweetalert";
 import { cancelRequest } from "@/app/actions/requestActions";
 import { useState, useEffect } from "react";
@@ -65,6 +66,9 @@ export default function PendingPage() {
                 })
               : "-",
             endTime: b.return_time || "N/A",
+            startDateTime: b.journey_date
+              ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00`
+              : "",
           }));
           setRequests(formattedList);
         } else {
@@ -89,13 +93,17 @@ export default function PendingPage() {
 
   // 4. ฟังก์ชันจัดการค้นหาและสถานะ (ทำงานจริง)
   const filteredRequests = requests.filter((req) => {
+    const expired = isBookingExpired(req.startDateTime ?? "", req.status);
+
     const matchesStatus =
       statusFilter === "ALL" ||
-      (statusFilter === "PENDING" && req.status === "1") ||
+      (statusFilter === "PENDING" && req.status === "1" && !expired) ||
       (statusFilter === "APPROVED" &&
         (req.status === "2" || req.status === "5")) ||
       (statusFilter === "REJECTED" &&
-        (req.status === "3" || req.status === "6"));
+        (req.status === "3" ||
+          req.status === "6" ||
+          (req.status === "1" && expired)));
 
     return matchesStatus;
   });
@@ -115,7 +123,7 @@ export default function PendingPage() {
     },
     {
       id: "REJECTED",
-      label: "ยกเลิก/ไม่อนุมัติ",
+      label: "ยกเลิก/ไม่อนุมัติ/หมดเวลาอนุมัติ",
       icon: XCircle,
       color: "rose",
     },
@@ -185,10 +193,17 @@ export default function PendingPage() {
           <div className="grid grid-cols-1 gap-4">
             {paginatedRequests.map((req) => {
               const status = Number(req.status);
-              const statusName = getStatusName(status) || "สถานะไม่ระบุ";
-              const statusColor =
-                getStatusColor(status) ||
-                "text-gray-600 bg-gray-50 border-gray-100";
+              const expired = isBookingExpired(
+                req.startDateTime ?? "",
+                req.status,
+              );
+              const statusName = expired
+                ? "หมดเวลาอนุมัติ"
+                : getStatusName(status) || "สถานะไม่ระบุ";
+              const statusColor = expired
+                ? "text-orange-600 bg-orange-50 border-orange-200"
+                : getStatusColor(status) ||
+                  "text-gray-600 bg-gray-50 border-gray-100";
               const StatusIcon = Clock;
 
               return (
@@ -412,7 +427,7 @@ export default function PendingPage() {
                 </p>
               </div>
             </div>
-            {selectedRequest?.status === "1" && (
+            {selectedRequest?.status === "1" && !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
               <div className="mt-10 flex justify-end">
                 <button
                   onClick={async () => {
