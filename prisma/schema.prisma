@@ -124,8 +124,8 @@ model vc_car_master {
   vc_orgs            vc_orgs?         @relation(fields: [own_div_code], references: [orgid])
   vc_nt_car          vc_nt_car[]
   vc_order_item      vc_order_item[]
-  vc_replacement     vc_replacement[]
   vc_rent_car        vc_rent_car[]
+  vc_replacement     vc_replacement[]
 }
 
 model fleetcard_transactions {
@@ -388,8 +388,8 @@ model vc_rent_car {
   upd_date         DateTime?      @db.Date
   replacement_flag String?        @db.Char(1)
   po               String?        @db.VarChar(100)
-  vc_company       vc_company?    @relation(fields: [company_id], references: [company_id])
   vc_car_master    vc_car_master? @relation(fields: [car_id], references: [car_id])
+  vc_company       vc_company?    @relation(fields: [company_id], references: [company_id])
 }
 
 model vc_use {
