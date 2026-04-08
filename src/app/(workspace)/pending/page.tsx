@@ -347,7 +347,6 @@ export default function PendingPage() {
                     {selectedRequest.requester}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <RefreshCw size={12} className="text-blue-500" />
                     <p className="text-sm font-semibold text-blue-600 tracking-tight">
                       {selectedRequest.phone}
                     </p>
@@ -407,7 +406,7 @@ export default function PendingPage() {
                       {selectedRequest.carType}
                     </p>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">
+                      <span className="text-xs font-bold text-black uppercase tracking-tighter">
                         ผู้โดยสาร {selectedRequest.passengers} คน
                       </span>
                       <span className="text-[10px] font-semibold bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-md uppercase tracking-tight italic">

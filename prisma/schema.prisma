@@ -34,6 +34,10 @@ model vc_order_item {
   start_place        Int?
   driver_id          Int?
   car_id             Int?
+  pickup_status      String?             @db.VarChar(50)
+  pickup_date        DateTime?           @db.Date
+  pickup_time        String?             @db.VarChar(10)
+  pickup_method      String?             @db.VarChar(50)
   vc_car_master      vc_car_master?      @relation(fields: [car_id], references: [car_id])
   vc_car_spec        vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
   vc_driver          vc_driver?          @relation(fields: [driver_id], references: [driver_id])

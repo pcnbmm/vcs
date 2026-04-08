@@ -395,6 +395,14 @@ export default function ReturnsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                      ผู้ขอใช้รถ (REQUESTER)
+                    </label>
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                      {selectedItem?.vc_user?.firstname ? `นาย/นาง ${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname}` : "(ไม่มีข้อมูล)"}
+                    </div>
+                  </div>
+                  <div className="group">
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1 italic">
                       ใครอนุมัติใช้รถตอนแรก (APPROVER)
                     </label>
