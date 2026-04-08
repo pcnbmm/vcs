@@ -7,7 +7,7 @@ const MySwal = withReactContent(Swal)
 const defaultOptions: SweetAlertOptions = {
   customClass: {
     confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium mx-2 transition-colors',
-    cancelButton: 'bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium mx-2 transition-colors',
+    cancelButton: 'bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md font-medium mx-2 transition-colors',
     popup: 'rounded-xl shadow-xl',
     title: 'text-xl font-semibold',
   },
@@ -54,7 +54,7 @@ export const showConfirm = async (title: string, text?: string, confirmText = 'à
     showCancelButton: true,
     confirmButtonText: confirmText,
     cancelButtonText: cancelText,
-    reverseButtons: true,
+    reverseButtons: false,
   })
   return result.isConfirmed
 }
