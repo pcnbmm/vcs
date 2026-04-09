@@ -230,7 +230,7 @@ export default function AssignPage() {
       finalDriverId = parseInt(selectedDriver);
     }
 
-    const isConfirmed = await showConfirm("ยืนยันการจัดรถ", "คุณต้องการบันทึกการจัดรถและจัดส่งอีเมลใช่หรือไม่?");
+    const isConfirmed = await showConfirm("ยืนยันการจัดรถ");
     if (!isConfirmed) return;
 
     setIsSubmitting(true);
@@ -247,7 +247,7 @@ export default function AssignPage() {
         setIsModalOpen(false);
         fetchData(); // Refresh list
       } else {
-        showError(result.error);
+        showError(result.error || "เกิดข้อผิดพลาดในการจัดรถและส่งอีเมล");
       }
     } catch (err) {
       console.error(err);
@@ -282,7 +282,6 @@ export default function AssignPage() {
     }
     const isConfirmed = await showConfirm(
        "ยืนยันการบันทึกข้อมูล", 
-       "คุณต้องการบันทึกสถานะการรับรถใช่หรือไม่?"
     );
     if (!isConfirmed) return;
 
@@ -425,7 +424,7 @@ export default function AssignPage() {
                     className="bg-slate-900 text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
                   >
                     <Settings size={18} />
-                    <span className="font-medium">จัดรถ / คนขับ</span>
+                    <span className="font-medium">จัดสรรยานพาหนะ</span>
                   </button>
                 )}
               </div>
@@ -624,7 +623,7 @@ export default function AssignPage() {
             {/* Modal Header */}
             <div className="bg-emerald-600 px-8 py-6 flex justify-between items-center text-white">
               <h2 className="text-xl font-bold tracking-tight">
-                บันทึกการรับรถ
+                บันทึกการส่งมอบรถ
               </h2>
               <button
                 onClick={() => setIsPickupModalOpen(false)}
@@ -638,15 +637,15 @@ export default function AssignPage() {
             {/* Modal Content */}
             <div className="p-8 space-y-6">
               <div>
-                 <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">สถานะการรับรถ</label>
+                 <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">สถานะการส่งมอบ</label>
                  <select 
                     value={pickupStatus}
                     onChange={(e) => setPickupStatus(e.target.value)}
                     className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 focus:ring-0 outline-none transition-colors"
                  >
-                    <option value="PICKED_UP">รับรถเรียบร้อย</option>
-                    <option value="TAXI_CALLED">เรียกรถแท็กซี่แล้วเรียบร้อย</option>
-                    <option value="NO_SHOW">ไม่มีคนรับรถมา (ยกเลิก)</option>
+                    <option value="PICKED_UP">ดำเนินการรับรถแล้ว</option>
+                    <option value="TAXI_CALLED">เรียกรถแท็กซี่เรียบร้อยแล้ว</option>
+                    <option value="NO_SHOW">ผู้ขอไม่มารับรถ</option>
                  </select>
               </div>
 
@@ -674,15 +673,15 @@ export default function AssignPage() {
                   </div>
 
                   <div>
-                     <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">รูปแบบการมารับ</label>
+                     <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">รูปแบบการส่งมอบ</label>
                      <select 
                         value={pickupMethod}
                         onChange={(e) => setPickupMethod(e.target.value)}
                         className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 outline-none transition-colors"
                      >
-                        <option value="STAFF_DELIVERY">เจ้าหน้าที่ขับไปให้</option>
-                        <option value="SELF_PICKUP">ผู้ขอมารับเอง</option>
-                        <option value="TAXI">นั่งแท็กซี่</option>
+                        <option value="STAFF_DELIVERY">เจ้าหน้าที่นำรถไปส่ง</option>
+                        <option value="SELF_PICKUP">ผู้ขอรับรถด้วยตนเอง</option>
+                        <option value="TAXI">ใช้บริการรถแท็กซี่</option>
                      </select>
                   </div>
                 </div>
@@ -696,7 +695,7 @@ export default function AssignPage() {
                 disabled={isPickupSubmitting}
                 className="w-full bg-emerald-600 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:shadow-emerald-300 transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                {isPickupSubmitting ? "กำลังบันทึก..." : "ยืนยันข้อมูล"}
+                {isPickupSubmitting ? "กำลังบันทึก..." : "บันทึกการส่งมอบ"}
               </button>
             </div>
           </div>

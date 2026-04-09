@@ -268,9 +268,6 @@ export default function ReplacementPage() {
                                 <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
                                 {modalMode === 'add' ? 'บันทึกรถทดแทน' : modalMode === 'edit' ? 'แก้ไขข้อมูลรถทดแทน' : 'รายละเอียดการใช้รถทดแทน'}
                             </h2>
-                            <button onClick={closeModal} className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors">
-                                <X className="w-5 h-5" />
-                            </button>
                         </div>
 
                         <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
