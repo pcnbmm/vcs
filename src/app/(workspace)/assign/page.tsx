@@ -18,6 +18,7 @@ import {
   Navigation,
   Check,
   Search,
+  AlertCircle,
 } from "lucide-react";
 import {
   getPendingDispatch,
@@ -30,6 +31,25 @@ import Select from "react-select";
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
+
+// Helper function
+const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
+  if (!journeyDate) return false;
+  // Make sure to parse it carefully
+  const d = new Date(journeyDate);
+  const dateStr = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+  
+  // Format time properly (some DB times are already HH:mm:ss, some are HH:mm)
+  let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
+  if (timeStr.split(":").length === 2) {
+    timeStr += ":00";
+  }
+  
+  // Parse deadline
+  const deadline = new Date(`${dateStr}T${timeStr}`);
+  // Return true if the current time is past the deadline
+  return deadline <= new Date();
+};
 
 export default function AssignPage() {
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
@@ -417,6 +437,14 @@ export default function AssignPage() {
                   >
                     <CheckCircle size={18} />
                     <span className="font-bold">ยืนยันการรับรถ</span>
+                  </button>
+                ) : isAssignExpired(order.journey_date, order.journey_time) ? (
+                  <button
+                    disabled
+                    className="bg-rose-50 text-rose-500 px-6 py-2.5 rounded-md flex items-center gap-2 cursor-not-allowed border border-rose-200"
+                  >
+                    <AlertCircle size={18} />
+                    <span className="font-bold">คำขอจัดรถหมดอายุ</span>
                   </button>
                 ) : (
                   <button
