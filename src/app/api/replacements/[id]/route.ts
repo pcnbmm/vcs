@@ -15,7 +15,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         const body = await req.json();
-        const { replacement_car_number, remark } = body;
+        const { car_id, remark, start_date, broken_datetime } = body;
 
         const replacement = await prisma.vc_replacement.findUnique({
             where: { replacement_id: replacementId }
@@ -30,31 +30,58 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         const now = new Date();
+        const startDt = start_date ? new Date(start_date) : now;
 
         // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (tx) => {
-            // 1. Update vc_replacement
-            const updatedReplacement = await tx.vc_replacement.update({
-                where: { replacement_id: replacementId },
-                data: {
-                    car_number: replacement_car_number,
-                    remark: remark,
-                    upd_by: user,
-                    upd_date: now
-                }
-            });
+            // 1. If we are linking to a broken car for the first time
+            let originalCarNumber = null;
+            if (car_id && !replacement.car_id) {
+                const originalCar = await tx.vc_car_master.findUnique({
+                    where: { car_id: Number(car_id) }
+                });
+                
+                if (!originalCar) throw new Error("Original car not found");
+                originalCarNumber = originalCar.car_number || "-";
 
-            // 2. If replacement_car_number changed, update vc_car_master
-            if (replacement_car_number && replacement_car_number !== replacement.car_number && replacement.car_id) {
+                // Find car type 'ทดแทน'
+                const replacementType = await tx.vc_car_type.findFirst({
+                    where: { car_type_name: { contains: "ทดแทน" } }
+                });
+
+                const replacementStatus = await tx.vc_car_status.findFirst({
+                    where: { car_status_name: { contains: "ทดแทน" } }
+                });
+
+                // Update vc_car_master to the replacement plate
                 await tx.vc_car_master.update({
-                    where: { car_id: Number(replacement.car_id) },
+                    where: { car_id: Number(car_id) },
                     data: {
-                        car_number: replacement_car_number,
+                        car_number: replacement.car_number,
+                        car_type_id: replacementType ? replacementType.car_type_id : originalCar.car_type_id,
+                        ...(replacementStatus ? { car_status_id: replacementStatus.car_status_id } : {}),
                         upd_by: user === "system" ? null : 1,
                         upd_date: now.toISOString()
                     }
                 });
             }
+
+            // 2. Update vc_replacement
+            const updatedReplacement = await tx.vc_replacement.update({
+                where: { replacement_id: replacementId },
+                data: {
+                    ...(car_id && !replacement.car_id ? { 
+                        car_id: Number(car_id),
+                        broken_car_id: originalCarNumber,
+                        start_datetime: startDt.toISOString(),
+                        start_date: startDt,
+                        broken_datetime: broken_datetime || null
+                    } : {}),
+                    remark: remark,
+                    upd_by: user,
+                    upd_date: now
+                }
+            });
 
             return updatedReplacement;
         });

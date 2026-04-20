@@ -28,7 +28,7 @@ export async function getMyOrgs() {
         });
 
         const orgIds = user 
-            ? [user.departmentid, user.companyid, user.groupid, user.sectionid, user.lineid].filter(id => id != null) as string[]
+            ? [user.sectionid].filter(id => id != null) as string[]
             : [];
 
         const orgs = await prisma.vc_orgs.findMany({
