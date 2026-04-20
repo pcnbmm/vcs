@@ -34,3 +34,31 @@ export async function getMyOrgs() {
     return { success: false, data: [] };
   }
 }
+
+export async function getOrgsByUserId(userId: number) {
+  try {
+    const user = await prisma.vc_users.findUnique({
+      where: { userid: userId },
+    });
+
+    const orgIds = user
+      ? ([user.sectionid].filter((id) => id != null) as string[])
+      : [];
+
+    const orgs = await prisma.vc_orgs.findMany({
+      where: {
+        status: "X",
+        OR: [
+          ...(orgIds.length > 0 ? [{ orgid: { in: orgIds } }] : []),
+          { orgname: { contains: "ยานพาหนะ" } },
+        ],
+      },
+      orderBy: { orgid: "asc" },
+    });
+
+    return { success: true, data: orgs };
+  } catch (error) {
+    console.error("Error fetching orgs by user:", error);
+    return { success: false, data: [] };
+  }
+}

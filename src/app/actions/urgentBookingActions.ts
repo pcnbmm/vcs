@@ -14,6 +14,7 @@ export async function getUrgentRequesters() {
         firstname: true,
         lastname: true,
         departmentid: true,
+        sectionid: true,
       },
       orderBy: {
         firstname: "asc",
