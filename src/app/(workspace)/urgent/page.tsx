@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
-import { getMyOrgs } from "@/app/actions/orgActions";
+import { getMyOrgs,getOrgsByUserId  } from "@/app/actions/orgActions";
 import {
   getUrgentRequesters,
   createUrgentBooking,
@@ -335,7 +335,7 @@ export default function VehicleRequestPage() {
                         label:
                           `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim() +
                           ` (ID: ${r.userid})`,
-                        dept: r.departmentid,
+                        dept: r.sectionid,
                       }))}
                       value={
                         formData.requesterId
@@ -347,10 +347,25 @@ export default function VehicleRequestPage() {
                             }
                           : null
                       }
-                      onChange={(sel: any) => {
+                      onChange={async (sel: any) => {
                         handleInputChange("requesterId", sel ? sel.value : 0);
-                        if (sel && sel.dept) {
-                          handleInputChange("ownerDept", String(sel.dept));
+                        handleInputChange("ownerDept", ""); // clear ก่อน
+                        handleInputChange("vehicleType", ""); // clear ประเภทรถด้วย
+
+                        if (sel) {
+                          const orgRes = await getOrgsByUserId(sel.value);
+                          if (orgRes.success) {
+                            setOrgs(orgRes.data);
+                            // ถ้ามีแค่ org เดียว auto-set เลย
+                            if (orgRes.data.length === 1) {
+                              handleInputChange(
+                                "ownerDept",
+                                String(orgRes.data[0].orgid),
+                              );
+                            }
+                          }
+                        } else {
+                          setOrgs([]); // clear orgs ถ้า deselect
                         }
                       }}
                       placeholder="พิมพ์ชื่อหรือนามสกุลพนักงานเพื่อค้นหา..."
