@@ -64,11 +64,12 @@ export async function getPendingDispatch() {
 /**
  * ดึงรายชื่อรถยนต์ (เฉพาะคันที่ flag เป็น null)
  */
-export async function getAvailableCars() {
+export async function getAvailableCars(divCode?: string) {
   try {
     const cars = await prisma.vc_car_master.findMany({
       where: {
         flag: { equals: null },
+        ...(divCode ? { own_div_code: divCode } : {}),
       },
       include: {
         vc_car_brand: true,
