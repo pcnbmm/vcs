@@ -1,50 +1,52 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 // ฟังก์ชันดึง Transport
 const getTransporter = () => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-        throw new Error('ระบบขาดการตั้งค่า EMAIL_USER หรือ EMAIL_APP_PASSWORD ในไฟล์ .env');
-    }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    throw new Error(
+      "ระบบขาดการตั้งค่า EMAIL_USER หรือ EMAIL_APP_PASSWORD ในไฟล์ .env",
+    );
+  }
 
-    return nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_APP_PASSWORD,
-        },
-    });
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD,
+    },
+  });
 };
 
 // Type สำหรับข้อมูลที่เราจะใช้ใน Email
 export interface ApproveEmailPayload {
-    to: string;
-    requesterName: string;
-    requestId: string | number;
-    destination: string;
-    objective: string;
-    startDate: string;
+  to: string;
+  requesterName: string;
+  requestId: string | number;
+  destination: string;
+  objective: string;
+  startDate: string;
 }
 
 export interface AssignEmailPayload {
-    to: string;
-    requesterName: string;
-    requestId: string | number;
-    destination: string;
-    startDate: string;
-    carName: string;
-    driverName: string;
+  to: string;
+  requesterName: string;
+  requestId: string | number;
+  destination: string;
+  startDate: string;
+  carName: string;
+  driverName: string;
 }
 
 /**
  * ฟังก์ชันหลักเปิดใช้งานสำหรับส่งอีเมลการอนุมัติคำขอ
  */
 export const sendApproveEmail = async (payload: ApproveEmailPayload) => {
-    try {
-        const transporter = getTransporter();
-        const appUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'; // ให้ใช้ NEXTAUTH_URL ที่มีอยู่ใน .env แล้ว
+  try {
+    const transporter = getTransporter();
+    const appUrl = process.env.NEXTAUTH_URL || "http://localhost:3000"; // ให้ใช้ NEXTAUTH_URL ที่มีอยู่ใน .env แล้ว
 
-        // --- HTML EMAIL TEMPLATE ---
-        const htmlTemplate = `
+    // --- HTML EMAIL TEMPLATE ---
+    const htmlTemplate = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -153,30 +155,33 @@ export const sendApproveEmail = async (payload: ApproveEmailPayload) => {
             </html>
         `;
 
-        const mailOptions = {
-            from: `"Vehicle Control 🚙" <${process.env.EMAIL_USER}>`,
-            to: payload.to,
-            subject: `✅ คำขอเบิกใช้รถยนต์ได้รับการอนุมัติแล้ว (Ref #${payload.requestId})`,
-            html: htmlTemplate,
-        };
+    const mailOptions = {
+      from: `"Vehicle Control 🚙" <${process.env.EMAIL_USER}>`,
+      to: payload.to,
+      subject: `✅ คำขอเบิกใช้รถยนต์ได้รับการอนุมัติแล้ว (Ref #${payload.requestId})`,
+      html: htmlTemplate,
+    };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('[EmailService] ✅ Approve Email Sent: %s', info.messageId);
-        
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        // ดัก Error เพื่อไม่ให้หน้าเว็บล่ม กรณีส่งเมลมีปัญหา
-        console.error('[EmailService] ❌ Failed to send approve email:', error);
-        return { success: false, error: error instanceof Error ? error.message : "Unknown Error" };
-    }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("[EmailService] ✅ Approve Email Sent: %s", info.messageId);
+
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    // ดัก Error เพื่อไม่ให้หน้าเว็บล่ม กรณีส่งเมลมีปัญหา
+    console.error("[EmailService] ❌ Failed to send approve email:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown Error",
+    };
+  }
 };
 
 export const sendAssignEmail = async (payload: AssignEmailPayload) => {
-    try {
-        const transporter = getTransporter();
-        const appUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  try {
+    const transporter = getTransporter();
+    const appUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
-        const htmlTemplate = `
+    const htmlTemplate = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -289,19 +294,22 @@ export const sendAssignEmail = async (payload: AssignEmailPayload) => {
             </html>
         `;
 
-        const mailOptions = {
-            from: `"Vehicle Control 🚙" <${process.env.EMAIL_USER}>`,
-            to: payload.to,
-            subject: `🚗 ระบบได้จัดสรรยานพาหนะสำหรับคำขอของคุณแล้ว (Ref #${payload.requestId})`,
-            html: htmlTemplate,
-        };
+    const mailOptions = {
+      from: `"Vehicle Control 🚙" <${process.env.EMAIL_USER}>`,
+      to: payload.to,
+      subject: `🚗 ระบบได้จัดสรรยานพาหนะสำหรับคำขอของคุณแล้ว (Ref #${payload.requestId})`,
+      html: htmlTemplate,
+    };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('[EmailService] ✅ Assign Email Sent: %s', info.messageId);
-        
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('[EmailService] ❌ Failed to send assign email:', error);
-        return { success: false, error: error instanceof Error ? error.message : "Unknown Error" };
-    }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("[EmailService] ✅ Assign Email Sent: %s", info.messageId);
+
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error("[EmailService] ❌ Failed to send assign email:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown Error",
+    };
+  }
 };

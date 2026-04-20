@@ -71,7 +71,10 @@ export async function createBooking(formData: FormData) {
   }
 }
 
-export async function getMyBookings(userid?: number, personalOnly: boolean = false) {
+export async function getMyBookings(
+  userid?: number,
+  personalOnly: boolean = false,
+) {
   try {
     let filterId = userid;
 
@@ -95,14 +98,14 @@ export async function getMyBookings(userid?: number, personalOnly: boolean = fal
 
     // Manual mapping for org names since there's no direct relation
     const orgs = await prisma.vc_orgs.findMany({
-      where: { status: 'X' }
+      where: { status: "X" },
     });
-    
-    const enrichedBookings = bookings.map(b => {
-      const org = orgs.find(o => String(o.orgid) === b.use_div_code);
+
+    const enrichedBookings = bookings.map((b) => {
+      const org = orgs.find((o) => String(o.orgid) === b.use_div_code);
       return {
         ...b,
-        vc_org: org || null
+        vc_org: org || null,
       };
     });
 
@@ -110,42 +113,5 @@ export async function getMyBookings(userid?: number, personalOnly: boolean = fal
   } catch (error) {
     console.error("Error fetching bookings:", error);
     return { success: false, data: [], error: "Failed to fetch bookings" };
-  }
-}
-
-export async function getBookings(): Promise<Booking[]> {
-  try {
-    const bookings = await prisma.vc_order_item.findMany({
-      orderBy: { request_id: "desc" },
-    });
-
-    return bookings.map((b) => ({
-      id: String(b.request_id),
-      requesterName: String(b.userid ?? ""),
-      department: b.use_div_code ?? "",
-      objective: b.journey_causes ?? "",
-      origin: String(b.start_place ?? ""),
-      destination: b.journey_place ?? "",
-      requestDate: b.cre_date?.toISOString() ?? new Date().toISOString(),
-      startDateTime: b.journey_date?.toISOString() ?? new Date().toISOString(),
-      endDateTime: b.return_date?.toISOString() ?? new Date().toISOString(),
-      passengerCount: b.passenger_amount ?? 0,
-      status:
-        b.status_use_id === 2
-          ? "APPROVED"
-          : b.status_use_id === 3
-            ? "REJECTED"
-            : b.status_use_id === 4
-              ? "IN_USE"
-              : b.status_use_id === 5
-                ? "COMPLETED"
-                : b.status_use_id === 6
-                  ? "CANCELLED"
-                  : ("PENDING" as Booking["status"]),
-      rejectReason: undefined,
-    }));
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    return [];
   }
 }

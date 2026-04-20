@@ -20,12 +20,19 @@ export async function getMenusByRoleIds(roleIds: number[]) {
           // เก็บข้อมูลเมนูครั้งแรก พร้อมอาเรย์ functions คอยเก็บชื่อฟังก์ชัน
           menuMap.set(mr.menu_id, {
             ...mr.vc_menu,
-            functions: (mr.function_id && mr.vc_function) ? [mr.vc_function.func_name] : []
+            functions:
+              mr.function_id && mr.vc_function
+                ? [mr.vc_function.func_name]
+                : [],
           });
         } else {
           // ถ้ามีเมนูนี้อยู่แล้ว ให้เพิ่มชื่อฟังก์ชันเข้าไปในอาเรย์
           const existing = menuMap.get(mr.menu_id);
-          if (mr.function_id && mr.vc_function && !existing.functions.includes(mr.vc_function.func_name)) {
+          if (
+            mr.function_id &&
+            mr.vc_function &&
+            !existing.functions.includes(mr.vc_function.func_name)
+          ) {
             existing.functions.push(mr.vc_function.func_name);
           }
         }

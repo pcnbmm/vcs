@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { sendApproveEmail } from "@/lib/mail";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 /**
  * อัปเดตสถานะคำขอใช้รถ (อนุมัติ/ปฏิเสธ)
@@ -14,18 +16,27 @@ export async function updateRequestStatus(
   status_id: number,
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    const approver_id = session?.user?.id ? String(session.user.id) : null;
+
     // Check if the request is already cancelled (status 6)
     const currentStatusResults: any[] = await prisma.$queryRaw`
       SELECT status_use_id FROM vc_order_item WHERE request_id = ${request_id}
     `;
-    if (currentStatusResults.length > 0 && currentStatusResults[0].status_use_id === 6) {
-      return { success: false, error: "ไม่สามารถทำรายการได้ เนื่องจากคำขอนี้ถูกยกเลิกแล้ว" };
+    if (
+      currentStatusResults.length > 0 &&
+      currentStatusResults[0].status_use_id === 6
+    ) {
+      return {
+        success: false,
+        error: "ไม่สามารถทำรายการได้ เนื่องจากคำขอนี้ถูกยกเลิกแล้ว",
+      };
     }
 
     // 1. ใช้ SQL ดิบเพื่ออัปเดตสถานะ ป้องกัน Prisma บ่นเรื่อง Type mismatch ของ userid ที่ขากลับ
     await prisma.$executeRaw`
             UPDATE vc_order_item 
-            SET status_use_id = ${status_id}
+            SET status_use_id = ${status_id}, approve_id = ${approver_id}
             WHERE request_id = ${request_id}
         `;
 

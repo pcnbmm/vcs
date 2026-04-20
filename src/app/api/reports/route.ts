@@ -37,11 +37,13 @@ export async function GET(request: Request) {
         });
 
         // Fetch car numbers for these car_ids
-        const carIds = fuels.map(f => f.car_id).filter(id => id !== null) as number[];
+        const carIds = fuels
+          .map((f) => f.car_id)
+          .filter((id) => id !== null) as number[];
         const cars = await prisma.vc_car_master.findMany({
-          where: { car_id: { in: carIds } }
+          where: { car_id: { in: carIds } },
         });
-        const carMap = new Map(cars.map(c => [c.car_id, c.car_number]));
+        const carMap = new Map(cars.map((c) => [c.car_id, c.car_number]));
 
         const data = fuels.map((f) => ({
           date: f.fuel_date?.toISOString().split("T")[0] || "-",
@@ -79,10 +81,17 @@ export async function GET(request: Request) {
       }
 
       default:
-        return NextResponse.json({ success: false, message: "Unknown report type", data: [] });
+        return NextResponse.json({
+          success: false,
+          message: "Unknown report type",
+          data: [],
+        });
     }
   } catch (error: any) {
     console.error("Report API Error:", error);
-    return NextResponse.json({ success: false, message: error.message, data: [] }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: error.message, data: [] },
+      { status: 500 },
+    );
   }
 }

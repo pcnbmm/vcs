@@ -49,25 +49,3 @@ export async function suggestLocation(keyword: string) {
     return [];
   }
 }
-
-export async function getAddressFromLatLon(lat: number, lon: number) {
-  if (!lat || !lon) return null;
-
-  try {
-    const url = `https://api.longdo.com/map/services/address?lat=${lat}&lon=${lon}&key=${LONGDO_MAP_KEY}`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
-
-    if (!response.ok) throw new Error("Network response not ok");
-
-    const data = await response.json();
-    return data;
-    // data usually contains: { aoi, road, district, subdistrict, province, postcode, country }
-  } catch (error) {
-    console.error("Server Reverse Geocode Error:", error);
-    return null;
-  }
-}
