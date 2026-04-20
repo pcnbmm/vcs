@@ -162,24 +162,21 @@ export default function AssignPage() {
     );
   };
 
-  // Load Initial Data
   const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [pending, carList, driverList] = await Promise.all([
-        getPendingDispatch(),
-        getAvailableCars(),
-        getDrivers(),
-      ]);
-      setPendingOrders(pending);
-      setCars(carList);
-      setDrivers(driverList);
-    } catch (err) {
-      console.error("Failed to fetch data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const [pending, driverList] = await Promise.all([
+      getPendingDispatch(),
+      getDrivers(),
+    ]);
+    setPendingOrders(pending);
+    setDrivers(driverList);
+  } catch (err) {
+    console.error("Failed to fetch data:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchData();
@@ -226,19 +223,18 @@ export default function AssignPage() {
     }
   }, [dispatchType, selectedOrder, drivers]);
 
-  const openAssignModal = (order: any) => {
-    setSelectedOrder(order);
-    setSelectedCar(order.car_id ? String(order.car_id) : "");
-    setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
+  
+  const openAssignModal = async (order: any) => {
+  setSelectedOrder(order);
+  setSelectedCar(order.car_id ? String(order.car_id) : "");
+  setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
+  setDispatchType(order.self_drive ? "self_drive" : "with_driver");
 
-    if (order.self_drive) {
-      setDispatchType("self_drive");
-    } else {
-      setDispatchType("with_driver");
-    }
+  const carList = await getAvailableCars(order.use_div_code ?? undefined);
+  setCars(carList);
 
-    setIsModalOpen(true);
-  };
+  setIsModalOpen(true);
+};
 
   const handleAssignSubmit = async () => {
     if (dispatchType !== "taxi" && !selectedCar) {
