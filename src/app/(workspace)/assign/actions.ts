@@ -219,10 +219,10 @@ export async function assignResource(data: {
     }
 
     revalidatePath("/assign");
-    return { success: true, data: result };
+    return { success: true as const, data: result };
   } catch (error: any) {
     console.error("❌ FAILED:", error.message);
-    return { success: false, error: "เกิดข้อผิดพลาดในการบันทึก: " + error.message };
+    return { success: false as const, error: "เกิดข้อผิดพลาดในการบันทึก: " + error.message };
   }
 }
 
@@ -240,10 +240,10 @@ export async function confirmAssignment(requestId: number) {
       });
   
       revalidatePath("/assign");
-      return { success: true };
+      return { success: true as const };
     } catch (error) {
       console.error("Error confirming assignment:", error);
-      return { success: false };
+      return { success: false as const };
     }
 }
 
@@ -305,9 +305,9 @@ export async function recordPickupResource(data: {
         }
 
         revalidatePath("/assign");
-        return { success: true };
+        return { success: true as const };
     } catch (error: any) {
         console.error("❌ FAILED to record pickup:", error.message);
-        return { success: false, error: error.message };
+        return { success: false as const, error: error.message };
     }
 }
