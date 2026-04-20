@@ -784,11 +784,8 @@ export default function AssignPage() {
                       onChange={(e) => setPickupMethod(e.target.value)}
                       className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 outline-none transition-colors"
                     >
-                      <option value="STAFF_DELIVERY">
-                        เจ้าหน้าที่นำรถไปส่ง
-                      </option>
+                      <option value="STAFF_DELIVERY">เจ้าหน้าที่นำรถไปส่ง</option>
                       <option value="SELF_PICKUP">ผู้ขอรับรถด้วยตนเอง</option>
-                      <option value="TAXI">ใช้บริการรถแท็กซี่</option>
                     </select>
                   </div>
                 </div>
