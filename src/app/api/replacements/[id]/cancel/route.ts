@@ -26,6 +26,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             return NextResponse.json({ error: "This replacement is already cancelled/ended" }, { status: 400 });
         }
 
+        const body = await req.json().catch(() => ({}));
+        const end_date = body.end_date ? new Date(body.end_date) : new Date();
+
         // The original car number was stored in broken_car_id
         const originalCarNumber = replacement.broken_car_id;
         const carId = replacement.car_id;
@@ -57,8 +60,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             const updatedReplacement = await tx.vc_replacement.update({
                 where: { replacement_id: replacementId },
                 data: {
-                    end_datetime: now.toISOString(),
-                    end_date: now,
+                    end_datetime: end_date.toISOString(),
+                    end_date: end_date,
                     upd_by: user,
                     upd_date: now
                 }
