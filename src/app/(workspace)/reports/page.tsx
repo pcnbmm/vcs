@@ -28,8 +28,13 @@ import {
 Font.register({
   family: "Sarabun",
   fonts: [
-    { src: "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Regular.ttf" },
-    { src: "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Bold.ttf", fontWeight: "bold" },
+    {
+      src: "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Regular.ttf",
+    },
+    {
+      src: "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Bold.ttf",
+      fontWeight: "bold",
+    },
   ],
 });
 import {
@@ -149,10 +154,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[], data: any[] }) => {
-  const currentDate = new Intl.DateTimeFormat('th-TH', {
-    dateStyle: 'long',
-    timeStyle: 'short',
+const MyPDFDocument = ({
+  title,
+  columns,
+  data,
+}: {
+  title: string;
+  columns: any[];
+  data: any[];
+}) => {
+  const currentDate = new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "long",
+    timeStyle: "short",
   }).format(new Date());
 
   return (
@@ -178,12 +191,12 @@ const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[]
         <View style={styles.table}>
           <View style={styles.tableRow}>
             {columns.map((col, i) => (
-              <View 
-                key={i} 
+              <View
+                key={i}
                 style={[
-                  styles.tableColHeader, 
+                  styles.tableColHeader,
                   { width: `${100 / columns.length}%` },
-                  i === columns.length - 1 ? { borderRightWidth: 0 } : {}
+                  i === columns.length - 1 ? { borderRightWidth: 0 } : {},
                 ]}
               >
                 <Text style={styles.tableCellHeader}>{col.header}</Text>
@@ -191,20 +204,20 @@ const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[]
             ))}
           </View>
           {data.map((item, index) => (
-            <View 
+            <View
               style={[
                 styles.tableRow,
-                index === data.length - 1 ? { borderBottomWidth: 0 } : {}
-              ]} 
+                index === data.length - 1 ? { borderBottomWidth: 0 } : {},
+              ]}
               key={index}
             >
               {columns.map((col, i) => (
-                <View 
-                  key={i} 
+                <View
+                  key={i}
                   style={[
-                    styles.tableCol, 
+                    styles.tableCol,
                     { width: `${100 / columns.length}%` },
-                    i === columns.length - 1 ? { borderRightWidth: 0 } : {}
+                    i === columns.length - 1 ? { borderRightWidth: 0 } : {},
                   ]}
                 >
                   <Text style={styles.tableCell}>{item[col.key] || "-"}</Text>
@@ -218,21 +231,27 @@ const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[]
         <View style={styles.signatureSection} wrap={false}>
           <View style={styles.signatureBox}>
             <View style={styles.signatureLine} />
-            <Text>(..........................................................)</Text>
+            <Text>
+              (..........................................................)
+            </Text>
             <Text style={{ marginTop: 4 }}>ผู้จัดทำ</Text>
           </View>
           <View style={styles.signatureBox}>
             <View style={styles.signatureLine} />
-            <Text>(..........................................................)</Text>
+            <Text>
+              (..........................................................)
+            </Text>
             <Text style={{ marginTop: 4 }}>ผู้อนุมัติ</Text>
           </View>
         </View>
 
         {/* Footer Section */}
-        <Text 
-          style={styles.pageNumber} 
-          render={({ pageNumber, totalPages }) => `หน้า ${pageNumber} / ${totalPages}`} 
-          fixed 
+        <Text
+          style={styles.pageNumber}
+          render={({ pageNumber, totalPages }) =>
+            `หน้า ${pageNumber} / ${totalPages}`
+          }
+          fixed
         />
       </Page>
     </Document>
@@ -243,7 +262,10 @@ const REPORT_TYPES = [
   { id: "summary_performance", name: "รายงานสรุปการปฏิบัติงานของพนักงาน" },
   { id: "dept_usage", name: "รายงานสรุปการใช้รถยนต์ของหน่วยงานต่างๆ" },
   { id: "vehicle_usage", name: "รายงานสรุปการใช้งานของรถยนต์" },
-  { id: "stat_ubph", name: "รายงานสถิติการใช้รถ ยบพ. ออกปฏิบัติงานของหน่วยงานต่างๆ" },
+  {
+    id: "stat_ubph",
+    name: "รายงานสถิติการใช้รถ ยบพ. ออกปฏิบัติงานของหน่วยงานต่างๆ",
+  },
   { id: "stat_request", name: "รายงานสถิติการขอใช้รถยนต์ของหน่วยงานต่างๆ" },
   { id: "tax_payment", name: "รายงานยานพาหนะชำระภาษี" },
   { id: "purchase_tax", name: "รายงานภาษีซื้อ" },
@@ -261,7 +283,8 @@ export default function ReportsPage() {
   const [columns, setColumns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const selectedReportName = REPORT_TYPES.find(r => r.id === selectedReportId)?.name || "";
+  const selectedReportName =
+    REPORT_TYPES.find((r) => r.id === selectedReportId)?.name || "";
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -273,7 +296,7 @@ export default function ReportsPage() {
         }
         const response = await fetch(url);
         const result = await response.json();
-        
+
         let cols: any[] = [];
         if (selectedReportId === "summary_performance") {
           cols = [
@@ -298,7 +321,7 @@ export default function ReportsPage() {
             { header: "สถานะ", key: "status", width: 15 },
           ];
         }
-        
+
         setColumns(cols);
         setData(result.data || []);
       } catch (error) {
@@ -317,7 +340,7 @@ export default function ReportsPage() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Report");
 
-    worksheet.columns = columns.map(col => ({
+    worksheet.columns = columns.map((col) => ({
       header: col.header,
       key: col.key,
       width: col.width,
@@ -325,21 +348,30 @@ export default function ReportsPage() {
 
     // Set header style with Thai font support
     const headerRow = worksheet.getRow(1);
-    headerRow.font = { name: 'Sarabun', bold: true, size: 12 };
-    headerRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE0E0E0" } };
-    headerRow.alignment = { horizontal: 'center' };
+    headerRow.font = { name: "Sarabun", bold: true, size: 12 };
+    headerRow.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFE0E0E0" },
+    };
+    headerRow.alignment = { horizontal: "center" };
 
     // Add data and set font for all rows
-    data.forEach(item => {
+    data.forEach((item) => {
       const row = worksheet.addRow(item);
-      row.font = { name: 'Sarabun', size: 11 };
+      row.font = { name: "Sarabun", size: 11 };
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    const fileName = (selectedReportName || "report").replace(
+      /[/\\?%*:|"<>]/g,
+      "-",
+    );
     saveAs(
-      new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }),
-      `${fileName}.xlsx`
+      new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      }),
+      `${fileName}.xlsx`,
     );
   };
 
@@ -348,16 +380,18 @@ export default function ReportsPage() {
       sections: [
         {
           properties: {
-             page: { 
-                size: { 
-                    width: 16838, // A4 Landscape width
-                    height: 11906, // A4 Landscape height
-                } 
-             } 
+            page: {
+              size: {
+                width: 16838, // A4 Landscape width
+                height: 11906, // A4 Landscape height
+              },
+            },
           },
           children: [
             new Paragraph({
-              children: [new TextRun({ text: selectedReportName, bold: true, size: 28 })],
+              children: [
+                new TextRun({ text: selectedReportName, bold: true, size: 28 }),
+              ],
               alignment: AlignmentType.CENTER,
               spacing: { after: 400 },
             }),
@@ -365,21 +399,45 @@ export default function ReportsPage() {
               width: { size: 100, type: WidthType.PERCENTAGE },
               rows: [
                 new DocxTableRow({
-                  children: columns.map(col => new DocxTableCell({
-                    children: [new Paragraph({ 
-                      children: [new TextRun({ text: col.header, bold: true, font: "Sarabun" })],
-                      alignment: AlignmentType.CENTER
-                    })],
-                    shading: { fill: "E0E0E0" },
-                  })),
+                  children: columns.map(
+                    (col) =>
+                      new DocxTableCell({
+                        children: [
+                          new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: col.header,
+                                bold: true,
+                                font: "Sarabun",
+                              }),
+                            ],
+                            alignment: AlignmentType.CENTER,
+                          }),
+                        ],
+                        shading: { fill: "E0E0E0" },
+                      }),
+                  ),
                 }),
-                ...data.map(item => new DocxTableRow({
-                  children: columns.map(col => new DocxTableCell({
-                    children: [new Paragraph({
-                      children: [new TextRun({ text: String(item[col.key] || "-"), font: "Sarabun" })]
-                    })],
-                  })),
-                })),
+                ...data.map(
+                  (item) =>
+                    new DocxTableRow({
+                      children: columns.map(
+                        (col) =>
+                          new DocxTableCell({
+                            children: [
+                              new Paragraph({
+                                children: [
+                                  new TextRun({
+                                    text: String(item[col.key] || "-"),
+                                    font: "Sarabun",
+                                  }),
+                                ],
+                              }),
+                            ],
+                          }),
+                      ),
+                    }),
+                ),
               ],
             }),
           ],
@@ -388,14 +446,22 @@ export default function ReportsPage() {
     });
 
     const blob = await Packer.toBlob(doc);
-    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    const fileName = (selectedReportName || "report").replace(
+      /[/\\?%*:|"<>]/g,
+      "-",
+    );
     saveAs(blob, `${fileName}.docx`);
   };
 
   const exportToPDF = async () => {
-    const doc = <MyPDFDocument title={selectedReportName} columns={columns} data={data} />;
+    const doc = (
+      <MyPDFDocument title={selectedReportName} columns={columns} data={data} />
+    );
     const blob = await pdf(doc).toBlob();
-    const fileName = (selectedReportName || "report").replace(/[/\\?%*:|"<>]/g, '-');
+    const fileName = (selectedReportName || "report").replace(
+      /[/\\?%*:|"<>]/g,
+      "-",
+    );
     saveAs(blob, `${fileName}.pdf`);
   };
 
@@ -405,20 +471,31 @@ export default function ReportsPage() {
         <div className="flex-1"></div>
 
         <div className="flex flex-wrap gap-3">
-          <button onClick={exportToExcel} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
+          <button
+            onClick={exportToExcel}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+          >
             <FileSpreadsheet size={18} /> Excel
           </button>
-          <button onClick={exportToWord} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
+          <button
+            onClick={exportToWord}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+          >
             <FileText size={18} /> Word
           </button>
-          <button onClick={exportToPDF} className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium">
+          <button
+            onClick={exportToPDF}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+          >
             <FileIcon size={18} /> PDF
           </button>
         </div>
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">ประเภทรายงาน</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          ประเภทรายงาน
+        </label>
         <div className="relative w-full md:w-1/2 lg:w-1/3">
           <select
             value={selectedReportId}
@@ -426,16 +503,23 @@ export default function ReportsPage() {
             className="w-full appearance-none bg-white border border-gray-200 rounded-md px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all text-gray-700"
           >
             {REPORT_TYPES.map((report) => (
-              <option key={report.id} value={report.id}>{report.name}</option>
+              <option key={report.id} value={report.id}>
+                {report.name}
+              </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+          <ChevronDown
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            size={20}
+          />
         </div>
       </div>
 
       {selectedReportId === "summary_status" && (
         <div className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 font-sarabun">กรองตามสถานะ</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2 font-sarabun">
+            กรองตามสถานะ
+          </label>
           <div className="flex flex-wrap gap-2">
             {[
               { id: "all", name: "ทั้งหมด" },
@@ -468,8 +552,15 @@ export default function ReportsPage() {
             {selectedReportName}
           </h2>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input type="text" placeholder="ค้นหาในตาราง..." className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64" />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+            />
+            <input
+              type="text"
+              placeholder="ค้นหาในตาราง..."
+              className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+            />
           </div>
         </div>
 
@@ -478,26 +569,46 @@ export default function ReportsPage() {
             <thead>
               <tr className="bg-gray-50/80 border-b border-gray-200">
                 {columns.map((col, i) => (
-                  <th key={i} className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{col.header}</th>
+                  <th
+                    key={i}
+                    className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"
+                  >
+                    {col.header}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400 italic">กำลังดึงข้อมูล...</td>
+                  <td
+                    colSpan={columns.length}
+                    className="px-6 py-12 text-center text-gray-400 italic"
+                  >
+                    กำลังดึงข้อมูล...
+                  </td>
                 </tr>
               ) : data.length > 0 ? (
                 data.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-blue-50/30 transition-colors">
+                  <tr
+                    key={idx}
+                    className="hover:bg-blue-50/30 transition-colors"
+                  >
                     {columns.map((col, i) => (
-                      <td key={i} className="px-6 py-4 text-sm text-gray-600">{row[col.key] || "-"}</td>
+                      <td key={i} className="px-6 py-4 text-sm text-gray-600">
+                        {row[col.key] || "-"}
+                      </td>
                     ))}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400">ไม่มีข้อมูลแสดงผล</td>
+                  <td
+                    colSpan={columns.length}
+                    className="px-6 py-12 text-center text-gray-400"
+                  >
+                    ไม่มีข้อมูลแสดงผล
+                  </td>
                 </tr>
               )}
             </tbody>

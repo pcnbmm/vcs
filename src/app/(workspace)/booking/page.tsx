@@ -254,10 +254,10 @@ export default function VehicleRequestPage() {
       if (formData.ownerDept) {
         const specRes = await getCarSpecs(formData.ownerDept);
         if (specRes.success) setCarSpecs(specRes.data);
-        setFormData(prev => ({ ...prev, vehicleType: "" }));
+        setFormData((prev) => ({ ...prev, vehicleType: "" }));
       } else {
         setCarSpecs([]);
-        setFormData(prev => ({ ...prev, vehicleType: "" }));
+        setFormData((prev) => ({ ...prev, vehicleType: "" }));
       }
     };
     fetchSpecs();

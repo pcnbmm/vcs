@@ -1,5 +1,5 @@
-import { usePermissionsContext } from '@/components/providers/PermissionsContext';
+import { usePermissionsContext } from "@/components/providers/PermissionsContext";
 
 export function usePermissions() {
-    return usePermissionsContext();
+  return usePermissionsContext();
 }

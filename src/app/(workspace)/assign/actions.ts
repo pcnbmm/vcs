@@ -21,12 +21,12 @@ export async function getPendingDispatch() {
         vc_user: true,
         vc_car_spec: true,
         vc_car_master: {
-            include: { vc_car_brand: true }
+          include: { vc_car_brand: true },
         },
         vc_driver: {
-            include: { vc_users: true }
-        }
-      }
+          include: { vc_users: true },
+        },
+      },
     });
 
     // Custom Sorting:
@@ -35,17 +35,21 @@ export async function getPendingDispatch() {
     // 3. ยืนยันแล้ว (status 4 && pickup_status === 'PICKED_UP' or 'TAXI_CALLED') -> ล่างสุด
     orders.sort((a: any, b: any) => {
       const getPriority = (o: any) => {
-         if (o.status_use_id === 2) return 1;
-         if (o.status_use_id === 4 && !o.pickup_status) return 2;
-         if (o.status_use_id === 4 && (o.pickup_status === 'PICKED_UP' || o.pickup_status === 'TAXI_CALLED')) return 3;
-         return 4;
+        if (o.status_use_id === 2) return 1;
+        if (o.status_use_id === 4 && !o.pickup_status) return 2;
+        if (
+          o.status_use_id === 4 &&
+          (o.pickup_status === "PICKED_UP" || o.pickup_status === "TAXI_CALLED")
+        )
+          return 3;
+        return 4;
       };
-      
+
       const pA = getPriority(a);
       const pB = getPriority(b);
-      
+
       if (pA !== pB) return pA - pB;
-      
+
       // เรียงจากใหม่ไปเก่าสำหรับ priority เดียวกัน
       return b.request_id - a.request_id;
     });
@@ -58,47 +62,18 @@ export async function getPendingDispatch() {
 }
 
 /**
- * ดึงรายการคำขอที่จัดสรรแล้ว
- */
-export async function getAssignedOrders() {
-    try {
-      const orders = await prisma.vc_order_item.findMany({
-        where: {
-          status_use_id: 4,
-        },
-        include: {
-          vc_user: true, 
-          vc_car_master: true,
-          vc_driver: {
-            include: {
-                vc_users: true
-            }
-          }
-        },
-        orderBy: {
-          upd_date: "desc",
-        },
-      });
-      return orders;
-    } catch (error) {
-      console.error("Error fetching assigned orders:", error);
-      return [];
-    }
-}
-
-/**
  * ดึงรายชื่อรถยนต์ (เฉพาะคันที่ flag เป็น null)
  */
 export async function getAvailableCars() {
   try {
     const cars = await prisma.vc_car_master.findMany({
       where: {
-        flag: { equals: null }
+        flag: { equals: null },
       },
       include: {
         vc_car_brand: true,
         vc_car_spec: true,
-      }
+      },
     });
     return cars;
   } catch (error) {
@@ -139,175 +114,160 @@ export async function assignResource(data: {
   console.log("Selected Car ID:", data.carId);
   console.log("Selected Driver ID:", data.driverId);
   console.log("===========================");
-  
+
   try {
     // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
-        where: { request_id: data.requestId },
-        select: { car_id: true, driver_id: true }
+      where: { request_id: data.requestId },
+      select: { car_id: true, driver_id: true },
     });
 
     // 2. ใช้ Transaction
     const result = await prisma.$transaction(async (tx) => {
-        
-        // จัดการเรื่องสถานะรถคันเก่า (ถ้ามี)
-        if (existingOrder?.car_id && existingOrder.car_id !== data.carId) {
-            console.log("Release old car flag:", existingOrder.car_id);
-            await tx.vc_car_master.update({
-                where: { car_id: existingOrder.car_id },
-                data: { flag: null }
-            });
-        }
-
-        // ล็อกคันใหม่
-        if (data.carId) {
-            console.log("Setting busy flag for car:", data.carId);
-            await tx.vc_car_master.update({
-                where: { car_id: data.carId },
-                data: { flag: "x" }
-            });
-        }
-
-        const updateData: any = {
-            car_id: data.carId,
-            driver_id: data.driverId, // มั่นใจว่าค่านี้ไม่เป็น NaN (ตัวเลขหรือ null เท่านั้น)
-            status_use_id: 4, // 4 = in_use (เพื่อให้ไปปรากฏในหน้าคืนรถ)
-            pickup_status: null, // Reset pickup status เผื่อมี
-            upd_date: new Date(),
-        };
-
-        if (data.isTaxi) {
-            updateData.pickup_method = 'TAXI';
-            updateData.car_id = null;
-        }
-
-        // อัปเดตรายการจองรถ (ตัวหลักที่เรามีปัญหา)
-        console.log("Updating Order with Driver ID:", data.driverId);
-        const orderUpdate = await tx.vc_order_item.update({
-            where: { request_id: data.requestId },
-            data: updateData,
-            include: {
-                vc_user: true,
-                vc_car_master: { include: { vc_car_brand: true } },
-                vc_driver: { include: { vc_users: true } }
-            }
+      // จัดการเรื่องสถานะรถคันเก่า (ถ้ามี)
+      if (existingOrder?.car_id && existingOrder.car_id !== data.carId) {
+        console.log("Release old car flag:", existingOrder.car_id);
+        await tx.vc_car_master.update({
+          where: { car_id: existingOrder.car_id },
+          data: { flag: null },
         });
-        
-        return orderUpdate;
+      }
+
+      // ล็อกคันใหม่
+      if (data.carId) {
+        console.log("Setting busy flag for car:", data.carId);
+        await tx.vc_car_master.update({
+          where: { car_id: data.carId },
+          data: { flag: "x" },
+        });
+      }
+
+      const updateData: any = {
+        car_id: data.carId,
+        driver_id: data.driverId, // มั่นใจว่าค่านี้ไม่เป็น NaN (ตัวเลขหรือ null เท่านั้น)
+        status_use_id: 4, // 4 = in_use (เพื่อให้ไปปรากฏในหน้าคืนรถ)
+        pickup_status: null, // Reset pickup status เผื่อมี
+        upd_date: new Date(),
+      };
+
+      if (data.isTaxi) {
+        updateData.pickup_method = "TAXI";
+        updateData.car_id = null;
+      }
+
+      // อัปเดตรายการจองรถ (ตัวหลักที่เรามีปัญหา)
+      console.log("Updating Order with Driver ID:", data.driverId);
+      const orderUpdate = await tx.vc_order_item.update({
+        where: { request_id: data.requestId },
+        data: updateData,
+        include: {
+          vc_user: true,
+          vc_car_master: { include: { vc_car_brand: true } },
+          vc_driver: { include: { vc_users: true } },
+        },
+      });
+
+      return orderUpdate;
     });
 
     console.log("✅ Update Complete in DB");
 
     // ส่ง Email ถ้ามีข้อมูล
     if (result.vc_user?.email) {
-        const carName = `${result.vc_car_master?.car_number || "ไม่ระบุ"} ${result.vc_car_master?.vc_car_brand?.car_brand_name || ""}`;
-        let driverName = "ขับเอง";
-        if (result.vc_driver?.vc_users) {
-             driverName = `${result.vc_driver.vc_users.firstname || ""} ${result.vc_driver.vc_users.lastname || ""}`;
-        }
-        
-        console.log("📧 Sending assign email to:", result.vc_user.email);
-        await sendAssignEmail({
-             to: result.vc_user.email,
-             requesterName: `${result.vc_user.firstname || ""} ${result.vc_user.lastname || ""}`,
-             requestId: result.request_id,
-             destination: result.journey_place || "ไม่ระบุปลายทาง",
-             startDate: result.journey_date ? result.journey_date.toLocaleDateString('th-TH') : "-",
-             carName: carName,
-             driverName: driverName,
-        });
+      const carName = `${result.vc_car_master?.car_number || "ไม่ระบุ"} ${result.vc_car_master?.vc_car_brand?.car_brand_name || ""}`;
+      let driverName = "ขับเอง";
+      if (result.vc_driver?.vc_users) {
+        driverName = `${result.vc_driver.vc_users.firstname || ""} ${result.vc_driver.vc_users.lastname || ""}`;
+      }
+
+      console.log("📧 Sending assign email to:", result.vc_user.email);
+      await sendAssignEmail({
+        to: result.vc_user.email,
+        requesterName: `${result.vc_user.firstname || ""} ${result.vc_user.lastname || ""}`,
+        requestId: result.request_id,
+        destination: result.journey_place || "ไม่ระบุปลายทาง",
+        startDate: result.journey_date
+          ? result.journey_date.toLocaleDateString("th-TH")
+          : "-",
+        carName: carName,
+        driverName: driverName,
+      });
     }
 
     revalidatePath("/assign");
     return { success: true as const, data: result };
   } catch (error: any) {
     console.error("❌ FAILED:", error.message);
-    return { success: false as const, error: "เกิดข้อผิดพลาดในการบันทึก: " + error.message };
+    return {
+      success: false as const,
+      error: "เกิดข้อผิดพลาดในการบันทึก: " + error.message,
+    };
   }
-}
-
-/**
- * ยืนยันคำขอ
- */
-export async function confirmAssignment(requestId: number) {
-    try {
-      await prisma.vc_order_item.update({
-        where: { request_id: requestId },
-        data: {
-          status_use_id: 4, // 4 = in_use
-          upd_date: new Date(),
-        },
-      });
-  
-      revalidatePath("/assign");
-      return { success: true as const };
-    } catch (error) {
-      console.error("Error confirming assignment:", error);
-      return { success: false as const };
-    }
 }
 
 /**
  * บันทึกการรับรถ (ไม่ว่าจะเป็นรับเองหรือมีคนขับไปให้) / รวมถึงกรณีไม่มารับรถ
  */
 export async function recordPickupResource(data: {
-    requestId: number;
-    pickupStatus: string; // 'PICKED_UP' หรือ 'NO_SHOW'
-    pickupDate?: string | Date;
-    pickupTime?: string;
-    pickupMethod?: string;
+  requestId: number;
+  pickupStatus: string; // 'PICKED_UP' หรือ 'NO_SHOW'
+  pickupDate?: string | Date;
+  pickupTime?: string;
+  pickupMethod?: string;
 }) {
-    try {
-        console.log("=== RECORD PICKUP ===");
-        console.log("Data:", data);
+  try {
+    console.log("=== RECORD PICKUP ===");
+    console.log("Data:", data);
 
-        // ถ้า NO_SHOW (ไม่มารับรถ) ปกติจะยกเลิกคำขอ หรือคืนสถานะรถว่าง
-        if (data.pickupStatus === 'NO_SHOW') {
-            await prisma.$transaction(async (tx) => {
-                // 1. ดึงข้อมูลว่าจองรถคันไหนไป
-                const order = await tx.vc_order_item.findUnique({ where: { request_id: data.requestId } });
-                
-                // 2. ปลดล็อกรถ
-                if (order?.car_id) {
-                    await tx.vc_car_master.update({
-                        where: { car_id: order.car_id },
-                        data: { flag: null }
-                    });
-                }
+    // ถ้า NO_SHOW (ไม่มารับรถ) ปกติจะยกเลิกคำขอ หรือคืนสถานะรถว่าง
+    if (data.pickupStatus === "NO_SHOW") {
+      await prisma.$transaction(async (tx) => {
+        // 1. ดึงข้อมูลว่าจองรถคันไหนไป
+        const order = await tx.vc_order_item.findUnique({
+          where: { request_id: data.requestId },
+        });
 
-                // 3. เปลี่ยนสถานะคำขอ เช่น อาจจะปรับเป็น status_use_id: 3 (Cancel) หรือปล่อยเป็น 4 ไว้แต่มีสถานะ pickup_status บอกแทน
-                // ตามที่ตกลงกัน "เหมือนกับยกเลิกคำขอไช้รถมา" เราอาจจะปรับสถานะ
-                // ไม่แน่ใจว่า 3 คือ Cancel หรือเปล่า (ปกติใช่) สมมติใช้ status 3 ถ้ามี
-                await tx.vc_order_item.update({
-                    where: { request_id: data.requestId },
-                    data: {
-                        pickup_status: data.pickupStatus,
-                        pickup_date: data.pickupDate ? new Date(data.pickupDate) : null,
-                        pickup_time: data.pickupTime,
-                        pickup_method: data.pickupMethod,
-                        status_use_id: 3, // หมายเลข 3 ปกติคือไม่อนุมัติ/ยกเลิก
-                        upd_date: new Date(),
-                    }
-                });
-            });
-        } else {
-            // มารับรถจริง
-            await prisma.vc_order_item.update({
-                where: { request_id: data.requestId },
-                data: {
-                    pickup_status: data.pickupStatus,
-                    pickup_date: data.pickupDate ? new Date(data.pickupDate) : null,
-                    pickup_time: data.pickupTime,
-                    pickup_method: data.pickupMethod,
-                    upd_date: new Date(),
-                }
-            });
+        // 2. ปลดล็อกรถ
+        if (order?.car_id) {
+          await tx.vc_car_master.update({
+            where: { car_id: order.car_id },
+            data: { flag: null },
+          });
         }
 
-        revalidatePath("/assign");
-        return { success: true as const };
-    } catch (error: any) {
-        console.error("❌ FAILED to record pickup:", error.message);
-        return { success: false as const, error: error.message };
+        // 3. เปลี่ยนสถานะคำขอ เช่น อาจจะปรับเป็น status_use_id: 3 (Cancel) หรือปล่อยเป็น 4 ไว้แต่มีสถานะ pickup_status บอกแทน
+        // ตามที่ตกลงกัน "เหมือนกับยกเลิกคำขอไช้รถมา" เราอาจจะปรับสถานะ
+        // ไม่แน่ใจว่า 3 คือ Cancel หรือเปล่า (ปกติใช่) สมมติใช้ status 3 ถ้ามี
+        await tx.vc_order_item.update({
+          where: { request_id: data.requestId },
+          data: {
+            pickup_status: data.pickupStatus,
+            pickup_date: data.pickupDate ? new Date(data.pickupDate) : null,
+            pickup_time: data.pickupTime,
+            pickup_method: data.pickupMethod,
+            status_use_id: 3, // หมายเลข 3 ปกติคือไม่อนุมัติ/ยกเลิก
+            upd_date: new Date(),
+          },
+        });
+      });
+    } else {
+      // มารับรถจริง
+      await prisma.vc_order_item.update({
+        where: { request_id: data.requestId },
+        data: {
+          pickup_status: data.pickupStatus,
+          pickup_date: data.pickupDate ? new Date(data.pickupDate) : null,
+          pickup_time: data.pickupTime,
+          pickup_method: data.pickupMethod,
+          upd_date: new Date(),
+        },
+      });
     }
+
+    revalidatePath("/assign");
+    return { success: true as const };
+  } catch (error: any) {
+    console.error("❌ FAILED to record pickup:", error.message);
+    return { success: false as const, error: error.message };
+  }
 }

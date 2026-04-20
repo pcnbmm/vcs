@@ -30,20 +30,24 @@ export async function GET(req: NextRequest) {
     const sanitizedVehicles = vehicles.map((v: any) => ({
       ...v,
       fleetcard_no: v.fleetcard_no ? v.fleetcard_no.toString() : null,
-      car_brand_id: v.car_brand_id !== null ? v.car_brand_id : '',
-      color_id: v.color_id !== null ? v.color_id : '',
-      car_status_id: v.car_status_id !== null ? v.car_status_id : '',
-      car_province_id: v.car_province_id !== null ? v.car_province_id : '',
-      car_type_id: v.car_type_id !== null ? v.car_type_id : '',
-      car_spec_id: v.car_spec_id !== null ? v.car_spec_id : '',
-      car_type_regis_id: v.car_type_regis_id !== null ? v.car_type_regis_id : '',
-      oil_type_id: v.oil_type_id !== null ? v.oil_type_id : '',
+      car_brand_id: v.car_brand_id !== null ? v.car_brand_id : "",
+      color_id: v.color_id !== null ? v.color_id : "",
+      car_status_id: v.car_status_id !== null ? v.car_status_id : "",
+      car_province_id: v.car_province_id !== null ? v.car_province_id : "",
+      car_type_id: v.car_type_id !== null ? v.car_type_id : "",
+      car_spec_id: v.car_spec_id !== null ? v.car_spec_id : "",
+      car_type_regis_id:
+        v.car_type_regis_id !== null ? v.car_type_regis_id : "",
+      oil_type_id: v.oil_type_id !== null ? v.oil_type_id : "",
     }));
 
     return NextResponse.json(sanitizedVehicles);
   } catch (error) {
     console.error("Failed to fetch vehicles:", error);
-    return NextResponse.json({ error: "Failed to fetch vehicles" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch vehicles" },
+      { status: 500 },
+    );
   }
 }
 
@@ -54,15 +58,29 @@ export async function POST(req: NextRequest) {
     const newVehicle = await prisma.vc_car_master.create({
       data: {
         car_number: body.car_number || null,
-        car_brand_id: body.car_brand_id ? parseInt(body.car_brand_id.toString()) : null,
+        car_brand_id: body.car_brand_id
+          ? parseInt(body.car_brand_id.toString())
+          : null,
         color_id: body.color_id ? parseInt(body.color_id.toString()) : null,
-        car_status_id: body.car_status_id ? parseInt(body.car_status_id.toString()) : null,
-        
-        car_province_id: body.car_province_id ? parseInt(body.car_province_id.toString()) : null,
-        car_type_id: body.car_type_id ? parseInt(body.car_type_id.toString()) : null,
-        car_spec_id: body.car_spec_id ? parseInt(body.car_spec_id.toString()) : null,
-        car_type_regis_id: body.car_type_regis_id ? parseInt(body.car_type_regis_id.toString()) : null,
-        oil_type_id: body.oil_type_id ? parseInt(body.oil_type_id.toString()) : null,
+        car_status_id: body.car_status_id
+          ? parseInt(body.car_status_id.toString())
+          : null,
+
+        car_province_id: body.car_province_id
+          ? parseInt(body.car_province_id.toString())
+          : null,
+        car_type_id: body.car_type_id
+          ? parseInt(body.car_type_id.toString())
+          : null,
+        car_spec_id: body.car_spec_id
+          ? parseInt(body.car_spec_id.toString())
+          : null,
+        car_type_regis_id: body.car_type_regis_id
+          ? parseInt(body.car_type_regis_id.toString())
+          : null,
+        oil_type_id: body.oil_type_id
+          ? parseInt(body.oil_type_id.toString())
+          : null,
 
         regis_date: body.regis_date || null,
         fleetcard_no: body.fleetcard_no || null,
@@ -71,24 +89,33 @@ export async function POST(req: NextRequest) {
         cylinder_capacityp: body.cylinder_capacityp || null,
         horse_power: body.horse_power || null,
         weight: body.weight || null,
-        
+
         own_div_code: body.own_div_code || null,
-        fiscal_year: body.fiscal_year ? parseInt(body.fiscal_year.toString()) : null,
+        fiscal_year: body.fiscal_year
+          ? parseInt(body.fiscal_year.toString())
+          : null,
         start_date: body.start_date || null,
         end_date: body.end_date || null,
-        oil_expense: body.oil_expense ? parseFloat(body.oil_expense.toString()) : null,
-        refund_vat: body.refund_vat ? parseInt(body.refund_vat.toString()) : null,
+        oil_expense: body.oil_expense
+          ? parseFloat(body.oil_expense.toString())
+          : null,
+        refund_vat: body.refund_vat
+          ? parseInt(body.refund_vat.toString())
+          : null,
         flag: body.flag || null,
         ref_car: body.ref_car || null,
         machine_id: body.machine_id || null,
 
         cre_date: new Date().toISOString(),
-      }
+      },
     });
 
     return NextResponse.json(newVehicle, { status: 201 });
   } catch (error) {
     console.error("Failed to create vehicle:", error);
-    return NextResponse.json({ error: "Failed to create vehicle" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create vehicle" },
+      { status: 500 },
+    );
   }
 }

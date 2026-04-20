@@ -1,12 +1,20 @@
 "use client";
-import { showSuccess, showError, showWarning, showConfirm } from "@/lib/sweetalert";
+import {
+  showSuccess,
+  showError,
+  showWarning,
+  showConfirm,
+} from "@/lib/sweetalert";
 
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
-import { getOrgs } from "@/app/actions/orgActions";
-import { getUrgentRequesters, createUrgentBooking } from "@/app/actions/urgentBookingActions";
+import { getMyOrgs } from "@/app/actions/orgActions";
+import {
+  getUrgentRequesters,
+  createUrgentBooking,
+} from "@/app/actions/urgentBookingActions";
 import { useRouter } from "next/navigation";
 import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
@@ -42,36 +50,48 @@ export default function VehicleRequestPage() {
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      borderRadius: '1rem',
-      padding: '0.3rem 0.5rem',
-      borderColor: state.isFocused ? '#ef4444' : 'transparent',
-      backgroundColor: state.isFocused ? '#ffffff' : '#f8fafc',
-      boxShadow: state.isFocused ? '0 0 0 4px #fee2e2' : 'none',
-      borderWidth: '2px',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      '&:hover': {
-        borderColor: state.isFocused ? '#ef4444' : '#fca5a5'
-      }
+      borderRadius: "1rem",
+      padding: "0.3rem 0.5rem",
+      borderColor: state.isFocused ? "#ef4444" : "transparent",
+      backgroundColor: state.isFocused ? "#ffffff" : "#f8fafc",
+      boxShadow: state.isFocused ? "0 0 0 4px #fee2e2" : "none",
+      borderWidth: "2px",
+      cursor: "pointer",
+      transition: "all 0.2s",
+      "&:hover": {
+        borderColor: state.isFocused ? "#ef4444" : "#fca5a5",
+      },
     }),
     option: (base: any, state: any) => ({
       ...base,
-      backgroundColor: state.isSelected ? '#fee2e2' : state.isFocused ? '#fef2f2' : '#ffffff',
-      color: state.isSelected ? '#7f1d1d' : '#1e293b',
-      cursor: 'pointer',
-      padding: '0.75rem 1.5rem',
+      backgroundColor: state.isSelected
+        ? "#fee2e2"
+        : state.isFocused
+          ? "#fef2f2"
+          : "#ffffff",
+      color: state.isSelected ? "#7f1d1d" : "#1e293b",
+      cursor: "pointer",
+      padding: "0.75rem 1.5rem",
     }),
-    singleValue: (base: any) => ({ ...base, fontWeight: 'bold', color: '#000000' }),
-    placeholder: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
-    input: (base: any) => ({ ...base, color: '#000000', fontWeight: 'bold' }),
+    singleValue: (base: any) => ({
+      ...base,
+      fontWeight: "bold",
+      color: "#000000",
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: "#000000",
+      fontWeight: "bold",
+    }),
+    input: (base: any) => ({ ...base, color: "#000000", fontWeight: "bold" }),
     menu: (base: any) => ({
       ...base,
-      borderRadius: '1rem',
-      overflow: 'hidden',
+      borderRadius: "1rem",
+      overflow: "hidden",
       zIndex: 100,
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
     }),
-    menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+    menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
   };
   const [mapKey, setMapKey] = useState(0);
 
@@ -132,7 +152,10 @@ export default function VehicleRequestPage() {
       return;
     }
 
-    if (formData.startDate === formData.endDate && formData.endTime <= formData.startTime) {
+    if (
+      formData.startDate === formData.endDate &&
+      formData.endTime <= formData.startTime
+    ) {
       showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
       return;
     }
@@ -191,7 +214,7 @@ export default function VehicleRequestPage() {
   const resetForm = () => {
     setFormData({
       ownerDept: "",
-      vehicleType: "รถเก๋ง 1500 cc",
+      vehicleType: "",
       origin: startPlaces[0]?.start_place_name ?? "",
       province: "กรุงเทพมหานคร",
       destination: "",
@@ -210,7 +233,7 @@ export default function VehicleRequestPage() {
       requesterId: 0,
     });
     // States removed
-    setMapKey(prev => prev + 1);
+    setMapKey((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -221,16 +244,30 @@ export default function VehicleRequestPage() {
     fetchStartPlaces();
   }, []);
   useEffect(() => {
-    const fetchCarSpecs = async () => {
-      const result = await getCarSpecs();
-      if (result.success) setCarSpecs(result.data);
+    const fetchSpecs = async () => {
+      if (formData.ownerDept) {
+        const specRes = await getCarSpecs(formData.ownerDept);
+        if (specRes.success) setCarSpecs(specRes.data);
+        setFormData((prev) => ({ ...prev, vehicleType: "" }));
+      } else {
+        setCarSpecs([]);
+        setFormData((prev) => ({ ...prev, vehicleType: "" }));
+      }
     };
-    fetchCarSpecs();
-  }, []);
+    fetchSpecs();
+  }, [formData.ownerDept]);
   useEffect(() => {
     const fetchOrgs = async () => {
-      const result = await getOrgs();
-      if (result.success) setOrgs(result.data);
+      const result = await getMyOrgs();
+      if (result.success) {
+        setOrgs(result.data);
+        if (result.data.length === 1) {
+          setFormData((prev) => ({
+            ...prev,
+            ownerDept: String(result.data[0].orgid),
+          }));
+        }
+      }
     };
     fetchOrgs();
   }, []);
@@ -268,23 +305,21 @@ export default function VehicleRequestPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500 pb-10">
-
-
       <div className="grid grid-cols-1 gap-8">
         {/* Main Form */}
         <div className="w-full space-y-8">
-      <div className="bg-white p-4 rounded-md shadow-sm border border-gray-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none select-none">
-          <Car size={150} />
-        </div>
+          <div className="bg-white p-4 rounded-md shadow-sm border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none select-none">
+              <Car size={150} />
+            </div>
 
-        <div className="relative space-y-6">
-          <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
-            <div className="w-1.5 h-6 bg-black rounded-full shadow-sm"></div>
-            <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
-              รายละเอียดแผนการเดินทาง
-            </h2>
-          </div>
+            <div className="relative space-y-6">
+              <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                <div className="w-1.5 h-6 bg-black rounded-full shadow-sm"></div>
+                <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
+                  รายละเอียดแผนการเดินทาง
+                </h2>
+              </div>
 
               {/* Requester Selection Section */}
               <div className="bg-red-50 p-6 rounded-md border border-red-100 space-y-4">
@@ -295,8 +330,23 @@ export default function VehicleRequestPage() {
                 <div className="relative">
                   <FormField label="พนักงานผู้ขอใช้รถ" icon={User} required>
                     <Select
-                      options={requesters.map(r => ({ value: r.userid, label: `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim() + ` (ID: ${r.userid})`, dept: r.departmentid }))}
-                      value={formData.requesterId ? { value: formData.requesterId, label: `${requesters.find(r => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find(r => r.userid === formData.requesterId)?.lastname ?? ""}`.trim() + ` (ID: ${formData.requesterId})` } : null}
+                      options={requesters.map((r) => ({
+                        value: r.userid,
+                        label:
+                          `${r.firstname ?? ""} ${r.lastname ?? ""}`.trim() +
+                          ` (ID: ${r.userid})`,
+                        dept: r.departmentid,
+                      }))}
+                      value={
+                        formData.requesterId
+                          ? {
+                              value: formData.requesterId,
+                              label:
+                                `${requesters.find((r) => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find((r) => r.userid === formData.requesterId)?.lastname ?? ""}`.trim() +
+                                ` (ID: ${formData.requesterId})`,
+                            }
+                          : null
+                      }
                       onChange={(sel: any) => {
                         handleInputChange("requesterId", sel ? sel.value : 0);
                         if (sel && sel.dept) {
@@ -307,7 +357,9 @@ export default function VehicleRequestPage() {
                       isClearable
                       isSearchable
                       styles={reactSelectStyles}
-                      menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                      menuPortalTarget={
+                        typeof document !== "undefined" ? document.body : null
+                      }
                       menuPosition="fixed"
                       noOptionsMessage={() => "ไม่พบพนักงานที่ค้นหา"}
                     />
@@ -319,28 +371,63 @@ export default function VehicleRequestPage() {
                 {/* Row 1 */}
                 <FormField label="สังกัดเจ้าของรถ" icon={Users} required>
                   <Select
-                    options={orgs.map(org => ({ value: String(org.orgid), label: org.orgname }))}
-                    value={formData.ownerDept ? { value: String(formData.ownerDept), label: orgs.find(o => String(o.orgid) === String(formData.ownerDept))?.orgname } : null}
-                    onChange={(sel: any) => handleInputChange("ownerDept", sel ? sel.value : "")}
+                    options={orgs.map((org) => ({
+                      value: String(org.orgid),
+                      label: org.orgname,
+                    }))}
+                    value={
+                      formData.ownerDept
+                        ? {
+                            value: String(formData.ownerDept),
+                            label: orgs.find(
+                              (o) =>
+                                String(o.orgid) === String(formData.ownerDept),
+                            )?.orgname,
+                          }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("ownerDept", sel ? sel.value : "")
+                    }
                     placeholder="-- เลือกสังกัด --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
 
                 <FormField label="ประเภทรถที่ต้องการ" icon={Car} required>
                   <Select
-                    options={carSpecs.map(cs => ({ value: String(cs.car_spec_id), label: cs.car_spec_name }))}
-                    value={formData.vehicleType ? { value: String(formData.vehicleType), label: carSpecs.find(c => String(c.car_spec_id) === String(formData.vehicleType))?.car_spec_name } : null}
-                    onChange={(sel: any) => handleInputChange("vehicleType", sel ? sel.value : "")}
+                    options={carSpecs.map((cs) => ({
+                      value: String(cs.car_spec_id),
+                      label: cs.car_spec_name,
+                    }))}
+                    value={
+                      formData.vehicleType
+                        ? {
+                            value: String(formData.vehicleType),
+                            label: carSpecs.find(
+                              (c) =>
+                                String(c.car_spec_id) ===
+                                String(formData.vehicleType),
+                            )?.car_spec_name,
+                          }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("vehicleType", sel ? sel.value : "")
+                    }
                     placeholder="-- เลือกประเภทรถ --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
@@ -348,14 +435,25 @@ export default function VehicleRequestPage() {
                 {/* Row 2 */}
                 <FormField label="สถานที่ (ต้นทาง)" icon={NavIcon} required>
                   <Select
-                    options={startPlaces.map(sp => ({ value: sp.start_place_name, label: sp.start_place_name }))}
-                    value={formData.origin ? { value: formData.origin, label: formData.origin } : null}
-                    onChange={(sel: any) => handleInputChange("origin", sel ? sel.value : "")}
+                    options={startPlaces.map((sp) => ({
+                      value: sp.start_place_name,
+                      label: sp.start_place_name,
+                    }))}
+                    value={
+                      formData.origin
+                        ? { value: formData.origin, label: formData.origin }
+                        : null
+                    }
+                    onChange={(sel: any) =>
+                      handleInputChange("origin", sel ? sel.value : "")
+                    }
                     placeholder="-- โปรดเลือกสถานที่ --"
                     isClearable
                     isSearchable
                     styles={reactSelectStyles}
-                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPortalTarget={
+                      typeof document !== "undefined" ? document.body : null
+                    }
                     menuPosition="fixed"
                   />
                 </FormField>
@@ -497,20 +595,39 @@ export default function VehicleRequestPage() {
                   <div className="px-4">
                     <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
                       <Select
-                        options={drivers.map(d => ({ value: d.driver_id, label: `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() + ` (${d.driver_code})` }))}
-                        value={formData.driverId ? { value: formData.driverId, label: `${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find(d => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() + ` (${drivers.find(d => d.driver_id === formData.driverId)?.driver_code})` } : null}
-                        onChange={(sel: any) => handleInputChange("driverId", sel ? sel.value : 0)}
+                        options={drivers.map((d) => ({
+                          value: d.driver_id,
+                          label:
+                            `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() +
+                            ` (${d.driver_code})`,
+                        }))}
+                        value={
+                          formData.driverId
+                            ? {
+                                value: formData.driverId,
+                                label:
+                                  `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() +
+                                  ` (${drivers.find((d) => d.driver_id === formData.driverId)?.driver_code})`,
+                              }
+                            : null
+                        }
+                        onChange={(sel: any) =>
+                          handleInputChange("driverId", sel ? sel.value : 0)
+                        }
                         placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
                         isClearable
                         isSearchable
                         styles={reactSelectStyles}
-                        menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                        menuPortalTarget={
+                          typeof document !== "undefined" ? document.body : null
+                        }
                         menuPosition="fixed"
                         noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
                       />
                       {!formData.driverId && (
                         <p className="text-xs text-red-500 font-medium mt-1">
-                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ Admin
+                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ
+                          Admin
                         </p>
                       )}
                     </FormField>
@@ -565,7 +682,9 @@ export default function VehicleRequestPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      const val = e.target.value
+                        .replace(/\D/g, "")
+                        .slice(0, 10);
                       handleInputChange("phone", val);
                     }}
                     placeholder="0x-xxxx-xxxx"

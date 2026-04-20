@@ -198,7 +198,7 @@ export default function ReturnsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-4 pb-4 relative animate-in fade-in duration-500">
+    <div className="max-w-5xl mx-auto px-4 md:px-8 space-y-6 pt-4 pb-10 relative animate-in fade-in duration-500">
       {/* Search Bar */}
       <div className="bg-white rounded-full p-2 shadow-sm border border-slate-100 flex items-center gap-4">
         <div className="flex items-center gap-3 flex-1 px-4 py-2">
@@ -248,7 +248,7 @@ export default function ReturnsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/80 text-slate-500 text-[10px] tracking-widest uppercase border-b border-slate-100">
+              <tr className="bg-slate-50/80 text-slate-600 text-[11px] tracking-widest uppercase border-b border-slate-100">
                 <th className="px-4 py-3 font-semibold whitespace-nowrap">
                   ID / ทะเบียนรถ
                 </th>
@@ -297,7 +297,7 @@ export default function ReturnsPage() {
                       <p className="font-bold text-slate-800">
                         {item.vc_user?.firstname} {item.vc_user?.lastname}
                       </p>
-                      <p className="text-xs text-slate-400 mt-1 font-medium italic">
+                      <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
                         {item.use_div_name || "-"}
                       </p>
                     </td>
@@ -309,7 +309,7 @@ export default function ReturnsPage() {
                             ? `นาย ${item.vc_driver.vc_users.firstname}`
                             : "-"}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1 font-semibold uppercase tracking-wide">
+                      <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
                         {item.vc_car_spec?.car_spec_name || "-"}
                       </p>
                     </td>
@@ -406,19 +406,19 @@ export default function ReturnsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       เอาจากไหน (ORIGIN)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 transition-all group-hover:border-slate-200">
                       {selectedItem?.vc_start_place?.start_place_name ||
                         "ไม่ระบุ"}
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       ไปกลับ (DESTINATION)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 transition-all group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 transition-all group-hover:border-slate-200">
                       {selectedItem?.journey_place || "-"}
                     </div>
                   </div>
@@ -435,25 +435,25 @@ export default function ReturnsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       ผู้ขอใช้รถ (REQUESTER)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
                       {selectedItem?.vc_user?.firstname
                         ? `${selectedItem.vc_user.bname || ""} ${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname}`.trim()
                         : "(ไม่มีข้อมูล)"}
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1 italic">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1 italic">
                       ใครอนุมัติใช้รถตอนแรก (APPROVER)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
                       {selectedItem?.approver_name || "(ไม่มีข้อมูลในระบบ)"}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       ลักษณะการขับขี่ที่ใช้จริง
                     </label>
                     <div className="flex bg-slate-100 border border-slate-100 p-1.5 rounded-md shadow-inner">
@@ -480,10 +480,10 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       ใครขับ (DRIVER)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
                       {selectedItem?.self_drive
                         ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
                         : selectedItem?.vc_driver?.vc_users?.firstname
@@ -492,10 +492,10 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       ทะเบียน / ประเภทรถ ที่ใช้จริง
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
                       {selectedItem?.vc_car_master?.car_number || "-"} •{" "}
                       {selectedItem?.vc_car_spec?.car_spec_name}
                     </div>
@@ -513,10 +513,10 @@ export default function ReturnsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่ออกเดินทางตามแผน
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                       {selectedItem?.journey_date
                         ? new Date(
                             selectedItem.journey_date,
@@ -525,18 +525,18 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       เวลาออกตามแผน
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                       {selectedItem?.journey_time || "00:00"} น.
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่คืนรถตามแผน
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                       {selectedItem?.return_date
                         ? new Date(selectedItem.return_date).toLocaleDateString(
                             "th-TH",
@@ -545,10 +545,10 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       เวลาคืนรถตามแผน (PLANNED RETURN)
                     </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                       {selectedItem?.return_time || "00:00"} น.
                     </div>
                   </div>
@@ -567,7 +567,7 @@ export default function ReturnsPage() {
                           return_real_date: e.target.value,
                         }))
                       }
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
                     />
                   </div>
                   <div>
@@ -584,7 +584,7 @@ export default function ReturnsPage() {
                           return_real_time: e.target.value,
                         }))
                       }
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
                     />
                   </div>
                 </div>
@@ -625,7 +625,7 @@ export default function ReturnsPage() {
                           }));
                         }}
                         placeholder="ระบุเลขไมล์เริ่มต้น"
-                        className="w-full bg-white border border-emerald-100 rounded-lg py-4 pl-16 pr-6 text-xl font-semibold text-slate-800 outline-none focus:border-emerald-500 transition-all shadow-sm"
+                        className="w-full bg-white border border-emerald-100 rounded-lg py-4 pl-16 pr-6 text-2xl font-bold text-slate-900 outline-none focus:border-emerald-500 transition-all shadow-sm"
                       />
                       <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-slate-300 uppercase">
                         KM
@@ -658,7 +658,7 @@ export default function ReturnsPage() {
                           }));
                         }}
                         placeholder="ระบุเลขไมล์สิ้นสุด"
-                        className="w-full bg-white border border-emerald-500/30 rounded-lg py-4 pl-16 pr-6 text-xl font-semibold text-emerald-700 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
+                        className="w-full bg-white border border-emerald-500/30 rounded-lg py-4 pl-16 pr-6 text-2xl font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
                       />
                       <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-emerald-400 uppercase">
                         KM
@@ -693,11 +693,11 @@ export default function ReturnsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="col-span-2">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       นายเวรผู้อนุมัติรับคืนรถ (APPROVED BY) *
                     </label>
                     {modalMode === "view" ? (
-                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                         {dispatchers.find(
                           (d) => d.userid === returnFormData.approved_by,
                         )?.firstname || "-"}{" "}
@@ -706,7 +706,7 @@ export default function ReturnsPage() {
                         )?.lastname || ""}
                       </div>
                     ) : (
-                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800">
+                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
                         {modalMode === "edit"
                           ? (() => {
                               const d = dispatchers.find(
@@ -732,7 +732,7 @@ export default function ReturnsPage() {
                     )}
                   </div>
                   <div className="col-span-2 mt-4">
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       หมายเหตุบรรยาย (RETURN NOTE)
                     </label>
                     <textarea
@@ -746,7 +746,7 @@ export default function ReturnsPage() {
                       }
                       placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)..."
                       rows={3}
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
+                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
                     />
                   </div>
                 </div>
