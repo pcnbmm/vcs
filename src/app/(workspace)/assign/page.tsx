@@ -163,20 +163,20 @@ export default function AssignPage() {
   };
 
   const fetchData = async () => {
-  setLoading(true);
-  try {
-    const [pending, driverList] = await Promise.all([
-      getPendingDispatch(),
-      getDrivers(),
-    ]);
-    setPendingOrders(pending);
-    setDrivers(driverList);
-  } catch (err) {
-    console.error("Failed to fetch data:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const [pending, driverList] = await Promise.all([
+        getPendingDispatch(),
+        getDrivers(),
+      ]);
+      setPendingOrders(pending);
+      setDrivers(driverList);
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -223,18 +223,17 @@ export default function AssignPage() {
     }
   }, [dispatchType, selectedOrder, drivers]);
 
-  
   const openAssignModal = async (order: any) => {
-  setSelectedOrder(order);
-  setSelectedCar(order.car_id ? String(order.car_id) : "");
-  setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
-  setDispatchType(order.self_drive ? "self_drive" : "with_driver");
+    setSelectedOrder(order);
+    setSelectedCar(order.car_id ? String(order.car_id) : "");
+    setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
+    setDispatchType(order.self_drive ? "self_drive" : "with_driver");
 
-  const carList = await getAvailableCars(order.use_div_code ?? undefined);
-  setCars(carList);
+    const carList = await getAvailableCars(order.use_div_code ?? undefined);
+    setCars(carList);
 
-  setIsModalOpen(true);
-};
+    setIsModalOpen(true);
+  };
 
   const handleAssignSubmit = async () => {
     if (dispatchType !== "taxi" && !selectedCar) {
@@ -427,6 +426,12 @@ export default function AssignPage() {
                               : "รับรถเรียบร้อยแล้ว"}
                           </span>
                         )}
+                      {order.status_use_id === 5 &&
+                        order.pickup_method === "TAXI" && (
+                          <span className="ml-3 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500 tracking-wide border border-gray-200">
+                            เรียกรถแท็กซี่แล้ว (เสร็จสิ้น)
+                          </span>
+                        )}
                     </h3>
                     <div className="flex items-center gap-4 mt-1 text-sm text-slate-500">
                       <div className="flex items-center gap-1.5">
@@ -443,9 +448,11 @@ export default function AssignPage() {
                   </div>
                 </div>
 
-                {order.status_use_id === 4 &&
-                (order.pickup_status === "PICKED_UP" ||
-                  order.pickup_status === "TAXI_CALLED") ? (
+                {(order.status_use_id === 4 &&
+                  (order.pickup_status === "PICKED_UP" ||
+                    order.pickup_status === "TAXI_CALLED")) ||
+                (order.status_use_id === 5 &&
+                  order.pickup_method === "TAXI") ? (
                   <button
                     disabled
                     className="bg-gray-100 text-gray-400 px-6 py-2.5 rounded-md flex items-center gap-2 cursor-not-allowed border border-gray-200"
@@ -784,7 +791,9 @@ export default function AssignPage() {
                       onChange={(e) => setPickupMethod(e.target.value)}
                       className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 outline-none transition-colors"
                     >
-                      <option value="STAFF_DELIVERY">เจ้าหน้าที่นำรถไปส่ง</option>
+                      <option value="STAFF_DELIVERY">
+                        เจ้าหน้าที่นำรถไปส่ง
+                      </option>
                       <option value="SELF_PICKUP">ผู้ขอรับรถด้วยตนเอง</option>
                     </select>
                   </div>
