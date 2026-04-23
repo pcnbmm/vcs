@@ -354,9 +354,10 @@ export default function AssignPage() {
       return order.status_use_id === 4 && !order.pickup_status;
     if (filterStatus === "completed")
       return (
-        order.status_use_id === 4 &&
-        (order.pickup_status === "PICKED_UP" ||
-          order.pickup_status === "TAXI_CALLED")
+        (order.status_use_id === 4 &&
+          (order.pickup_status === "PICKED_UP" ||
+            order.pickup_status === "TAXI_CALLED")) ||
+        (order.status_use_id === 5 && order.pickup_method === "TAXI")
       );
     return true;
   });
