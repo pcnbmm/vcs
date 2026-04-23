@@ -80,6 +80,23 @@ export async function GET(request: Request) {
         return NextResponse.json({ success: true, data });
       }
 
+      case "replacement_usage": {
+        const replacements = await prisma.vc_replacement.findMany({
+          orderBy: { cre_date: "desc" },
+          take: 100,
+        });
+
+        const data = replacements.map((r) => ({
+          broken_car: r.broken_car_id || "-",
+          replacement_car: r.car_number || "-",
+          start_date: r.start_date ? r.start_date.toISOString().split("T")[0] : "-",
+          end_date: r.end_date ? r.end_date.toISOString().split("T")[0] : "-",
+          cre_by: r.cre_by || "-",
+          status: r.end_datetime ? "คืนแล้ว" : r.car_id ? "กำลังใช้งาน" : "รอระบุรถที่เสีย",
+        }));
+        return NextResponse.json({ success: true, data });
+      }
+
       default:
         return NextResponse.json({
           success: false,

@@ -53,23 +53,7 @@ export async function POST(
       );
     }
 
-    // Find car type 'รถเช่า'
-    const rentCarType = await prisma.vc_car_type.findFirst({
-      where: { car_type_name: { contains: "เช่า" } }, // use "เช่า" to be safe
-    });
-
-    // Find car status 'ปกติ' or 'พร้อม'
-    const normalStatus = await prisma.vc_car_status.findFirst({
-      where: {
-        OR: [
-          { car_status_name: { contains: "ปกติ" } },
-          { car_status_name: { contains: "ใช้งาน" } },
-          { car_status_name: { contains: "พร้อม" } },
-        ],
-      },
-    });
-
-    // Transaction to restore the car plate and close the replacement record
+    // Transaction to close the replacement record
     const result = await prisma.$transaction(async (tx) => {
       // 1. Update vc_replacement to set end date
       const updatedReplacement = await tx.vc_replacement.update({
@@ -82,19 +66,17 @@ export async function POST(
         },
       });
 
-      // 2. Restore the original plate and type in vc_car_master
-      await tx.vc_car_master.update({
-        where: { car_id: Number(carId) },
-        data: {
-          car_number: originalCarNumber,
-          ...(rentCarType ? { car_type_id: rentCarType.car_type_id } : {}),
-          ...(normalStatus
-            ? { car_status_id: normalStatus.car_status_id }
-            : {}),
-          upd_by: user === "system" ? null : 1,
-          upd_date: now.toISOString(),
-        },
-      });
+      // 2. Set the replacement car's flag to "x"
+      if (updatedReplacement.replacemant_car_id) {
+        await tx.vc_car_master.update({
+          where: { car_id: Number(updatedReplacement.replacemant_car_id) },
+          data: {
+            flag: "x",
+            upd_by: user === "system" ? null : 1,
+            upd_date: now.toISOString(),
+          },
+        });
+      }
 
       return updatedReplacement;
     });
