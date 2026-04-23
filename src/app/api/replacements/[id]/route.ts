@@ -56,30 +56,8 @@ export async function PUT(
         if (!originalCar) throw new Error("Original car not found");
         originalCarNumber = originalCar.car_number || "-";
 
-        // Find car type 'ทดแทน'
-        const replacementType = await tx.vc_car_type.findFirst({
-          where: { car_type_name: { contains: "ทดแทน" } },
-        });
-
-        const replacementStatus = await tx.vc_car_status.findFirst({
-          where: { car_status_name: { contains: "ทดแทน" } },
-        });
-
-        // Update vc_car_master to the replacement plate
-        await tx.vc_car_master.update({
-          where: { car_id: Number(car_id) },
-          data: {
-            car_number: replacement.car_number,
-            car_type_id: replacementType
-              ? replacementType.car_type_id
-              : originalCar.car_type_id,
-            ...(replacementStatus
-              ? { car_status_id: replacementStatus.car_status_id }
-              : {}),
-            upd_by: user === "system" ? null : 1,
-            upd_date: now.toISOString(),
-          },
-        });
+        // We no longer overwrite the original car's license plate. 
+        // The original car keeps its plate, and the replacement car has its own car_id.
       }
 
       // 2. Update vc_replacement

@@ -274,6 +274,7 @@ const REPORT_TYPES = [
   { id: "fueling", name: "รายงานสรุปการเติมน้ำมันเชื้อเพลิง" },
   { id: "summary_status", name: "รายงานสรุปการขอใช้งานรถยนต์ตามสถานะ" },
   { id: "rental_usage", name: "รายงานการใช้งานรถยนต์เช่า" },
+  { id: "replacement_usage", name: "รายงานการใช้รถทดแทน" },
 ];
 
 export default function ReportsPage() {
@@ -312,6 +313,15 @@ export default function ReportsPage() {
             { header: "ประเภทน้ำมัน", key: "fuel_type", width: 20 },
             { header: "จำนวนลิตร", key: "liters", width: 15 },
             { header: "จำนวนเงิน (บาท)", key: "amount", width: 15 },
+          ];
+        } else if (selectedReportId === "replacement_usage") {
+          cols = [
+            { header: "ทะเบียนรถที่เสีย", key: "broken_car", width: 15 },
+            { header: "ทะเบียนรถทดแทน", key: "replacement_car", width: 15 },
+            { header: "วันที่เริ่มใช้", key: "start_date", width: 15 },
+            { header: "วันที่คืนรถ", key: "end_date", width: 15 },
+            { header: "ผู้บันทึก", key: "cre_by", width: 20 },
+            { header: "สถานะ", key: "status", width: 20 },
           ];
         } else {
           cols = [

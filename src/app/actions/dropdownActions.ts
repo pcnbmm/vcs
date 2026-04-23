@@ -23,3 +23,13 @@ export async function getCarTypes() {
     return { success: false, data: [] };
   }
 }
+export async function getCarSpecs() {
+  try {
+    const specs = await prisma.vc_car_spec.findMany({
+      orderBy: { car_spec_name: "asc" },
+    });
+    return { success: true, data: specs };
+  } catch (error) {
+    return { success: false, data: [] };
+  }
+}

@@ -20,14 +20,14 @@ import {
 } from "lucide-react";
 import Select from "react-select";
 import { usePermissions } from "@/hooks/usePermissions";
-import { getProvinces, getCarTypes } from "@/app/actions/dropdownActions";
+import { getProvinces, getCarSpecs } from "@/app/actions/dropdownActions";
 
 export default function ReplacementPage() {
   const { hasAccess } = usePermissions();
   const [replacements, setReplacements] = useState<any[]>([]);
   const [availableCars, setAvailableCars] = useState<any[]>([]);
   const [provinces, setProvinces] = useState<any[]>([]);
-  const [carTypes, setCarTypes] = useState<any[]>([]);
+  const [carSpecs, setCarSpecs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function ReplacementPage() {
     car_id: "",
     replacement_car_number: "",
     car_province_id: "",
-    car_spec_id: "", // Used for car_type_id
+    car_spec_id: "", 
     remark: "",
     broken_car_id: "",
     start_date: "",
@@ -63,8 +63,8 @@ export default function ReplacementPage() {
   const fetchDropdowns = async () => {
     const pRes = await getProvinces();
     if (pRes.success) setProvinces(pRes.data);
-    const tRes = await getCarTypes();
-    if (tRes.success) setCarTypes(tRes.data);
+    const sRes = await getCarSpecs();
+    if (sRes.success) setCarSpecs(sRes.data);
   };
 
   const fetchReplacements = async () => {
@@ -171,7 +171,7 @@ export default function ReplacementPage() {
         } else {
           setIsChecked(true);
           showSuccess(
-            "ไม่พบข้อมูลในระบบ กรุณากรอกประเภทรถเพื่อบันทึกเป็นรถทดแทนใหม่",
+            "ไม่พบข้อมูลในระบบ กรุณาเลือกสเปครถเพื่อบันทึกเป็นรถทดแทนใหม่",
           );
         }
       }
@@ -189,7 +189,7 @@ export default function ReplacementPage() {
     setIsSaving(true);
     try {
       if (modalMode === "add") {
-        if (!formData.car_spec_id) return showWarning("กรุณาเลือกประเภทรถ");
+        if (!formData.car_spec_id) return showWarning("กรุณาเลือกสเปครถ");
 
         const res = await fetch("/api/replacements", {
           method: "POST",
@@ -482,26 +482,26 @@ export default function ReplacementPage() {
                   ) : (
                     <div className="space-y-1.5 animate-in fade-in slide-in-from-top-4 duration-300">
                       <label className="text-sm font-semibold text-gray-800">
-                        ประเภทรถ <span className="text-rose-500">*</span>
+                        สเปครถ <span className="text-rose-500">*</span>
                       </label>
                       <Select
-                        options={carTypes.map((c) => ({
-                          value: c.car_type_id.toString(),
-                          label: c.car_type_name,
+                        options={carSpecs.map((c) => ({
+                          value: c.car_spec_id.toString(),
+                          label: c.car_spec_name,
                         }))}
-                        placeholder="-- เลือกประเภทรถ --"
+                        placeholder="-- เลือกสเปครถ --"
                         value={
-                          carTypes.find(
+                          carSpecs.find(
                             (c) =>
-                              c.car_type_id.toString() === formData.car_spec_id,
+                              c.car_spec_id.toString() === formData.car_spec_id,
                           )
                             ? {
                                 value: formData.car_spec_id,
-                                label: carTypes.find(
+                                label: carSpecs.find(
                                   (c) =>
-                                    c.car_type_id.toString() ===
+                                    c.car_spec_id.toString() ===
                                     formData.car_spec_id,
-                                )?.car_type_name,
+                                )?.car_spec_name,
                               }
                             : null
                         }
