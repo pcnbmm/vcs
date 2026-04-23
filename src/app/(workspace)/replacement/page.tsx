@@ -604,32 +604,67 @@ export default function ReplacementPage() {
                             วัน/เวลาที่แจ้งเหตุเสีย{" "}
                             <span className="text-rose-500">*</span>
                           </label>
-                          <TimeInput24hr
-                            value={formData.broken_datetime}
-                            onChange={(val) =>
-                              setFormData({ ...formData, broken_datetime: val })
-                            }
-                            showDate
-                            disabled={
-                              modalMode === "view" || !!formData.broken_car_id
-                            }
-                          />
+                          {modalMode === "view" ? (
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                                {formData.broken_datetime
+                                  ? new Date(
+                                      formData.broken_datetime,
+                                    ).toLocaleDateString("th-TH")
+                                  : "-"}
+                              </div>
+                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                                {formData.broken_datetime
+                                  ? formData.broken_datetime.split("T")[1]
+                                  : "-"}{" "}
+                                น.
+                              </div>
+                            </div>
+                          ) : (
+                            <TimeInput24hr
+                              value={formData.broken_datetime}
+                              onChange={(val) =>
+                                setFormData({
+                                  ...formData,
+                                  broken_datetime: val,
+                                })
+                              }
+                              showDate
+                              disabled={!!formData.broken_car_id}
+                            />
+                          )}
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-sm font-semibold text-gray-800">
                             วันที่และเวลาเริ่มทดแทน{" "}
                             <span className="text-rose-500">*</span>
                           </label>
-                          <TimeInput24hr
-                            value={formData.start_date}
-                            onChange={(val) =>
-                              setFormData({ ...formData, start_date: val })
-                            }
-                            showDate
-                            disabled={
-                              modalMode === "view" || !!formData.broken_car_id
-                            }
-                          />
+                          {modalMode === "view" ? (
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                                {formData.start_date
+                                  ? new Date(
+                                      formData.start_date,
+                                    ).toLocaleDateString("th-TH")
+                                  : "-"}
+                              </div>
+                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                                {formData.start_date
+                                  ? formData.start_date.split("T")[1]
+                                  : "-"}{" "}
+                                น.
+                              </div>
+                            </div>
+                          ) : (
+                            <TimeInput24hr
+                              value={formData.start_date}
+                              onChange={(val) =>
+                                setFormData({ ...formData, start_date: val })
+                              }
+                              showDate
+                              disabled={!!formData.broken_car_id}
+                            />
+                          )}
                         </div>
                       </div>
 
@@ -641,12 +676,21 @@ export default function ReplacementPage() {
                               (ส่งคืนแล้ว)
                             </span>
                           </label>
-                          <TimeInput24hr
-                            value={formData.end_date}
-                            onChange={() => {}}
-                            showDate
-                            disabled
-                          />
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-800">
+                              {formData.end_date
+                                ? new Date(
+                                    formData.end_date,
+                                  ).toLocaleDateString("th-TH")
+                                : "-"}
+                            </div>
+                            <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-800">
+                              {formData.end_date
+                                ? formData.end_date.split("T")[1]
+                                : "-"}{" "}
+                              น.
+                            </div>
+                          </div>
                         </div>
                       )}
 

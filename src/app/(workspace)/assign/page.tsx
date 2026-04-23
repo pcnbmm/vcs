@@ -5,7 +5,7 @@ import {
   showWarning,
   showConfirm,
 } from "@/lib/sweetalert";
-
+import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import React, { useState, useEffect } from "react";
 import {
   Car,
@@ -182,9 +182,7 @@ export default function AssignPage() {
     fetchData();
     // Set current time for pickup defaults
     const now = new Date();
-    setPickupTime(
-      now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }),
-    );
+    setPickupTime(now.toTimeString().slice(0, 5));
   }, []);
 
   // Handle Logic: "Self-Drive"
@@ -774,11 +772,9 @@ export default function AssignPage() {
                       <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">
                         เวลา
                       </label>
-                      <input
-                        type="time"
+                      <TimeInput24hr
                         value={pickupTime}
-                        onChange={(e) => setPickupTime(e.target.value)}
-                        className="w-full border-2 border-slate-200 rounded-xl p-3 font-semibold text-slate-800 focus:border-emerald-500 outline-none"
+                        onChange={(val) => setPickupTime(val)}
                       />
                     </div>
                   </div>
