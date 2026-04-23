@@ -15,7 +15,10 @@ export async function getPendingDispatch() {
   try {
     const orders = await prisma.vc_order_item.findMany({
       where: {
-        status_use_id: { in: [2, 4] },
+        OR: [
+          { status_use_id: { in: [2, 4] } },
+          { status_use_id: 5, pickup_method: "TAXI" },
+        ],
       },
       include: {
         vc_user: true,
@@ -42,7 +45,8 @@ export async function getPendingDispatch() {
           (o.pickup_status === "PICKED_UP" || o.pickup_status === "TAXI_CALLED")
         )
           return 3;
-        return 4;
+        if (o.status_use_id === 5 && o.pickup_method === "TAXI") return 4;
+        return 5;
       };
 
       const pA = getPriority(a);
@@ -154,6 +158,9 @@ export async function assignResource(data: {
       if (data.isTaxi) {
         updateData.pickup_method = "TAXI";
         updateData.car_id = null;
+        updateData.driver_id = null;
+        updateData.status_use_id = 5;
+        updateData.pickup_status = null;
       }
 
       // อัปเดตรายการจองรถ (ตัวหลักที่เรามีปัญหา)

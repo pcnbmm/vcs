@@ -10,6 +10,7 @@ export async function getOrdersForReturn() {
     const orders = await prisma.vc_order_item.findMany({
       where: {
         status_use_id: { in: [4, 5] }, // 4 = in_use, 5 = completed
+        OR: [{ pickup_method: { not: "TAXI" } }, { pickup_method: null }],
       },
       include: {
         vc_user: true,
