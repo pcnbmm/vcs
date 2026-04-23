@@ -7,6 +7,7 @@ import {
 } from "@/lib/sweetalert";
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
+import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import {
   Car,
   Search,
@@ -460,7 +461,6 @@ export default function ReturnsPage() {
                       {[
                         { id: "self", label: "ขับเอง", color: "indigo" },
                         { id: "staff", label: "มีคนขับ", color: "emerald" },
-                        { id: "taxi", label: "Taxi", color: "amber" },
                       ].map((type) => (
                         <button
                           key={type.id}
@@ -553,39 +553,37 @@ export default function ReturnsPage() {
                     </div>
                   </div>
                   <div className="col-span-2 border-t border-slate-100 my-4 pt-4"></div>
-                  <div>
+                  <div className="col-span-2">
                     <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
-                      วันที่คืนรถจริง (ACTUAL RETURN DATE) *
+                      วันที่และเวลาคืนรถจริง (ACTUAL RETURN DATE & TIME) *
                     </label>
-                    <input
-                      type="date"
-                      readOnly={modalMode === "view"}
-                      value={returnFormData.return_real_date}
-                      onChange={(e) =>
-                        setReturnFormData((prev) => ({
-                          ...prev,
-                          return_real_date: e.target.value,
-                        }))
-                      }
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
-                      เวลากลับจริง (ACTUAL RETURN TIME) *
-                    </label>
-                    <input
-                      type="time"
-                      readOnly={modalMode === "view"}
-                      value={returnFormData.return_real_time}
-                      onChange={(e) =>
-                        setReturnFormData((prev) => ({
-                          ...prev,
-                          return_real_time: e.target.value,
-                        }))
-                      }
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all focus:bg-white focus:ring-4 focus:ring-emerald-50"
-                    />
+                    {modalMode === "view" ? (
+                      <div className="grid grid-cols-2 gap-8">
+                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
+                          {returnFormData.return_real_date
+                            ? new Date(
+                                returnFormData.return_real_date,
+                              ).toLocaleDateString("th-TH")
+                            : "-"}
+                        </div>
+                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
+                          {returnFormData.return_real_time || "-"} น.
+                        </div>
+                      </div>
+                    ) : (
+                      <TimeInput24hr
+                        value={`${returnFormData.return_real_date}T${returnFormData.return_real_time}`}
+                        onChange={(val) => {
+                          const [date, time] = val.split("T");
+                          setReturnFormData((prev) => ({
+                            ...prev,
+                            return_real_date: date,
+                            return_real_time: time,
+                          }));
+                        }}
+                        showDate
+                      />
+                    )}
                   </div>
                 </div>
               </section>

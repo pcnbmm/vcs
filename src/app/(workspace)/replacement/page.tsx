@@ -1,5 +1,5 @@
 "use client";
-
+import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import React, { useState, useEffect } from "react";
 import {
   showSuccess,
@@ -44,7 +44,7 @@ export default function ReplacementPage() {
     car_id: "",
     replacement_car_number: "",
     car_province_id: "",
-    car_spec_id: "", 
+    car_spec_id: "",
     remark: "",
     broken_car_id: "",
     start_date: "",
@@ -604,19 +604,15 @@ export default function ReplacementPage() {
                             วัน/เวลาที่แจ้งเหตุเสีย{" "}
                             <span className="text-rose-500">*</span>
                           </label>
-                          <input
-                            type="datetime-local"
+                          <TimeInput24hr
+                            value={formData.broken_datetime}
+                            onChange={(val) =>
+                              setFormData({ ...formData, broken_datetime: val })
+                            }
+                            showDate
                             disabled={
                               modalMode === "view" || !!formData.broken_car_id
                             }
-                            value={formData.broken_datetime}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                broken_datetime: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-gray-700 disabled:bg-gray-100 disabled:font-bold font-medium"
                           />
                         </div>
                         <div className="space-y-1.5">
@@ -624,19 +620,15 @@ export default function ReplacementPage() {
                             วันที่และเวลาเริ่มทดแทน{" "}
                             <span className="text-rose-500">*</span>
                           </label>
-                          <input
-                            type="datetime-local"
+                          <TimeInput24hr
+                            value={formData.start_date}
+                            onChange={(val) =>
+                              setFormData({ ...formData, start_date: val })
+                            }
+                            showDate
                             disabled={
                               modalMode === "view" || !!formData.broken_car_id
                             }
-                            value={formData.start_date}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                start_date: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-gray-700 disabled:bg-gray-100 disabled:font-bold font-medium"
                           />
                         </div>
                       </div>
@@ -649,11 +641,11 @@ export default function ReplacementPage() {
                               (ส่งคืนแล้ว)
                             </span>
                           </label>
-                          <input
-                            type="datetime-local"
-                            disabled
+                          <TimeInput24hr
                             value={formData.end_date}
-                            className="w-full px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-800 font-bold"
+                            onChange={() => {}}
+                            showDate
+                            disabled
                           />
                         </div>
                       )}
@@ -691,17 +683,12 @@ export default function ReplacementPage() {
                           วันที่และเวลาที่ส่งคืนรถ{" "}
                           <span className="text-rose-500">*</span>
                         </label>
-                        <input
-                          type="datetime-local"
-                          required
+                        <TimeInput24hr
                           value={formData.end_date}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              end_date: e.target.value,
-                            })
+                          onChange={(val) =>
+                            setFormData({ ...formData, end_date: val })
                           }
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 outline-none"
+                          showDate
                         />
                       </div>
                     </div>

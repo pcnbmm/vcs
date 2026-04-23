@@ -5,7 +5,7 @@ import {
   showWarning,
   showConfirm,
 } from "@/lib/sweetalert";
-
+import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
@@ -454,14 +454,9 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
-                  <input
-                    type="time"
+                  <TimeInput24hr
                     value={formData.startTime}
-                    onChange={(e) =>
-                      handleInputChange("startTime", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    onChange={(val) => handleInputChange("startTime", val)}
                   />
                 </FormField>
 
@@ -479,14 +474,9 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
-                  <input
-                    type="time"
+                  <TimeInput24hr
                     value={formData.endTime}
-                    onChange={(e) =>
-                      handleInputChange("endTime", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    onChange={(val) => handleInputChange("endTime", val)}
                   />
                 </FormField>
 
