@@ -32,20 +32,55 @@ export async function getPendingDispatch() {
       },
     });
 
+    // Helper for expired check
+    const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
+      if (!journeyDate) return false;
+      const d = new Date(journeyDate);
+      const dateStr =
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0");
+      let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
+      if (timeStr.split(":").length === 2) {
+        timeStr += ":00";
+      }
+      const deadline = new Date(`${dateStr}T${timeStr}`);
+      return new Date() > deadline;
+    };
+
+    const getDateTimeStamp = (journeyDate: any, journeyTime: string | null) => {
+      if (!journeyDate) return 0;
+      const d = new Date(journeyDate);
+      const dateStr =
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0");
+      let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
+      if (timeStr.split(":").length === 2) {
+        timeStr += ":00";
+      }
+      return new Date(`${dateStr}T${timeStr}`).getTime();
+    };
+
     // Custom Sorting:
-    // 1. รอจัดรถ (status 2) -> บนสุด
-    // 2. รอยืนยัน (status 4 && !pickup_status) -> กลาง
-    // 3. ยืนยันแล้ว (status 4 && pickup_status === 'PICKED_UP' or 'TAXI_CALLED') -> ล่างสุด
     orders.sort((a: any, b: any) => {
       const getPriority = (o: any) => {
-        if (o.status_use_id === 2) return 1;
-        if (o.status_use_id === 4 && !o.pickup_status) return 2;
-        if (
-          o.status_use_id === 4 &&
-          (o.pickup_status === "PICKED_UP" || o.pickup_status === "TAXI_CALLED")
-        )
-          return 3;
-        if (o.status_use_id === 5 && o.pickup_method === "TAXI") return 4;
+        const isCompleted =
+          (o.status_use_id === 4 &&
+            (o.pickup_status === "PICKED_UP" ||
+              o.pickup_status === "TAXI_CALLED")) ||
+          (o.status_use_id === 5 && o.pickup_method === "TAXI");
+
+        if (!isCompleted && isAssignExpired(o.journey_date, o.journey_time)) {
+          return 4; // คำขอหมดอายุ (Expired)
+        }
+        if (o.status_use_id === 2) return 1; // จัดรถ
+        if (o.status_use_id === 4 && !o.pickup_status) return 2; // จัดรถรอยืนยัน
+        if (isCompleted) return 3; // เสร็จสิ้น
         return 5;
       };
 
@@ -54,7 +89,12 @@ export async function getPendingDispatch() {
 
       if (pA !== pB) return pA - pB;
 
-      // เรียงจากใหม่ไปเก่าสำหรับ priority เดียวกัน
+      // วันที่ใกล้ถึงที่สุด เอาขึ้นก่อน
+      const dateA = getDateTimeStamp(a.journey_date, a.journey_time);
+      const dateB = getDateTimeStamp(b.journey_date, b.journey_time);
+      if (dateA !== dateB) return dateA - dateB;
+
+      // เรียงจากใหม่ไปเก่าสำหรับ fallback
       return b.request_id - a.request_id;
     });
 
