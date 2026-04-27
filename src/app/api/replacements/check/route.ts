@@ -16,9 +16,16 @@ export async function GET(req: Request) {
         car_number: plate,
         ...(province ? { car_province_id: Number(province) } : {}),
       },
+      include: {
+        vc_car_type: true,
+        vc_car_status: true,
+      }
     });
 
-    return NextResponse.json({ exists: !!car });
+    return NextResponse.json({ 
+      exists: !!car,
+      car: car 
+    });
   } catch (error) {
     console.error("Error checking car:", error);
     return NextResponse.json({ error: "Failed to check car" }, { status: 500 });
