@@ -29,6 +29,9 @@ export default function ReplacementPage() {
   const [provinces, setProvinces] = useState<any[]>([]);
   const [carSpecs, setCarSpecs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [masterReplacementCars, setMasterReplacementCars] = useState<any[]>([]);
+  const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
+  const [masterSearchTerm, setMasterSearchTerm] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "view" | "edit">("add");
@@ -52,13 +55,27 @@ export default function ReplacementPage() {
     end_date: "",
     end_datetime: "",
     cre_by: "",
+    existing_car_id: "" as string | number,
   });
 
   useEffect(() => {
     fetchReplacements();
     fetchAvailableCars();
     fetchDropdowns();
+    fetchMasterReplacements();
   }, []);
+
+  const fetchMasterReplacements = async () => {
+    try {
+      const res = await fetch("/api/replacements/master");
+      if (res.ok) {
+        const data = await res.json();
+        setMasterReplacementCars(data);
+      }
+    } catch (error) {
+      console.error("Error fetching master replacements:", error);
+    }
+  };
 
   const fetchDropdowns = async () => {
     const pRes = await getProvinces();
@@ -120,6 +137,7 @@ export default function ReplacementPage() {
         end_date: getLocalISOString(new Date()),
         end_datetime: "",
         cre_by: "",
+        existing_car_id: "",
       });
       fetchAvailableCars();
     } else if (record) {
@@ -142,6 +160,7 @@ export default function ReplacementPage() {
         ),
         end_datetime: record.end_datetime || "",
         cre_by: record.cre_by || "system",
+        existing_car_id: record.replacemant_car_id || "",
       });
     }
     setIsModalOpen(true);
@@ -150,6 +169,18 @@ export default function ReplacementPage() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedId(null);
+  };
+
+  const handleSelectMasterCar = (car: any) => {
+    setFormData({
+      ...formData,
+      replacement_car_number: car.car_number,
+      car_province_id: car.car_province_id?.toString() || "",
+      car_spec_id: car.car_spec_id?.toString() || "",
+      existing_car_id: car.car_id,
+    });
+    setIsChecked(true);
+    setIsMasterModalOpen(false);
   };
 
   const handleCheckCar = async () => {
@@ -165,7 +196,7 @@ export default function ReplacementPage() {
         const data = await res.json();
         if (data.exists) {
           showWarning(
-            "รถคันนี้มีในระบบแล้ว ให้นำทะเบียนรถไปค้นหาที่หน้าแรกเพื่อดำเนินการจัดการต่อไป",
+            "รถคันนี้มีในระบบแล้ว ให้นำทะเบียนรถไปค้นหาที่หน้าเลือกรถที่มีอยู่เพื่อดำเนินการจัดการต่อไป",
           );
           closeModal();
         } else {
@@ -188,6 +219,12 @@ export default function ReplacementPage() {
 
     setIsSaving(true);
     try {
+      if (modalMode === "edit") {
+        if (!formData.remark || formData.remark.trim() === "") {
+          return showWarning("กรุณาระบุหมายเหตุการดำเนินการ");
+        }
+      }
+
       if (modalMode === "add") {
         if (!formData.car_spec_id) return showWarning("กรุณาเลือกสเปครถ");
 
@@ -246,13 +283,22 @@ export default function ReplacementPage() {
           </p>
         </div>
         {hasAccess("create") && (
-          <button
-            onClick={() => openModal("add")}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
-          >
-            <Plus className="w-5 h-5" />
-            เพิ่มข้อมูลรถทดแทน
-          </button>
+          <div className="flex gap-2 w-full md:w-auto">
+            <button
+              onClick={() => setIsMasterModalOpen(true)}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-lg font-bold text-sm hover:bg-slate-200 transition-all border border-slate-200"
+            >
+              <Search className="w-5 h-5" />
+              เลือกรถทดแทนที่มีอยู่
+            </button>
+            <button
+              onClick={() => openModal("add")}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+            >
+              <Plus className="w-5 h-5" />
+              เพิ่มรถทดแทนใหม่
+            </button>
+          </div>
         )}
       </div>
 
@@ -560,7 +606,7 @@ export default function ReplacementPage() {
                           <Select
                             options={availableCars.map((c) => ({
                               value: c.car_id.toString(),
-                              label: `${c.car_number} (รถเช่า)`,
+                              label: c.car_number,
                             }))}
                             placeholder="-- ค้นหาและเลือกรถที่ต้องการนำมาแทนที่ --"
                             value={
@@ -569,7 +615,7 @@ export default function ReplacementPage() {
                               )
                                 ? {
                                     value: formData.car_id,
-                                    label: `${availableCars.find((c) => c.car_id.toString() === formData.car_id)?.car_number} (รถเช่า)`,
+                                    label: availableCars.find((c) => c.car_id.toString() === formData.car_id)?.car_number,
                                   }
                                 : null
                             }
@@ -695,13 +741,14 @@ export default function ReplacementPage() {
                       )}
 
                       <div className="space-y-1.5">
-                        <label className="text-sm font-semibold text-gray-800">
-                          หมายเหตุ
+                        <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
+                          หมายเหตุ <span className="text-rose-500 font-bold">*</span>
                         </label>
                         <textarea
-                          placeholder="ระบุหมายเหตุ (ถ้ามี)"
+                          placeholder={modalMode === "edit" ? "ระบุหมายเหตุการทดแทน (บังคับ)" : "ระบุหมายเหตุ (ถ้ามี)"}
                           rows={3}
-                          disabled={modalMode === "view"}
+                          required={modalMode === "edit"}
+                          disabled={modalMode === "view" || !!formData.end_datetime}
                           value={formData.remark}
                           onChange={(e) =>
                             setFormData({ ...formData, remark: e.target.value })
@@ -770,6 +817,122 @@ export default function ReplacementPage() {
                 )}
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Master Replacement Selection Modal */}
+      {isMasterModalOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsMasterModalOpen(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[80vh]">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+                <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
+                เลือกรถทดแทนที่มีในระบบ
+              </h2>
+              <button
+                onClick={() => {
+                  setIsMasterModalOpen(false);
+                  setMasterSearchTerm("");
+                }}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="ค้นหาทะเบียนรถ หรือ สเปครถ..."
+                  value={masterSearchTerm}
+                  onChange={(e) => setMasterSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-1 gap-3">
+                {masterReplacementCars.filter(car => 
+                  car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
+                  car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
+                ).length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">
+                    ไม่พบข้อมูลรถทดแทนที่ค้นหา
+                  </div>
+                ) : (
+                  masterReplacementCars
+                    .filter(car => 
+                      car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
+                      car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
+                    )
+                    .map((car) => {
+                    const activeReplacement = car.vc_replacement?.[0];
+                    const isBusy = !!activeReplacement;
+                    
+                    return (
+                      <button
+                        key={car.car_id}
+                        disabled={isBusy}
+                        onClick={() => {
+                          openModal("add");
+                          handleSelectMasterCar(car);
+                        }}
+                        className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left group ${isBusy ? "bg-gray-50 border-gray-200 cursor-not-allowed" : "border-gray-100 hover:border-blue-300 hover:bg-blue-50"}`}
+                      >
+                        <div>
+                          <div className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <span className="bg-white px-2 py-0.5 rounded border border-gray-200 group-hover:border-blue-200">
+                              {car.car_number}
+                            </span>
+                            <span className="text-sm font-normal text-slate-500">
+                              {car.vc_province?.province_name}
+                            </span>
+                          </div>
+                          <div className="text-sm text-slate-500 mt-1">
+                            {car.vc_car_spec?.car_spec_name || "ไม่ระบุสเปค"}
+                          </div>
+                          {isBusy && (
+                            <div className="mt-2 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block border border-blue-100">
+                              กำลังทดแทนรถ: {activeReplacement.broken_car_id}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${isBusy ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
+                             {isBusy ? "ไม่ว่าง (ใช้งานอยู่)" : "พร้อมใช้งาน"}
+                           </span>
+                           {!isBusy && (
+                             <span className="text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
+                               เลือกคันนี้ →
+                             </span>
+                           )}
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-gray-100 flex justify-end bg-gray-50">
+              <button
+                onClick={() => {
+                  setIsMasterModalOpen(false);
+                  setMasterSearchTerm("");
+                }}
+                className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-200 transition-colors"
+              >
+                ปิดหน้าต่าง
+              </button>
+            </div>
           </div>
         </div>
       )}

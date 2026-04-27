@@ -66,12 +66,12 @@ export async function POST(
         },
       });
 
-      // 2. Set the replacement car's flag to "x"
+      // 2. Deactivate the replacement car until it's reused
       if (updatedReplacement.replacemant_car_id) {
         await tx.vc_car_master.update({
           where: { car_id: Number(updatedReplacement.replacemant_car_id) },
           data: {
-            flag: "x",
+            flag: "x", // Set to 'x' as requested (not in use)
             upd_by: user === "system" ? null : 1,
             upd_date: now.toISOString(),
           },
