@@ -583,7 +583,7 @@ export default function VehicleRequestPage() {
                           .slice(0, 10);
                         handleInputChange("phone", val);
                       }}
-                      placeholder="0x-xxxx-xxxx"
+                      placeholder="0xxxxxxxxx"
                       className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                     />
                   </FormField>
