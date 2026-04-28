@@ -58,6 +58,28 @@ export async function PUT(
 
         // We no longer overwrite the original car's license plate. 
         // The original car keeps its plate, and the replacement car has its own car_id.
+
+        // Update broken car status to 'ใช้รถทดแทน'
+        const brokenStatus = await tx.vc_car_status.findFirst({
+          where: { car_status_name: { contains: "ใช้รถทดแทน" } },
+        });
+        if (brokenStatus) {
+          await tx.vc_car_master.update({
+            where: { car_id: Number(car_id) },
+            data: { car_status_id: brokenStatus.car_status_id },
+          });
+        }
+
+        // Update replacement car status to 'ใช้งานอยู่'
+        const activeStatus = await tx.vc_car_status.findFirst({
+          where: { car_status_name: { contains: "ใช้งานอยู่" } },
+        });
+        if (activeStatus && replacement.replacemant_car_id) {
+          await tx.vc_car_master.update({
+            where: { car_id: Number(replacement.replacemant_car_id) },
+            data: { car_status_id: activeStatus.car_status_id },
+          });
+        }
       }
 
       // 2. Update vc_replacement

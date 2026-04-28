@@ -216,6 +216,25 @@ export default function VehicleTab() {
   };
 
   const handleSave = async () => {
+    const requiredFields = [
+      formData.car_number,
+      formData.car_province_id,
+      formData.car_status_id,
+      formData.car_type_id,
+      formData.car_spec_id,
+      formData.car_brand_id,
+      formData.color_id,
+      formData.regis_date,
+      formData.fiscal_year,
+      formData.start_date,
+      formData.end_date,
+    ];
+
+    if (requiredFields.some((field) => !field)) {
+      showWarning("กรุณากรอกข้อมูลสำคัญที่มีเครื่องหมาย * ให้ครบถ้วน");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const url =
@@ -224,10 +243,20 @@ export default function VehicleTab() {
           : `/api/vehicles/${selectedVehicle.car_id}`;
       const method = modalMode === "add" ? "POST" : "PUT";
 
+      // คำนวณ flag อัตโนมัติจากสถานะ
+      const selectedStatus = options?.statuses?.find((s: any) => String(s.car_status_id) === String(formData.car_status_id));
+      const statusName = selectedStatus?.car_status_name || "";
+      const isReady = statusName.includes("ปกติ") || statusName.includes("พร้อม") || statusName.includes("ใช้งานอยู่");
+
+      const payload = {
+        ...formData,
+        flag: isReady ? null : "x"
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Saving failed");
@@ -647,6 +676,7 @@ export default function VehicleTab() {
                     />
                     <SelectField
                       label="ประเภทรถ"
+                      required
                       value={formData.car_type_id}
                       onChange={(v: any) =>
                         setFormData({ ...formData, car_type_id: v })
@@ -659,6 +689,7 @@ export default function VehicleTab() {
 
                     <SelectField
                       label="ยี่ห้อรถ"
+                      required
                       value={formData.car_brand_id}
                       onChange={(v: any) =>
                         setFormData({ ...formData, car_brand_id: v })
@@ -670,6 +701,7 @@ export default function VehicleTab() {
                     />
                     <SelectField
                       label="สเปค"
+                      required
                       value={formData.car_spec_id}
                       onChange={(v: any) =>
                         setFormData({ ...formData, car_spec_id: v })
@@ -681,6 +713,7 @@ export default function VehicleTab() {
                     />
                     <SelectField
                       label="สีรถ"
+                      required
                       value={formData.color_id}
                       onChange={(v: any) =>
                         setFormData({ ...formData, color_id: v })
@@ -722,6 +755,7 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่จดทะเบียน (Regis Date)"
                       type="date"
+                      required
                       value={formData.regis_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, regis_date: v })
@@ -731,6 +765,7 @@ export default function VehicleTab() {
                     <InputField
                       label="ปีงบประมาณ (Fiscal Year)"
                       type="number"
+                      
                       value={formData.fiscal_year}
                       onChange={(v: any) =>
                         setFormData({ ...formData, fiscal_year: v })
@@ -741,6 +776,7 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่เริ่มต้น (Start Date)"
                       type="date"
+                      required
                       value={formData.start_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, start_date: v })
@@ -750,6 +786,7 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่สิ้นสุด (End Date)"
                       type="date"
+                      
                       value={formData.end_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, end_date: v })
@@ -874,12 +911,12 @@ export default function VehicleTab() {
                     />
 
                     <InputField
-                      label="Flag (สัญลักษณ์)"
+                      label="Flag (สัญลักษณ์) - อัตโนมัติ"
                       value={formData.flag}
                       onChange={(v: any) =>
                         setFormData({ ...formData, flag: v })
                       }
-                      disabled={modalMode === "view"}
+                      disabled={true}
                     />
                   </div>
                 </FormSection>
