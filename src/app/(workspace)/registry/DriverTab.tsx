@@ -166,6 +166,32 @@ export default function DriverTab() {
   };
 
   const handleSave = async () => {
+    const requiredFields = [
+      formData.driver_code,
+      formData.tel,
+      formData.driver_status,
+      formData.div_code,
+      formData.start_date,
+      formData.end_date,
+      formData.licence_type,
+      formData.licence_no,
+      formData.licence_by,
+    ];
+
+    if (requiredFields.some((field) => !field)) {
+      showWarning("กรุณากรอกข้อมูลสำคัญที่มีเครื่องหมาย * ให้ครบถ้วน");
+      return;
+    }
+
+    if (formData.tel && formData.tel.length !== 10) {
+      showWarning("เบอร์โทรศัพท์ต้องมี 10 หลัก");
+      return;
+    }
+    if (formData.licence_no && formData.licence_no.length !== 8) {
+      showWarning("เลขที่ใบขับขี่ต้องมี 8 หลัก");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const url =
@@ -174,10 +200,15 @@ export default function DriverTab() {
           : `/api/drivers/${selectedDriver.driver_id}`;
       const method = modalMode === "add" ? "POST" : "PUT";
 
+      const payload = {
+        ...formData,
+        flag: formData.driver_status === "A" ? null : "x",
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Saving failed");
@@ -478,6 +509,7 @@ export default function DriverTab() {
                 <FormSection title="ข้อมูลส่วนตัว">
                   <SelectField
                     label="รหัสผู้ใช้งาน (User)"
+                    required
                     value={formData.driver_code}
                     onChange={(v: any) =>
                       setFormData({ ...formData, driver_code: v })
@@ -490,12 +522,19 @@ export default function DriverTab() {
                   />
                   <InputField
                     label="เบอร์โทรศัพท์"
+                    required
                     value={formData.tel}
-                    onChange={(v: any) => setFormData({ ...formData, tel: v })}
+                    onChange={(v: any) => {
+                      // Allow only digits
+                      const onlyNums = v.replace(/[^0-9]/g, "");
+                      setFormData({ ...formData, tel: onlyNums });
+                    }}
                     disabled={modalMode === "view"}
+                    maxLength={10}
                   />
                   <SelectField
                     label="สถานะการทำงาน"
+                    required
                     value={formData.driver_status}
                     onChange={(v: any) =>
                       setFormData({ ...formData, driver_status: v })
@@ -506,13 +545,14 @@ export default function DriverTab() {
                     ]}
                     valueKey="id"
                     labelKey="name"
-                    disabled={modalMode === "view"}
+                    disabled={modalMode === "view" || modalMode === "add"}
                   />
                 </FormSection>
 
                 <FormSection title="ข้อมูลสังกัด">
                   <SelectField
                     label="รหัสหน่วยงาน (Div Code)"
+                    required
                     value={formData.div_code}
                     onChange={(v: any) =>
                       setFormData({ ...formData, div_code: v })
@@ -525,6 +565,7 @@ export default function DriverTab() {
                   <InputField
                     label="วันที่เริ่มงาน"
                     type="date"
+                    required
                     value={formData.start_date}
                     onChange={(v: any) =>
                       setFormData({ ...formData, start_date: v })
@@ -534,6 +575,7 @@ export default function DriverTab() {
                   <InputField
                     label="วันที่สิ้นสุด"
                     type="date"
+                    required
                     value={formData.end_date}
                     onChange={(v: any) =>
                       setFormData({ ...formData, end_date: v })
@@ -545,6 +587,7 @@ export default function DriverTab() {
                 <FormSection title="ใบอนุญาตขับขี่">
                   <SelectField
                     label="ประเภทใบขับขี่"
+                    required
                     value={formData.licence_type}
                     onChange={(v: any) =>
                       setFormData({ ...formData, licence_type: v })
@@ -556,14 +599,19 @@ export default function DriverTab() {
                   />
                   <InputField
                     label="เลขที่ใบขับขี่"
+                    required
                     value={formData.licence_no}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, licence_no: v })
-                    }
+                    onChange={(v: any) => {
+                      // Allow only digits (as per standard thai license)
+                      const onlyNums = v.replace(/[^0-9]/g, "");
+                      setFormData({ ...formData, licence_no: onlyNums });
+                    }}
                     disabled={modalMode === "view"}
+                    maxLength={8}
                   />
                   <SelectField
                     label="ออกให้โดย (จังหวัด)"
+                    required
                     value={formData.licence_by}
                     onChange={(v: any) =>
                       setFormData({ ...formData, licence_by: v })
@@ -637,6 +685,7 @@ function InputField({
   placeholder,
   disabled,
   required,
+  maxLength,
 }: any) {
   return (
     <div className="space-y-1.5 focus-within:z-10">
@@ -649,6 +698,7 @@ function InputField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
+        maxLength={maxLength}
         className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
       />
     </div>
