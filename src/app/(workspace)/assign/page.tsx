@@ -188,38 +188,17 @@ export default function AssignPage() {
   // Handle Logic: "Self-Drive"
   useEffect(() => {
     if (dispatchType === "self_drive" && selectedOrder) {
-      console.log("--- SELF-DRIVE MATCHING CHECK ---");
-      console.log("Current Order UserID (Requester):", selectedOrder.userid);
-      console.log(
-        "All Driver Codes in DB:",
-        drivers.map((d) => d.driver_code),
-      );
-
-      // ค้นหาแบบยืดหยุ่น (ตัดช่องว่าง และเช็คทั้ง driver_code และ user_id)
-      const reqId = String(selectedOrder.userid || "").trim();
-
-      const requesterDriver = drivers.find((d) => {
-        const dCode = String(d.driver_code || "").trim();
-        const dUserId = String(d.user_id || "").trim();
-        const oUserId = String(selectedOrder.vc_user?.id || "").trim();
-
-        // เช็คว่า รหัสพนักงานตรงกัน หรือ User ID ตรงกัน
-        return (
-          (dCode !== "" && dCode === reqId) ||
-          (dUserId !== "" && dUserId === oUserId)
-        );
-      });
-
-      if (requesterDriver) {
-        console.log("MATCH FOUND! ✅ Driver ID:", requesterDriver.driver_id);
-        setSelectedDriver(String(requesterDriver.driver_id));
-      } else {
-        console.log("MATCH NOT FOUND ❌ (Checked against all driver_codes)");
-        setSelectedDriver("self");
+      if (selectedOrder.self_drive) {
+        // ถ้ามีการระบุ driver_id มาตั้งแต่ตอนจอง ให้ยึดตามนั้น
+        if (selectedOrder.driver_id) {
+          setSelectedDriver(String(selectedOrder.driver_id));
+        } else {
+          // ถ้าไม่มีการระบุคนขับ ให้ fallback เป็นผู้จอง
+          setSelectedDriver("self");
+        }
       }
-      console.log("---------------------------------");
     }
-  }, [dispatchType, selectedOrder, drivers]);
+  }, [dispatchType, selectedOrder]);
 
   const openAssignModal = async (order: any) => {
     setSelectedOrder(order);
@@ -238,7 +217,7 @@ export default function AssignPage() {
       showWarning("กรุณาเลือกยานพาหนะ");
       return;
     }
-    if (dispatchType === "with_driver" && !selectedDriver) {
+    if (dispatchType !== "taxi" && !selectedDriver) {
       showWarning("กรุณาเลือกพนักงานขับรถ");
       return;
     }
@@ -538,7 +517,12 @@ export default function AssignPage() {
                   ].map((type) => (
                     <button
                       key={type.id}
-                      onClick={() => setDispatchType(type.id as DispatchType)}
+                      onClick={() => {
+                        if (dispatchType !== type.id) {
+                          setDispatchType(type.id as DispatchType);
+                          setSelectedDriver("");
+                        }
+                      }}
                       className={`
                         flex flex-col items-center justify-center gap-3 p-6 rounded-md border transition-all duration-300
                         ${
@@ -643,34 +627,39 @@ export default function AssignPage() {
                     <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
                       เลือกพนักงานขับรถ
                     </label>
-                    <div
-                      className={`relative group ${dispatchType === "self_drive" ? "opacity-50 cursor-not-allowed" : "z-40"}`}
-                    >
+                    <div className="relative group z-40">
                       <Select
-                        isDisabled={dispatchType === "self_drive"}
                         options={
                           dispatchType === "self_drive"
                             ? [
                                 {
                                   value: "self",
-                                  label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname}`,
+                                  label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                                 },
-                              ]
+                                ...drivers.map((driver) => ({
+                                  value: String(driver.driver_id),
+                                  label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
+                                })),
+                              ].sort((a, b) => {
+                                if (a.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return -1;
+                                if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
+                                return 0;
+                              })
                             : drivers.map((driver) => ({
                                 value: String(driver.driver_id),
                                 label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
                               }))
                         }
                         value={
-                          dispatchType === "self_drive"
+                          selectedDriver === "self"
                             ? {
                                 value: "self",
-                                label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname}`,
+                                label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                               }
                             : selectedDriver
                               ? {
                                   value: selectedDriver,
-                                  label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`,
+                                  label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === selectedDriver ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                                 }
                               : null
                         }
@@ -680,7 +669,7 @@ export default function AssignPage() {
                           )
                         }
                         placeholder="พิมพ์ค้นหาชื่อคนขับ..."
-                        isClearable={dispatchType !== "self_drive"}
+                        isClearable
                         isSearchable
                         menuPortalTarget={
                           typeof document !== "undefined" ? document.body : null
