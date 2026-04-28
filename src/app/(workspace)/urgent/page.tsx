@@ -577,67 +577,67 @@ export default function VehicleRequestPage() {
                 </FormField>
 
                 {/* Self Drive Checkbox + Driver Combobox */}
-                <div className="md:col-span-2 space-y-3 relative"></div>
-                <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
-                  <input
-                    type="checkbox"
-                    checked={formData.selfDrive}
-                    onChange={(e) => {
-                      handleInputChange("selfDrive", e.target.checked);
-                      handleInputChange("driverId", 0);
-                    }}
-                    className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
-                  />
-                  <div className="flex items-center gap-2">
-                    <User className="w-5 h-5 text-emerald-600" />
-                    <span className="font-bold text-emerald-900">
-                      ขอขับเอง (Self Drive)
-                    </span>
-                  </div>
-                </label>
+                <div className="md:col-span-2 space-y-3 relative">
+                  <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={formData.selfDrive}
+                      onChange={(e) => {
+                        handleInputChange("selfDrive", e.target.checked);
+                        handleInputChange("driverId", 0);
+                      }}
+                      className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2">
+                      <User className="w-5 h-5 text-emerald-600" />
+                      <span className="font-bold text-emerald-900">
+                        ขอขับเอง (Self Drive)
+                      </span>
+                    </div>
+                  </label>
 
-                {formData.selfDrive && (
-                  <div className="px-4">
-                    <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
-                      <Select
-                        options={drivers.map((d) => ({
-                          value: d.driver_id,
-                          label:
-                            `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() +
-                            ` (${d.driver_code})`,
-                        }))}
-                        value={
-                          formData.driverId
-                            ? {
-                                value: formData.driverId,
-                                label:
-                                  `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() +
-                                  ` (${drivers.find((d) => d.driver_id === formData.driverId)?.driver_code})`,
-                              }
-                            : null
-                        }
-                        onChange={(sel: any) =>
-                          handleInputChange("driverId", sel ? sel.value : 0)
-                        }
-                        placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
-                        isClearable
-                        isSearchable
-                        styles={reactSelectStyles}
-                        menuPortalTarget={
-                          typeof document !== "undefined" ? document.body : null
-                        }
-                        menuPosition="fixed"
-                        noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
-                      />
-                      {!formData.driverId && (
-                        <p className="text-xs text-red-500 font-medium mt-1">
-                          * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ
-                          Admin
-                        </p>
-                      )}
-                    </FormField>
-                  </div>
-                )}
+                  {formData.selfDrive && (
+                    <div className="px-4">
+                      <FormField label="เลือกชื่อผู้ขับ" icon={User} required>
+                        <Select
+                          options={drivers.map((d) => ({
+                            value: d.driver_id,
+                            label:
+                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() +
+                              ` (${d.driver_code})`,
+                          }))}
+                          value={
+                            formData.driverId
+                              ? {
+                                  value: formData.driverId,
+                                  label:
+                                    `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() +
+                                    ` (${drivers.find((d) => d.driver_id === formData.driverId)?.driver_code})`,
+                                }
+                              : null
+                          }
+                          onChange={(sel: any) =>
+                            handleInputChange("driverId", sel ? sel.value : 0)
+                          }
+                          placeholder="พิมพ์ชื่อคนขับเพื่อค้นหา..."
+                          isClearable
+                          isSearchable
+                          styles={reactSelectStyles}
+                          menuPortalTarget={
+                            typeof document !== "undefined" ? document.body : null
+                          }
+                          menuPosition="fixed"
+                          noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
+                        />
+                        {!formData.driverId && (
+                          <p className="text-xs text-red-500 font-medium mt-1">
+                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ Admin
+                          </p>
+                        )}
+                      </FormField>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Message/Reason */}
