@@ -127,7 +127,6 @@ export default function VehicleRequestPage() {
 
   const handleSave = async () => {
     if (
-      !formData.requesterId ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
@@ -137,13 +136,22 @@ export default function VehicleRequestPage() {
       (formData.selfDrive && !formData.driverId)
     ) {
       showWarning(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ผู้ขอใช้รถ, จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
       return;
     }
 
     if (!/^\d{10}$/.test(formData.phone)) {
       showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+      return;
+    }
+
+    const now = new Date();
+    const startDateTime = new Date(
+      `${formData.startDate}T${formData.startTime}:00`,
+    );
+    if (startDateTime < now) {
+      showWarning("วันที่และเวลาเดินทางไปต้องไม่น้อยกว่าเวลาปัจจุบัน");
       return;
     }
 
@@ -159,7 +167,6 @@ export default function VehicleRequestPage() {
       showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
       return;
     }
-
     setIsSubmitting(true);
 
     try {
@@ -199,7 +206,7 @@ export default function VehicleRequestPage() {
 
       if (result.success) {
         showSuccess("บันทึกคำขอใช้รถเรียบร้อยแล้ว!");
-        router.push("/pending");
+        router.push("/assign");
       } else {
         showError(result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }

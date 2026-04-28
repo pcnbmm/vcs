@@ -143,6 +143,15 @@ export default function VehicleRequestPage() {
       return;
     }
 
+    const now = new Date();
+    const startDateTime = new Date(
+      `${formData.startDate}T${formData.startTime}:00`,
+    );
+    if (startDateTime < now) {
+      showWarning("วันที่และเวลาเดินทางไปต้องไม่น้อยกว่าเวลาปัจจุบัน");
+      return;
+    }
+
     if (formData.startDate > formData.endDate) {
       showWarning("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
       return;
