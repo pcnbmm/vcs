@@ -247,12 +247,13 @@ export default function VehicleRequestPage() {
 
       if (orgRes.success) {
         setOrgs(orgRes.data);
-        if (orgRes.data.length === 1) {
+        /*if (orgRes.data.length === 1) {
           setFormData((prev) => ({
             ...prev,
             ownerDept: String(orgRes.data[0].orgid),
           }));
         }
+          */
       }
     };
     fetchData();
@@ -342,8 +343,7 @@ export default function VehicleRequestPage() {
                             value: String(formData.vehicleType),
                             label: carSpecs.find(
                               (c) =>
-                                String(c.car_spec_id) ===
-                                String(formData.vehicleType),
+                                String(c.car_spec_id) === String(formData.vehicleType),
                             )?.car_spec_name,
                           }
                         : null
