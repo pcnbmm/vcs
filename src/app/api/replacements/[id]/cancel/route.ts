@@ -69,7 +69,7 @@ export async function POST(
       // 2. Deactivate the replacement car until it's reused
       if (updatedReplacement.replacemant_car_id) {
         const endStatus = await tx.vc_car_status.findFirst({
-          where: { car_status_name: { contains: "ครบอายุใช้งาน" } },
+          where: { car_status_name: { contains: "ครบอายุการใช้งาน" } },
         });
 
         await tx.vc_car_master.update({
@@ -77,6 +77,22 @@ export async function POST(
           data: {
             flag: "x", // Set to 'x' as requested (not in use)
             ...(endStatus ? { car_status_id: endStatus.car_status_id } : {}),
+            upd_by: user === "system" ? null : 1,
+            upd_date: now.toISOString(),
+          },
+        });
+      }
+
+      // 3. Restore the original broken car to 'ใช้งานอยู่'
+      const activeStatus = await tx.vc_car_status.findFirst({
+        where: { car_status_name: { contains: "ใช้งานอยู่" } },
+      });
+
+      if (activeStatus && carId) {
+        await tx.vc_car_master.update({
+          where: { car_id: Number(carId) },
+          data: {
+            car_status_id: activeStatus.car_status_id,
             upd_by: user === "system" ? null : 1,
             upd_date: now.toISOString(),
           },

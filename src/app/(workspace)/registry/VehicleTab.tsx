@@ -755,7 +755,6 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่จดทะเบียน (Regis Date)"
                       type="date"
-                      required
                       value={formData.regis_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, regis_date: v })
@@ -765,7 +764,6 @@ export default function VehicleTab() {
                     <InputField
                       label="ปีงบประมาณ (Fiscal Year)"
                       type="number"
-                      
                       value={formData.fiscal_year}
                       onChange={(v: any) =>
                         setFormData({ ...formData, fiscal_year: v })
@@ -776,7 +774,6 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่เริ่มต้น (Start Date)"
                       type="date"
-                      required
                       value={formData.start_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, start_date: v })
@@ -786,7 +783,6 @@ export default function VehicleTab() {
                     <InputField
                       label="วันที่สิ้นสุด (End Date)"
                       type="date"
-                      
                       value={formData.end_date}
                       onChange={(v: any) =>
                         setFormData({ ...formData, end_date: v })
