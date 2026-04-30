@@ -326,8 +326,6 @@ model vc_replacement {
   replacement_id     Int            @id @default(autoincrement())
   car_id             Int?
   replacemant_car_id String?        @db.VarChar(50)
-  start_date         DateTime?      @db.Date
-  end_date           DateTime?      @db.Date
   cre_by             String?        @db.VarChar(50)
   cre_date           DateTime?      @db.Date
   upd_by             String?        @db.VarChar(50)
