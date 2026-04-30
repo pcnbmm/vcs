@@ -42,7 +42,7 @@ export async function getPendingDispatch() {
         String(d.getMonth() + 1).padStart(2, "0") +
         "-" +
         String(d.getDate()).padStart(2, "0");
-      let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
+      let timeStr = journeyTime ? journeyTime.trim() : "23:59:59";
       if (timeStr.split(":").length === 2) {
         timeStr += ":00";
       }
@@ -145,6 +145,27 @@ export async function getDrivers() {
 }
 
 /**
+ * ดึงรายการประเภทรถทั้งหมด
+ */
+export async function getCarSpecs() {
+  try {
+    const specs = await prisma.vc_car_spec.findMany({
+      where: {
+        OR: [
+          { flag_del: null },
+          { flag_del: { not: "1" } }
+        ]
+      },
+      orderBy: { car_spec_name: "asc" }
+    });
+    return specs;
+  } catch (error) {
+    console.error("Error fetching car specs:", error);
+    return [];
+  }
+}
+
+/**
  * บันทึกการจัดสรรทรัพยากร และอัปเดตฟิลด์ flag ของรถ
  */
 export async function assignResource(data: {
@@ -152,6 +173,7 @@ export async function assignResource(data: {
   carId: number | null;
   driverId: number | null;
   isTaxi?: boolean;
+  taxiReason?: string;
 }) {
   // สรุปข้อมูลที่ได้รับมา
   console.log("=== API ASSIGN RESOURCE ===");
@@ -164,8 +186,10 @@ export async function assignResource(data: {
     // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
       where: { request_id: data.requestId },
-      select: { car_id: true, driver_id: true },
+      select: { car_id: true, driver_id: true, journey_causes: true, status_use_id: true },
     });
+    
+    const isEdit = existingOrder?.status_use_id === 4 || existingOrder?.status_use_id === 5;
 
     // 2. ใช้ Transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -201,6 +225,10 @@ export async function assignResource(data: {
         updateData.driver_id = null;
         updateData.status_use_id = 5;
         updateData.pickup_status = null;
+        if (data.taxiReason && existingOrder) {
+          const oldCauses = existingOrder.journey_causes ? existingOrder.journey_causes + "\n\n" : "";
+          updateData.journey_causes = oldCauses + `[เหตุผลการจัดแท็กซี่: ${data.taxiReason}]`;
+        }
       }
 
       // อัปเดตรายการจองรถ (ตัวหลักที่เรามีปัญหา)
@@ -212,6 +240,7 @@ export async function assignResource(data: {
           vc_user: true,
           vc_car_master: { include: { vc_car_brand: true } },
           vc_driver: { include: { vc_users: true } },
+          vc_start_place: true,
         },
       });
 
@@ -237,6 +266,10 @@ export async function assignResource(data: {
         startDate: result.journey_date
           ? result.journey_date.toLocaleDateString("th-TH")
           : "-",
+        startTime: result.journey_time ? result.journey_time.slice(0, 5) : undefined,
+        startPlace: result.vc_start_place?.start_place_name || undefined,
+        taxiReason: data.taxiReason,
+        isEdit: isEdit,
         carName: carName,
         driverName: driverName,
       });
