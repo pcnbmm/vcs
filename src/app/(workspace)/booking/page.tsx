@@ -15,6 +15,9 @@ import MapBox from "@/components/ui/LongdoMapBox";
 import { useRouter } from "next/navigation";
 import { getDrivers } from "@/app/actions/driverActions";
 import Select from "react-select";
+import flatpickr from "flatpickr";
+import { useRef } from "react";
+import "flatpickr/dist/flatpickr.min.css";
 import {
   FileText,
   Car,
@@ -39,7 +42,8 @@ export default function VehicleRequestPage() {
   const [orgs, setOrgs] = useState<any[]>([]);
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [drivers, setDrivers] = useState<any[]>([]);
-
+  const startDateRef = useRef<HTMLInputElement>(null);
+  const endDateRef = useRef<HTMLInputElement>(null);
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
       ...base,
@@ -144,24 +148,17 @@ export default function VehicleRequestPage() {
     }
 
     const now = new Date();
-    const startDateTime = new Date(
-      `${formData.startDate}T${formData.startTime}:00`,
+    const startDT = new Date(
+      `${formData.startDate}T${formData.startTime}:00+07:00`,
     );
-    if (startDateTime < now) {
+    const endDT = new Date(`${formData.endDate}T${formData.endTime}:00+07:00`);
+    if (startDT < now) {
       showWarning("วันที่และเวลาเดินทางไปต้องไม่น้อยกว่าเวลาปัจจุบัน");
       return;
     }
 
-    if (formData.startDate > formData.endDate) {
-      showWarning("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
-      return;
-    }
-
-    if (
-      formData.startDate === formData.endDate &&
-      formData.endTime <= formData.startTime
-    ) {
-      showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
+    if (endDT <= startDT) {
+      showWarning("วันที่และเวลากลับต้องมากกว่าวันที่และเวลาเดินทางไป");
       return;
     }
 
@@ -191,7 +188,7 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_causes", formData.objective);
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
-      dataToSubmit.append("self_drive", formData.selfDrive.toString());
+      dataToSubmit.append("self_drive", formData.selfDrive ? "1" : "0");
       if (formData.selfDrive && formData.driverId) {
         dataToSubmit.append("driver_id", formData.driverId.toString());
       }
@@ -231,6 +228,8 @@ export default function VehicleRequestPage() {
       selfDrive: false,
       driverId: 0,
     });
+    if (startDateRef.current) (startDateRef.current as any)._flatpickr?.clear();
+    if (endDateRef.current) (endDateRef.current as any)._flatpickr?.clear();
     setMapKey((prev) => prev + 1);
   };
 
@@ -247,13 +246,12 @@ export default function VehicleRequestPage() {
 
       if (orgRes.success) {
         setOrgs(orgRes.data);
-        /*if (orgRes.data.length === 1) {
+        if (orgRes.data.length === 1) {
           setFormData((prev) => ({
             ...prev,
             ownerDept: String(orgRes.data[0].orgid),
           }));
         }
-          */
       }
     };
     fetchData();
@@ -286,6 +284,41 @@ export default function VehicleRequestPage() {
     }
   }, [formData.origin, startPlaces]);
 
+  useEffect(() => {
+    let fp: any;
+    if (startDateRef.current) {
+      fp = flatpickr(startDateRef.current, {
+        dateFormat: "d/m/Y",
+        onChange: (dates) => {
+          if (dates && dates.length > 0) {
+            const d = dates[0];
+            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            handleInputChange("startDate", iso);
+          }
+        },
+      });
+    }
+    return () => fp?.destroy();
+  }, []);
+
+  // ส่วนของวันที่เดินทางกลับ (ทำเหมือนกัน)
+  useEffect(() => {
+    let fp: any; // ประกาศตัวแปร
+    if (endDateRef.current) {
+      fp = flatpickr(endDateRef.current, {
+        // เก็บ instance ไว้ใน fp
+        dateFormat: "d/m/Y",
+        onChange: (dates) => {
+          if (!dates || dates.length === 0 || !dates[0]) return;
+          const d = dates[0];
+          const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+          handleInputChange("endDate", iso);
+        },
+      });
+    }
+    return () => fp?.destroy(); // ต้องมีบรรทัดนี้เพื่อป้องกัน UI บั๊ก
+  }, []);
+  
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="grid grid-cols-1 gap-8">
@@ -338,12 +371,13 @@ export default function VehicleRequestPage() {
                       label: cs.car_spec_name,
                     }))}
                     value={
-                      formData.vehicleType
+                      formData.vehicleType && carSpecs.length > 0
                         ? {
                             value: String(formData.vehicleType),
                             label: carSpecs.find(
                               (c) =>
-                                String(c.car_spec_id) === String(formData.vehicleType),
+                                String(c.car_spec_id) ===
+                                String(formData.vehicleType),
                             )?.car_spec_name,
                           }
                         : null
@@ -386,21 +420,6 @@ export default function VehicleRequestPage() {
                     }
                     menuPosition="fixed"
                   />
-                </FormField>
-
-                <FormField label="จังหวัด" icon={MapIcon} required>
-                  <select
-                    value={formData.province}
-                    disabled={true}
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
-                  >
-                    <option value="">-- จังหวัด --</option>
-                    {startPlaces.map((sp) => (
-                      <option key={sp.start_place_id} value={sp.province_id}>
-                        {sp.province?.province_name ?? "-"}
-                      </option>
-                    ))}
-                  </select>
                 </FormField>
 
                 {/* Row 3 - Destination & Map */}
@@ -452,14 +471,11 @@ export default function VehicleRequestPage() {
                 {/* Departure */}
                 <FormField label="วันที่เดินทางไป" icon={Calendar} required>
                   <input
-                    type="date"
-                    value={formData.startDate}
-                    min={getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("startDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    ref={startDateRef}
+                    type="text"
+                    placeholder="dd/mm/yyyy"
+                    readOnly
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
@@ -472,14 +488,11 @@ export default function VehicleRequestPage() {
                 {/* Return */}
                 <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
                   <input
-                    type="date"
-                    value={formData.endDate}
-                    min={formData.startDate || getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("endDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                    ref={endDateRef}
+                    type="text"
+                    placeholder="dd/mm/yyyy"
+                    readOnly
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
