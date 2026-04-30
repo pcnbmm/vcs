@@ -69,6 +69,7 @@ export default function PendingPage() {
             startDateTime: b.journey_date
               ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00`
               : "",
+            rejectReason: b.reject_reason || null,
           }));
           setRequests(formattedList);
         } else {
@@ -425,6 +426,19 @@ export default function PendingPage() {
                   {selectedRequest.objective}
                 </p>
               </div>
+
+              {(selectedRequest.status === "3" ||
+                selectedRequest.status === "6") &&
+                selectedRequest.rejectReason && (
+                  <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
+                      เหตุผลที่ไม่อนุมัติ / ยกเลิก
+                    </p>
+                    <p className="text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {selectedRequest.rejectReason}
+                    </p>
+                  </div>
+                )}
             </div>
             {selectedRequest?.status === "1" &&
               !isBookingExpired(

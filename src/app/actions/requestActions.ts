@@ -14,6 +14,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export async function updateRequestStatus(
   request_id: number,
   status_id: number,
+  rejectReason?: string,
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -36,7 +37,9 @@ export async function updateRequestStatus(
     // 1. ใช้ SQL ดิบเพื่ออัปเดตสถานะ ป้องกัน Prisma บ่นเรื่อง Type mismatch ของ userid ที่ขากลับ
     await prisma.$executeRaw`
             UPDATE vc_order_item 
-            SET status_use_id = ${status_id}, approve_id = ${approver_id}
+            SET status_use_id = ${status_id}, 
+            approve_id = ${approver_id},
+            reject_reason = ${rejectReason ?? null}
             WHERE request_id = ${request_id}
         `;
 
