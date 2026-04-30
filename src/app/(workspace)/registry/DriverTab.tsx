@@ -40,6 +40,7 @@ export default function DriverTab() {
   const [modalMode, setModalMode] = useState<"view" | "add" | "edit">("add");
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [driverType, setDriverType] = useState<"driver" | "staff">("driver");
 
   const [formData, setFormData] = useState<any>({});
 
@@ -47,6 +48,13 @@ export default function DriverTab() {
     fetchData();
     fetchOptions();
   }, []);
+  useEffect(() => {
+    if (Object.keys(options).length > 0) {
+      console.log("=== OPTIONS KEYS ===", Object.keys(options));
+      const firstKey = Object.keys(options)[0];
+      console.log("=== SAMPLE [0] ===", (options as any)[firstKey]?.[0]);
+    }
+  }, [options]);
 
   const fetchData = async () => {
     try {
@@ -137,6 +145,7 @@ export default function DriverTab() {
     setModalMode(mode);
     setSelectedDriver(driver);
     if (mode === "add") {
+      setDriverType("driver");
       setFormData({
         driver_code: "",
         driver_status: "A",
@@ -166,11 +175,11 @@ export default function DriverTab() {
   };
 
   const handleSave = async () => {
+    console.log("formData =", formData);
     const requiredFields = [
       formData.driver_code,
       formData.tel,
       formData.driver_status,
-      formData.div_code,
       formData.start_date,
       formData.end_date,
       formData.licence_type,
@@ -191,6 +200,17 @@ export default function DriverTab() {
       showWarning("เลขที่ใบขับขี่ต้องมี 8 หลัก");
       return;
     }
+    if (formData.start_date && formData.end_date) {
+      const start = new Date(formData.start_date);
+      const end = new Date(formData.end_date);
+      const minEnd = new Date(start);
+      minEnd.setFullYear(minEnd.getFullYear() + 3);
+
+      if (end < minEnd) {
+        showWarning("วันที่หมดอายุต้องมากกว่าวันที่เริ่มงาน 3 ปีเท่านั้น");
+        return;
+      }
+    }
 
     setIsSaving(true);
     try {
@@ -202,6 +222,7 @@ export default function DriverTab() {
 
       const payload = {
         ...formData,
+        driver_type: driverType,
         flag: formData.driver_status === "A" ? null : "x",
       };
 
@@ -450,11 +471,10 @@ export default function DriverTab() {
                     )}
                     <button
                       onClick={() => handlePageChange(page)}
-                      className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
-                        currentPage === page
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                          : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                        : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                       {page}
                     </button>
@@ -480,55 +500,92 @@ export default function DriverTab() {
         )}
       </div>
 
-      {/* Modal Form */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={closeModal}
-          />
-          <div className="relative bg-white rounded-md shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300">
-            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white z-10">
-              <h2 className="text-xl font-semibold text-gray-900">
-                {modalMode === "add"
-                  ? "เพิ่มข้อมูลคนขับรถ"
-                  : modalMode === "edit"
-                    ? "แก้ไขข้อมูลคนขับรถ"
-                    : "รายละเอียดคนขับรถ"}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+        >
+          <div className="relative bg-white w-full max-w-5xl max-h-[90vh] rounded-xl shadow-2xl flex flex-col overflow-hidden">
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-white z-10">
+              <h2 className="text-lg font-bold text-gray-800">
+                {modalMode === "add" && "เพิ่มข้อมูลคนขับ"}
+                {modalMode === "edit" && "แก้ไขข้อมูลคนขับ"}
+                {modalMode === "view" && "รายละเอียดคนขับ"}
               </h2>
-              <button
-                onClick={closeModal}
-                className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors"
-              >
+              <button onClick={closeModal} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Modal Body */}
             <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-gray-50/50">
+
+              {/* เลือกประเภท */}
+              <div className="mb-6 bg-blue-50/50 p-5 rounded-xl border border-blue-100 shadow-sm">
+                <label className="text-sm font-bold text-blue-900 block mb-4 flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-blue-600"></span>
+                  เลือกประเภทพนักงานขับรถ <span className="text-rose-500">*</span>
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "driver" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                    <div className="flex items-center gap-3 mb-1">
+                      <input type="radio" name="driver_type" value="driver" checked={driverType === "driver"} onChange={() => setDriverType("driver")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <span className="font-bold text-gray-900">1. พนักงานขับรถโดยตรง</span>
+                    </div>
+                  </label>
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "staff" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                    <div className="flex items-center gap-3 mb-1">
+                      <input type="radio" name="driver_type" value="staff" checked={driverType === "staff"} onChange={() => setDriverType("staff")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <span className="font-bold text-gray-900">2. พนักงาน (ทำหน้าที่ขับรถ)</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <FormSection title="ข้อมูลส่วนตัว">
                   <SelectField
                     label="รหัสผู้ใช้งาน (User)"
                     required
                     value={formData.driver_code}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, driver_code: v })
-                    }
+                    onChange={(v: any) => {
+                      // หา user ที่เลือกแล้วดึง sectionid มาใส่ div_code
+                      const selectedUser = options?.users?.find(
+                        (u: any) => String(u.userid) === String(v)
+                      );
+                      setFormData({
+                        ...formData,
+                        driver_code: v,
+                        div_code: selectedUser?.sectionid ?? "",
+                      });
+                    }}
                     options={options?.users}
                     valueKey="userid"
                     labelKey="firstname"
                     labelKey2="lastname"
                     disabled={modalMode === "view"}
                   />
+                  {/* แสดงหน่วยงานจาก sectionid ของ user ที่เลือก */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
+                      รหัสหน่วยงาน (Div Code)
+                    </label>
+                    <div className="w-full bg-gray-100 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-500 min-h-[42px] flex items-center">
+                      {formData.div_code
+                        ? formData.div_code
+                        : <span className="text-gray-400 font-normal">เลือกรหัสผู้ใช้งานก่อน</span>
+                      }
+                    </div>
+                  </div>
                   <InputField
                     label="เบอร์โทรศัพท์"
                     required
                     value={formData.tel}
-                    onChange={(v: any) => {
-                      // Allow only digits
-                      const onlyNums = v.replace(/[^0-9]/g, "");
-                      setFormData({ ...formData, tel: onlyNums });
-                    }}
+                    onChange={(v: any) => setFormData({ ...formData, tel: v.replace(/[^0-9]/g, "") })}
                     disabled={modalMode === "view"}
                     maxLength={10}
                   />
@@ -536,50 +593,13 @@ export default function DriverTab() {
                     label="สถานะการทำงาน"
                     required
                     value={formData.driver_status}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, driver_status: v })
-                    }
+                    onChange={(v: any) => setFormData({ ...formData, driver_status: v })}
                     options={[
                       { id: "A", name: "พร้อมใช้งาน (A)" },
                       { id: "I", name: "ไม่พร้อมใช้งาน (I)" },
                     ]}
                     valueKey="id"
                     labelKey="name"
-                    disabled={modalMode === "view" || modalMode === "add"}
-                  />
-                </FormSection>
-
-                <FormSection title="ข้อมูลสังกัด">
-                  <SelectField
-                    label="รหัสหน่วยงาน (Div Code)"
-                    required
-                    value={formData.div_code}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, div_code: v })
-                    }
-                    options={options?.orgs}
-                    valueKey="orgid"
-                    labelKey="orgname"
-                    disabled={modalMode === "view"}
-                  />
-                  <InputField
-                    label="วันที่เริ่มงาน"
-                    type="date"
-                    required
-                    value={formData.start_date}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, start_date: v })
-                    }
-                    disabled={modalMode === "view"}
-                  />
-                  <InputField
-                    label="วันที่สิ้นสุด"
-                    type="date"
-                    required
-                    value={formData.end_date}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, end_date: v })
-                    }
                     disabled={modalMode === "view"}
                   />
                 </FormSection>
@@ -589,9 +609,7 @@ export default function DriverTab() {
                     label="ประเภทใบขับขี่"
                     required
                     value={formData.licence_type}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, licence_type: v })
-                    }
+                    onChange={(v: any) => setFormData({ ...formData, licence_type: v })}
                     options={options?.licenseTypes}
                     valueKey="license_type_id"
                     labelKey="license_type_name"
@@ -601,11 +619,7 @@ export default function DriverTab() {
                     label="เลขที่ใบขับขี่"
                     required
                     value={formData.licence_no}
-                    onChange={(v: any) => {
-                      // Allow only digits (as per standard thai license)
-                      const onlyNums = v.replace(/[^0-9]/g, "");
-                      setFormData({ ...formData, licence_no: onlyNums });
-                    }}
+                    onChange={(v: any) => setFormData({ ...formData, licence_no: v.replace(/[^0-9]/g, "") })}
                     disabled={modalMode === "view"}
                     maxLength={8}
                   />
@@ -613,38 +627,51 @@ export default function DriverTab() {
                     label="ออกให้โดย (จังหวัด)"
                     required
                     value={formData.licence_by}
-                    onChange={(v: any) =>
-                      setFormData({ ...formData, licence_by: v })
-                    }
+                    onChange={(v: any) => setFormData({ ...formData, licence_by: v })}
                     options={options?.provinces}
                     valueKey="province_id"
                     labelKey="province_name"
                     disabled={modalMode === "view"}
                   />
                 </FormSection>
+
+                <FormSection title="วันที่เริ่มและหมดอายุงาน">
+                  <InputField
+                    label="วันที่เริ่มงาน"
+                    type="date"
+                    required
+                    value={formData.start_date}
+                    onChange={(v: any) => {
+                      let endDate = "";
+                      if (v) {
+                        const d = new Date(v);
+                        d.setFullYear(d.getFullYear() + 3);
+                        endDate = d.toISOString().split("T")[0];
+                      }
+                      setFormData({ ...formData, start_date: v, end_date: endDate });
+                    }}
+                    disabled={modalMode === "view"}
+                  />
+                  <InputField
+                    label="วันที่หมดอายุ"
+                    type="date"
+                    required
+                    value={formData.end_date}
+                    onChange={(v: any) => setFormData({ ...formData, end_date: v })}
+                    disabled={modalMode === "view"}
+                  />
+                </FormSection>
               </div>
             </div>
 
+            {/* Modal Footer */}
             {modalMode !== "view" && (
-              <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3 z-10">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors"
-                >
+              <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3">
+                <button type="button" onClick={closeModal} className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">
                   ยกเลิก
                 </button>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-md font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
-                >
-                  {isSaving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
+                <button type="button" onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-md font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70">
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   {isSaving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
                 </button>
               </div>
@@ -655,6 +682,7 @@ export default function DriverTab() {
     </div>
   );
 }
+
 
 // Components เสริมภายในไฟล์
 function FormSection({
