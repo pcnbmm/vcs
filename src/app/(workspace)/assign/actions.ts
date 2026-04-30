@@ -114,13 +114,32 @@ export async function getAvailableCars(divCode?: string) {
       where: {
         flag: { equals: null },
         ...(divCode ? { own_div_code: divCode } : {}),
+        vc_car_status: {
+          car_status_name: {
+            contains: "ใช้งาน"
+          }
+        }
       },
       include: {
         vc_car_brand: true,
         vc_car_spec: true,
       },
     });
-    return cars;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const validCars = cars.filter(car => {
+      if (car.end_date) {
+        const endDt = new Date(car.end_date);
+        if (!isNaN(endDt.getTime()) && endDt < today) {
+          return false; // Car has expired
+        }
+      }
+      return true;
+    });
+
+    return validCars;
   } catch (error) {
     console.error("Error fetching available cars:", error);
     return [];

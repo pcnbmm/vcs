@@ -38,6 +38,7 @@ model vc_order_item {
   pickup_method      String?             @db.VarChar(50)
   pickup_status      String?             @db.VarChar(50)
   pickup_time        String?             @db.VarChar(10)
+  reject_reason      String?
   vc_car_master      vc_car_master?      @relation(fields: [car_id], references: [car_id])
   vc_car_spec        vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
   vc_driver          vc_driver?          @relation(fields: [driver_id], references: [driver_id])
@@ -45,7 +46,6 @@ model vc_order_item {
   vc_status_use_code vc_status_use_code? @relation(fields: [status_use_id], references: [status_use_id])
   vc_user            vc_users?           @relation(fields: [userid], references: [userid])
   vc_use             vc_use[]
-  reject_reason      String?             
 }
 
 model vc_users {
