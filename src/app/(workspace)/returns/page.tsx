@@ -42,6 +42,9 @@ export default function ReturnsPage() {
   const [dispatchers, setDispatchers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Form State
   const [returnFormData, setReturnFormData] = useState({
@@ -82,16 +85,61 @@ export default function ReturnsPage() {
   };
 
   const filteredOrders = returnOrders.filter((order) => {
+    let matchFilter = true;
     if (selectedFilter === "กำลังใช้งาน (In Use)")
-      return order.status_use_id === 4;
-    if (selectedFilter === "คืนแล้ว (Returned)") {
-      // คืนแล้วต้องมีข้อมูลใน vc_use ด้วยถึงจะนับ (ตามที่ user สงสัยเรื่องจำนวน)
+      matchFilter = order.status_use_id === 4;
+    else if (selectedFilter === "คืนแล้ว (Returned)") {
+      matchFilter =
+        order.status_use_id === 5 && order.vc_use && order.vc_use.length > 0;
+    }
+
+    if (!matchFilter) return false;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const reqStr = `req-${String(order.request_id).padStart(4, "0")}`.toLowerCase();
+      const reqStrNum = String(order.request_id).toLowerCase();
+      const carPlate = (order.vc_car_master?.car_number || "").toLowerCase();
+      const userFull = `${order.vc_user?.firstname || ""} ${order.vc_user?.lastname || ""}`.toLowerCase();
       return (
-        order.status_use_id === 5 && order.vc_use && order.vc_use.length > 0
+        reqStr.includes(q) ||
+        reqStrNum.includes(q) ||
+        carPlate.includes(q) ||
+        userFull.includes(q)
       );
     }
-    return true; // "แสดงทุกสถานะ"
+    return true;
   });
+
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
+    // 1. Grouping: Waiting for return (status 4) comes before Returned (status 5)
+    if (a.status_use_id === 4 && b.status_use_id !== 4) return -1;
+    if (a.status_use_id !== 4 && b.status_use_id === 4) return 1;
+
+    // Helper to get journey timestamp
+    const getJourneyDt = (order: any) => {
+      const dateStr = order.journey_date ? new Date(order.journey_date).toISOString().split('T')[0] : '1970-01-01';
+      let timeStr = order.journey_time ? order.journey_time.trim() : '00:00:00';
+      if (timeStr.split(':').length === 2) timeStr += ':00';
+      const dt = new Date(`${dateStr}T${timeStr}`).getTime();
+      return isNaN(dt) ? 0 : dt;
+    };
+
+    // 2. Sorting within the same group
+    if (a.status_use_id === 4) {
+      // Waiting for return: Sort by journey time (earliest first)
+      return getJourneyDt(a) - getJourneyDt(b);
+    } else {
+      // Returned: Sort by ID descending (newest first)
+      return b.request_id - a.request_id;
+    }
+  });
+
+  const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
+  const paginatedOrders = sortedOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     fetchData();
@@ -205,8 +253,12 @@ export default function ReturnsPage() {
         <div className="flex items-center gap-3 flex-1 px-4 py-2">
           <Search className="text-slate-400" size={20} />
           <input
-            type="text"
-            placeholder="ค้นหาเลขที่ใบขอใช้รถ, ทะเบียนรถ, ชื่อผู้เดินทาง..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="ค้นหาเลขที่คำขอ, ทะเบียนรถ, ชื่อผู้เดินทาง..."
             className="flex-1 outline-none text-slate-600 placeholder:text-slate-400 bg-transparent w-full text-sm"
           />
         </div>
@@ -229,6 +281,7 @@ export default function ReturnsPage() {
                   onClick={() => {
                     setSelectedFilter(option);
                     setIsFilterOpen(false);
+                    setCurrentPage(1);
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                     selectedFilter === option
@@ -280,8 +333,8 @@ export default function ReturnsPage() {
                     </div>
                   </td>
                 </tr>
-              ) : filteredOrders.length > 0 ? (
-                filteredOrders.map((item, index) => (
+              ) : paginatedOrders.length > 0 ? (
+                paginatedOrders.map((item, index) => (
                   <tr
                     key={index}
                     className="bg-white hover:bg-slate-50 transition-colors group"
@@ -305,13 +358,15 @@ export default function ReturnsPage() {
                     <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
                         {item.self_drive
-                          ? "(ขับเอง)"
+                          ? item.vc_user?.firstname
+                            ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
+                            : "-"
                           : item.vc_driver?.vc_users?.firstname
-                            ? `นาย ${item.vc_driver.vc_users.firstname}`
+                            ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
                             : "-"}
                       </p>
                       <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
-                        {item.vc_car_spec?.car_spec_name || "-"}
+                        {item.vc_car_master?.vc_car_spec?.car_spec_name || item.vc_car_spec?.car_spec_name || "-"}
                       </p>
                     </td>
                     <td className="px-4 py-3 align-top">
@@ -365,6 +420,46 @@ export default function ReturnsPage() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-6 px-2">
+          <span className="text-sm text-slate-500">
+            แสดง {((currentPage - 1) * itemsPerPage) + 1} ถึง {Math.min(currentPage * itemsPerPage, sortedOrders.length)} จาก {sortedOrders.length} รายการ
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              ก่อนหน้า
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-8 h-8 rounded-md text-sm font-medium transition-colors ${
+                    currentPage === i + 1
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              ถัดไป
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* MODAL */}
       {isModalOpen && (
@@ -496,8 +591,10 @@ export default function ReturnsPage() {
                       ทะเบียน / ประเภทรถ ที่ใช้จริง
                     </label>
                     <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {selectedItem?.vc_car_master?.car_number || "-"} •{" "}
-                      {selectedItem?.vc_car_spec?.car_spec_name}
+                      {selectedItem?.vc_car_master?.car_number || "-"}
+                      {selectedItem?.vc_car_master?.vc_car_spec?.car_spec_name
+                        ? ` • ${selectedItem.vc_car_master.vc_car_spec.car_spec_name}`
+                        : ""}
                     </div>
                   </div>
                 </div>
