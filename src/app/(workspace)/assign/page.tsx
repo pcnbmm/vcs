@@ -538,8 +538,8 @@ export default function AssignPage() {
                 {(order.status_use_id === 4 &&
                   (order.pickup_status === "PICKED_UP" ||
                     order.pickup_status === "TAXI_CALLED")) ||
-                (order.status_use_id === 5 &&
-                  order.pickup_method === "TAXI") ? (
+                  (order.status_use_id === 5 &&
+                    order.pickup_method === "TAXI") ? (
                   <button
                     disabled
                     className="bg-gray-100 text-gray-400 px-6 py-2.5 rounded-md flex items-center gap-2 cursor-not-allowed border border-gray-200"
@@ -683,10 +683,9 @@ export default function AssignPage() {
                       }}
                       className={`
                         flex flex-col items-center justify-center gap-3 p-6 rounded-md border transition-all duration-300
-                        ${
-                          dispatchType === type.id
-                            ? `bg-${type.color}-600 border-${type.color}-600 text-white shadow-xl shadow-${type.color}-100 scale-105`
-                            : "bg-white border-slate-50 text-slate-400 hover:border-slate-200"
+                        ${dispatchType === type.id
+                          ? `bg-${type.color}-600 border-${type.color}-600 text-white shadow-xl shadow-${type.color}-100 scale-105`
+                          : "bg-white border-slate-50 text-slate-400 hover:border-slate-200"
                         }
                       `}
                     >
@@ -769,24 +768,24 @@ export default function AssignPage() {
                       value={
                         selectedCar
                           ? {
-                              value: selectedCar,
-                              label:
-                                cars.find(
-                                  (c) => String(c.car_id) === selectedCar,
-                                )?.car_number +
-                                " (" +
-                                (cars.find(
-                                  (c) => String(c.car_id) === selectedCar,
-                                )?.vc_car_brand?.car_brand_name ||
-                                  "ไม่ระบุยี่ห้อ") +
-                                ")",
-                              number: cars.find(
+                            value: selectedCar,
+                            label:
+                              cars.find(
                                 (c) => String(c.car_id) === selectedCar,
-                              )?.car_number,
-                              brand: cars.find(
+                              )?.car_number +
+                              " (" +
+                              (cars.find(
                                 (c) => String(c.car_id) === selectedCar,
-                              )?.vc_car_brand?.car_brand_name,
-                            }
+                              )?.vc_car_brand?.car_brand_name ||
+                                "ไม่ระบุยี่ห้อ") +
+                              ")",
+                            number: cars.find(
+                              (c) => String(c.car_id) === selectedCar,
+                            )?.car_number,
+                            brand: cars.find(
+                              (c) => String(c.car_id) === selectedCar,
+                            )?.vc_car_brand?.car_brand_name,
+                          }
                           : null
                       }
                       onChange={(selectedOption: any) =>
@@ -821,35 +820,35 @@ export default function AssignPage() {
                         options={
                           dispatchType === "self_drive"
                             ? [
-                                {
-                                  value: "self",
-                                  label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                                },
-                                ...drivers.map((driver) => ({
-                                  value: String(driver.driver_id),
-                                  label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                                })),
-                              ].sort((a, b) => {
-                                if (a.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return -1;
-                                if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
-                                return 0;
-                              })
-                            : drivers.map((driver) => ({
+                              {
+                                value: "self",
+                                label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
+                              },
+                              ...drivers.map((driver) => ({
                                 value: String(driver.driver_id),
-                                label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
-                              }))
+                                label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
+                              })),
+                            ].sort((a, b) => {
+                              if (a.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return -1;
+                              if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
+                              return 0;
+                            })
+                            : drivers.map((driver) => ({
+                              value: String(driver.driver_id),
+                              label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
+                            }))
                         }
                         value={
                           selectedDriver === "self"
                             ? {
-                                value: "self",
-                                label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                              }
+                              value: "self",
+                              label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
+                            }
                             : selectedDriver
                               ? {
-                                  value: selectedDriver,
-                                  label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === selectedDriver ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                                }
+                                value: selectedDriver,
+                                label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === selectedDriver ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
+                              }
                               : null
                         }
                         onChange={(selectedOption: any) =>

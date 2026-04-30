@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const users = await prisma.vc_users.findMany({
-      select: { userid: true, bname: true, firstname: true, lastname: true },
+      select: { userid: true, bname: true, firstname: true, lastname: true, sectionid: true, },
       orderBy: { firstname: "asc" },
     });
 
