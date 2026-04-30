@@ -43,7 +43,10 @@ export async function updateRequestStatus(
     // 2. ถ้าสถานะเป็น 2 (APPROVED) ค่อยดึงข้อมูลเพื่อส่ง Email
     if (status_id === 2) {
       const results: any[] = await prisma.$queryRaw`
-                SELECT * FROM vc_order_item WHERE request_id = ${request_id}
+                SELECT o.*, s.start_place_name 
+                FROM vc_order_item o
+                LEFT JOIN vc_start_place s ON o.start_place = s.start_place_id
+                WHERE o.request_id = ${request_id}
             `;
       const requestData = results[0];
       console.log("[EmailService] Debug requestData:", requestData);
@@ -64,6 +67,14 @@ export async function updateRequestStatus(
           requestData.journey_date ??
           requestData.Journey_date ??
           requestData.journeyDate;
+        const jTime =
+          requestData.journey_time ??
+          requestData.Journey_time ??
+          requestData.journeyTime;
+        const sPlace =
+          requestData.start_place_name ??
+          requestData.Start_place_name ??
+          requestData.startPlaceName;
 
         if (uid) {
           // ค้นหาพนักงานตาม User ID (ตัวเลข)
@@ -85,6 +96,8 @@ export async function updateRequestStatus(
               startDate: jDate
                 ? new Date(jDate).toLocaleDateString("th-TH")
                 : "ไม่ระบุ",
+              startTime: jTime ? String(jTime).slice(0, 5) : undefined,
+              startPlace: sPlace ? String(sPlace) : undefined,
             });
           } else {
             console.log(
