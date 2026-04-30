@@ -13,6 +13,7 @@ export async function getDrivers() {
             firstname: true,
             lastname: true,
             bname: true,
+            sectionid: true,
           },
         },
       },
