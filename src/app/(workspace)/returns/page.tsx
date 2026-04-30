@@ -97,10 +97,12 @@ export default function ReturnsPage() {
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      const reqStr = `req-${String(order.request_id).padStart(4, "0")}`.toLowerCase();
+      const reqStr =
+        `req-${String(order.request_id).padStart(4, "0")}`.toLowerCase();
       const reqStrNum = String(order.request_id).toLowerCase();
       const carPlate = (order.vc_car_master?.car_number || "").toLowerCase();
-      const userFull = `${order.vc_user?.firstname || ""} ${order.vc_user?.lastname || ""}`.toLowerCase();
+      const userFull =
+        `${order.vc_user?.firstname || ""} ${order.vc_user?.lastname || ""}`.toLowerCase();
       return (
         reqStr.includes(q) ||
         reqStrNum.includes(q) ||
@@ -118,9 +120,11 @@ export default function ReturnsPage() {
 
     // Helper to get journey timestamp
     const getJourneyDt = (order: any) => {
-      const dateStr = order.journey_date ? new Date(order.journey_date).toISOString().split('T')[0] : '1970-01-01';
-      let timeStr = order.journey_time ? order.journey_time.trim() : '00:00:00';
-      if (timeStr.split(':').length === 2) timeStr += ':00';
+      const dateStr = order.journey_date
+        ? new Date(order.journey_date).toISOString().split("T")[0]
+        : "1970-01-01";
+      let timeStr = order.journey_time ? order.journey_time.trim() : "00:00:00";
+      if (timeStr.split(":").length === 2) timeStr += ":00";
       const dt = new Date(`${dateStr}T${timeStr}`).getTime();
       return isNaN(dt) ? 0 : dt;
     };
@@ -138,7 +142,7 @@ export default function ReturnsPage() {
   const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
   const paginatedOrders = sortedOrders.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   useEffect(() => {
@@ -366,7 +370,9 @@ export default function ReturnsPage() {
                             : "-"}
                       </p>
                       <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
-                        {item.vc_car_master?.vc_car_spec?.car_spec_name || item.vc_car_spec?.car_spec_name || "-"}
+                        {item.vc_car_master?.vc_car_spec?.car_spec_name ||
+                          item.vc_car_spec?.car_spec_name ||
+                          "-"}
                       </p>
                     </td>
                     <td className="px-4 py-3 align-top">
@@ -425,11 +431,13 @@ export default function ReturnsPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6 px-2">
           <span className="text-sm text-slate-500">
-            แสดง {((currentPage - 1) * itemsPerPage) + 1} ถึง {Math.min(currentPage * itemsPerPage, sortedOrders.length)} จาก {sortedOrders.length} รายการ
+            แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง{" "}
+            {Math.min(currentPage * itemsPerPage, sortedOrders.length)} จาก{" "}
+            {sortedOrders.length} รายการ
           </span>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
@@ -451,7 +459,7 @@ export default function ReturnsPage() {
               ))}
             </div>
             <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
@@ -608,7 +616,7 @@ export default function ReturnsPage() {
                     วันเวลาเดินทาง (TRIP DATE &amp; TIME)
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่ออกเดินทางตามแผน
@@ -617,18 +625,15 @@ export default function ReturnsPage() {
                       {selectedItem?.journey_date
                         ? new Date(
                             selectedItem.journey_date,
-                          ).toLocaleDateString("th-TH")
+                          ).toLocaleDateString("th-TH", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }) + ` - ${selectedItem?.journey_time || "00:00"} น.`
                         : "-"}
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      เวลาออกตามแผน
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.journey_time || "00:00"} น.
-                    </div>
-                  </div>
+
                   <div>
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่คืนรถตามแผน
@@ -637,35 +642,32 @@ export default function ReturnsPage() {
                       {selectedItem?.return_date
                         ? new Date(selectedItem.return_date).toLocaleDateString(
                             "th-TH",
-                          )
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          ) + ` - ${selectedItem?.return_time || "00:00"} น.`
                         : "-"}
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      เวลาคืนรถตามแผน (PLANNED RETURN)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.return_time || "00:00"} น.
-                    </div>
-                  </div>
-                  <div className="col-span-2 border-t border-slate-100 my-4 pt-4"></div>
-                  <div className="col-span-2">
+
+                  <div className="border-t border-slate-100 pt-4">
                     <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
                       วันที่และเวลาคืนรถจริง (ACTUAL RETURN DATE & TIME) *
                     </label>
                     {modalMode === "view" ? (
-                      <div className="grid grid-cols-2 gap-8">
-                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                          {returnFormData.return_real_date
-                            ? new Date(
-                                returnFormData.return_real_date,
-                              ).toLocaleDateString("th-TH")
-                            : "-"}
-                        </div>
-                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                          {returnFormData.return_real_time || "-"} น.
-                        </div>
+                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
+                        {returnFormData.return_real_date
+                          ? new Date(
+                              returnFormData.return_real_date,
+                            ).toLocaleDateString("th-TH", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            }) +
+                            ` - ${returnFormData.return_real_time || "00:00"} น.`
+                          : "-"}
                       </div>
                     ) : (
                       <TimeInput24hr
