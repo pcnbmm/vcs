@@ -45,6 +45,7 @@ model vc_order_item {
   vc_status_use_code vc_status_use_code? @relation(fields: [status_use_id], references: [status_use_id])
   vc_user            vc_users?           @relation(fields: [userid], references: [userid])
   vc_use             vc_use[]
+  reject_reason      String?             
 }
 
 model vc_users {

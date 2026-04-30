@@ -233,6 +233,7 @@ export default function ApproverRequestsPage() {
           phone: b.user_mobile || "-",
           carType: b.vc_car_spec?.car_spec_name || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
+          rejectReason: b.reject_reason || null,
         };
       });
       setBookings(mapped);
@@ -275,7 +276,7 @@ export default function ApproverRequestsPage() {
     if (!isConfirmed) return;
     // We don't save reason in DB yet based on user request "no approve_id",
     // but we update status to 3.
-    const res = await updateRequestStatus(Number(id), 3);
+    const res = await updateRequestStatus(Number(id), 3, reason);
     if (res.success) {
       showSuccess("ปฏิเสธคำขอสำเร็จ");
       setSelectedBooking(null);
