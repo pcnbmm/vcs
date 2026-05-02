@@ -17,6 +17,9 @@ import {
   Eye,
   Edit2,
   Search,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Select from "react-select";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -32,6 +35,12 @@ export default function ReplacementPage() {
   const [masterReplacementCars, setMasterReplacementCars] = useState<any[]>([]);
   const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
   const [masterSearchTerm, setMasterSearchTerm] = useState("");
+
+  // Pagination & Search
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "view" | "edit">("add");
@@ -272,6 +281,34 @@ export default function ReplacementPage() {
     }
   };
 
+  const filteredReplacements = replacements.filter((r) => {
+    const isIdle = !r.car_id && !r.end_datetime;
+    const isActive = r.car_id && !r.end_datetime;
+    const isEnded = !!r.end_datetime;
+
+    if (filterStatus === "active" && !isActive) return false;
+    if (filterStatus === "idle" && !isIdle) return false;
+    if (filterStatus === "ended" && !isEnded) return false;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchBroken = (r.broken_car_id || "").toLowerCase().includes(q);
+      const matchNew = (r.car_number || "").toLowerCase().includes(q);
+      if (!matchBroken && !matchNew) return false;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredReplacements.length / itemsPerPage) || 1;
+  const currentReplacements = filteredReplacements.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) setCurrentPage(newPage);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Action Bar */}
@@ -300,6 +337,39 @@ export default function ReplacementPage() {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Search & Filters */}
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-md shadow-sm border border-gray-100">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="ค้นหา ทะเบียนรถที่ถูกทดแทน หรือ ทะเบียนรถทดแทน..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-400"
+          />
+        </div>
+        <div className="w-full md:w-56">
+          <select
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer appearance-none"
+            style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
+          >
+            <option value="all">สถานะทั้งหมด</option>
+            <option value="idle">รอการระบุรถที่ถูกทดแทน</option>
+            <option value="active">กำลังใช้งานทดแทน</option>
+            <option value="ended">คืนรถแล้ว</option>
+          </select>
+        </div>
       </div>
 
       {/* Data Table */}
@@ -338,17 +408,17 @@ export default function ReplacementPage() {
                     </p>
                   </td>
                 </tr>
-              ) : replacements.length === 0 ? (
+              ) : currentReplacements.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
                     className="py-12 text-center text-sm font-medium text-gray-500"
                   >
-                    ไม่พบประวัติการใช้รถทดแทน
+                    ไม่พบประวัติการใช้รถทดแทนที่ตรงกับเงื่อนไข
                   </td>
                 </tr>
               ) : (
-                replacements.map((r) => {
+                currentReplacements.map((r) => {
                   const isIdle = !r.car_id && !r.end_datetime; // Wait for assignment
                   const isActive = r.car_id && !r.end_datetime; // Actively replacing
                   const isEnded = r.end_datetime; // Finished
@@ -424,6 +494,76 @@ export default function ReplacementPage() {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination */}
+        {!isLoading && filteredReplacements.length > 0 && (
+          <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-sm font-medium text-gray-500">
+              แสดง {(currentPage - 1) * itemsPerPage + 1} -{" "}
+              {Math.min(currentPage * itemsPerPage, filteredReplacements.length)}{" "}
+              จาก {filteredReplacements.length} รายการ
+            </span>
+            <div className="flex items-center gap-4">
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer pr-8"
+                style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em' }}
+              >
+                <option value={10}>10 / หน้า</option>
+                <option value={20}>20 / หน้า</option>
+                <option value={50}>50 / หน้า</option>
+                <option value={100}>100 / หน้า</option>
+              </select>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (p) =>
+                      p === 1 ||
+                      p === totalPages ||
+                      Math.abs(p - currentPage) <= 1,
+                  )
+                  .map((page, index, array) => (
+                    <React.Fragment key={page}>
+                      {index > 0 && array[index - 1] !== page - 1 && (
+                        <span className="px-2 text-gray-400">...</span>
+                      )}
+                      <button
+                        onClick={() => handlePageChange(page)}
+                        className={`w-8 h-8 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${
+                          currentPage === page
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    </React.Fragment>
+                  ))}
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Modal Form */}
@@ -860,19 +1000,21 @@ export default function ReplacementPage() {
 
             <div className="flex-1 overflow-y-auto p-6">
               <div className="grid grid-cols-1 gap-3">
-                {masterReplacementCars.filter(car => 
-                  car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
-                  car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
-                ).length === 0 ? (
+                {masterReplacementCars.filter(car => {
+                  const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                  const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                  return numMatch || specMatch;
+                }).length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     ไม่พบข้อมูลรถทดแทนที่ค้นหา
                   </div>
                 ) : (
                   masterReplacementCars
-                    .filter(car => 
-                      car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
-                      car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
-                    )
+                    .filter(car => {
+                      const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                      const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                      return numMatch || specMatch;
+                    })
                     .map((car) => {
                     const activeReplacement = car.vc_replacement?.[0];
                     const isBusy = !!activeReplacement;
