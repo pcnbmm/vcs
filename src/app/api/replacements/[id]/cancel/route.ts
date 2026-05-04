@@ -60,7 +60,6 @@ export async function POST(
         where: { replacement_id: replacementId },
         data: {
           end_datetime: end_date.toISOString(),
-          end_date: end_date,
           upd_by: user,
           upd_date: now,
         },

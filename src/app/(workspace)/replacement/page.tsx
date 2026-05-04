@@ -51,6 +51,7 @@ export default function ReplacementPage() {
   const [isChecked, setIsChecked] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isReturning, setIsReturning] = useState(false); // To toggle cancel checkbox
+  const [carSearchInput, setCarSearchInput] = useState("");
 
   const [formData, setFormData] = useState({
     car_id: "",
@@ -66,6 +67,23 @@ export default function ReplacementPage() {
     cre_by: "",
     existing_car_id: "" as string | number,
   });
+
+  const availableCarOptions = React.useMemo(() => {
+    return availableCars.map((c) => ({
+      value: c.car_id.toString(),
+      label: c.car_number,
+    }));
+  }, [availableCars]);
+
+  const filteredCarOptions = React.useMemo(() => {
+    if (!carSearchInput) {
+      return availableCarOptions.slice(0, 50);
+    }
+    const lowerSearch = carSearchInput.toLowerCase();
+    return availableCarOptions
+      .filter((opt) => opt.label?.toLowerCase().includes(lowerSearch))
+      .slice(0, 50);
+  }, [availableCarOptions, carSearchInput]);
 
   useEffect(() => {
     fetchReplacements();
@@ -181,13 +199,13 @@ export default function ReplacementPage() {
   };
 
   const handleSelectMasterCar = (car: any) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       replacement_car_number: car.car_number,
       car_province_id: car.car_province_id?.toString() || "",
       car_spec_id: car.car_spec_id?.toString() || "",
       existing_car_id: car.car_id,
-    });
+    }));
     setIsChecked(true);
     setIsMasterModalOpen(false);
   };
@@ -234,13 +252,20 @@ export default function ReplacementPage() {
         }
       }
 
+      const payload = {
+        ...formData,
+        start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null,
+        end_date: formData.end_date ? new Date(formData.end_date).toISOString() : null,
+        broken_datetime: formData.broken_datetime ? new Date(formData.broken_datetime).toISOString() : null,
+      };
+
       if (modalMode === "add") {
         if (!formData.car_spec_id) return showWarning("กรุณาเลือกสเปครถ");
 
         const res = await fetch("/api/replacements", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error("Saving failed");
         showSuccess("บันทึกข้อมูลรถทดแทนใหม่เรียบร้อยแล้ว");
@@ -251,9 +276,12 @@ export default function ReplacementPage() {
           const res = await fetch(`/api/replacements/${selectedId}/cancel`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ end_date: formData.end_date }),
+            body: JSON.stringify({ end_date: payload.end_date }),
           });
-          if (!res.ok) throw new Error("Cancel failed");
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || errData.details || "Cancel failed");
+          }
           showSuccess("ยกเลิกการใช้รถทดแทนและคืนค่าทะเบียนเดิมเรียบร้อยแล้ว");
         } else {
           // Step 5: Fill details and link broken car
@@ -263,7 +291,7 @@ export default function ReplacementPage() {
           const res = await fetch(`/api/replacements/${selectedId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error("Updating failed");
           showSuccess("อัปเดตข้อมูลการทดแทนเรียบร้อยแล้ว");
@@ -457,12 +485,12 @@ export default function ReplacementPage() {
                       </td>
                       <td className="py-4 px-6 text-sm text-slate-600">
                         {r.start_date
-                          ? new Date(r.start_date).toLocaleDateString("th-TH")
+                          ? `${new Date(r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
                           : "-"}
                       </td>
                       <td className="py-4 px-6 text-sm text-slate-600">
                         {r.end_date
-                          ? new Date(r.end_date).toLocaleDateString("th-TH")
+                          ? `${new Date(r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
                           : "-"}
                       </td>
                       <td className="py-4 px-6 text-right">
@@ -744,20 +772,20 @@ export default function ReplacementPage() {
                         </label>
                         {modalMode === "edit" && !formData.broken_car_id ? (
                           <Select
-                            options={availableCars.map((c) => ({
-                              value: c.car_id.toString(),
-                              label: c.car_number,
-                            }))}
+                            options={filteredCarOptions}
+                            onInputChange={(inputValue, { action }) => {
+                              if (action === "input-change") {
+                                setCarSearchInput(inputValue);
+                              } else if (action === "menu-close") {
+                                setCarSearchInput("");
+                              }
+                            }}
+                            filterOption={() => true}
                             placeholder="-- ค้นหาและเลือกรถที่ต้องการนำมาแทนที่ --"
                             value={
-                              availableCars.find(
-                                (c) => c.car_id.toString() === formData.car_id,
-                              )
-                                ? {
-                                    value: formData.car_id,
-                                    label: availableCars.find((c) => c.car_id.toString() === formData.car_id)?.car_number,
-                                  }
-                                : null
+                              availableCarOptions.find(
+                                (option) => option.value === formData.car_id,
+                              ) || null
                             }
                             onChange={(selected: any) =>
                               setFormData({

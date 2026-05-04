@@ -23,6 +23,19 @@ export async function GET() {
         vc_rent_car: {
           some: {}, // Only fetch if they have a rental car record
         },
+        vc_car_type: {
+          car_type_name: {
+            in: ["รถเช่า NT", "รถเช่า NT1", "รถเช่า NT2"],
+          },
+        },
+        vc_car_status: {
+          car_status_name: {
+            contains: "ใช้งานอยู่",
+          },
+        },
+      },
+      orderBy: {
+        car_number: "asc",
       },
     });
 
