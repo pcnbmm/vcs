@@ -318,7 +318,7 @@ export default function VehicleRequestPage() {
     }
     return () => fp?.destroy(); // ต้องมีบรรทัดนี้เพื่อป้องกัน UI บั๊ก
   }, []);
-  
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="grid grid-cols-1 gap-8">
@@ -441,28 +441,28 @@ export default function VehicleRequestPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" /> Latitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lat || ""}
+                        value={formData.lat ? Number(formData.lat).toFixed(6) : ""}
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง..."
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
                         <NavIcon size={12} className="text-blue-500" />{" "}
                         Longitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lon || ""}
+                        value={formData.lat ? Number(formData.lat).toFixed(6) : ""}
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง..."
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                   </div>

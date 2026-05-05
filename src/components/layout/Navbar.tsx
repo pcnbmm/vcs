@@ -32,7 +32,7 @@ export default function Navbar() {
     .join(", ");
 
   const handleLogout = () => {
-    signOut({ callbackUrl: "/login" });
+    signOut({ callbackUrl: `${window.location.origin}/login` });
   };
 
   return (
