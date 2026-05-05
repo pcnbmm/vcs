@@ -17,8 +17,14 @@ import {
   X,
   Loader2,
   Save,
+  Download,
+  ChevronDown,
+  FileText,
+  FileSpreadsheet,
+  File as FileIcon,
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
 
 export default function DriverTab() {
   const { hasAccess } = usePermissions();
@@ -34,6 +40,7 @@ export default function DriverTab() {
   } | null>(null);
   const itemsPerPage = 8;
   const [searchQuery, setSearchQuery] = useState("");
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   // Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -236,6 +243,58 @@ export default function DriverTab() {
     }
   };
 
+  const handleExportMenu = (type: string) => {
+    setIsExportOpen(false);
+
+    try {
+      if (type === "excel") {
+        const columns = [
+          { header: "รหัสคนขับ", key: "driver_code", width: 15 },
+          { header: "ชื่อ", key: "firstname", width: 20 },
+          { header: "นามสกุล", key: "lastname", width: 20 },
+          { header: "เบอร์โทรศัพท์", key: "tel", width: 15 },
+          { header: "เลขที่ใบขับขี่", key: "licence_no", width: 20 },
+          { header: "สถานะ", key: "status", width: 15 },
+        ];
+
+        const data = filteredDrivers.map((driver) => ({
+          driver_code: driver.driver_code || "-",
+          firstname: driver.vc_users?.firstname || "-",
+          lastname: driver.vc_users?.lastname || "-",
+          tel: driver.tel || "-",
+          licence_no: driver.licence_no || "-",
+          status: driver.driver_status === "A" ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน",
+        }));
+
+        exportToExcel("drivers_export", "Drivers", columns, data)
+          .then(() => showSuccess("Export Excel สำเร็จ"))
+          .catch(() => showError("Export Error"));
+      } else if (type === "docx" || type === "pdf") {
+        const headers = ["รหัสคนขับ", "ชื่อ", "นามสกุล", "เบอร์โทรศัพท์", "เลขที่ใบขับขี่", "สถานะ"];
+        const data = filteredDrivers.map((driver) => [
+          driver.driver_code || "-",
+          driver.vc_users?.firstname || "-",
+          driver.vc_users?.lastname || "-",
+          driver.tel || "-",
+          driver.licence_no || "-",
+          driver.driver_status === "A" ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน",
+        ]);
+
+        if (type === "docx") {
+          exportToDocx("drivers_export", "ข้อมูลพนักงานขับรถ", headers, data)
+            .then(() => showSuccess("Export DOCX สำเร็จ"))
+            .catch(() => showError("Export Error"));
+        } else {
+          exportToPdf("รายงานข้อมูลพนักงานขับรถ", headers, data);
+          showSuccess("เปิดหน้าต่าง PDF แล้ว (กรุณาสั่ง Print หรือ Save as PDF)");
+        }
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      showError("เกิดข้อผิดพลาดในการ Export ข้อมูล");
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header & Search */}
@@ -250,15 +309,52 @@ export default function DriverTab() {
             className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-500 placeholder:font-medium"
           />
         </div>
-        {hasAccess("create") && (
+        <div className="flex items-center gap-2 w-full md:w-auto relative">
           <button
-            onClick={() => openModal("add")}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+            onClick={() => setIsExportOpen(!isExportOpen)}
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all whitespace-nowrap"
           >
-            <Plus className="w-5 h-5" />
-            เพิ่มข้อมูลคนขับ
+            <Download className="w-5 h-5" />
+            Export Data
+            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
           </button>
-        )}
+          
+          {isExportOpen && (
+            <div className="absolute top-full right-0 md:right-auto md:left-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+              <button
+                onClick={() => handleExportMenu("excel")}
+                className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-3 transition-colors"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                Export เป็น Excel
+              </button>
+              <button
+                onClick={() => handleExportMenu("pdf")}
+                className="w-full text-left px-4 py-2.5 hover:bg-rose-50 text-sm font-bold text-gray-700 hover:text-rose-700 flex items-center gap-3 transition-colors"
+              >
+                <FileIcon className="w-4 h-4 text-rose-600" />
+                Export เป็น PDF
+              </button>
+              <button
+                onClick={() => handleExportMenu("docx")}
+                className="w-full text-left px-4 py-2.5 hover:bg-blue-50 text-sm font-bold text-gray-700 hover:text-blue-700 flex items-center gap-3 transition-colors"
+              >
+                <FileText className="w-4 h-4 text-blue-600" />
+                Export เป็น Word
+              </button>
+            </div>
+          )}
+
+          {hasAccess("create") && (
+            <button
+              onClick={() => openModal("add")}
+              className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
+            >
+              <Plus className="w-5 h-5" />
+              เพิ่มข้อมูลคนขับ
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}

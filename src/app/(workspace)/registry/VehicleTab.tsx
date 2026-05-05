@@ -23,8 +23,13 @@ import {
   CarFront,
   ChevronLeft,
   ChevronRight,
+  Download,
+  FileText,
+  FileSpreadsheet,
+  File as FileIcon,
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
 
 export default function VehicleTab() {
   const { hasAccess } = usePermissions();
@@ -51,6 +56,7 @@ export default function VehicleTab() {
   const [filterBrand, setFilterBrand] = useState("");
 
   const [isAdvancedFilterOpen, setIsAdvancedFilterOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   const [pendingFilters, setPendingFilters] = useState({
     status: "",
@@ -351,11 +357,87 @@ export default function VehicleTab() {
       return;
     try {
       const res = await fetch(`/api/vehicles/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Deletion failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        if (errorData?.message) {
+          showWarning(errorData.message);
+          return;
+        }
+        throw new Error("Deletion failed");
+      }
+      showSuccess("ลบข้อมูลรถยนต์สำเร็จ");
       await fetchData();
     } catch (error) {
       console.error("Error deleting vehicle:", error);
       showError("เกิดข้อผิดพลาดในการลบข้อมูล");
+    }
+  };
+
+  const handleExportMenu = (type: string) => {
+    setIsExportOpen(false);
+    
+    try {
+      if (type === "excel") {
+        const columns = [
+          { header: "ทะเบียนรถ", key: "car_number", width: 15 },
+          { header: "จังหวัด", key: "province_name", width: 20 },
+          { header: "สถานะ", key: "car_status_name", width: 15 },
+          { header: "ยี่ห้อ", key: "car_brand_name", width: 20 },
+          { header: "รุ่น", key: "car_series_name", width: 20 },
+          { header: "สเปค", key: "car_spec_name", width: 25 },
+          { header: "หน่วยงาน", key: "own_div_name", width: 30 },
+        ];
+
+        const data = filteredVehicles.map((vehicle) => {
+          let orgName = vehicle.own_div_code;
+          if (options?.orgs) {
+            const org = options.orgs.find((o: any) => String(o.orgid) === String(vehicle.own_div_code));
+            if (org) orgName = org.orgname;
+          }
+          return {
+            car_number: vehicle.car_number || "-",
+            province_name: vehicle.province_name || "-",
+            car_status_name: vehicle.car_status_name || "-",
+            car_brand_name: vehicle.car_brand_name || "-",
+            car_series_name: vehicle.car_series_name || "-",
+            car_spec_name: vehicle.car_spec_name || "-",
+            own_div_name: orgName || "-",
+          };
+        });
+
+        exportToExcel("vehicles_export", "Vehicles", columns, data)
+          .then(() => showSuccess("Export Excel สำเร็จ"))
+          .catch(() => showError("Export Error"));
+      } else if (type === "docx" || type === "pdf") {
+        const headers = ["ทะเบียนรถ", "จังหวัด", "สถานะ", "ยี่ห้อ", "รุ่น", "หน่วยงาน"];
+        const data = filteredVehicles.map((vehicle) => {
+          let orgName = vehicle.own_div_code;
+          if (options?.orgs) {
+            const org = options.orgs.find((o: any) => String(o.orgid) === String(vehicle.own_div_code));
+            if (org) orgName = org.orgname;
+          }
+          return [
+            vehicle.car_number || "-",
+            vehicle.province_name || "-",
+            vehicle.car_status_name || "-",
+            vehicle.car_brand_name || "-",
+            vehicle.car_series_name || "-",
+            orgName || "-"
+          ];
+        });
+
+        if (type === "docx") {
+          exportToDocx("vehicles_export", "ข้อมูลรถยนต์", headers, data)
+            .then(() => showSuccess("Export DOCX สำเร็จ"))
+            .catch(() => showError("Export Error"));
+        } else {
+          exportToPdf("รายงานข้อมูลรถยนต์", headers, data);
+          showSuccess("เปิดหน้าต่าง PDF แล้ว (กรุณาสั่ง Print หรือ Save as PDF)");
+        }
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      showError("เกิดข้อผิดพลาดในการ Export ข้อมูล");
     }
   };
 
@@ -473,15 +555,52 @@ export default function VehicleTab() {
             )}
           </div>
         </div>
-        {hasAccess("create") && (
+        <div className="flex items-center gap-2 w-full md:w-auto relative">
           <button
-            onClick={() => openModal("add")}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
+            onClick={() => setIsExportOpen(!isExportOpen)}
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all whitespace-nowrap"
           >
-            <Plus className="w-5 h-5" />
-            เพิ่มข้อมูลรถยนต์
+            <Download className="w-5 h-5" />
+            Export Data
+            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
           </button>
-        )}
+          
+          {isExportOpen && (
+            <div className="absolute top-full right-0 md:right-auto md:left-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+              <button
+                onClick={() => handleExportMenu("excel")}
+                className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-3 transition-colors"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                Export เป็น Excel
+              </button>
+              <button
+                onClick={() => handleExportMenu("pdf")}
+                className="w-full text-left px-4 py-2.5 hover:bg-rose-50 text-sm font-bold text-gray-700 hover:text-rose-700 flex items-center gap-3 transition-colors"
+              >
+                <FileIcon className="w-4 h-4 text-rose-600" />
+                Export เป็น PDF
+              </button>
+              <button
+                onClick={() => handleExportMenu("docx")}
+                className="w-full text-left px-4 py-2.5 hover:bg-blue-50 text-sm font-bold text-gray-700 hover:text-blue-700 flex items-center gap-3 transition-colors"
+              >
+                <FileText className="w-4 h-4 text-blue-600" />
+                Export เป็น Word
+              </button>
+            </div>
+          )}
+
+          {hasAccess("create") && (
+            <button
+              onClick={() => openModal("add")}
+              className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
+            >
+              <Plus className="w-5 h-5" />
+              เพิ่มข้อมูลรถยนต์
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}

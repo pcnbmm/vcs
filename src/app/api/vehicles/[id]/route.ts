@@ -84,9 +84,30 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
-    const id = resolvedParams.id;
+    const id = parseInt(resolvedParams.id);
+
+    // ตรวจสอบการใช้งานของรถในตารางต่างๆ
+    const [ordersCount, replacementsCount, fuelCount, useCount] = await Promise.all([
+      prisma.vc_order_item.count({ where: { car_id: id } }),
+      prisma.vc_replacement.count({ where: { car_id: id } }),
+      prisma.vc_fuel_item.count({ where: { car_id: id } }),
+      prisma.vc_use.count({ where: { car_id: id } })
+    ]);
+
+    const isUsed = ordersCount > 0 || replacementsCount > 0 || fuelCount > 0 || useCount > 0;
+
+    if (isUsed) {
+      return NextResponse.json(
+        { 
+          error: "CAR_IN_USE", 
+          message: "ไม่สามารถลบรถที่เคยถูกนำไปใช้งานแล้วได้ (มีประวัติการจอง, การใช้งาน, หรือเติมน้ำมัน) แนะนำให้เปลี่ยนสถานะรถแทนการลบข้อมูล" 
+        },
+        { status: 400 }
+      );
+    }
+
     await prisma.vc_car_master.delete({
-      where: { car_id: parseInt(id) },
+      where: { car_id: id },
     });
     return NextResponse.json({ success: true });
   } catch (error) {
