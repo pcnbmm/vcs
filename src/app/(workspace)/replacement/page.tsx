@@ -81,7 +81,7 @@ export default function ReplacementPage() {
     }
     const lowerSearch = carSearchInput.toLowerCase();
     return availableCarOptions
-      .filter((opt) => opt.label?.toLowerCase().includes(lowerSearch))
+      .filter((opt) => (opt.label || "").toLowerCase().includes(lowerSearch))
       .slice(0, 50);
   }, [availableCarOptions, carSearchInput]);
 

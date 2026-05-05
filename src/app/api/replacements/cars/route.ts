@@ -20,9 +20,7 @@ export async function GET() {
     const availableCars = await prisma.vc_car_master.findMany({
       where: {
         car_id: { notIn: replacedCarIds as number[] },
-        vc_rent_car: {
-          some: {}, // Only fetch if they have a rental car record
-        },
+
         vc_car_type: {
           car_type_name: {
             in: ["รถเช่า NT", "รถเช่า NT1", "รถเช่า NT2"],
