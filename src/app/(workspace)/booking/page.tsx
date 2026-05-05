@@ -147,6 +147,11 @@ export default function VehicleRequestPage() {
       return;
     }
 
+    if (!formData.passengers || Number(formData.passengers) < 1) {
+      showWarning("จำนวนผู้เดินทางต้องมีอย่างน้อย 1 คน");
+      return;
+    }
+
     const now = new Date();
     const startDT = new Date(
       `${formData.startDate}T${formData.startTime}:00+07:00`,
@@ -446,7 +451,9 @@ export default function VehicleRequestPage() {
                       </label>
                       <input
                         type="text"
-                        value={formData.lat ? Number(formData.lat).toFixed(6) : ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
                         placeholder="รอเลือกปลายทาง..."
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
@@ -459,7 +466,9 @@ export default function VehicleRequestPage() {
                       </label>
                       <input
                         type="text"
-                        value={formData.lat ? Number(formData.lat).toFixed(6) : ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
                         placeholder="รอเลือกปลายทาง..."
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
