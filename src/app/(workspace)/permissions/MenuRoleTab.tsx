@@ -343,11 +343,10 @@ export default function MenuRoleTab() {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
-                      currentPage === page
+                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
                         ? "bg-rose-600 text-white shadow-md"
                         : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {page}
                   </button>
@@ -442,11 +441,10 @@ export default function MenuRoleTab() {
                           className="px-5 py-4 bg-white border-b border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-rose-50/30 transition-colors group"
                         >
                           <div
-                            className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
-                              hasMenuAccess
+                            className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${hasMenuAccess
                                 ? "bg-rose-500 text-white"
                                 : "border border-gray-300 group-hover:border-rose-400"
-                            }`}
+                              }`}
                           >
                             {hasMenuAccess && (
                               <svg
@@ -488,18 +486,16 @@ export default function MenuRoleTab() {
                                 onClick={() =>
                                   toggleMapping(menu.menu_id, func.function_id)
                                 }
-                                className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${
-                                  hasFuncAccess
+                                className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${hasFuncAccess
                                     ? "border-gray-800 shadow-sm"
                                     : "border-gray-100 hover:border-gray-300"
-                                }`}
+                                  }`}
                               >
                                 <div
-                                  className={`w-4 h-4 rounded transition-colors flex items-center justify-center ${
-                                    hasFuncAccess
+                                  className={`w-4 h-4 rounded transition-colors flex items-center justify-center ${hasFuncAccess
                                       ? "bg-gray-800 text-white"
                                       : "border border-gray-300 group-hover:border-gray-500"
-                                  }`}
+                                    }`}
                                 >
                                   {hasFuncAccess && (
                                     <svg

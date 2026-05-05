@@ -234,6 +234,17 @@ export default function DriverTab() {
 
       if (!res.ok) throw new Error("Saving failed");
 
+      if (formData.end_date) {
+        await fetch("/api/drivers/notify-expiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            driver_code: formData.driver_code,
+            end_date: formData.end_date,
+          }),
+        });
+      }
+
       await fetchData();
       closeModal();
     } catch (error) {
