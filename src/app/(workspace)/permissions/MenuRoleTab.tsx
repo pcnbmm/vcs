@@ -165,6 +165,12 @@ export default function MenuRoleTab() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.roles_id) return showWarning("กรุณาเลือกบทบาท");
+    const isExistingRole = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
+    const isEditing = !!groupedMenuRoles.find(m => String(m.roles_id) === formData.roles_id) && formData.mappings.length > 0;
+    // ถ้าไม่ใช่การกด Edit จากแถวเดิม แต่ Role ดันซ้ำ ให้เตือน
+    if (isExistingRole && !isModalOpenWithData) { // คุณอาจต้องสร้าง state เพิ่มเพื่อเช็คว่ามาจากปุ่ม Edit หรือปุ่ม Add
+      return showWarning("บทบาทนี้มีการกำหนดสิทธิ์ไว้แล้ว โปรดแก้ไขจากรายการเดิม");
+    }
 
     setIsSaving(true);
     try {
@@ -204,6 +210,16 @@ export default function MenuRoleTab() {
       showError("เกิดข้อผิดพลาดในการลบข้อมูล");
     }
   };
+
+  const assignedRoleIds = groupedMenuRoles.map((mr) => String(mr.roles_id));
+  // สร้างตัวแปรเช็ค Mode
+  const isEditMode = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
+
+  // ในส่วน Header ของ Modal
+  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
+    <div className={`w-1.5 h-8 ${isEditMode ? 'bg-amber-500' : 'bg-rose-500'} rounded-full`}></div>
+    {isEditMode ? "แก้ไขสิทธิ์การเข้าถึงเมนู" : "กำหนดสิทธิ์การเข้าถึงเมนูใหม่"}
+  </h2>
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -344,8 +360,8 @@ export default function MenuRoleTab() {
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
-                        ? "bg-rose-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-rose-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
                       }`}
                   >
                     {page}
@@ -398,19 +414,25 @@ export default function MenuRoleTab() {
                   onChange={(e) =>
                     setFormData({ ...formData, roles_id: e.target.value })
                   }
-                  disabled={
-                    !!groupedMenuRoles.find(
-                      (m) => String(m.roles_id) === formData.roles_id,
-                    ) && formData.mappings.length > 0
-                  } // Disable if editing existing
+                  disabled={!!formData.mappings.length && assignedRoleIds.includes(formData.roles_id)}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <option value="">-- ค้นหาและเลือกบทบาท --</option>
-                  {roles.map((r) => (
-                    <option key={r.roles_id} value={r.roles_id}>
-                      {r.roles_name}
-                    </option>
-                  ))}
+                  {roles.map((r) => {
+                    const isAssigned = assignedRoleIds.includes(String(r.roles_id));
+                    const isCurrentEditing = formData.roles_id === String(r.roles_id);
+
+                    return (
+                      <option
+                        key={r.roles_id}
+                        value={r.roles_id}
+                        // ถ้าถูกใช้ไปแล้ว และไม่ใช่ตัวที่เรากำลังกด Edit ให้ disable ไว้
+                        disabled={isAssigned && !isCurrentEditing}
+                      >
+                        {r.roles_name} {isAssigned && !isCurrentEditing ? "(กำหนดสิทธิ์แล้ว)" : ""}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 
@@ -442,8 +464,8 @@ export default function MenuRoleTab() {
                         >
                           <div
                             className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${hasMenuAccess
-                                ? "bg-rose-500 text-white"
-                                : "border border-gray-300 group-hover:border-rose-400"
+                              ? "bg-rose-500 text-white"
+                              : "border border-gray-300 group-hover:border-rose-400"
                               }`}
                           >
                             {hasMenuAccess && (
@@ -487,14 +509,14 @@ export default function MenuRoleTab() {
                                   toggleMapping(menu.menu_id, func.function_id)
                                 }
                                 className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${hasFuncAccess
-                                    ? "border-gray-800 shadow-sm"
-                                    : "border-gray-100 hover:border-gray-300"
+                                  ? "border-gray-800 shadow-sm"
+                                  : "border-gray-100 hover:border-gray-300"
                                   }`}
                               >
                                 <div
                                   className={`w-4 h-4 rounded transition-colors flex items-center justify-center ${hasFuncAccess
-                                      ? "bg-gray-800 text-white"
-                                      : "border border-gray-300 group-hover:border-gray-500"
+                                    ? "bg-gray-800 text-white"
+                                    : "border border-gray-300 group-hover:border-gray-500"
                                     }`}
                                 >
                                   {hasFuncAccess && (
