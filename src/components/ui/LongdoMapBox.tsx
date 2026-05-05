@@ -40,7 +40,12 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
   }, [onLocationSelect]);
 
   useEffect(() => {
-    if (mapRef.current || !containerRef.current) return;
+    setSelectedPos(null);
+    setSearchTerm("");
+    markerRef.current = null;
+    mapRef.current = null;
+
+    if (!containerRef.current) return;
 
     if (!document.getElementById("longdo-map-script")) {
       const script = document.createElement("script");
@@ -55,8 +60,18 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
 
     return () => {
       if (mapRef.current) {
+        const { map } = mapRef.current;
+        if (markerRef.current) {
+          map.Overlays.remove(markerRef.current);
+          markerRef.current = null;
+        }
+        map.Overlays.clear();
+        map.location({ lon: 100.4679613, lat: 13.7245447 }, true);
+        map.zoom(12, true); // 👈 reset zoom
         mapRef.current = null;
       }
+      setSelectedPos(null);
+      setSearchTerm("");
     };
   }, []);
 

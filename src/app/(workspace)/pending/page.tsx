@@ -114,19 +114,29 @@ export default function PendingPage() {
     currentPage * itemsPerPage,
   );
   const tabs = [
-    { id: "ALL", label: "ทั้งหมด", icon: RefreshCw },
-    { id: "PENDING", label: "รออนุมัติ", icon: Clock, color: "amber" },
+    {
+      id: "ALL",
+      label: "ทั้งหมด",
+      icon: RefreshCw,
+      iconColor: "text-gray-500",
+    },
+    {
+      id: "PENDING",
+      label: "รออนุมัติ",
+      icon: Clock,
+      iconColor: "text-amber-500",
+    },
     {
       id: "APPROVED",
       label: "อนุมัติแล้ว",
       icon: CheckCircle2,
-      color: "emerald",
+      iconColor: "text-emerald-500",
     },
     {
       id: "REJECTED",
       label: "ยกเลิก/ไม่อนุมัติ/หมดเวลาอนุมัติ",
       icon: XCircle,
-      color: "rose",
+      iconColor: "text-rose-500",
     },
   ];
   useEffect(() => {
@@ -145,16 +155,18 @@ export default function PendingPage() {
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
               className={`
-                                flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shrink-0
-                                ${
-                                  isActive
-                                    ? "bg-white text-blue-600 shadow-md scale-[1.02]"
-                                    : "text-gray-400 hover:text-gray-600 hover:bg-white/50"
-                                }
-                            `}
+  flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shrink-0 cursor-pointer
+  ${
+    isActive
+      ? "bg-white shadow-md scale-[1.02] ring-1 ring-blue-100"
+      : "hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200"
+  }
+`}
             >
-              <Icon size={16} />
-              {tab.label}
+              <Icon size={16} className={tab.iconColor} />
+              <span className={isActive ? "text-gray-800" : "text-gray-500"}>
+                {tab.label}
+              </span>
               {isActive && (
                 <span className="ml-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px]">
                   {filteredRequests.length}
