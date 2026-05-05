@@ -128,6 +128,7 @@ export default function VehicleRequestPage() {
 
   const handleSave = async () => {
     if (
+      !formData.vehicleType ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
@@ -142,8 +143,8 @@ export default function VehicleRequestPage() {
       return;
     }
 
-    if (!/^\d{10}$/.test(formData.phone)) {
-      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+    if (!/^\d{9,10}$/.test(formData.phone)) {
+      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 9-10 หลัก");
       return;
     }
 
@@ -440,7 +441,7 @@ export default function VehicleRequestPage() {
                           lon: loc.lon,
                         }));
                       }}
-                      placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
+                      placeholder="ค้นหาสถานที่ แล้วคลิกจุดหมายบนแผนที่เพื่อปักหมุด"
                     />
                   </FormField>
 
@@ -563,6 +564,12 @@ export default function VehicleRequestPage() {
                           menuPosition="fixed"
                           noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
                         />
+                        {!formData.driverId && (
+                          <p className="text-xs text-red-500 font-medium mt-1">
+                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
+                            กรุณาติดต่อ Admin
+                          </p>
+                        )}
                       </FormField>
                     </div>
                   )}
