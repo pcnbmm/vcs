@@ -89,12 +89,22 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
     map.Ui.DPad.visible(false);
     map.Ui.Zoombar.visible(false);
     map.Ui.Geolocation.visible(false);
+    map.Ui.Crosshair.visible(false);
     if (map.Ui.Scale) map.Ui.Scale.visible(false);
 
-    map.Event.bind("click", async () => {
-      const location = map.location();
-      const lat = location.lat;
-      const lon = location.lon;
+    map.Event.bind("click", async (result: any) => {
+      const savedResult = { x: result.x, y: result.y };
+
+      map.resize();
+      await new Promise((r) => setTimeout(r, 200));
+
+      const location = map.location(savedResult);
+      const lat = location?.lat;
+      const lon = location?.lon;
+
+      console.log("savedResult:", savedResult, "location:", location);
+
+      if (lat == null || lon == null) return;
 
       try {
         const res = await fetch(
@@ -115,7 +125,6 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
         updatePin(map, longdo, lat, lon, "ตำแหน่งที่เลือก");
       }
     });
-
     mapRef.current = { map, longdo };
   };
 
@@ -164,13 +173,14 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
         const first = data[0];
         const lat = parseFloat(first.lat);
         const lon = parseFloat(first.lon);
-        const { map, longdo } = mapRef.current;
+        const { map } = mapRef.current;
+
         map.zoom(16, true);
-        const nameToUse = first.w || first.name || keyword;
-        updatePin(map, longdo, lat, lon, nameToUse);
-        setSearchTerm(nameToUse);
+        map.location({ lon, lat }, true);
+
+        setSearchTerm(keyword);
       } else {
-        alert("ไม่พบสถานที่นี้ครับ");
+        alert("ไม่พบสถานที่");
       }
     } catch (err) {
       console.error(err);
@@ -271,6 +281,7 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
       <div
         className="relative w-full rounded-[2rem] overflow-hidden border border-gray-200 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.05)] bg-slate-50 group block hover:border-blue-300 transition-colors duration-500"
         style={{ height: "450px" }}
+        onWheel={(e) => e.stopPropagation()}
       >
         {/* Loading Overlay */}
         {!mapRef.current && (
@@ -288,16 +299,22 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
 
         <div
           ref={containerRef}
-          className="absolute inset-0 z-10 touch-none outline-none"
+          className="absolute inset-0 z-10 outline-none"
+          onMouseEnter={() => {
+            if (containerRef.current)
+              containerRef.current.style.pointerEvents = "auto";
+          }}
         />
 
         {/* Floating Instruction */}
-        <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border border-white z-[1000] flex items-center gap-2 pointer-events-none transition-opacity duration-300">
-          <Navigation size={16} className="text-blue-600 animate-bounce" />
-          <span className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide text-center">
-            คลิกจุดหมายบนแผนที่เพื่อปักหมุด
-          </span>
-        </div>
+        {!selectedPos && (
+          <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border border-white z-[1000] flex items-center gap-2 pointer-events-none">
+            <Navigation size={16} className="text-blue-600 animate-bounce" />
+            <span className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide text-center">
+              คลิกจุดหมายบนแผนที่เพื่อปักหมุด
+            </span>
+          </div>
+        )}
 
         {/* Floating Selected Info */}
         {selectedPos && (

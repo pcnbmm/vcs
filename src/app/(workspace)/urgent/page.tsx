@@ -7,16 +7,15 @@ import {
 } from "@/lib/sweetalert";
 import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import { useState, useEffect } from "react";
-import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
+import MapBox from "@/components/ui/LongdoMapBox";
 import { getMyOrgs, getOrgsByUserId } from "@/app/actions/orgActions";
 import {
   getUrgentRequesters,
   createUrgentBooking,
 } from "@/app/actions/urgentBookingActions";
 import { useRouter } from "next/navigation";
-import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
 import Select from "react-select";
 import flatpickr from "flatpickr";
@@ -139,6 +138,7 @@ export default function VehicleRequestPage() {
 
   const handleSave = async () => {
     if (
+      !formData.vehicleType ||
       !formData.requesterId ||
       !formData.destination ||
       !formData.startDate ||
@@ -149,13 +149,17 @@ export default function VehicleRequestPage() {
       (formData.selfDrive && !formData.driverId)
     ) {
       showWarning(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ผู้ขอใช้รถ, จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
       );
       return;
     }
 
-    if (!/^\d{10}$/.test(formData.phone)) {
-      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+    if (!/^\d{9,10}$/.test(formData.phone)) {
+      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 9-10 หลัก");
+      return;
+    }
+    if (!formData.passengers || Number(formData.passengers) < 1) {
+      showWarning("จำนวนผู้เดินทางต้องมีอย่างน้อย 1 คน");
       return;
     }
 
@@ -252,11 +256,15 @@ export default function VehicleRequestPage() {
   };
 
   useEffect(() => {
-    const fetchStartPlaces = async () => {
-      const result = await getStartPlaces();
-      if (result.success) setStartPlaces(result.data);
+    const fetchData = async () => {
+      const [startRes, driverRes] = await Promise.all([
+        getStartPlaces(),
+        getDrivers(),
+      ]);
+      if (startRes.success) setStartPlaces(startRes.data);
+      if (driverRes.success) setDrivers(driverRes.data);
     };
-    fetchStartPlaces();
+    fetchData();
   }, []);
   useEffect(() => {
     const fetchSpecs = async () => {
@@ -320,6 +328,7 @@ export default function VehicleRequestPage() {
     }
     return () => fp?.destroy(); // ต้องมีบรรทัดนี้เพื่อป้องกัน UI บั๊ก
   }, []);
+
   useEffect(() => {
     const fetchRequesters = async () => {
       const result = await getUrgentRequesters();
@@ -327,6 +336,19 @@ export default function VehicleRequestPage() {
     };
     fetchRequesters();
   }, []);
+
+  useEffect(() => {
+    if (!formData.origin) {
+      handleInputChange("province", "");
+      return;
+    }
+    const selected = startPlaces.find(
+      (sp) => sp.start_place_name === formData.origin,
+    );
+    if (selected?.province_id) {
+      handleInputChange("province", selected.province_id);
+    }
+  }, [formData.origin, startPlaces]);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500 pb-10">
@@ -506,10 +528,9 @@ export default function VehicleRequestPage() {
                 {/* Row 3 - Destination & Map (Full Width) */}
                 <div className="md:col-span-2 space-y-4">
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
-                    <LongdoMapBox
+                    <MapBox
                       key={mapKey}
                       onLocationSelect={(loc: any) => {
-                        // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
                         setFormData((prev) => ({
                           ...prev,
                           destination: loc.name,
@@ -517,36 +538,39 @@ export default function VehicleRequestPage() {
                           lon: loc.lon,
                         }));
                       }}
-                      placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
+                      placeholder="ค้นหาสถานที่ แล้วคลิกจุดหมายบนแผนที่เพื่อปักหมุด"
                     />
                   </FormField>
 
                   {/* Lat/Long Display Fields */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />
-                        Latitude
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                        <NavIcon size={12} className="text-blue-500" /> Latitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lat || ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                        <NavIcon size={12} className="text-blue-500" />{" "}
                         Longitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lon || ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -588,7 +612,7 @@ export default function VehicleRequestPage() {
 
                 {/* Self Drive Checkbox + Driver Combobox */}
                 <div className="md:col-span-2 space-y-3 relative">
-                  <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                     <input
                       type="checkbox"
                       checked={formData.selfDrive}
@@ -596,12 +620,11 @@ export default function VehicleRequestPage() {
                         handleInputChange("selfDrive", e.target.checked);
                         handleInputChange("driverId", 0);
                       }}
-                      className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                      className="w-5 h-5 cursor-pointer"
                     />
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-emerald-900">
-                        ขอขับเอง (Self Drive)
+                      <span className="w-full text-sm font-bold text-black">
+                        ขับรถด้วยตนเอง
                       </span>
                     </div>
                   </label>
@@ -705,7 +728,7 @@ export default function VehicleRequestPage() {
                         .slice(0, 10);
                       handleInputChange("phone", val);
                     }}
-                    placeholder="0x-xxxx-xxxx"
+                    placeholder="0xxxxxxxxx"
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                   />
                 </FormField>
