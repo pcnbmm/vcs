@@ -14,6 +14,7 @@ import {
   XCircle,
   AlertCircle,
   Loader2,
+  Search,
 } from "lucide-react";
 
 export default function PendingPage() {
@@ -24,7 +25,7 @@ export default function PendingPage() {
 
   // 2. State สำหรับการค้นหา และ Modal
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
-
+  const [searchQuery, setSearchQuery] = useState("");
   // 3. ฟังก์ชันดึงข้อมูลจาก API (Database)
   useEffect(() => {
     const fetchRequests = async () => {
@@ -106,7 +107,15 @@ export default function PendingPage() {
           req.status === "6" ||
           (req.status === "1" && expired)));
 
-    return matchesStatus;
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      q === "" ||
+      req.id.includes(q) ||
+      req.requester.toLowerCase().includes(q) ||
+      req.date.toLowerCase().includes(q) ||
+      req.time.includes(q);
+
+    return matchesStatus && matchesSearch;
   });
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
   const paginatedRequests = filteredRequests.slice(
@@ -145,6 +154,31 @@ export default function PendingPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="ค้นหาเลขที่คำขอ, ชื่อผู้ขอ, วันเดินทาง"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all shadow-sm"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => {
+              setSearchQuery("");
+              setCurrentPage(1);
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <XCircle className="w-4 h-4" />
+          </button>
+        )}
+      </div>
       {/* Status Tabs */}
       <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-2xl overflow-x-auto no-scrollbar border border-gray-100">
         {tabs.map((tab) => {
@@ -198,7 +232,7 @@ export default function PendingPage() {
           <div className="bg-white p-20 rounded-md text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
             <AlertCircle size={48} className="text-gray-200" />
             <p className="font-semibold text-xl text-gray-400 uppercase tracking-widest">
-              ไม่พบรายการคำขอในหมวดนี้
+              ไม่พบรายการคำขอ
             </p>
           </div>
         ) : (
