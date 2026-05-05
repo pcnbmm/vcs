@@ -139,6 +139,7 @@ export default function VehicleRequestPage() {
 
   const handleSave = async () => {
     if (
+      !formData.requesterId ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
@@ -148,7 +149,7 @@ export default function VehicleRequestPage() {
       (formData.selfDrive && !formData.driverId)
     ) {
       showWarning(
-        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์, ชื่อผู้ขับ)",
+        "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ผู้ขอใช้รถ, จุดหมาย, วันที่/เวลาเริ่ม, วันที่/เวลากลับ, วัตถุประสงค์)",
       );
       return;
     }
@@ -401,6 +402,12 @@ export default function VehicleRequestPage() {
                       menuPosition="fixed"
                       noOptionsMessage={() => "ไม่พบพนักงานที่ค้นหา"}
                     />
+                    {/* driverId — pattern เดิมที่มีอยู่แล้ว */}
+                    {!formData.requesterId && (
+                      <p className="text-xs text-red-500 font-medium mt-1">
+                        * กรุณาเลือกพนักงานผู้ขอใช้รถ
+                      </p>
+                    )}
                   </FormField>
                 </div>
               </div>

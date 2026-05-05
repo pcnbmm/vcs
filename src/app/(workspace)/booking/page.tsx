@@ -455,7 +455,7 @@ export default function VehicleRequestPage() {
                           formData.lat ? Number(formData.lat).toFixed(6) : ""
                         }
                         readOnly
-                        placeholder="รอเลือกปลายทาง..."
+                        placeholder="รอเลือกปลายทาง"
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
@@ -470,7 +470,7 @@ export default function VehicleRequestPage() {
                           formData.lat ? Number(formData.lat).toFixed(6) : ""
                         }
                         readOnly
-                        placeholder="รอเลือกปลายทาง..."
+                        placeholder="รอเลือกปลายทาง"
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
