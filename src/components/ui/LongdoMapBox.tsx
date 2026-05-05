@@ -66,8 +66,8 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
           markerRef.current = null;
         }
         map.Overlays.clear();
-        map.location({ lon: 100.4679613, lat: 13.7245447 }, true);
-        map.zoom(12, true); // 👈 reset zoom
+        map.location({ lon: 100.4679613, lat: 13.7245447 }, false); // ✅ false = ไม่มี animation
+        map.zoom(12, false); // ✅ false = ไม่มี animation
         mapRef.current = null;
       }
       setSelectedPos(null);
