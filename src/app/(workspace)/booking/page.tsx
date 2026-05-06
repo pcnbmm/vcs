@@ -111,7 +111,6 @@ export default function VehicleRequestPage() {
     phone: "",
     selfDrive: false,
     driverId: 0,
-    isUrgent: false,
   });
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -193,7 +192,6 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
       dataToSubmit.append("self_drive", formData.selfDrive ? "true" : "false");
-      dataToSubmit.append("is_urgent", formData.isUrgent ? "true" : "false");
       if (formData.selfDrive && formData.driverId) {
         dataToSubmit.append("driver_id", formData.driverId.toString());
       }
@@ -232,7 +230,6 @@ export default function VehicleRequestPage() {
       phone: "",
       selfDrive: false,
       driverId: 0,
-      isUrgent: false,
     });
     if (startDateRef.current) (startDateRef.current as any)._flatpickr?.clear();
     if (endDateRef.current) (endDateRef.current as any)._flatpickr?.clear();
@@ -346,12 +343,12 @@ export default function VehicleRequestPage() {
                     value={
                       formData.ownerDept
                         ? {
-                            value: String(formData.ownerDept),
-                            label: orgs.find(
-                              (o) =>
-                                String(o.orgid) === String(formData.ownerDept),
-                            )?.orgname,
-                          }
+                          value: String(formData.ownerDept),
+                          label: orgs.find(
+                            (o) =>
+                              String(o.orgid) === String(formData.ownerDept),
+                          )?.orgname,
+                        }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -377,13 +374,12 @@ export default function VehicleRequestPage() {
                     value={
                       formData.vehicleType && carSpecs.length > 0
                         ? {
-                            value: String(formData.vehicleType),
-                            label: carSpecs.find(
-                              (c) =>
-                                String(c.car_spec_id) ===
-                                String(formData.vehicleType),
-                            )?.car_spec_name,
-                          }
+                          value: String(formData.vehicleType),
+                          label: carSpecs.find(
+                            (c) =>
+                              String(c.car_spec_id) === String(formData.vehicleType),
+                          )?.car_spec_name,
+                        }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -535,10 +531,10 @@ export default function VehicleRequestPage() {
                           value={
                             formData.driverId
                               ? {
-                                  value: formData.driverId,
-                                  label:
-                                    `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
-                                }
+                                value: formData.driverId,
+                                label:
+                                  `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
+                              }
                               : null
                           }
                           onChange={(sel: any) =>

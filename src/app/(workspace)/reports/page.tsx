@@ -43,6 +43,8 @@ import {
   File as FileIcon,
   Search,
   ChevronDown,
+  ArrowRight,
+  Filter,
 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 
@@ -172,7 +174,6 @@ const MyPDFDocument = ({
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        {/* Header Section */}
         <View style={styles.header}>
           <View style={styles.logoPlaceholder}>
             <Text style={{ fontSize: 8 }}>LOGO</Text>
@@ -183,12 +184,10 @@ const MyPDFDocument = ({
           </View>
         </View>
 
-        {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>{title}</Text>
         </View>
 
-        {/* Table Section */}
         <View style={styles.table}>
           <View style={styles.tableRow}>
             {columns.map((col, i) => (
@@ -228,7 +227,6 @@ const MyPDFDocument = ({
           ))}
         </View>
 
-        {/* Signature Section */}
         <View style={styles.signatureSection} wrap={false}>
           <View style={styles.signatureBox}>
             <View style={styles.signatureLine} />
@@ -246,7 +244,6 @@ const MyPDFDocument = ({
           </View>
         </View>
 
-        {/* Footer Section */}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
@@ -284,10 +281,11 @@ export default function ReportsPage() {
   const [data, setData] = useState<any[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 10;
 
   const selectedReportName =
     REPORT_TYPES.find((r) => r.id === selectedReportId)?.name || "";
@@ -335,7 +333,7 @@ export default function ReportsPage() {
           ];
         } else {
           cols = [
-            { header: "รหัสอ้างอิง", key: oIdKey, width: 10 },
+            { header: "รหัสอ้างอิง", key: "id", width: 10 },
             { header: "รายละเอียด/สถานที่", key: "detail", width: 40 },
             { header: "วันที่", key: "date", width: 20 },
             { header: "สถานะ", key: "status", width: 15 },
@@ -352,9 +350,8 @@ export default function ReportsPage() {
       }
     };
 
-    const oIdKey = selectedReportId === "summary_status" ? "id" : "id";
     fetchReportData();
-  }, [selectedReportId, selectedReportName, selectedStatus]);
+  }, [selectedReportId, selectedStatus]);
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -366,7 +363,6 @@ export default function ReportsPage() {
       width: col.width,
     }));
 
-    // Set header style with Thai font support
     const headerRow = worksheet.getRow(1);
     headerRow.font = { name: "Sarabun", bold: true, size: 12 };
     headerRow.fill = {
@@ -376,7 +372,6 @@ export default function ReportsPage() {
     };
     headerRow.alignment = { horizontal: "center" };
 
-    // Add data and set font for all rows
     data.forEach((item) => {
       const row = worksheet.addRow(item);
       row.font = { name: "Sarabun", size: 11 };
@@ -402,8 +397,8 @@ export default function ReportsPage() {
           properties: {
             page: {
               size: {
-                width: 16838, // A4 Landscape width
-                height: 11906, // A4 Landscape height
+                width: 16838,
+                height: 11906,
               },
             },
           },
@@ -485,107 +480,119 @@ export default function ReportsPage() {
     saveAs(blob, `${fileName}.pdf`);
   };
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const currentData = data.slice(
+  const filteredData = data.filter(item => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return columns.some(col => String(item[col.key] || "").toLowerCase().includes(q));
+  });
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div className="flex-1"></div>
+    <div className="max-w-6xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
+      {/* Header & Export Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-3">
+          <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
+          <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
+            ระบบรายงาน (REPORTS)
+          </h2>
+        </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={exportToExcel}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
           >
-            <FileSpreadsheet size={18} /> Excel
+            <FileSpreadsheet size={16} /> EXCEL
           </button>
           <button
             onClick={exportToWord}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
           >
-            <FileText size={18} /> Word
+            <FileText size={16} /> WORD
           </button>
           <button
             onClick={exportToPDF}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium"
+            className="flex items-center gap-2 bg-rose-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-100"
           >
-            <FileIcon size={18} /> PDF
+            <FileIcon size={16} /> PDF
           </button>
         </div>
       </div>
 
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          ประเภทรายงาน
-        </label>
-        <div className="relative w-full md:w-1/2 lg:w-1/3">
-          <select
-            value={selectedReportId}
-            onChange={(e) => setSelectedReportId(e.target.value)}
-            className="w-full appearance-none bg-white border border-gray-200 rounded-md px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all text-gray-700"
-          >
-            {REPORT_TYPES.map((report) => (
-              <option key={report.id} value={report.id}>
-                {report.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-            size={20}
-          />
-        </div>
-      </div>
-
-      {selectedReportId === "summary_status" && (
-        <div className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 font-sarabun">
-            กรองตามสถานะ
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: "all", name: "ทั้งหมด" },
-              { id: "1", name: "รอการอนุมัติ (Pending)" },
-              { id: "2", name: "อนุมัติแล้ว (Approved)" },
-              { id: "3", name: "ปฏิเสธ (Rejected)" },
-              { id: "4", name: "กำลังใช้งาน (In Use)" },
-              { id: "5", name: "เสร็จสิ้น (Completed)" },
-            ].map((status) => (
-              <button
-                key={status.id}
-                onClick={() => setSelectedStatus(status.id)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  selectedStatus === status.id
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-blue-400"
-                }`}
-              >
-                {status.name}
-              </button>
-            ))}
+      {/* Selectors */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+        <div className="space-y-2">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">เลือกประเภทรายงาน</label>
+          <div className="relative group">
+            <select
+              value={selectedReportId}
+              onChange={(e) => setSelectedReportId(e.target.value)}
+              className="w-full appearance-none bg-slate-50 border border-slate-100 rounded-xl px-4 py-3.5 pr-10 focus:outline-none focus:ring-4 focus:ring-blue-50 font-bold text-slate-700 transition-all hover:bg-slate-100"
+            >
+              {REPORT_TYPES.map((report) => (
+                <option key={report.id} value={report.id}>
+                  {report.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-blue-500 transition-colors" size={18} />
           </div>
         </div>
-      )}
 
-      <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h2 className="font-bold text-gray-800 text-lg flex items-center gap-2">
-            <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-            {selectedReportName}
-          </h2>
-          <div className="relative">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={16}
-            />
+        {selectedReportId === "summary_status" && (
+          <div className="space-y-2 animate-in slide-in-from-left-4">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">กรองตามสถานะ</label>
+            <div className="flex flex-wrap gap-1.5 p-1 bg-slate-100 rounded-xl">
+              {[
+                { id: "all", name: "ทั้งหมด" },
+                { id: "1", name: "รออนุมัติ" },
+                { id: "2", name: "อนุมัติ" },
+                { id: "4", name: "กำลังใช้" },
+                { id: "5", name: "คืนแล้ว" },
+              ].map((status) => (
+                <button
+                  key={status.id}
+                  onClick={() => setSelectedStatus(status.id)}
+                  className={`flex-1 px-3 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                    selectedStatus === status.id
+                      ? "bg-white text-blue-600 shadow-sm ring-1 ring-blue-100"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {status.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Table Section */}
+      <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
+        <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h2 className="font-bold text-slate-900 text-lg">
+              {selectedReportName}
+            </h2>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              พบข้อมูล {filteredData.length} รายการ
+            </p>
+          </div>
+          
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
             <input
               type="text"
-              placeholder="ค้นหาในตาราง..."
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ค้นหาในตารางนี้..."
+              className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all w-full sm:w-80 shadow-sm"
             />
           </div>
         </div>
@@ -593,7 +600,7 @@ export default function ReportsPage() {
         <DataTable
           columns={columns.map((col) => ({
             header: col.header,
-            cell: (row: any) => <span className="text-sm text-gray-600">{row[col.key] || "-"}</span>,
+            cell: (row: any) => <span className="text-sm text-slate-600 font-medium">{row[col.key] || "-"}</span>,
           }))}
           data={currentData}
           isLoading={loading}

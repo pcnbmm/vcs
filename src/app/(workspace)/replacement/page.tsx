@@ -25,6 +25,7 @@ import Select from "react-select";
 import { usePermissions } from "@/hooks/usePermissions";
 import { getProvinces, getCarSpecs } from "@/app/actions/dropdownActions";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
+import Modal from "@/components/ui/Modal";
 
 export default function ReplacementPage() {
   const { hasAccess } = usePermissions();
@@ -517,518 +518,504 @@ export default function ReplacementPage() {
         />
       </div>
 
-      {/* Modal Form */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={closeModal}
-          />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                {modalMode === "add"
-                  ? "เพิ่มข้อมูลรถทดแทน"
-                  : modalMode === "edit"
-                    ? "จัดการรถทดแทน"
-                    : "รายละเอียดการใช้รถทดแทน"}
-              </h2>
-            </div>
-
-            <form
-              onSubmit={handleSave}
-              className="flex-1 overflow-y-auto p-6 flex flex-col gap-5"
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={
+          modalMode === "add"
+            ? "เพิ่มข้อมูลรถทดแทนใหม่"
+            : modalMode === "edit"
+              ? "แก้ไขข้อมูลรถทดแทน"
+              : "รายละเอียดรถทดแทน"
+        }
+        maxWidth="lg"
+        accentColor="bg-blue-600"
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={closeModal}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
             >
-              {/* ADD MODE (Steps 3) */}
-              {modalMode === "add" && (
+              {modalMode === "view" ? "ปิดหน้าต่าง" : "ยกเลิก"}
+            </button>
+            {modalMode !== "view" && (modalMode !== "add" || isChecked) && (
+              <button
+                type="submit"
+                form="replacement-form"
+                disabled={isSaving}
+                className={`flex items-center gap-2 px-6 py-2.5 text-white rounded-lg font-bold text-sm shadow-md transition-all disabled:opacity-50 ${isReturning ? "bg-rose-600 hover:bg-rose-700 shadow-rose-200" : "bg-blue-600 hover:bg-blue-700 shadow-blue-200"}`}
+              >
+                {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                {isSaving
+                  ? "กำลังบันทึก..."
+                  : isReturning
+                    ? "ยืนยันส่งคืนรถทดแทน"
+                    : "บันทึกข้อมูล"}
+              </button>
+            )}
+          </>
+        }
+      >
+        <form id="replacement-form" onSubmit={handleSave} className="space-y-6">
+          {/* STEP 1: Search Plate Number */}
+          {modalMode === "add" && (
+            <>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">
+                  ระบุทะเบียนรถทดแทน <span className="text-rose-500">*</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    required
+                    placeholder="เลขทะเบียน (เช่น กข 1234)"
+                    disabled={isChecked || isChecking}
+                    value={formData.replacement_car_number}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        replacement_car_number: e.target.value,
+                      })
+                    }
+                    className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:bg-gray-100"
+                  />
+                  {isChecked && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsChecked(false);
+                        setFormData({
+                          ...formData,
+                          car_province_id: "",
+                          car_spec_id: "",
+                          broken_car_id: "",
+                        });
+                      }}
+                      className="px-4 py-2 text-blue-600 text-xs font-bold hover:underline"
+                    >
+                      แก้ไข
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">
+                  จังหวัด <span className="text-rose-500">*</span>
+                </label>
+                <Select
+                  options={provinces.map((p) => ({
+                    value: p.province_id.toString(),
+                    label: p.province_name,
+                  }))}
+                  placeholder="-- เลือกจังหวัด --"
+                  isDisabled={isChecked || isChecking}
+                  value={
+                    provinces.find(
+                      (p) =>
+                        p.province_id.toString() === formData.car_province_id,
+                    )
+                      ? {
+                          value: formData.car_province_id,
+                          label: provinces.find(
+                            (p) =>
+                              p.province_id.toString() === formData.car_province_id,
+                          )?.province_name,
+                        }
+                      : null
+                  }
+                  onChange={(selected: any) =>
+                    setFormData({
+                      ...formData,
+                      car_province_id: selected ? selected.value : "",
+                    })
+                  }
+                  className="react-select-container text-sm font-medium"
+                  classNamePrefix="react-select"
+                />
+              </div>
+
+              {!isChecked ? (
+                <button
+                  type="button"
+                  onClick={handleCheckCar}
+                  disabled={isChecking}
+                  className="mt-2 w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-800 text-white rounded-lg font-bold text-sm hover:bg-slate-900 shadow-md transition-all disabled:opacity-50"
+                >
+                  {isChecking ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Search className="w-4 h-4" />
+                  )}
+                  ตรวจสอบทะเบียนรถ
+                </button>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <label className="text-sm font-semibold text-gray-800">
+                    สเปครถ <span className="text-rose-500">*</span>
+                  </label>
+                  <Select
+                    options={carSpecs.map((c) => ({
+                      value: c.car_spec_id.toString(),
+                      label: c.car_spec_name,
+                    }))}
+                    placeholder="-- เลือกสเปครถ --"
+                    value={
+                      carSpecs.find(
+                        (c) =>
+                          c.car_spec_id.toString() === formData.car_spec_id,
+                      )
+                        ? {
+                            value: formData.car_spec_id,
+                            label: carSpecs.find(
+                              (c) =>
+                                c.car_spec_id.toString() === formData.car_spec_id,
+                            )?.car_spec_name,
+                          }
+                        : null
+                    }
+                    onChange={(selected: any) =>
+                      setFormData({
+                        ...formData,
+                        car_spec_id: selected ? selected.value : "",
+                      })
+                    }
+                    className="react-select-container text-sm font-medium"
+                    classNamePrefix="react-select"
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* EDIT/VIEW MODE (Steps 5 & 7) */}
+          {modalMode !== "add" && (
+            <>
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="font-semibold text-blue-900">
+                    ทะเบียนรถทดแทน:
+                  </span>
+                  <span className="font-bold text-blue-700 bg-white px-2 py-0.5 rounded border border-blue-200">
+                    {formData.replacement_car_number}
+                  </span>
+                </div>
+              </div>
+
+              {formData.broken_car_id && modalMode === "edit" && (
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={isReturning}
+                      onChange={(e) => setIsReturning(e.target.checked)}
+                      className="w-5 h-5 cursor-pointer text-blue-600 rounded border-gray-300"
+                    />
+                    <span className="text-sm font-bold text-rose-600">
+                      ยกเลิกการใช้งานรถทดแทน (ส่งคืนรถ)
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              {!isReturning ? (
                 <>
                   <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-gray-800">
-                      ทะเบียนรถที่มาทดแทน{" "}
+                      รถที่ถูกทดแทน (รถเดิม){" "}
                       <span className="text-rose-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      required
-                      disabled={isChecked}
-                      placeholder="เช่น 1กข 1234"
-                      value={formData.replacement_car_number}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          replacement_car_number: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none font-medium disabled:bg-gray-100 disabled:text-gray-500"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-gray-800">
-                      จังหวัดที่จดทะเบียน{" "}
-                      <span className="text-rose-500">*</span>
-                    </label>
-                    <Select
-                      options={provinces.map((p) => ({
-                        value: p.province_id.toString(),
-                        label: p.province_name,
-                      }))}
-                      isDisabled={isChecked}
-                      placeholder="-- เลือกจังหวัด --"
-                      value={
-                        provinces.find(
-                          (p) =>
-                            p.province_id.toString() ===
-                            formData.car_province_id,
-                        )
-                          ? {
-                              value: formData.car_province_id,
-                              label: provinces.find(
-                                (p) =>
-                                  p.province_id.toString() ===
-                                  formData.car_province_id,
-                              )?.province_name,
-                            }
-                          : null
-                      }
-                      onChange={(selected: any) =>
-                        setFormData({
-                          ...formData,
-                          car_province_id: selected ? selected.value : "",
-                        })
-                      }
-                      className="react-select-container text-sm font-medium"
-                      classNamePrefix="react-select"
-                    />
-                  </div>
-
-                  {!isChecked ? (
-                    <button
-                      type="button"
-                      onClick={handleCheckCar}
-                      disabled={isChecking}
-                      className="mt-2 w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-800 text-white rounded-lg font-bold text-sm hover:bg-slate-900 shadow-md transition-all disabled:opacity-50"
-                    >
-                      {isChecking ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <Search className="w-4 h-4" />
-                      )}
-                      ตรวจสอบทะเบียนรถ
-                    </button>
-                  ) : (
-                    <div className="space-y-1.5 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <label className="text-sm font-semibold text-gray-800">
-                        สเปครถ <span className="text-rose-500">*</span>
-                      </label>
+                    {modalMode === "edit" && !formData.broken_car_id ? (
                       <Select
-                        options={carSpecs.map((c) => ({
-                          value: c.car_spec_id.toString(),
-                          label: c.car_spec_name,
-                        }))}
-                        placeholder="-- เลือกสเปครถ --"
+                        options={filteredCarOptions}
+                        onInputChange={(inputValue, { action }) => {
+                          if (action === "input-change") {
+                            setCarSearchInput(inputValue);
+                          } else if (action === "menu-close") {
+                            setCarSearchInput("");
+                          }
+                        }}
+                        filterOption={() => true}
+                        placeholder="-- ค้นหาและเลือกรถที่ต้องการนำมาแทนที่ --"
                         value={
-                          carSpecs.find(
-                            (c) =>
-                              c.car_spec_id.toString() === formData.car_spec_id,
-                          )
-                            ? {
-                                value: formData.car_spec_id,
-                                label: carSpecs.find(
-                                  (c) =>
-                                    c.car_spec_id.toString() ===
-                                    formData.car_spec_id,
-                                )?.car_spec_name,
-                              }
-                            : null
+                          availableCarOptions.find(
+                            (option) => option.value === formData.car_id,
+                          ) || null
                         }
                         onChange={(selected: any) =>
                           setFormData({
                             ...formData,
-                            car_spec_id: selected ? selected.value : "",
+                            car_id: selected ? selected.value : "",
                           })
                         }
+                        isClearable
                         className="react-select-container text-sm font-medium"
                         classNamePrefix="react-select"
                       />
-                    </div>
-                  )}
-                </>
-              )}
-
-              {/* EDIT/VIEW MODE (Steps 5 & 7) */}
-              {modalMode !== "add" && (
-                <>
-                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-semibold text-blue-900">
-                        ทะเบียนรถทดแทน:
-                      </span>
-                      <span className="font-bold text-blue-700 bg-white px-2 py-0.5 rounded border border-blue-200">
-                        {formData.replacement_car_number}
-                      </span>
-                    </div>
+                    ) : (
+                      <input
+                        type="text"
+                        disabled
+                        value={formData.broken_car_id || "ยังไม่ได้ระบุ"}
+                        className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700"
+                      />
+                    )}
+                    {modalMode === "edit" && !formData.broken_car_id && (
+                      <p className="text-xs text-slate-500 mt-1">
+                        ระบบจะเปลี่ยนทะเบียนของรถคันนี้บนระบบเป็นคันใหม่ชั่วคราว
+                      </p>
+                    )}
                   </div>
 
-                  {formData.broken_car_id && modalMode === "edit" && (
-                    <div className="space-y-3 pt-2">
-                      <label className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={isReturning}
-                          onChange={(e) => setIsReturning(e.target.checked)}
-                          className="w-5 h-5 cursor-pointer text-blue-600 rounded border-gray-300"
-                        />
-                        <span className="text-sm font-bold text-rose-600">
-                          ยกเลิกการใช้งานรถทดแทน (ส่งคืนรถ)
-                        </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-800">
+                        วัน/เวลาที่แจ้งเหตุเสีย{" "}
+                        <span className="text-rose-500">*</span>
                       </label>
-                    </div>
-                  )}
-
-                  {!isReturning ? (
-                    <>
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-semibold text-gray-800">
-                          รถที่ถูกทดแทน (รถเดิม){" "}
-                          <span className="text-rose-500">*</span>
-                        </label>
-                        {modalMode === "edit" && !formData.broken_car_id ? (
-                          <Select
-                            options={filteredCarOptions}
-                            onInputChange={(inputValue, { action }) => {
-                              if (action === "input-change") {
-                                setCarSearchInput(inputValue);
-                              } else if (action === "menu-close") {
-                                setCarSearchInput("");
-                              }
-                            }}
-                            filterOption={() => true}
-                            placeholder="-- ค้นหาและเลือกรถที่ต้องการนำมาแทนที่ --"
-                            value={
-                              availableCarOptions.find(
-                                (option) => option.value === formData.car_id,
-                              ) || null
-                            }
-                            onChange={(selected: any) =>
-                              setFormData({
-                                ...formData,
-                                car_id: selected ? selected.value : "",
-                              })
-                            }
-                            isClearable
-                            className="react-select-container text-sm font-medium"
-                            classNamePrefix="react-select"
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            disabled
-                            value={formData.broken_car_id || "ยังไม่ได้ระบุ"}
-                            className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700"
-                          />
-                        )}
-                        {modalMode === "edit" && !formData.broken_car_id && (
-                          <p className="text-xs text-slate-500 mt-1">
-                            ระบบจะเปลี่ยนทะเบียนของรถคันนี้บนระบบเป็นคันใหม่ชั่วคราว
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                          <label className="text-sm font-semibold text-gray-800">
-                            วัน/เวลาที่แจ้งเหตุเสีย{" "}
-                            <span className="text-rose-500">*</span>
-                          </label>
-                          {modalMode === "view" ? (
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
-                                {formData.broken_datetime
-                                  ? new Date(
-                                      formData.broken_datetime,
-                                    ).toLocaleDateString("th-TH")
-                                  : "-"}
-                              </div>
-                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
-                                {formData.broken_datetime
-                                  ? formData.broken_datetime.split("T")[1]
-                                  : "-"}{" "}
-                                น.
-                              </div>
-                            </div>
-                          ) : (
-                            <TimeInput24hr
-                              value={formData.broken_datetime}
-                              onChange={(val) =>
-                                setFormData({
-                                  ...formData,
-                                  broken_datetime: val,
+                      {modalMode === "view" ? (
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                            {formData.broken_datetime
+                              ? new Date(
+                                  formData.broken_datetime,
+                                ).toLocaleDateString("th-TH")
+                              : "-"}
+                          </div>
+                          <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                            {formData.broken_datetime
+                              ? new Date(
+                                  formData.broken_datetime,
+                                ).toLocaleTimeString("th-TH", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: false,
                                 })
-                              }
-                              showDate
-                              disabled={!!formData.broken_car_id}
-                            />
-                          )}
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-sm font-semibold text-gray-800">
-                            วันที่และเวลาเริ่มทดแทน{" "}
-                            <span className="text-rose-500">*</span>
-                          </label>
-                          {modalMode === "view" ? (
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
-                                {formData.start_date
-                                  ? new Date(
-                                      formData.start_date,
-                                    ).toLocaleDateString("th-TH")
-                                  : "-"}
-                              </div>
-                              <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
-                                {formData.start_date
-                                  ? formData.start_date.split("T")[1]
-                                  : "-"}{" "}
-                                น.
-                              </div>
-                            </div>
-                          ) : (
-                            <TimeInput24hr
-                              value={formData.start_date}
-                              onChange={(val) =>
-                                setFormData({ ...formData, start_date: val })
-                              }
-                              showDate
-                              disabled={!!formData.broken_car_id}
-                            />
-                          )}
-                        </div>
-                      </div>
-
-                      {formData.end_datetime && (
-                        <div className="space-y-1.5 pt-2">
-                          <label className="text-sm font-semibold text-gray-800">
-                            วันที่และเวลาที่ส่งคืนรถ{" "}
-                            <span className="text-emerald-500 font-bold">
-                              (ส่งคืนแล้ว)
-                            </span>
-                          </label>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-800">
-                              {formData.end_date
-                                ? new Date(
-                                    formData.end_date,
-                                  ).toLocaleDateString("th-TH")
-                                : "-"}
-                            </div>
-                            <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-800">
-                              {formData.end_date
-                                ? formData.end_date.split("T")[1]
-                                : "-"}{" "}
-                              น.
-                            </div>
+                              : "-"}
                           </div>
                         </div>
-                      )}
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
-                          หมายเหตุ <span className="text-rose-500 font-bold">*</span>
-                        </label>
-                        <textarea
-                          placeholder={modalMode === "edit" ? "ระบุหมายเหตุการทดแทน (บังคับ)" : "ระบุหมายเหตุ (ถ้ามี)"}
-                          rows={3}
-                          required={modalMode === "edit"}
-                          disabled={modalMode === "view" || !!formData.end_datetime}
-                          value={formData.remark}
-                          onChange={(e) =>
-                            setFormData({ ...formData, remark: e.target.value })
-                          }
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:bg-gray-100 disabled:text-gray-600"
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                        <p className="text-xs text-amber-800 leading-relaxed font-medium">
-                          ระบบจะคืนค่าทะเบียนรถและสถานะของรถเดิม (
-                          <span className="font-bold">
-                            {formData.broken_car_id}
-                          </span>
-                          ) กลับสู่สภาวะปกติ
-                          และนำข้อมูลวันเวลาไปใช้สำหรับรายงานการใช้รถ-รายเดือน
-                        </p>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-semibold text-gray-800">
-                          วันที่และเวลาที่ส่งคืนรถ{" "}
-                          <span className="text-rose-500">*</span>
-                        </label>
+                      ) : (
                         <TimeInput24hr
-                          value={formData.end_date}
+                          value={formData.broken_datetime}
                           onChange={(val) =>
-                            setFormData({ ...formData, end_date: val })
+                            setFormData({
+                              ...formData,
+                              broken_datetime: val,
+                            })
                           }
                           showDate
                         />
-                      </div>
+                      )}
                     </div>
-                  )}
 
-                  <div className="pt-2 text-xs text-gray-400 font-medium">
-                    ผู้บันทึกรายการ: {formData.cre_by}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-800">
+                        วัน/เวลาที่เริ่มทดแทน{" "}
+                        <span className="text-rose-500">*</span>
+                      </label>
+                      {modalMode === "view" ? (
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                            {formData.start_date
+                              ? new Date(
+                                  formData.start_date,
+                                ).toLocaleDateString("th-TH")
+                              : "-"}
+                          </div>
+                          <div className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                            {formData.start_date
+                              ? new Date(
+                                  formData.start_date,
+                                ).toLocaleTimeString("th-TH", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: false,
+                                })
+                              : "-"}
+                          </div>
+                        </div>
+                      ) : (
+                        <TimeInput24hr
+                          value={formData.start_date}
+                          onChange={(val) =>
+                            setFormData({ ...formData, start_date: val })
+                          }
+                          showDate
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
+                      หมายเหตุ{" "}
+                      <span className="text-rose-500 font-bold">*</span>
+                    </label>
+                    <textarea
+                      placeholder={
+                        modalMode === "edit"
+                          ? "ระบุหมายเหตุการทดแทน (บังคับ)"
+                          : "ระบุหมายเหตุ (ถ้ามี)"
+                      }
+                      rows={3}
+                      required={modalMode === "edit"}
+                      disabled={
+                        modalMode === "view" || !!formData.end_datetime
+                      }
+                      value={formData.remark}
+                      onChange={(e) =>
+                        setFormData({ ...formData, remark: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:bg-gray-100 disabled:text-gray-600"
+                    />
                   </div>
                 </>
+              ) : (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <p className="text-xs text-amber-800 leading-relaxed font-medium">
+                      ระบบจะคืนค่าทะเบียนรถและสถานะของรถเดิม (
+                      <span className="font-bold">
+                        {formData.broken_car_id}
+                      </span>
+                      ) กลับสู่สภาวะปกติ
+                      และนำข้อมูลวันเวลาไปใช้สำหรับรายงานการใช้รถ-รายเดือน
+                    </p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-gray-800">
+                      วันที่และเวลาที่ส่งคืนรถ{" "}
+                      <span className="text-rose-500">*</span>
+                    </label>
+                    <TimeInput24hr
+                      value={formData.end_date}
+                      onChange={(val) =>
+                        setFormData({ ...formData, end_date: val })
+                      }
+                      showDate
+                    />
+                  </div>
+                </div>
               )}
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
-                >
-                  {modalMode === "view" ? "ปิดหน้าต่าง" : "ยกเลิก"}
-                </button>
-                {modalMode !== "view" && (modalMode !== "add" || isChecked) && (
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className={`flex items-center gap-2 px-6 py-2.5 text-white rounded-lg font-bold text-sm shadow-md transition-all disabled:opacity-50 ${isReturning ? "bg-rose-600 hover:bg-rose-700 shadow-rose-200" : "bg-blue-600 hover:bg-blue-700 shadow-blue-200"}`}
-                  >
-                    {isSaving ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : null}
-                    {isSaving
-                      ? "กำลังบันทึก..."
-                      : isReturning
-                        ? "ยืนยันส่งคืนรถทดแทน"
-                        : "บันทึกข้อมูล"}
-                  </button>
-                )}
+              <div className="pt-2 text-xs text-gray-400 font-medium">
+                ผู้บันทึกรายการ: {formData.cre_by}
               </div>
-            </form>
+            </>
+          )}
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={isMasterModalOpen}
+        onClose={() => {
+          setIsMasterModalOpen(false);
+          setMasterSearchTerm("");
+        }}
+        title="เลือกรถทดแทนที่มีในระบบ"
+        maxWidth="2xl"
+        accentColor="bg-slate-500"
+      >
+        <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="ค้นหาทะเบียนรถ หรือ สเปครถ..."
+              value={masterSearchTerm}
+              onChange={(e) => setMasterSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-sm"
+            />
           </div>
-        </div>
-      )}
 
-      {/* Master Replacement Selection Modal */}
-      {isMasterModalOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setIsMasterModalOpen(false)}
-          />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[80vh]">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
-                เลือกรถทดแทนที่มีในระบบ
-              </h2>
-              <button
-                onClick={() => {
-                  setIsMasterModalOpen(false);
-                  setMasterSearchTerm("");
-                }}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="ค้นหาทะเบียนรถ หรือ สเปครถ..."
-                  value={masterSearchTerm}
-                  onChange={(e) => setMasterSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
+          <div className="grid grid-cols-1 gap-3 max-h-[50vh] overflow-y-auto p-1 custom-scrollbar">
+            {masterReplacementCars.filter((car) => {
+              const numMatch = (car.car_number || "")
+                .toLowerCase()
+                .includes(masterSearchTerm.toLowerCase());
+              const specMatch = (car.vc_car_spec?.car_spec_name || "")
+                .toLowerCase()
+                .includes(masterSearchTerm.toLowerCase());
+              return numMatch || specMatch;
+            }).length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                ไม่พบข้อมูลรถทดแทนที่ค้นหา
               </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="grid grid-cols-1 gap-3">
-                {masterReplacementCars.filter(car => {
-                  const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
-                  const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+            ) : (
+              masterReplacementCars
+                .filter((car) => {
+                  const numMatch = (car.car_number || "")
+                    .toLowerCase()
+                    .includes(masterSearchTerm.toLowerCase());
+                  const specMatch = (car.vc_car_spec?.car_spec_name || "")
+                    .toLowerCase()
+                    .includes(masterSearchTerm.toLowerCase());
                   return numMatch || specMatch;
-                }).length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
-                    ไม่พบข้อมูลรถทดแทนที่ค้นหา
-                  </div>
-                ) : (
-                  masterReplacementCars
-                    .filter(car => {
-                      const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
-                      const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
-                      return numMatch || specMatch;
-                    })
-                    .map((car) => {
-                    const activeReplacement = car.vc_replacement?.[0];
-                    const isBusy = !!activeReplacement;
-                    
-                    return (
-                      <button
-                        key={car.car_id}
-                        disabled={isBusy}
-                        onClick={() => {
-                          openModal("add");
-                          handleSelectMasterCar(car);
-                        }}
-                        className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left group ${isBusy ? "bg-gray-50 border-gray-200 cursor-not-allowed" : "border-gray-100 hover:border-blue-300 hover:bg-blue-50"}`}
-                      >
-                        <div>
-                          <div className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <span className="bg-white px-2 py-0.5 rounded border border-gray-200 group-hover:border-blue-200">
-                              {car.car_number}
-                            </span>
-                            <span className="text-sm font-normal text-slate-500">
-                              {car.vc_province?.province_name}
-                            </span>
-                          </div>
-                          <div className="text-sm text-slate-500 mt-1">
-                            {car.vc_car_spec?.car_spec_name || "ไม่ระบุสเปค"}
-                          </div>
-                          {isBusy && (
-                            <div className="mt-2 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block border border-blue-100">
-                              กำลังทดแทนรถ: {activeReplacement.broken_car_id}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${isBusy ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
-                             {isBusy ? "ไม่ว่าง (ใช้งานอยู่)" : "พร้อมใช้งาน"}
-                           </span>
-                           {!isBusy && (
-                             <span className="text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
-                               เลือกคันนี้ →
-                             </span>
-                           )}
-                        </div>
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            </div>
+                })
+                .map((car) => {
+                  const activeReplacement = car.vc_replacement?.[0];
+                  const isBusy = !!activeReplacement;
 
-            <div className="px-6 py-4 border-t border-gray-100 flex justify-end bg-gray-50">
-              <button
-                onClick={() => {
-                  setIsMasterModalOpen(false);
-                  setMasterSearchTerm("");
-                }}
-                className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-200 transition-colors"
-              >
-                ปิดหน้าต่าง
-              </button>
-            </div>
+                  return (
+                    <button
+                      key={car.car_id}
+                      disabled={isBusy}
+                      onClick={() => {
+                        handleSelectMasterCar(car);
+                      }}
+                      className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left group ${isBusy ? "bg-gray-50 border-gray-200 cursor-not-allowed" : "border-gray-100 hover:border-blue-300 hover:bg-blue-50"}`}
+                    >
+                      <div>
+                        <div className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                          <span className="bg-white px-2 py-0.5 rounded border border-gray-200 group-hover:border-blue-200">
+                            {car.car_number}
+                          </span>
+                          <span className="text-sm font-normal text-slate-500">
+                            {car.vc_province?.province_name}
+                          </span>
+                        </div>
+                        <div className="text-sm text-slate-500 mt-1">
+                          {car.vc_car_spec?.car_spec_name || "ไม่ระบุสเปค"}
+                        </div>
+                        {isBusy && (
+                          <div className="mt-2 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded inline-block border border-blue-100">
+                            กำลังทดแทนรถ: {activeReplacement.broken_car_id}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold ${isBusy ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}
+                        >
+                          {isBusy ? "ไม่ว่าง (ใช้งานอยู่)" : "พร้อมใช้งาน"}
+                        </span>
+                        {!isBusy && (
+                          <span className="text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
+                            เลือกคันนี้ →
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })
+            )}
           </div>
         </div>
-      )}
+
+        <div className="px-6 py-4 border-t border-gray-100 flex justify-end bg-gray-50">
+          <button
+            onClick={() => {
+              setIsMasterModalOpen(false);
+              setMasterSearchTerm("");
+            }}
+            className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-200 transition-colors"
+          >
+            ปิดหน้าต่าง
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
+

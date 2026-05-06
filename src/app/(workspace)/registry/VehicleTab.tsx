@@ -6,7 +6,7 @@ import {
   showConfirm,
 } from "@/lib/sweetalert";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Select from "react-select";
 import {
   Search,
@@ -31,6 +31,7 @@ import {
 import { usePermissions } from "@/hooks/usePermissions";
 import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
+import Modal from "@/components/ui/Modal";
 
 export default function VehicleTab() {
   const { hasAccess } = usePermissions();
@@ -240,13 +241,6 @@ export default function VehicleTab() {
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) setCurrentPage(newPage);
-  };
-
-  const jumpPages = (amount: number) => {
-    let newPage = currentPage + amount;
-    if (newPage < 1) newPage = 1;
-    if (newPage > totalPages) newPage = totalPages;
-    setCurrentPage(newPage);
   };
 
   const safeDate = (dateVal: any) => {
@@ -574,7 +568,6 @@ export default function VehicleTab() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header, Search & Filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 bg-white p-4 rounded-md shadow-sm border border-gray-100">
         <div className="flex-1 flex flex-col md:flex-row items-center gap-3 w-full relative">
           <div className="relative flex-1 w-full">
@@ -597,7 +590,6 @@ export default function VehicleTab() {
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isAdvancedFilterOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {/* Advanced Filter Popover */}
             {isAdvancedFilterOpen && (
               <div className="absolute top-full right-0 md:right-0 mt-2 w-full md:w-[800px] max-w-[90vw] bg-white rounded-xl shadow-xl border border-gray-100 p-6 z-50 animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-50">
@@ -734,7 +726,6 @@ export default function VehicleTab() {
         </div>
       </div>
 
-      {/* Table */}
       <DataTable
         columns={columns}
         data={currentVehicles}
@@ -747,343 +738,253 @@ export default function VehicleTab() {
         onPageChange={handlePageChange}
       />
 
-      {/* Modal Form */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={closeModal}
-          />
-          <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300">
-            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shadow-sm relative">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-blue-500 rounded-full"></div>
-                {modalMode === "add"
-                  ? "เพิ่มข้อมูลรถยนต์"
-                  : modalMode === "edit"
-                    ? "แก้ไขข้อมูลรถยนต์"
-                    : "รายละเอียดรถยนต์"}
-              </h2>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={
+          modalMode === "add"
+            ? "เพิ่มข้อมูลรถยนต์ใหม่"
+            : modalMode === "edit"
+              ? "แก้ไขข้อมูลรถยนต์"
+              : "รายละเอียดรถยนต์"
+        }
+        maxWidth="5xl"
+        accentColor="bg-blue-600"
+        footer={
+          modalMode !== "view" ? (
+            <>
               <button
+                type="button"
                 onClick={closeModal}
-                className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors absolute right-6 top-1/2 -translate-y-1/2"
+                className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors"
               >
-                <X className="w-6 h-6" />
+                ยกเลิก
               </button>
-            </div>
-
-            <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-gray-50/50">
-              <div className="space-y-6">
-                <FormSection title="หมวดข้อมูลหลัก (Main Identity)">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <InputField
-                      label="ทะเบียนรถ"
-                      required
-                      value={formData.car_number}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_number: v })
-                      }
-                      placeholder="เช่น กข 1234"
-                      disabled={modalMode === "view"}
-                    />
-                    <SelectField
-                      label="จังหวัด"
-                      required
-                      value={formData.car_province_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_province_id: v })
-                      }
-                      options={options?.provinces}
-                      valueKey="province_id"
-                      labelKey="province_name"
-                      disabled={modalMode === "view"}
-                    />
-                    <SelectField
-                      label="ประเภทรถ"
-                      value={formData.car_type_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_type_id: v })
-                      }
-                      options={options?.carTypes}
-                      valueKey="car_type_id"
-                      labelKey="car_type_name"
-                      disabled={modalMode === "view"}
-                    />
-
-                    <SelectField
-                      label="ยี่ห้อรถ"
-                      value={options?.carBrands?.find((b:any) => b.car_brand_name === formData.temp_brand_name)?.car_brand_id || ""}
-                      onChange={(v: any) => {
-                        const brandObj = options?.carBrands?.find((b:any) => String(b.car_brand_id) === String(v));
-                        setFormData({ 
-                          ...formData, 
-                          temp_brand_name: brandObj?.car_brand_name || "",
-                          car_brand_id: "" 
-                        });
-                      }}
-                      options={options?.carBrands}
-                      valueKey="car_brand_id"
-                      labelKey="car_brand_name"
-                      disabled={modalMode === "view"}
-                    />
-                    <SelectField
-                      label="รุ่นรถยนต์"
-                      value={formData.car_brand_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_brand_id: v })
-                      }
-                      options={options?.allCarBrands?.filter((b:any) => b.car_brand_name === formData.temp_brand_name).map((b:any) => ({
-                        ...b,
-                        display_name: b.car_series_name || "-"
-                      })) || []}
-                      valueKey="car_brand_id"
-                      labelKey="display_name"
-                      disabled={modalMode === "view" || !formData.temp_brand_name}
-                    />
-                    <SelectField
-                      label="สเปค"
-                      value={formData.car_spec_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_spec_id: v })
-                      }
-                      options={options?.carSpecs}
-                      valueKey="car_spec_id"
-                      labelKey="car_spec_name"
-                      disabled={modalMode === "view"}
-                    />
-                    <SelectField
-                      label="สีรถ"
-                      value={formData.color_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, color_id: v })
-                      }
-                      options={options?.colors}
-                      valueKey="color_id"
-                      labelKey="color_name"
-                      disabled={modalMode === "view"}
-                    />
-
-                    <SelectField
-                      label="ประเภทจดทะเบียน"
-                      value={formData.car_type_regis_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_type_regis_id: v })
-                      }
-                      options={options?.typeRegis}
-                      valueKey="type_regis_id"
-                      labelKey="type_regis_name"
-                      disabled={modalMode === "view"}
-                    />
-                    <SelectField
-                      label="สถานะรถ"
-                      value={formData.car_status_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, car_status_id: v })
-                      }
-                      options={options?.statuses}
-                      valueKey="car_status_id"
-                      labelKey="car_status_name"
-                      disabled={modalMode === "view" || modalMode === "add"}
-                    />
-                  </div>
-                </FormSection>
-
-                <FormSection title="หมวดวันที่และรายละเอียด (Dates & Details)">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <InputField
-                      label="วันที่จดทะเบียน (Regis Date)"
-                      type="date"
-                      value={formData.regis_date}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, regis_date: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="ปีงบประมาณ (Fiscal Year)"
-                      type="number"
-                      value={formData.fiscal_year}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, fiscal_year: v })
-                      }
-                      placeholder="เช่น 2567"
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="วันที่เริ่มต้น (Start Date)"
-                      type="date"
-                      value={formData.start_date}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, start_date: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="วันที่สิ้นสุด (End Date)"
-                      type="date"
-                      value={formData.end_date}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, end_date: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                  </div>
-                </FormSection>
-
-                <FormSection title="หมวดเครื่องยนต์และตัวถัง (Engine & Body)">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <InputField
-                      label="หมายเลขเครื่อง (Machine No)"
-                      value={formData.machine_no}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, machine_no: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="หมายเลขตัวถัง (Body No)"
-                      value={formData.body_no}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, body_no: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="รหัสเครื่องยนต์ (Machine ID)"
-                      value={formData.machine_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, machine_id: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="ความจุกระบอกสูบ (CC)"
-                      value={formData.cylinder_capacityp}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, cylinder_capacityp: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="แรงม้า (Horse Power)"
-                      value={formData.horse_power}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, horse_power: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="น้ำหนัก (Weight)"
-                      value={formData.weight}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, weight: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                  </div>
-                </FormSection>
-
-                <FormSection title="หมวดหน่วยงานและค่าใช้จ่าย (Operations & Expenses)">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <SelectField
-                      label="รหัสหน่วยงาน (Own Div Code)"
-                      value={formData.own_div_code}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, own_div_code: v })
-                      }
-                      options={options?.orgs}
-                      valueKey="orgid"
-                      labelKey="orgname"
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="หมายเลขอ้างอิงรถ (Ref Car)"
-                      value={formData.ref_car}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, ref_car: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="หมายเลข Fleetcard"
-                      value={formData.fleetcard_no}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, fleetcard_no: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-
-                    <SelectField
-                      label="ชนิดน้ำมัน"
-                      value={formData.oil_type_id}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, oil_type_id: v })
-                      }
-                      options={options?.oilTypes}
-                      valueKey="oil_type_id"
-                      labelKey="oil_type_name"
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="ค่าใช้จ่ายน้ำมัน"
-                      type="number"
-                      step="0.01"
-                      value={formData.oil_expense}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, oil_expense: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-                    <InputField
-                      label="การคืนภาษี (Refund Vat)"
-                      type="number"
-                      value={formData.refund_vat}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, refund_vat: v })
-                      }
-                      disabled={modalMode === "view"}
-                    />
-
-                    <InputField
-                      label="Flag (สัญลักษณ์) - สถานะความพร้อมใช้งาน"
-                      value={formData.flag}
-                      onChange={(v: any) =>
-                        setFormData({ ...formData, flag: v })
-                      }
-                      disabled={true}
-                    />
-                  </div>
-                </FormSection>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-md font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
+              >
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {isSaving ? "กำลังบันทึก..." : "บันทึกข้อมูลรถยนต์"}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={closeModal}
+              className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors"
+            >
+              ปิดหน้าต่าง
+            </button>
+          )
+        }
+      >
+        <div className="space-y-8">
+          <FormSection title="ข้อมูลหลักของรถยนต์">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <InputField
+                label="เลขทะเบียนรถ"
+                required
+                value={formData.car_number}
+                onChange={(v: any) => setFormData({ ...formData, car_number: v })}
+                disabled={modalMode === "view"}
+                placeholder="เช่น กข 1234"
+              />
+              <SelectField
+                label="จังหวัด"
+                required
+                value={formData.car_province_id}
+                onChange={(v: any) => setFormData({ ...formData, car_province_id: v })}
+                options={options?.provinces}
+                valueKey="province_id"
+                labelKey="province_name"
+                disabled={modalMode === "view"}
+              />
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">ยี่ห้อรถ</label>
+                <input
+                  type="text"
+                  value={formData.temp_brand_name || ""}
+                  disabled
+                  className="w-full px-4 py-2.5 bg-gray-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-500"
+                />
               </div>
+              <SelectField
+                label="สีรถ"
+                value={formData.color_id}
+                onChange={(v: any) => setFormData({ ...formData, color_id: v })}
+                options={options?.colors}
+                valueKey="color_id"
+                labelKey="color_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="สเปครถ"
+                value={formData.car_spec_id}
+                onChange={(v: any) => setFormData({ ...formData, car_spec_id: v })}
+                options={options?.carSpecs}
+                valueKey="car_spec_id"
+                labelKey="car_spec_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="สถานะรถยนต์"
+                value={formData.car_status_id}
+                onChange={(v: any) => setFormData({ ...formData, car_status_id: v })}
+                options={options?.statuses}
+                valueKey="car_status_id"
+                labelKey="car_status_name"
+                disabled={modalMode === "view" || modalMode === "add"}
+              />
             </div>
+          </FormSection>
 
-            {modalMode !== "view" && (
-              <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3 z-10">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2.5 rounded-md font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors"
-                >
-                  ยกเลิก
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-md font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
-                >
-                  {isSaving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  {isSaving ? "กำลังบันทึก..." : "บันทึกข้อมูลรถยนต์"}
-                </button>
-              </div>
-            )}
-          </div>
+          <FormSection title="ข้อมูลทางเทคนิค">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <InputField
+                label="เลขเครื่องยนต์"
+                value={formData.machine_no}
+                onChange={(v: any) => setFormData({ ...formData, machine_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="เลขตัวถัง"
+                value={formData.body_no}
+                onChange={(v: any) => setFormData({ ...formData, body_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="รหัสเครื่องยนต์"
+                value={formData.machine_id}
+                onChange={(v: any) => setFormData({ ...formData, machine_id: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="ความจุกระบอกสูบ (CC)"
+                type="number"
+                value={formData.cylinder_capacityp}
+                onChange={(v: any) => setFormData({ ...formData, cylinder_capacityp: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="แรงม้า"
+                type="number"
+                value={formData.horse_power}
+                onChange={(v: any) => setFormData({ ...formData, horse_power: v })}
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="ประเภทน้ำมัน"
+                value={formData.oil_type_id}
+                onChange={(v: any) => setFormData({ ...formData, oil_type_id: v })}
+                options={options?.oilTypes}
+                valueKey="oil_type_id"
+                labelKey="oil_type_name"
+                disabled={modalMode === "view"}
+              />
+            </div>
+          </FormSection>
+
+          <FormSection title="ข้อมูลการจดทะเบียนและสัญญา">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <SelectField
+                label="ประเภทรถยนต์"
+                value={formData.car_type_id}
+                onChange={(v: any) => setFormData({ ...formData, car_type_id: v })}
+                options={options?.carTypes}
+                valueKey="car_type_id"
+                labelKey="car_type_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="ประเภทการจดทะเบียน"
+                value={formData.car_type_regis_id}
+                onChange={(v: any) => setFormData({ ...formData, car_type_regis_id: v })}
+                options={options?.typeRegis}
+                valueKey="type_regis_id"
+                labelKey="type_regis_name"
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="วันที่จดทะเบียน"
+                type="date"
+                value={formData.regis_date}
+                onChange={(v: any) => setFormData({ ...formData, regis_date: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="เลขที่ Fleet Card"
+                value={formData.fleetcard_no}
+                onChange={(v: any) => setFormData({ ...formData, fleetcard_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="รหัสอ้างอิงรถยนต์ (Ref)"
+                value={formData.ref_car}
+                onChange={(v: any) => setFormData({ ...formData, ref_car: v })}
+                disabled={modalMode === "view"}
+              />
+            </div>
+          </FormSection>
+
+          <FormSection title="ภาษี ประกัน และต้นทุน">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <InputField
+                label="วันที่เริ่มสัญญา/ประกัน"
+                type="date"
+                value={formData.start_date}
+                onChange={(v: any) => setFormData({ ...formData, start_date: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="วันที่สิ้นสุดสัญญา/ประกัน"
+                type="date"
+                value={formData.end_date}
+                onChange={(v: any) => setFormData({ ...formData, end_date: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="งบประมาณน้ำมัน"
+                type="number"
+                value={formData.oil_expense}
+                onChange={(v: any) => setFormData({ ...formData, oil_expense: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="ภาษีที่ได้รับคืน (Refund VAT)"
+                type="number"
+                value={formData.refund_vat}
+                onChange={(v: any) => setFormData({ ...formData, refund_vat: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="ปีงบประมาณ"
+                value={formData.fiscal_year}
+                onChange={(v: any) => setFormData({ ...formData, fiscal_year: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="รหัสหน่วยงานเจ้าของรถ"
+                value={formData.own_div_code}
+                onChange={(v: any) => setFormData({ ...formData, own_div_code: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="Flag สถานะ"
+                value={formData.flag}
+                disabled={true}
+              />
+            </div>
+          </FormSection>
         </div>
-      )}
+      </Modal>
+
     </div>
   );
 }
@@ -1246,9 +1147,9 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white p-4 rounded-[1.5rem] border border-gray-100 shadow-sm col-span-1 lg:col-span-3 hover:shadow-md transition-shadow">
-      <h3 className="text-sm font-semibold text-blue-900 mb-5 border-b border-gray-50 pb-3 flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 col-span-1 lg:col-span-3">
+      <h3 className="text-sm font-bold text-slate-800 mb-5 pb-3 border-b border-slate-200/60 flex items-center gap-2">
+        <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
         {title}
       </h3>
       {children}
@@ -1265,20 +1166,22 @@ function InputField({
   disabled,
   required,
   step,
+  maxLength,
 }: any) {
   return (
     <div className="space-y-1.5 group">
-      <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
+      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <input
         type={type}
         step={step}
+        maxLength={maxLength}
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100 placeholder:font-medium placeholder:text-gray-400"
+        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none disabled:bg-slate-100/50 disabled:text-slate-400 disabled:cursor-not-allowed placeholder:font-normal placeholder:text-slate-300 shadow-sm"
       />
     </div>
   );
@@ -1304,7 +1207,7 @@ function SelectField({
 
   return (
     <div className="space-y-1.5 group">
-      <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
+      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <Select
@@ -1320,6 +1223,7 @@ function SelectField({
           typeof document !== "undefined" ? document.body : null
         }
         menuPosition="fixed"
+        className="text-sm"
       />
     </div>
   );
