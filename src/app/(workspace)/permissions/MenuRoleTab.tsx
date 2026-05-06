@@ -166,9 +166,10 @@ export default function MenuRoleTab() {
     e.preventDefault();
     if (!formData.roles_id) return showWarning("กรุณาเลือกบทบาท");
     const isExistingRole = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
-    const isEditing = !!groupedMenuRoles.find(m => String(m.roles_id) === formData.roles_id) && formData.mappings.length > 0;
+    const isActuallyEditing = formData.mappings.length > 0 && isExistingRole;
+
     // ถ้าไม่ใช่การกด Edit จากแถวเดิม แต่ Role ดันซ้ำ ให้เตือน
-    if (isExistingRole && !isModalOpenWithData) { // คุณอาจต้องสร้าง state เพิ่มเพื่อเช็คว่ามาจากปุ่ม Edit หรือปุ่ม Add
+    if (isExistingRole && !isActuallyEditing) {
       return showWarning("บทบาทนี้มีการกำหนดสิทธิ์ไว้แล้ว โปรดแก้ไขจากรายการเดิม");
     }
 
@@ -184,6 +185,7 @@ export default function MenuRoleTab() {
 
       await fetchData();
       closeModal();
+      showSuccess("บันทึกข้อมูลสำเร็จ");
     } catch (error) {
       console.error("Error saving menu roles:", error);
       showError("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -205,6 +207,7 @@ export default function MenuRoleTab() {
       });
       if (!res.ok) throw new Error("Deletion failed");
       await fetchData();
+      showSuccess("ลบข้อมูลสำเร็จ");
     } catch (error) {
       console.error("Error deleting menu roles:", error);
       showError("เกิดข้อผิดพลาดในการลบข้อมูล");
@@ -214,12 +217,7 @@ export default function MenuRoleTab() {
   const assignedRoleIds = groupedMenuRoles.map((mr) => String(mr.roles_id));
   // สร้างตัวแปรเช็ค Mode
   const isEditMode = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
-
-  // ในส่วน Header ของ Modal
-  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-    <div className={`w-1.5 h-8 ${isEditMode ? 'bg-amber-500' : 'bg-rose-500'} rounded-full`}></div>
-    {isEditMode ? "แก้ไขสิทธิ์การเข้าถึงเมนู" : "กำหนดสิทธิ์การเข้าถึงเมนูใหม่"}
-  </h2>
+  const isActualEditing = isEditMode; // กำหนดตัวแปรสำหรับใช้ในเงื่อนไขแสดงข้อความเตือน
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -384,8 +382,8 @@ export default function MenuRoleTab() {
             <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                  <div className="w-1.5 h-8 bg-rose-500 rounded-full"></div>
-                  กำหนดสิทธิ์การเข้าถึงเมนู
+                  <div className={`w-1.5 h-8 ${isEditMode ? 'bg-amber-500' : 'bg-rose-500'} rounded-full`}></div>
+                  {isEditMode ? "แก้ไขสิทธิ์การเข้าถึงเมนู" : "กำหนดสิทธิ์การเข้าถึงเมนูใหม่"}
                 </h2>
                 <p className="text-sm text-gray-500 font-medium mt-1 ml-4 text-left">
                   เลือกบทบาท 1 รายการ
@@ -402,162 +400,169 @@ export default function MenuRoleTab() {
 
             <form
               onSubmit={handleSave}
-              className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30 p-8 flex flex-col gap-6"
+              className="flex-1 flex flex-col overflow-hidden"
             >
-              <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-2 shrink-0">
-                <label className="text-sm font-semibold text-gray-800">
-                  1. บทบาท (Role) <span className="text-rose-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.roles_id}
-                  onChange={(e) =>
-                    setFormData({ ...formData, roles_id: e.target.value })
-                  }
-                  disabled={!!formData.mappings.length && assignedRoleIds.includes(formData.roles_id)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <option value="">-- ค้นหาและเลือกบทบาท --</option>
-                  {roles.map((r) => {
-                    const isAssigned = assignedRoleIds.includes(String(r.roles_id));
-                    const isCurrentEditing = formData.roles_id === String(r.roles_id);
-
-                    return (
-                      <option
-                        key={r.roles_id}
-                        value={r.roles_id}
-                        // ถ้าถูกใช้ไปแล้ว และไม่ใช่ตัวที่เรากำลังกด Edit ให้ disable ไว้
-                        disabled={isAssigned && !isCurrentEditing}
-                      >
-                        {r.roles_name} {isAssigned && !isCurrentEditing ? "(กำหนดสิทธิ์แล้ว)" : ""}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
-                <div className="flex justify-between items-center">
+              {/* 1. ส่วนเนื้อหาที่ Scroll ได้ */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30 p-8 flex flex-col gap-6">
+                <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-2 shrink-0">
                   <label className="text-sm font-semibold text-gray-800">
-                    2. กำหนดเมนูและฟังก์ชันย่อย{" "}
-                    <span className="text-rose-500">*</span>
+                    1. บทบาท (Role) <span className="text-rose-500">*</span>
                   </label>
-                  <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">
-                    เลือกไว้ {formData.mappings.length} การเข้าถึง
-                  </span>
-                </div>
+                  <select
+                    required
+                    value={formData.roles_id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, roles_id: e.target.value })
+                    }
+                    disabled={!!formData.mappings.length && assignedRoleIds.includes(formData.roles_id)}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-rose-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <option value="">-- ค้นหาและเลือกบทบาท --</option>
+                    {roles.map((r) => {
+                      const isAssigned = assignedRoleIds.includes(String(r.roles_id));
+                      const isCurrentEditing = formData.roles_id === String(r.roles_id);
 
-                <div className="space-y-4">
-                  {menus.map((menu) => {
-                    // Menu Access Checkbox (function_id: null)
-                    const hasMenuAccess = hasMapping(menu.menu_id, null);
-
-                    return (
-                      <div
-                        key={menu.menu_id}
-                        className="bg-gray-50 rounded-lg border border-gray-100 overflow-hidden"
-                      >
-                        {/* Menu Header */}
-                        <div
-                          onClick={() => toggleMapping(menu.menu_id, null)}
-                          className="px-5 py-4 bg-white border-b border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-rose-50/30 transition-colors group"
+                      return (
+                        <option
+                          key={r.roles_id}
+                          value={r.roles_id}
+                          disabled={isAssigned && !isCurrentEditing}
                         >
-                          <div
-                            className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${hasMenuAccess
-                              ? "bg-rose-500 text-white"
-                              : "border border-gray-300 group-hover:border-rose-400"
-                              }`}
-                          >
-                            {hasMenuAccess && (
-                              <svg
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                className="w-3.5 h-3.5"
-                              >
-                                <path
-                                  d="M3 7.5L5.5 10L11 4"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-gray-900 text-sm flex items-center gap-2">
-                              <LayoutList className="w-4 h-4 text-rose-500" />
-                              เมนู: {menu.menuname}
-                            </span>
-                            <span className="text-xs text-gray-500 font-medium">
-                              สิทธิ์เข้าถึงหน้าเมนู (ทั่วไป)
-                            </span>
-                          </div>
-                        </div>
+                          {r.roles_name} {isAssigned && !isCurrentEditing ? "(กำหนดสิทธิ์แล้ว)" : ""}
+                        </option>
+                      );
+                    })}
+                  </select>
 
-                        {/* Functions Checkboxes Grid */}
-                        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-50/50">
-                          {functions.map((func) => {
-                            const hasFuncAccess = hasMapping(
-                              menu.menu_id,
-                              func.function_id,
-                            );
-                            return (
-                              <div
-                                key={func.function_id}
-                                onClick={() =>
-                                  toggleMapping(menu.menu_id, func.function_id)
-                                }
-                                className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${hasFuncAccess
-                                  ? "border-gray-800 shadow-sm"
-                                  : "border-gray-100 hover:border-gray-300"
-                                  }`}
-                              >
-                                <div
-                                  className={`w-4 h-4 rounded transition-colors flex items-center justify-center ${hasFuncAccess
-                                    ? "bg-gray-800 text-white"
-                                    : "border border-gray-300 group-hover:border-gray-500"
-                                    }`}
-                                >
-                                  {hasFuncAccess && (
-                                    <svg
-                                      viewBox="0 0 14 14"
-                                      fill="none"
-                                      className="w-3 h-3"
-                                    >
-                                      <path
-                                        d="M3 7.5L5.5 10L11 4"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                      />
-                                    </svg>
-                                  )}
-                                </div>
-                                <div className="flex flex-col">
-                                  <span
-                                    className={`text-xs font-bold ${hasFuncAccess ? "text-gray-900" : "text-gray-600"}`}
-                                  >
-                                    ฟังก์ชัน: {func.func_name}
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {menus.length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-8 bg-white rounded-md border border-gray-100">
-                      โปรดเพิ่มเมนูในแท็บจัดการเมนูก่อน
+                  {!isActualEditing && (
+                    <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-md border border-amber-100 mt-2">
+                      ⚠️ ผู้ใช้ที่กำหนดสิทธิ์ไว้แล้วจะไม่แสดงในรายการ — หากต้องการแก้ไขให้กดปุ่ม ✏️ ที่รายการนั้นแทน
                     </p>
                   )}
                 </div>
+
+                <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-semibold text-gray-800">
+                      2. กำหนดเมนูและฟังก์ชันย่อย{" "}
+                      <span className="text-rose-500">*</span>
+                    </label>
+                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">
+                      เลือกไว้ {formData.mappings.length} การเข้าถึง
+                    </span>
+                  </div>
+
+                  <div className="space-y-4">
+                    {menus.map((menu) => {
+                      const hasMenuAccess = hasMapping(menu.menu_id, null);
+
+                      return (
+                        <div
+                          key={menu.menu_id}
+                          className="bg-gray-50 rounded-lg border border-gray-100 overflow-hidden"
+                        >
+                          <div
+                            onClick={() => toggleMapping(menu.menu_id, null)}
+                            className="px-5 py-4 bg-white border-b border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-rose-50/30 transition-colors group"
+                          >
+                            <div
+                              className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${hasMenuAccess
+                                ? "bg-rose-500 text-white"
+                                : "border border-gray-300 group-hover:border-rose-400"
+                                }`}
+                            >
+                              {hasMenuAccess && (
+                                <svg
+                                  viewBox="0 0 14 14"
+                                  fill="none"
+                                  className="w-3.5 h-3.5"
+                                >
+                                  <path
+                                    d="M3 7.5L5.5 10L11 4"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+                                <LayoutList className="w-4 h-4 text-rose-500" />
+                                เมนู: {menu.menuname}
+                              </span>
+                              <span className="text-xs text-gray-500 font-medium">
+                                สิทธิ์เข้าถึงหน้าเมนู (ทั่วไป)
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-50/50">
+                            {functions.map((func) => {
+                              const hasFuncAccess = hasMapping(
+                                menu.menu_id,
+                                func.function_id,
+                              );
+                              return (
+                                <div
+                                  key={func.function_id}
+                                  onClick={() =>
+                                    toggleMapping(menu.menu_id, func.function_id)
+                                  }
+                                  className={`flex items-center gap-3 p-3 rounded-md border transition-all cursor-pointer select-none group bg-white ${hasFuncAccess
+                                    ? "border-gray-800 shadow-sm"
+                                    : "border-gray-100 hover:border-gray-300"
+                                    }`}
+                                >
+                                  <div
+                                    className={`w-4 h-4 rounded transition-colors flex items-center justify-center ${hasFuncAccess
+                                      ? "bg-gray-800 text-white"
+                                      : "border border-gray-300 group-hover:border-gray-500"
+                                      }`}
+                                  >
+                                    {hasFuncAccess && (
+                                      <svg
+                                        viewBox="0 0 14 14"
+                                        fill="none"
+                                        className="w-3 h-3"
+                                      >
+                                        <path
+                                          d="M3 7.5L5.5 10L11 4"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    )}
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span
+                                      className={`text-xs font-bold ${hasFuncAccess ? "text-gray-900" : "text-gray-600"
+                                        }`}
+                                    >
+                                      ฟังก์ชัน: {func.func_name}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {menus.length === 0 && (
+                      <p className="text-sm text-gray-500 text-center py-8 bg-white rounded-md border border-gray-100">
+                        โปรดเพิ่มเมนูในแท็บจัดการเมนูก่อน
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 sticky bottom-0 bg-gray-50/90 backdrop-blur-sm -mx-8 px-8 -mb-8 pb-8 z-10">
+              {/* 2. ส่วน Footer ที่ Fixed ติดขอบล่างตลอดเวลา */}
+              <div className="bg-white border-t border-gray-100 px-8 py-5 flex justify-end gap-3 shrink-0 z-10">
                 <button
                   type="button"
                   onClick={closeModal}

@@ -50,15 +50,50 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
-    const id = resolvedParams.id;
-    await prisma.vc_driver.delete({
-      where: { driver_id: parseInt(id) },
+    const id = parseInt(resolvedParams.id);
+
+    // 1. ตรวจสอบว่าพนักงานคนนี้เคยถูกนำไปใช้งานในตาราง "จัดรถ" หรือยัง
+    // หมายเหตุ: เปลี่ยน 'vc_car_manage' เป็นชื่อตารางจริงใน Schema ของคุณที่เก็บการจับคู่รถกับคนขับ
+    const isUsed = await prisma.vc_order_item.findFirst({
+      where: {
+        OR: [
+          { driver_id: id },
+          // ถ้ามีฟิลด์คนขับสำรอง หรือ staff ให้เช็คเพิ่มตรงนี้
+          // { staff_id: id } 
+        ]
+      },
     });
+
+    // 2. ถ้าพบข้อมูลการใช้งาน ห้ามลบเด็ดขาด
+    if (isUsed) {
+      return NextResponse.json(
+        {
+          error: "ไม่สามารถลบได้ เนื่องจากพนักงานรายนี้มีประวัติการจัดรถในระบบแล้ว",
+          code: "DATA_IN_USE"
+        },
+        { status: 400 } // ส่ง 400 Bad Request
+      );
+    }
+
+    // 3. ถ้าไม่พบข้อมูลการใช้งาน ค่อยอนุญาตให้ลบ
+    await prisma.vc_driver.delete({
+      where: { driver_id: id },
+    });
+
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to delete driver:", error);
+
+    // ดักจับ Error กรณีติด Foreign Key จาก Database (ถ้าลืมเช็คในข้อ 1)
+    if (error.code === 'P2003') {
+      return NextResponse.json(
+        { error: "ลบไม่สำเร็จ ข้อมูลนี้ถูกใช้งานอยู่ในตารางอื่น" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to delete driver" },
+      { error: "เกิดข้อผิดพลาดในการลบข้อมูล" },
       { status: 500 },
     );
   }

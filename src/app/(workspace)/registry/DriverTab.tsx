@@ -260,11 +260,17 @@ export default function DriverTab() {
       return;
     try {
       const res = await fetch(`/api/drivers/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Deletion failed");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error);
+      }
+
       await fetchData();
-    } catch (error) {
+      showSuccess("ลบข้อมูลสำเร็จ"); // แจ้งเตือนเมื่อลบสำเร็จ
+    } catch (error: any) {
       console.error("Error deleting driver:", error);
-      showError("เกิดข้อผิดพลาดในการลบข้อมูล");
+      // แสดง Error ด้วย SweetAlert แทนข้อความตายตัว
+      showError(error.message);
     }
   };
 
