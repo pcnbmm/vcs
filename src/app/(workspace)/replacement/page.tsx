@@ -24,6 +24,7 @@ import {
 import Select from "react-select";
 import { usePermissions } from "@/hooks/usePermissions";
 import { getProvinces, getCarSpecs } from "@/app/actions/dropdownActions";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function ReplacementPage() {
   const { hasAccess } = usePermissions();
@@ -400,198 +401,120 @@ export default function ReplacementPage() {
         </div>
       </div>
 
+
       {/* Data Table */}
       <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  สถานะ
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ทะเบียนรถที่ถูกแทนที่ (เดิม)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ทะเบียนรถทดแทน (ใหม่)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  วันที่เริ่มทดแทน
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  วันที่สิ้นสุด (คืนรถ)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูล...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentReplacements.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="py-12 text-center text-sm font-medium text-gray-500"
-                  >
-                    ไม่พบประวัติการใช้รถทดแทนที่ตรงกับเงื่อนไข
-                  </td>
-                </tr>
-              ) : (
-                currentReplacements.map((r) => {
-                  const isIdle = !r.car_id && !r.end_datetime; // Wait for assignment
-                  const isActive = r.car_id && !r.end_datetime; // Actively replacing
-                  const isEnded = r.end_datetime; // Finished
+        <DataTable
+          columns={[
+            {
+              header: "สถานะ",
+              cell: (r) => {
+                const isIdle = !r.car_id && !r.end_datetime;
+                const isActive = r.car_id && !r.end_datetime;
+                
+                if (isActive) {
                   return (
-                    <tr
-                      key={r.replacement_id}
-                      className={`hover:bg-slate-50 transition-colors ${isActive ? "bg-blue-50/20" : isIdle ? "bg-amber-50/20" : ""}`}
-                    >
-                      <td className="py-4 px-6">
-                        {isActive ? (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-blue-100 text-blue-800 font-semibold text-xs border border-blue-200">
-                            <Clock className="w-3.5 h-3.5" />
-                            กำลังใช้งานทดแทน
-                          </span>
-                        ) : isIdle ? (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-xs border border-amber-200">
-                            <Clock className="w-3.5 h-3.5" />
-                            รอการระบุรถที่ถูกทดแทน
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200">
-                            <CheckCircle className="w-3.5 h-3.5" />
-                            คืนรถแล้ว
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="font-semibold text-slate-700">
-                          {r.broken_car_id || "-"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
-                          {r.car_number || "-"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-sm text-slate-600">
-                        {r.start_date
-                          ? `${new Date(r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                          : "-"}
-                      </td>
-                      <td className="py-4 px-6 text-sm text-slate-600">
-                        {r.end_date
-                          ? `${new Date(r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                          : "-"}
-                      </td>
-                      <td className="py-4 px-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          {hasAccess("view") && (
-                            <button
-                              onClick={() => openModal("view", r)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-md transition-colors border border-blue-200"
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                              รายละเอียด
-                            </button>
-                          )}
-                          {!isEnded && hasAccess("update") && (
-                            <button
-                              onClick={() => openModal("edit", r)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 font-semibold text-xs rounded-md transition-colors border border-amber-200"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                              จัดการรถทดแทน
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-blue-100 text-blue-800 font-semibold text-xs border border-blue-200">
+                      <Clock className="w-3.5 h-3.5" />
+                      กำลังใช้งานทดแทน
+                    </span>
                   );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Pagination */}
-        {!isLoading && filteredReplacements.length > 0 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-sm font-medium text-gray-500">
-              แสดง {(currentPage - 1) * itemsPerPage + 1} -{" "}
-              {Math.min(currentPage * itemsPerPage, filteredReplacements.length)}{" "}
-              จาก {filteredReplacements.length} รายการ
-            </span>
-            <div className="flex items-center gap-4">
-              <select
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer pr-8"
-                style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em' }}
-              >
-                <option value={10}>10 / หน้า</option>
-                <option value={20}>20 / หน้า</option>
-                <option value={50}>50 / หน้า</option>
-                <option value={100}>100 / หน้า</option>
-              </select>
-
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(
-                    (p) =>
-                      p === 1 ||
-                      p === totalPages ||
-                      Math.abs(p - currentPage) <= 1,
-                  )
-                  .map((page, index, array) => (
-                    <React.Fragment key={page}>
-                      {index > 0 && array[index - 1] !== page - 1 && (
-                        <span className="px-2 text-gray-400">...</span>
-                      )}
+                } else if (isIdle) {
+                  return (
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-xs border border-amber-200">
+                      <Clock className="w-3.5 h-3.5" />
+                      รอการระบุรถที่ถูกทดแทน
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      คืนรถแล้ว
+                    </span>
+                  );
+                }
+              },
+            },
+            {
+              header: "ทะเบียนรถที่ถูกแทนที่ (เดิม)",
+              cell: (r) => (
+                <span className="font-semibold text-slate-700">
+                  {r.broken_car_id || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "ทะเบียนรถทดแทน (ใหม่)",
+              cell: (r) => (
+                <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                  {r.car_number || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "วันที่เริ่มทดแทน",
+              cell: (r) => (
+                <span className="text-sm text-slate-600">
+                  {r.start_date
+                    ? `${new Date(r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                    : "-"}
+                </span>
+              ),
+            },
+            {
+              header: "วันที่สิ้นสุด (คืนรถ)",
+              cell: (r) => (
+                <span className="text-sm text-slate-600">
+                  {r.end_date
+                    ? `${new Date(r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                    : "-"}
+                </span>
+              ),
+            },
+            {
+              header: "จัดการ",
+              className: "text-right",
+              cell: (r) => {
+                const isEnded = r.end_datetime;
+                return (
+                  <div className="flex items-center justify-end gap-2">
+                    {hasAccess("view") && (
                       <button
-                        onClick={() => handlePageChange(page)}
-                        className={`w-8 h-8 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${
-                          currentPage === page
-                            ? "bg-blue-600 text-white shadow-sm"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal("view", r);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-md transition-colors border border-blue-200"
                       >
-                        {page}
+                        <Eye className="w-3.5 h-3.5" />
+                        รายละเอียด
                       </button>
-                    </React.Fragment>
-                  ))}
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                    )}
+                    {!isEnded && hasAccess("update") && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal("edit", r);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 font-semibold text-xs rounded-md transition-colors border border-amber-200"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                        จัดการรถทดแทน
+                      </button>
+                    )}
+                  </div>
+                );
+              },
+            },
+          ]}
+          data={currentReplacements}
+          isLoading={isLoading}
+          rowKey={(row) => row.replacement_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
       {/* Modal Form */}

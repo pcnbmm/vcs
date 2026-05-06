@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function DriverTab() {
   const { hasAccess } = usePermissions();
@@ -316,6 +317,96 @@ export default function DriverTab() {
     }
   };
 
+  const columns: DataTableColumn<any>[] = [
+    {
+      header: "รหัสคนขับ",
+      sortable: true,
+      sortKey: "driver_code",
+      cell: (driver) => (
+        <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">
+          {driver.driver_code || "-"}
+        </span>
+      ),
+    },
+    {
+      header: "ชื่อ - นามสกุล",
+      sortable: true,
+      sortKey: "firstname",
+      cell: (driver) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+            {driver.vc_users?.firstname?.charAt(0) || "?"}
+          </div>
+          <div>
+            <span className="block text-sm font-bold text-gray-900">
+              {driver.vc_users?.firstname} {driver.vc_users?.lastname}
+            </span>
+            <span className="block text-xs text-gray-500">
+              {driver.licence_no || "ยังไม่ระบุใบขับขี่"}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "เบอร์โทรศัพท์",
+      sortable: true,
+      sortKey: "tel",
+      cell: (driver) => (
+        <span className="text-sm font-medium text-gray-600">{driver.tel || "-"}</span>
+      ),
+    },
+    {
+      header: "สถานะ",
+      sortable: true,
+      sortKey: "driver_status",
+      cell: (driver) =>
+        driver.driver_status === "A" ? (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm uppercase tracking-tight">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            พร้อมใช้งาน
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-rose-50 text-rose-700 border-rose-100 shadow-sm uppercase tracking-tight">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            ไม่พร้อมใช้งาน
+          </span>
+        ),
+    },
+    {
+      header: "จัดการ",
+      className: "text-right",
+      cell: (driver) => (
+        <div className="flex justify-end gap-2">
+          {hasAccess("view") && (
+            <button
+              onClick={() => openModal("view", driver)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("update") && (
+            <button
+              onClick={() => openModal("edit", driver)}
+              className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("delete") && (
+            <button
+              onClick={() => handleDelete(driver.driver_id)}
+              className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header & Search */}
@@ -379,222 +470,17 @@ export default function DriverTab() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th
-                  onClick={() => handleSort("driver_code")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  รหัสคนขับ{" "}
-                  {sortConfig?.key === "driver_code"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("firstname")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  ชื่อ - นามสกุล{" "}
-                  {sortConfig?.key === "firstname"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("tel")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  เบอร์โทรศัพท์{" "}
-                  {sortConfig?.key === "tel"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("driver_status")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  สถานะ{" "}
-                  {sortConfig?.key === "driver_status"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูลคนขับ...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentDrivers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <p className="text-sm font-medium text-gray-500">
-                      ไม่พบข้อมูลที่ค้นหา
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                currentDrivers.map((driver) => (
-                  <tr
-                    key={driver.driver_id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="py-4 px-6">
-                      <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">
-                        {driver.driver_code || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                          {driver.vc_users?.firstname?.charAt(0) || "?"}
-                        </div>
-                        <div>
-                          <span className="block text-sm font-bold text-gray-900">
-                            {driver.vc_users?.firstname}{" "}
-                            {driver.vc_users?.lastname}
-                          </span>
-                          <span className="block text-xs text-gray-500">
-                            {driver.licence_no || "ยังไม่ระบุใบขับขี่"}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-sm font-medium text-gray-600">
-                      {driver.tel || "-"}
-                    </td>
-                    <td className="py-4 px-6">
-                      {driver.driver_status === "A" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm uppercase tracking-tight">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          พร้อมใช้งาน
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-rose-50 text-rose-700 border-rose-100 shadow-sm uppercase tracking-tight">
-                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                          ไม่พร้อมใช้งาน
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        {hasAccess("view") && (
-                          <button
-                            onClick={() => openModal("view", driver)}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("update") && (
-                          <button
-                            onClick={() => openModal("edit", driver)}
-                            className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("delete") && (
-                          <button
-                            onClick={() => handleDelete(driver.driver_id)}
-                            className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {!isLoading && totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
-              แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง{" "}
-              {Math.min(currentPage * itemsPerPage, filteredDrivers.length)} จาก{" "}
-              {filteredDrivers.length} รายการ
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => jumpPages(-5)}
-                disabled={currentPage <= 1}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                -5 หน้า
-              </button>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                ก่อนหน้า
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter(
-                  (p) =>
-                    p === 1 ||
-                    p === totalPages ||
-                    Math.abs(p - currentPage) <= 1,
-                )
-                .map((page, index, array) => (
-                  <React.Fragment key={page}>
-                    {index > 0 && array[index - 1] !== page - 1 && (
-                      <span className="px-2 text-gray-400">...</span>
-                    )}
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                    >
-                      {page}
-                    </button>
-                  </React.Fragment>
-                ))}
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                ถัดไป
-              </button>
-              <button
-                onClick={() => jumpPages(5)}
-                disabled={currentPage >= totalPages}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                +5 หน้า
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      <DataTable
+        columns={columns}
+        data={currentDrivers}
+        isLoading={isLoading}
+        onSort={handleSort}
+        sortConfig={sortConfig}
+        rowKey={(row) => row.driver_id}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {/* Modal */}
       {isModalOpen && (

@@ -34,6 +34,7 @@ import {
 } from "./actions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
@@ -409,6 +410,166 @@ export default function AssignPage() {
     currentPage * itemsPerPage
   );
 
+  const columns: DataTableColumn<any>[] = [
+    {
+      header: "เลขที่คำขอ",
+      cell: (order) => (
+        <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold mx-auto">
+          <span className="text-[10px] text-slate-400">REQ</span>
+          <span>{String(order.request_id).padStart(3, "0")}</span>
+        </div>
+      ),
+    },
+    {
+      header: "ปลายทาง / สถานะ",
+      cell: (order) => (
+        <div>
+          <h3 className="font-bold text-slate-900 text-lg">
+            {order.journey_place}
+          </h3>
+          <div className="mt-1 flex flex-wrap gap-2">
+            {order.status_use_id === 4 && !order.pickup_status && (
+              <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 tracking-wide border border-emerald-200">
+                จัดรถแล้ว (รอการรับรถ)
+              </span>
+            )}
+            {order.status_use_id === 4 &&
+              (order.pickup_status === "PICKED_UP" ||
+                order.pickup_status === "TAXI_CALLED") && (
+                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500 tracking-wide border border-gray-200">
+                  {order.pickup_status === "TAXI_CALLED"
+                    ? "เรียกรถแท็กซี่แล้ว"
+                    : "รับรถเรียบร้อยแล้ว"}
+                </span>
+              )}
+            {order.status_use_id === 5 &&
+              order.pickup_method === "TAXI" && (
+                <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600 tracking-wide border border-amber-200">
+                  อนุมัติ taxi
+                </span>
+              )}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "วันเวลาเดินทาง",
+      cell: (order) => (
+        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
+          <div className="flex items-center gap-2">
+            <Calendar size={14} className="text-slate-400" />
+            <span>
+              {new Date(order.journey_date).toLocaleDateString("th-TH")} 
+              {order.journey_time ? ` เวลา ${order.journey_time.slice(0, 5)} น.` : ""}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "ผู้ขอใช้รถ",
+      cell: (order) => (
+        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
+          <div className="flex items-center gap-2">
+            <User size={14} className="text-slate-400" />
+            <span>{order.vc_user?.firstname} {order.vc_user?.lastname}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "ยานพาหนะที่จัดสรร",
+      cell: (order) => (
+        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
+          {order.car_id && (
+            <div className="flex items-center gap-2">
+              <Truck size={14} className="text-blue-400" />
+              <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
+                {order.vc_car_master?.car_number} ({order.vc_car_master?.vc_car_brand?.car_brand_name || "ไม่ระบุ"})
+              </span>
+            </div>
+          )}
+          
+          {(order.driver_id || order.self_drive) && (
+            <div className="flex items-center gap-2">
+              <Navigation size={14} className="text-amber-400" />
+              <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
+                {order.self_drive 
+                  ? "ขับเอง (ผู้ขอใช้รถ)" 
+                  : `${order.vc_driver?.vc_users?.firstname || ""} ${order.vc_driver?.vc_users?.lastname || ""}`}
+              </span>
+            </div>
+          )}
+
+          {order.pickup_method === "TAXI" && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm">🚕</span>
+              <span className="text-orange-700 bg-orange-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
+                ใช้รถรับจ้าง (Taxi)
+              </span>
+            </div>
+          )}
+          {!order.car_id && !order.driver_id && !order.self_drive && order.pickup_method !== "TAXI" && (
+            <span className="text-gray-400 italic text-xs">ยังไม่จัดสรร</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      header: "จัดการ",
+      className: "text-right",
+      cell: (order) => (
+        <div className="flex justify-end gap-2">
+          {(order.status_use_id === 4 &&
+            (order.pickup_status === "PICKED_UP" ||
+              order.pickup_status === "TAXI_CALLED")) ||
+            (order.status_use_id === 5 &&
+              order.pickup_method === "TAXI") ? (
+            <button
+              disabled
+              className="bg-gray-100 text-gray-400 px-4 py-2 rounded-md flex items-center gap-2 cursor-not-allowed border border-gray-200"
+            >
+              <CheckCircle size={16} />
+              <span className="font-bold text-sm">เสร็จสิ้น</span>
+            </button>
+          ) : isAssignExpired(order.journey_date, order.journey_time) ? (
+            <button
+              disabled
+              className="bg-rose-50 text-rose-500 px-4 py-2 rounded-md flex items-center gap-2 cursor-not-allowed border border-rose-200"
+            >
+              <AlertCircle size={16} />
+              <span className="font-bold text-sm">หมดอายุ</span>
+            </button>
+          ) : order.status_use_id === 4 ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => openAssignModal(order)}
+                className="bg-slate-50 text-slate-600 px-3 py-2 rounded-md flex items-center gap-2 hover:bg-slate-200 transition-colors duration-300 border border-slate-200"
+              >
+                <Edit2 size={16} />
+              </button>
+              <button
+                onClick={() => openPickupModal(order)}
+                className="bg-emerald-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-emerald-700 transition-colors duration-300 shadow-sm"
+              >
+                <CheckCircle size={16} />
+                <span className="font-bold text-sm">รับรถ</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => openAssignModal(order)}
+              className="bg-slate-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
+            >
+              <Settings size={16} />
+              <span className="font-medium text-sm">จัดสรรรถ</span>
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
       {/* --- (SECTION 1: PENDING ASSIGNMENT) --- */}
@@ -446,184 +607,15 @@ export default function AssignPage() {
             <p className="text-slate-400">ไม่มีรายการในสถานะนี้</p>
           </div>
         ) : (
-          <div className="grid gap-4">
-            {paginatedOrders.map((order) => (
-              <div
-                key={order.request_id}
-                className="bg-white rounded-md p-6 shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex items-center gap-6">
-                  {/* ID Tag */}
-                  <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
-                    <span className="text-[10px] text-slate-400">REQ</span>
-                    <span>{String(order.request_id).padStart(3, "0")}</span>
-                  </div>
-
-                  {/* Details */}
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-lg">
-                      {order.journey_place}
-                      {order.status_use_id === 4 && !order.pickup_status && (
-                        <span className="ml-3 inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 tracking-wide border border-emerald-200">
-                          จัดรถแล้ว (รอการรับรถ)
-                        </span>
-                      )}
-                      {order.status_use_id === 4 &&
-                        (order.pickup_status === "PICKED_UP" ||
-                          order.pickup_status === "TAXI_CALLED") && (
-                          <span className="ml-3 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500 tracking-wide border border-gray-200">
-                            {order.pickup_status === "TAXI_CALLED"
-                              ? "เรียกรถแท็กซี่แล้ว"
-                              : "รับรถเรียบร้อยแล้ว"}
-                          </span>
-                        )}
-                      {order.status_use_id === 5 &&
-                        order.pickup_method === "TAXI" && (
-                          <span className="ml-3 inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600 tracking-wide border border-amber-200">
-                            อนุมัติ taxi
-                          </span>
-                        )}
-                    </h3>
-                    <div className="flex flex-col gap-1.5 mt-2 text-sm text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} className="text-slate-400" />
-                        <span className="font-semibold text-slate-500">วันเดินทาง:</span>
-                        <span>
-                          {new Date(order.journey_date).toLocaleDateString("th-TH")} 
-                          {order.journey_time ? ` เวลา ${order.journey_time.slice(0, 5)} น.` : ""}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <User size={14} className="text-slate-400" />
-                        <span className="font-semibold text-slate-500">ผู้ขอใช้รถ:</span>
-                        <span>{order.vc_user?.firstname} {order.vc_user?.lastname}</span>
-                      </div>
-                      
-                      {/* Show assigned vehicle and driver if available */}
-                      {order.car_id && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <Truck size={14} className="text-blue-400" />
-                          <span className="font-semibold text-blue-500">รถที่จัดให้:</span>
-                          <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                            {order.vc_car_master?.car_number} ({order.vc_car_master?.vc_car_brand?.car_brand_name || "ไม่ระบุ"})
-                          </span>
-                        </div>
-                      )}
-                      
-                      {(order.driver_id || order.self_drive) && (
-                        <div className="flex items-center gap-2">
-                          <Navigation size={14} className="text-amber-400" />
-                          <span className="font-semibold text-amber-500">พนักงานขับรถ:</span>
-                          <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                            {order.self_drive 
-                              ? "ขับเอง (ผู้ขอใช้รถ)" 
-                              : `${order.vc_driver?.vc_users?.firstname || ""} ${order.vc_driver?.vc_users?.lastname || ""}`}
-                          </span>
-                        </div>
-                      )}
-
-                      {order.pickup_method === "TAXI" && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm">🚕</span>
-                          <span className="font-semibold text-orange-500">การจัดสรร:</span>
-                          <span className="text-orange-700 bg-orange-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                            ใช้รถรับจ้าง (Taxi)
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {(order.status_use_id === 4 &&
-                  (order.pickup_status === "PICKED_UP" ||
-                    order.pickup_status === "TAXI_CALLED")) ||
-                  (order.status_use_id === 5 &&
-                    order.pickup_method === "TAXI") ? (
-                  <button
-                    disabled
-                    className="bg-gray-100 text-gray-400 px-6 py-2.5 rounded-md flex items-center gap-2 cursor-not-allowed border border-gray-200"
-                  >
-                    <CheckCircle size={18} />
-                    <span className="font-bold">เสร็จสิ้น</span>
-                  </button>
-                ) : isAssignExpired(order.journey_date, order.journey_time) ? (
-                  <button
-                    disabled
-                    className="bg-rose-50 text-rose-500 px-6 py-2.5 rounded-md flex items-center gap-2 cursor-not-allowed border border-rose-200"
-                  >
-                    <AlertCircle size={18} />
-                    <span className="font-bold">คำขอจัดรถหมดอายุ</span>
-                  </button>
-                ) : order.status_use_id === 4 ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openAssignModal(order)}
-                      className="bg-slate-50 text-slate-600 px-4 py-2.5 rounded-md flex items-center gap-2 hover:bg-slate-200 transition-colors duration-300 border border-slate-200"
-                    >
-                      <Edit2 size={18} />
-                      <span className="font-bold">แก้ไข</span>
-                    </button>
-                    <button
-                      onClick={() => openPickupModal(order)}
-                      className="bg-emerald-600 text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-emerald-700 transition-colors duration-300 shadow-xl shadow-emerald-100"
-                    >
-                      <CheckCircle size={18} />
-                      <span className="font-bold">ยืนยันการรับรถ</span>
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => openAssignModal(order)}
-                    className="bg-slate-900 text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
-                  >
-                    <Settings size={18} />
-                    <span className="font-medium">จัดสรรยานพาหนะ</span>
-                  </button>
-                )}
-              </div>
-            ))}
-            
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6 px-2">
-                <span className="text-sm text-slate-500">
-                  แสดง {((currentPage - 1) * itemsPerPage) + 1} ถึง {Math.min(currentPage * itemsPerPage, filteredOrders.length)} จาก {filteredOrders.length} รายการ
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                  >
-                    ก่อนหน้า
-                  </button>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium transition-colors ${
-                          currentPage === page
-                            ? "bg-blue-600 text-white"
-                            : "text-slate-600 hover:bg-slate-50"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                  >
-                    ถัดไป
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <DataTable
+            columns={columns}
+            data={paginatedOrders}
+            isLoading={loading}
+            rowKey={(row) => row.request_id}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         )}
       </section>
 

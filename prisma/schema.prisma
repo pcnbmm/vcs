@@ -455,7 +455,9 @@ model vc_driver {
   upd_by                 String?                 @db.VarChar(50)
   upd_date               DateTime?               @db.Date
   tel                    String?                 @db.VarChar(15)
+  driver_type_id         Int?                    @default(1)
   vc_users               vc_users?               @relation(fields: [driver_code], references: [userid])
+  vc_driver_type         vc_driver_type?         @relation(fields: [driver_type_id], references: [driver_type_id])
   vc_driver_license_type vc_driver_license_type? @relation(fields: [licence_type], references: [license_type_id])
   vc_fuel_item           vc_fuel_item[]
   vc_order_item          vc_order_item[]
@@ -565,4 +567,10 @@ model vc_own_div_prop {
   upd_by          Int?
   upd_date        String?  @db.VarChar(50)
   div_code        vc_orgs? @relation(fields: [own_div_code], references: [orgid])
+}
+
+model vc_driver_type {
+  driver_type_id Int         @id
+  desc           String?     @db.VarChar(50)
+  vc_driver      vc_driver[]
 }

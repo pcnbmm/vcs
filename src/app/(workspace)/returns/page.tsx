@@ -23,6 +23,7 @@ import {
   Save,
   Loader2,
 } from "lucide-react";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import {
   getOrdersForReturn,
   saveReturnRecord,
@@ -303,171 +304,106 @@ export default function ReturnsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/80 text-slate-600 text-[11px] tracking-widest uppercase border-b border-slate-100">
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  ID / ทะเบียนรถ
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  ผู้เดินทาง / หน่วยงาน
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  พนักงานขับ / ประเภทรถ
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  สถานะการคืน
-                </th>
-                <th className="px-4 py-3 font-semibold text-center whitespace-nowrap">
-                  จัดการรายการ
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-                      <p className="text-slate-400 font-medium italic text-sm">
-                        กำลังโหลดข้อมูล...
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              ) : paginatedOrders.length > 0 ? (
-                paginatedOrders.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white hover:bg-slate-50 transition-colors group"
+        <DataTable
+          columns={[
+            {
+              header: "ID / ทะเบียนรถ",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-semibold text-slate-900 italic tracking-tighter">
+                    REQ-{String(item.request_id).padStart(4, "0")}
+                  </p>
+                  <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
+                    {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "ผู้เดินทาง / หน่วยงาน",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-bold text-slate-800">
+                    {item.vc_user?.firstname} {item.vc_user?.lastname}
+                  </p>
+                  <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
+                    {item.use_div_name || "-"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "พนักงานขับ / ประเภทรถ",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-bold text-slate-800">
+                    {item.self_drive
+                      ? item.vc_user?.firstname
+                        ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
+                        : "-"
+                      : item.vc_driver?.vc_users?.firstname
+                        ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
+                        : "-"}
+                  </p>
+                  <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
+                    {item.vc_car_master?.vc_car_spec?.car_spec_name ||
+                      item.vc_car_spec?.car_spec_name ||
+                      "-"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "สถานะการคืน",
+              cell: (item) => (
+                <div className="align-top">
+                  {item.status_use_id === 5 ? (
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      คืนรถแล้ว (เสร็จสิ้น)
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                      อนุมัติให้ใช้งาน (รอส่งคืน)
+                    </span>
+                  )}
+                </div>
+              ),
+            },
+            {
+              header: "จัดการรายการ",
+              className: "text-center",
+              cell: (item) => (
+                <div className="flex items-center justify-center gap-3 align-top">
+                  <button
+                    onClick={() => handleOpenViewModal(item)}
+                    className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+                    title="ดูรายละเอียด"
                   >
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-semibold text-slate-900 italic tracking-tighter">
-                        REQ-{String(item.request_id).padStart(4, "0")}
-                      </p>
-                      <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
-                        {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-bold text-slate-800">
-                        {item.vc_user?.firstname} {item.vc_user?.lastname}
-                      </p>
-                      <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
-                        {item.use_div_name || "-"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-bold text-slate-800">
-                        {item.self_drive
-                          ? item.vc_user?.firstname
-                            ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
-                            : "-"
-                          : item.vc_driver?.vc_users?.firstname
-                            ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
-                            : "-"}
-                      </p>
-                      <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
-                        {item.vc_car_master?.vc_car_spec?.car_spec_name ||
-                          item.vc_car_spec?.car_spec_name ||
-                          "-"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      {item.status_use_id === 5 ? (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                          คืนรถแล้ว (เสร็จสิ้น)
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                          อนุมัติให้ใช้งาน (รอส่งคืน)
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          onClick={() => handleOpenViewModal(item)}
-                          className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
-                          title="ดูรายละเอียด"
-                        >
-                          <Eye size={20} />
-                        </button>
-                        {item.status_use_id !== 5 && (
-                          <button
-                            onClick={() => handleOpenEditModal(item)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
-                          >
-                            <FileEdit size={18} />
-                            บันทึกรับคืน
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center">
-                    <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Car className="text-slate-200" size={32} />
-                    </div>
-                    <p className="text-slate-400 font-bold italic">
-                      ยังไม่มีข้อมูลรายการรอส่งคืนรถในขณะนี้
-                    </p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    <Eye size={20} />
+                  </button>
+                  {item.status_use_id !== 5 && (
+                    <button
+                      onClick={() => handleOpenEditModal(item)}
+                      className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
+                    >
+                      <FileEdit size={18} />
+                      บันทึกรับคืน
+                    </button>
+                  )}
+                </div>
+              ),
+            },
+          ]}
+          data={paginatedOrders}
+          isLoading={loading}
+          rowKey={(row) => row.request_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6 px-2">
-          <span className="text-sm text-slate-500">
-            แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง{" "}
-            {Math.min(currentPage * itemsPerPage, sortedOrders.length)} จาก{" "}
-            {sortedOrders.length} รายการ
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              ก่อนหน้า
-            </button>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-8 h-8 rounded-md text-sm font-medium transition-colors ${
-                    currentPage === i + 1
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-600 hover:bg-slate-100"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-slate-200 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              ถัดไป
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* MODAL */}
       {isModalOpen && (
