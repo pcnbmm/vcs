@@ -160,9 +160,9 @@ export default function PendingPage() {
             {
               header: "คำขอ",
               cell: (req) => (
-                <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
-                  <span className="text-[10px] text-slate-400">REQ</span>
-                  <span className="text-sm">{String(req.id).padStart(3, "0")}</span>
+                <div className="bg-slate-50 border border-slate-100 w-10 h-10 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
+                  <span className="text-[8px] text-slate-400">REQ</span>
+                  <span className="text-xs">{String(req.id).padStart(3, "0")}</span>
                 </div>
               )
             },
@@ -178,10 +178,15 @@ export default function PendingPage() {
             {
               header: "เส้นทาง",
               cell: (req) => (
-                <div className="flex items-center gap-2 max-w-[200px]">
-                  <span className="text-xs font-medium text-slate-500 truncate">{req.origin}</span>
-                  <ChevronRight size={12} className="text-slate-300 flex-shrink-0" />
-                  <span className="text-xs font-bold text-blue-600 truncate">{req.destination}</span>
+                <div className="flex flex-col gap-0.5 min-w-[150px]">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                    <span className="text-[11px] font-medium text-slate-500 truncate">{req.origin}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                    <span className="text-xs font-bold text-blue-600 truncate">{req.destination}</span>
+                  </div>
                 </div>
               )
             },
@@ -227,6 +232,7 @@ export default function PendingPage() {
           ]}
           data={paginatedRequests}
           isLoading={isLoading}
+          dense={true}
           rowKey={(row) => row.id}
           currentPage={currentPage}
           totalPages={totalPages}

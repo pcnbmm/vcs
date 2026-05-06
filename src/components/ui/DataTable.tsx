@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface DataTableColumn<T> {
   header: React.ReactNode;
@@ -23,6 +23,7 @@ export interface DataTableProps<T> {
   totalPages?: number;
   onPageChange?: (page: number) => void;
   onRowClick?: (row: T) => void;
+  dense?: boolean;
 }
 
 export function DataTable<T>({
@@ -38,6 +39,7 @@ export function DataTable<T>({
   totalPages,
   onPageChange,
   onRowClick,
+  dense = false,
 }: DataTableProps<T>) {
   return (
     <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
@@ -58,7 +60,7 @@ export function DataTable<T>({
                   <th
                     key={index}
                     onClick={() => isSortable && col.sortKey ? onSort(col.sortKey) : undefined}
-                    className={`py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
+                    className={`${dense ? "py-2 px-4" : "py-4 px-6"} text-xs font-semibold text-gray-500 uppercase tracking-wider ${
                       isSortable ? "cursor-pointer hover:bg-gray-100 select-none" : ""
                     } ${col.className || ""}`}
                   >
@@ -94,7 +96,7 @@ export function DataTable<T>({
                   className={`transition-colors ${onRowClick ? "cursor-pointer hover:bg-slate-50" : "hover:bg-gray-50/50"}`}
                 >
                   {columns.map((col, colIndex) => (
-                    <td key={colIndex} className={`py-4 px-6 ${col.className || ""}`}>
+                    <td key={colIndex} className={`${dense ? "py-2 px-4" : "py-4 px-6"} ${col.className || ""}`}>
                       {col.cell
                         ? col.cell(row)
                         : col.accessorKey
@@ -114,20 +116,73 @@ export function DataTable<T>({
           <span className="text-sm font-medium text-gray-500">
             หน้า {currentPage} จาก {totalPages}
           </span>
-          <div className="flex gap-1 flex-wrap">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => onPageChange(page)}
-                className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
-                  currentPage === page
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+          <div className="flex gap-1 flex-wrap items-center">
+            <button
+              onClick={() => onPageChange(1)}
+              disabled={currentPage === 1}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                currentPage === 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100"
+              }`}
+              title="หน้าแรก"
+            >
+              <ChevronsLeft size={16} />
+            </button>
+            <button
+              onClick={() => onPageChange(Math.max(1, (currentPage || 1) - 1))}
+              disabled={currentPage === 1}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                currentPage === 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100"
+              }`}
+              title="ก่อนหน้า"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {(() => {
+              const maxButtons = 5;
+              let startPage = Math.max(1, (currentPage || 1) - Math.floor(maxButtons / 2));
+              let endPage = startPage + maxButtons - 1;
+
+              if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxButtons + 1);
+              }
+
+              return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => onPageChange(page)}
+                  className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
+                    currentPage === page
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ));
+            })()}
+
+            <button
+              onClick={() => onPageChange(Math.min(totalPages, (currentPage || 1) + 1))}
+              disabled={currentPage === totalPages}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                currentPage === totalPages ? "text-gray-300 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100"
+              }`}
+              title="ถัดไป"
+            >
+              <ChevronRight size={16} />
+            </button>
+            <button
+              onClick={() => onPageChange(totalPages)}
+              disabled={currentPage === totalPages}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                currentPage === totalPages ? "text-gray-300 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100"
+              }`}
+              title="หน้าสุดท้าย"
+            >
+              <ChevronsRight size={16} />
+            </button>
           </div>
         </div>
       )}
