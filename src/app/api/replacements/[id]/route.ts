@@ -91,7 +91,6 @@ export async function PUT(
                 car_id: Number(car_id),
                 broken_car_id: originalCarNumber,
                 start_datetime: startDt.toISOString(),
-                start_date: startDt,
                 broken_datetime: broken_datetime || null,
               }
             : {}),
