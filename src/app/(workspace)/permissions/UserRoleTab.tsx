@@ -18,6 +18,7 @@ import {
   Users,
   ShieldCheck,
 } from "lucide-react";
+import { DataTable } from "@/components/ui/DataTable";
 
 export default function UserRoleTab() {
   const [groupedUserRoles, setGroupedUserRoles] = useState<any[]>([]);
@@ -168,6 +169,11 @@ export default function UserRoleTab() {
     }
   };
 
+  // ตรวจสอบว่า User ที่เลือกอยู่ในตารางที่มีการมอบหมายบทบาทไปแล้วหรือไม่
+  const isEditMode = groupedUserRoles.some(ur => String(ur.user_id) === formData.user_id);
+  // ตรวจสอบว่าเป็นการกด Edit มาจากรายการเดิม (มีข้อมูลบทบาทติดมา)
+  const isActualEditing = formData.roles_ids.length > 0 && isEditMode;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Action Bar */}
@@ -193,125 +199,78 @@ export default function UserRoleTab() {
 
       {/* Data Table */}
       <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ชื่อผู้ใช้ (Username)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ชื่อ-สกุล (พนักงาน)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  บทบาททั้งหมด (Roles)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={4} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-amber-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูล...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentUserRoles.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="py-12 text-center text-sm font-medium text-gray-500"
-                  >
-                    ไม่พบข้อมูล
-                  </td>
-                </tr>
-              ) : (
-                currentUserRoles.map((ur) => (
-                  <tr
-                    key={ur.user_id}
-                    className="hover:bg-amber-50/30 transition-colors"
-                  >
-                    <td className="py-4 px-6 relative">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-inner">
-                          <Users className="w-5 h-5 opacity-50" />
-                        </div>
-                        <span className="block text-sm font-bold text-gray-900">
-                          {ur.username || "-"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="block text-sm font-medium text-gray-800">
-                        {ur.fullname || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 max-w-[300px]">
-                      <div className="flex flex-wrap gap-2">
-                        {ur.roles.map((r: any, i: number) => (
-                          <span
-                            key={`${r.roles_id}-${i}`}
-                            className="inline-flex items-center gap-1 py-1 px-3 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold shadow-sm"
-                          >
-                            <ShieldCheck className="w-3 h-3" />
-                            {r.roles_name}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => openModal(ur)}
-                          className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors shrink-0"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(ur.user_id)}
-                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors shrink-0"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {!isLoading && totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
-              หน้า {currentPage} จาก {totalPages}
-            </span>
-            <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
+        <DataTable
+          columns={[
+            {
+              header: "ชื่อผู้ใช้ (Username)",
+              cell: (ur) => (
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-inner shrink-0">
+                    <Users className="w-5 h-5 opacity-50" />
+                  </div>
+                  <span className="block text-sm font-bold text-gray-900">
+                    {ur.username || "-"}
+                  </span>
+                </div>
+              ),
+            },
+            {
+              header: "ชื่อ-สกุล (พนักงาน)",
+              cell: (ur) => (
+                <span className="block text-sm font-medium text-gray-800">
+                  {ur.fullname || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "บทบาททั้งหมด (Roles)",
+              className: "max-w-[300px]",
+              cell: (ur) => (
+                <div className="flex flex-wrap gap-2">
+                  {ur.roles.map((r: any, i: number) => (
+                    <span
+                      key={`${r.roles_id}-${i}`}
+                      className="inline-flex items-center gap-1 py-1 px-3 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold shadow-sm"
+                    >
+                      <ShieldCheck className="w-3 h-3" />
+                      {r.roles_name}
+                    </span>
+                  ))}
+                </div>
+              ),
+            },
+            {
+              header: "จัดการ",
+              className: "text-right",
+              cell: (ur) => (
+                <div className="flex justify-end gap-2">
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
-                      currentPage === page
-                        ? "bg-amber-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
+                      ? "bg-amber-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
-                    {page}
+                    <Edit2 className="w-4 h-4" />
                   </button>
-                ),
-              )}
-            </div>
-          </div>
-        )}
+                  <button
+                    onClick={() => handleDelete(ur.user_id)}
+                    className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ),
+            },
+          ]}
+          data={currentUserRoles}
+          isLoading={isLoading}
+          rowKey={(row) => row.user_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* Modal Form */}
@@ -354,21 +313,34 @@ export default function UserRoleTab() {
                   onChange={(e) =>
                     setFormData({ ...formData, user_id: e.target.value })
                   }
-                  disabled={
-                    !!groupedUserRoles.find(
-                      (u) => String(u.user_id) === formData.user_id,
-                    ) && formData.roles_ids.length > 0
-                  } // Disable if editing existing
+                  disabled={isActualEditing}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <option value="">-- ค้นหาและเลือกผู้ใช้ --</option>
-                  {users.map((u) => (
-                    <option key={u.userid} value={u.userid}>
-                      {u.username} - {u.firstname} {u.lastname}{" "}
-                      {u.positionname ? `(${u.positionname})` : ""}
-                    </option>
-                  ))}
+                  {users.map((u) => {
+                    // ตรวจสอบว่าผู้ใช้นี้มีอยู่ในตารางที่ถูกกำหนดสิทธิ์ไปแล้วหรือไม่
+                    const isAssigned = groupedUserRoles.some(
+                      (ur) => String(ur.user_id) === String(u.userid)
+                    );
+
+                    // จะเลือกได้ก็ต่อเมื่อ "ยังไม่ถูกกำหนดสิทธิ์" หรือ "เป็นการกด Edit แล้วผู้ใช้คนนั้นคือคนที่กำลังถูก Edit อยู่"
+                    const isDisabled = isAssigned && !(isActualEditing && formData.user_id === String(u.userid));
+
+                    return (
+                      <option key={u.userid} value={u.userid} disabled={isDisabled}>
+                        {u.username} - {u.firstname} {u.lastname}{" "}
+                        {u.positionname ? `(${u.positionname})` : ""}
+                        {isDisabled ? " (กำหนดสิทธิ์แล้ว)" : ""}
+                      </option>
+                    );
+                  })}
                 </select>
+
+                {!isActualEditing && (
+                  <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-md border border-amber-100">
+                    ⚠️ ผู้ใช้ที่กำหนดสิทธิ์ไว้แล้วจะไม่แสดงในรายการ — หากต้องการแก้ไขให้กดปุ่ม ✏️ ที่รายการนั้นแทน
+                  </p>
+                )}
               </div>
 
               <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
@@ -388,18 +360,16 @@ export default function UserRoleTab() {
                       <div
                         key={r.roles_id}
                         onClick={() => handleRoleToggle(r.roles_id)}
-                        className={`flex items-start gap-3 p-4 rounded-md border transition-all cursor-pointer select-none group ${
-                          isSelected
-                            ? "border-amber-500 bg-amber-50"
-                            : "border-gray-100 bg-white hover:border-amber-200 hover:bg-amber-50/50"
-                        }`}
+                        className={`flex items-start gap-3 p-4 rounded-md border transition-all cursor-pointer select-none group ${isSelected
+                          ? "border-amber-500 bg-amber-50"
+                          : "border-gray-100 bg-white hover:border-amber-200 hover:bg-amber-50/50"
+                          }`}
                       >
                         <div
-                          className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
-                            isSelected
-                              ? "bg-amber-500 text-white"
-                              : "border border-gray-300 group-hover:border-amber-400"
-                          }`}
+                          className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${isSelected
+                            ? "bg-amber-500 text-white"
+                            : "border border-gray-300 group-hover:border-amber-400"
+                            }`}
                         >
                           {isSelected && (
                             <svg

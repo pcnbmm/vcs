@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function VehicleTab() {
   const { hasAccess } = usePermissions();
@@ -441,6 +442,136 @@ export default function VehicleTab() {
     }
   };
 
+  const columns: DataTableColumn<any>[] = [
+    {
+      header: "ทะเบียนรถ",
+      sortable: true,
+      sortKey: "car_number",
+      cell: (vehicle) => (
+        <>
+          <span className="block text-sm font-semibold text-gray-900">
+            {vehicle.car_number || "-"}
+          </span>
+          <span className="block text-xs font-medium text-gray-500 mt-0.5">
+            {vehicle.province_name || "-"}
+          </span>
+        </>
+      ),
+    },
+    {
+      header: "สถานะ",
+      sortable: true,
+      sortKey: "car_status_name",
+      cell: (vehicle) => {
+        const status = vehicle.car_status_name || "";
+        let colorClass = "bg-slate-50 text-slate-700 border-slate-100";
+        let dotClass = "bg-slate-500";
+
+        if (
+          status.includes("ปกติ") ||
+          status.includes("พร้อม") ||
+          status.includes("ใช้งานอยู่")
+        ) {
+          colorClass = "bg-emerald-50 text-emerald-700 border-emerald-100";
+          dotClass = "bg-emerald-500";
+        } else if (status.includes("ซ่อม") || status.includes("บำรุง")) {
+          colorClass = "bg-amber-50 text-amber-700 border-amber-100";
+          dotClass = "bg-amber-500";
+        } else if (status.includes("ยกเลิก") || status.includes("จำหน่าย")) {
+          colorClass = "bg-rose-50 text-rose-700 border-rose-100";
+          dotClass = "bg-rose-500";
+        } else if (status.includes("จอง")) {
+          colorClass = "bg-indigo-50 text-indigo-700 border-indigo-100";
+          dotClass = "bg-indigo-500";
+        }
+
+        return (
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${colorClass} shadow-sm uppercase tracking-tight`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${dotClass} animate-pulse`}
+            ></span>
+            {status || "-"}
+          </span>
+        );
+      },
+    },
+    {
+      header: "ยี่ห้อ / รุ่น",
+      sortable: true,
+      sortKey: "car_brand_name",
+      cell: (vehicle) => (
+        <>
+          <span className="block text-sm font-bold text-gray-800">
+            {vehicle.car_brand_name || "-"}
+          </span>
+          <span className="block text-xs text-gray-500 mt-0.5">
+            {vehicle.car_series_name || "-"}
+          </span>
+        </>
+      ),
+    },
+    {
+      header: "สเปค",
+      sortable: true,
+      sortKey: "car_spec_name",
+      cell: (vehicle) => (
+        <span className="text-sm font-medium text-gray-700">
+          {vehicle.car_spec_name || "-"}
+        </span>
+      ),
+    },
+    {
+      header: "หน่วยงาน",
+      sortable: true,
+      sortKey: "own_div_code",
+      cell: (vehicle) => {
+        if (!vehicle.own_div_code) return <span className="text-sm font-medium text-gray-700">-</span>;
+        const org = options?.orgs?.find(
+          (o: any) => String(o.orgid) === String(vehicle.own_div_code)
+        );
+        return (
+          <span className="text-sm font-medium text-gray-700">
+            {org ? org.orgname : vehicle.own_div_code}
+          </span>
+        );
+      },
+    },
+    {
+      header: "จัดการ",
+      className: "text-right",
+      cell: (vehicle) => (
+        <div className="flex justify-end gap-2">
+          {hasAccess("view") && (
+            <button
+              onClick={() => openModal("view", vehicle)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("update") && (
+            <button
+              onClick={() => openModal("edit", vehicle)}
+              className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("delete") && (
+            <button
+              onClick={() => handleDelete(vehicle.car_id)}
+              className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header, Search & Filters */}
@@ -604,275 +735,17 @@ export default function VehicleTab() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th
-                  onClick={() => handleSort("car_number")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  ทะเบียนรถ{" "}
-                  {sortConfig?.key === "car_number"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("car_status_name")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  สถานะ{" "}
-                  {sortConfig?.key === "car_status_name"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("car_brand_name")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  ยี่ห้อ / รุ่น{" "}
-                  {sortConfig?.key === "car_brand_name"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("car_spec_name")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  สเปค{" "}
-                  {sortConfig?.key === "car_spec_name"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("own_div_code")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  หน่วยงาน{" "}
-                  {sortConfig?.key === "own_div_code"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูลรถยนต์...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentVehicles.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center">
-                    <p className="text-sm font-medium text-gray-500">
-                      ไม่พบข้อมูลที่ค้นหา
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                currentVehicles.map((vehicle) => (
-                  <tr
-                    key={vehicle.car_id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="py-4 px-6">
-                      <span className="block text-sm font-semibold text-gray-900">
-                        {vehicle.car_number || "-"}
-                      </span>
-                      <span className="block text-xs font-medium text-gray-500 mt-0.5">
-                        {vehicle.province_name || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      {(() => {
-                        const status = vehicle.car_status_name || "";
-                        let colorClass =
-                          "bg-slate-50 text-slate-700 border-slate-100";
-                        let dotClass = "bg-slate-500";
-
-                        if (
-                          status.includes("ปกติ") ||
-                          status.includes("พร้อม") ||
-                          status.includes("ใช้งานอยู่")
-                        ) {
-                          colorClass =
-                            "bg-emerald-50 text-emerald-700 border-emerald-100";
-                          dotClass = "bg-emerald-500";
-                        } else if (
-                          status.includes("ซ่อม") ||
-                          status.includes("บำรุง")
-                        ) {
-                          colorClass =
-                            "bg-amber-50 text-amber-700 border-amber-100";
-                          dotClass = "bg-amber-500";
-                        } else if (
-                          status.includes("ยกเลิก") ||
-                          status.includes("จำหน่าย")
-                        ) {
-                          colorClass =
-                            "bg-rose-50 text-rose-700 border-rose-100";
-                          dotClass = "bg-rose-500";
-                        } else if (status.includes("จอง")) {
-                          colorClass =
-                            "bg-indigo-50 text-indigo-700 border-indigo-100";
-                          dotClass = "bg-indigo-500";
-                        }
-
-                        return (
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${colorClass} shadow-sm uppercase tracking-tight`}
-                          >
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full ${dotClass} animate-pulse`}
-                            ></span>
-                            {status || "-"}
-                          </span>
-                        );
-                      })()}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="block text-sm font-bold text-gray-800">
-                        {vehicle.car_brand_name || "-"}
-                      </span>
-                      <span className="block text-xs text-gray-500 mt-0.5">
-                        {vehicle.car_series_name || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-sm font-medium text-gray-700">
-                      {vehicle.car_spec_name || "-"}
-                    </td>
-                    <td className="py-4 px-6 text-sm font-medium text-gray-700">
-                      {(() => {
-                        if (!vehicle.own_div_code) return "-";
-                        const org = options?.orgs?.find((o: any) => String(o.orgid) === String(vehicle.own_div_code));
-                        return org ? org.orgname : vehicle.own_div_code;
-                      })()}
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        {hasAccess("view") && (
-                          <button
-                            onClick={() => openModal("view", vehicle)}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("update") && (
-                          <button
-                            onClick={() => openModal("edit", vehicle)}
-                            className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("delete") && (
-                          <button
-                            onClick={() => handleDelete(vehicle.car_id)}
-                            className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {!isLoading && filteredVehicles.length > 0 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
-              แสดง {(currentPage - 1) * itemsPerPage + 1} -{" "}
-              {Math.min(currentPage * itemsPerPage, filteredVehicles.length)}{" "}
-              จาก {filteredVehicles.length} รายการ
-            </span>
-            <div className="flex items-center gap-4">
-              {/* Items per page selector */}
-              <select
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer pr-8"
-                style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em' }}
-              >
-                <option value={10}>10 / หน้า</option>
-                <option value={20}>20 / หน้า</option>
-                <option value={50}>50 / หน้า</option>
-                <option value={100}>100 / หน้า</option>
-              </select>
-
-              {/* Pagination controls */}
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(
-                    (p) =>
-                      p === 1 ||
-                      p === totalPages ||
-                      Math.abs(p - currentPage) <= 1,
-                  )
-                  .map((page, index, array) => (
-                    <React.Fragment key={page}>
-                      {index > 0 && array[index - 1] !== page - 1 && (
-                        <span className="px-2 text-gray-400">...</span>
-                      )}
-                      <button
-                        onClick={() => handlePageChange(page)}
-                        className={`w-8 h-8 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${
-                          currentPage === page
-                            ? "bg-blue-600 text-white shadow-sm"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    </React.Fragment>
-                  ))}
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      <DataTable
+        columns={columns}
+        data={currentVehicles}
+        isLoading={isLoading}
+        onSort={handleSort}
+        sortConfig={sortConfig}
+        rowKey={(row) => row.car_id}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {/* Modal Form */}
       {isModalOpen && (

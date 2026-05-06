@@ -44,6 +44,7 @@ import {
   Search,
   ChevronDown,
 } from "lucide-react";
+import { DataTable } from "@/components/ui/DataTable";
 
 const styles = StyleSheet.create({
   page: {
@@ -284,8 +285,17 @@ export default function ReportsPage() {
   const [columns, setColumns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   const selectedReportName =
     REPORT_TYPES.find((r) => r.id === selectedReportId)?.name || "";
+
+  // Reset page when report type or status changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedReportId, selectedStatus]);
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -475,6 +485,12 @@ export default function ReportsPage() {
     saveAs(blob, `${fileName}.pdf`);
   };
 
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const currentData = data.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -574,56 +590,17 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50/80 border-b border-gray-200">
-                {columns.map((col, i) => (
-                  <th
-                    key={i}
-                    className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"
-                  >
-                    {col.header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="px-6 py-12 text-center text-gray-400 italic"
-                  >
-                    กำลังดึงข้อมูล...
-                  </td>
-                </tr>
-              ) : data.length > 0 ? (
-                data.map((row, idx) => (
-                  <tr
-                    key={idx}
-                    className="hover:bg-blue-50/30 transition-colors"
-                  >
-                    {columns.map((col, i) => (
-                      <td key={i} className="px-6 py-4 text-sm text-gray-600">
-                        {row[col.key] || "-"}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="px-6 py-12 text-center text-gray-400"
-                  >
-                    ไม่มีข้อมูลแสดงผล
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={columns.map((col) => ({
+            header: col.header,
+            cell: (row: any) => <span className="text-sm text-gray-600">{row[col.key] || "-"}</span>,
+          }))}
+          data={currentData}
+          isLoading={loading}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

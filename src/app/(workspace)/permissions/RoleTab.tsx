@@ -8,6 +8,7 @@ import {
 
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Edit2, Trash2, X, Loader2, Save } from "lucide-react";
+import { DataTable } from "@/components/ui/DataTable";
 
 export default function RoleTab() {
   const [roles, setRoles] = useState<any[]>([]);
@@ -154,112 +155,60 @@ export default function RoleTab() {
 
       {/* Data Table */}
       <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  รหัสบทบาท
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ชื่อบทบาท
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  รายละเอียด
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={4} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูลบทบาท...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentRoles.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="py-12 text-center text-sm font-medium text-gray-500"
-                  >
-                    ไม่พบข้อมูล
-                  </td>
-                </tr>
-              ) : (
-                currentRoles.map((role) => (
-                  <tr
-                    key={role.roles_id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
-                        ID: {role.roles_id}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="block text-sm font-bold text-gray-900">
-                        {role.roles_name}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="block text-sm text-gray-600">
-                        {role.description || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => openModal("edit", role)}
-                          className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(role.roles_id)}
-                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {!isLoading && totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
-              หน้า {currentPage} จาก {totalPages}
-            </span>
-            <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
+        <DataTable
+          columns={[
+            {
+              header: "รหัสบทบาท",
+              cell: (role) => (
+                <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                  ID: {role.roles_id}
+                </span>
+              ),
+            },
+            {
+              header: "ชื่อบทบาท",
+              cell: (role) => (
+                <span className="block text-sm font-bold text-gray-900">
+                  {role.roles_name}
+                </span>
+              ),
+            },
+            {
+              header: "รายละเอียด",
+              cell: (role) => (
+                <span className="block text-sm text-gray-600">
+                  {role.description || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "จัดการ",
+              className: "text-right",
+              cell: (role) => (
+                <div className="flex justify-end gap-2">
                   <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
-                      currentPage === page
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
+                    onClick={() => openModal("edit", role)}
+                    className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
                   >
-                    {page}
+                    <Edit2 className="w-4 h-4" />
                   </button>
-                ),
-              )}
-            </div>
-          </div>
-        )}
+                  <button
+                    onClick={() => handleDelete(role.roles_id)}
+                    className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ),
+            },
+          ]}
+          data={currentRoles}
+          isLoading={isLoading}
+          rowKey={(row) => row.roles_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* Modal Form */}
