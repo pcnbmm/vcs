@@ -494,54 +494,46 @@ export default function ReportsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
-      {/* Header & Export Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-3">
-          <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-          <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
-            ระบบรายงาน (REPORTS)
-          </h2>
-        </div>
+      {/* Selector & Export Actions */}
+      <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-500">
+        <div className="flex flex-col lg:flex-row gap-6 items-end">
+          <div className="flex-1 space-y-2 w-full">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">เลือกประเภทรายงาน</label>
+            <div className="relative group">
+              <select
+                value={selectedReportId}
+                onChange={(e) => setSelectedReportId(e.target.value)}
+                className="w-full appearance-none bg-slate-50 border border-slate-100 rounded-xl px-4 py-3.5 pr-10 focus:outline-none focus:ring-4 focus:ring-blue-50 font-bold text-slate-700 transition-all hover:bg-slate-100"
+              >
+                {REPORT_TYPES.map((report) => (
+                  <option key={report.id} value={report.id}>
+                    {report.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-blue-500 transition-colors" size={18} />
+            </div>
+          </div>
 
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={exportToExcel}
-            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
-          >
-            <FileSpreadsheet size={16} /> EXCEL
-          </button>
-          <button
-            onClick={exportToWord}
-            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
-          >
-            <FileText size={16} /> WORD
-          </button>
-          <button
-            onClick={exportToPDF}
-            className="flex items-center gap-2 bg-rose-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-100"
-          >
-            <FileIcon size={16} /> PDF
-          </button>
-        </div>
-      </div>
-
-      {/* Selectors */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div className="space-y-2">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">เลือกประเภทรายงาน</label>
-          <div className="relative group">
-            <select
-              value={selectedReportId}
-              onChange={(e) => setSelectedReportId(e.target.value)}
-              className="w-full appearance-none bg-slate-50 border border-slate-100 rounded-xl px-4 py-3.5 pr-10 focus:outline-none focus:ring-4 focus:ring-blue-50 font-bold text-slate-700 transition-all hover:bg-slate-100"
+          <div className="flex flex-wrap gap-2 pb-1">
+            <button
+              onClick={exportToExcel}
+              className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95"
             >
-              {REPORT_TYPES.map((report) => (
-                <option key={report.id} value={report.id}>
-                  {report.name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-blue-500 transition-colors" size={18} />
+              <FileSpreadsheet size={16} /> EXCEL
+            </button>
+            <button
+              onClick={exportToWord}
+              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-3 rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-95"
+            >
+              <FileText size={16} /> WORD
+            </button>
+            <button
+              onClick={exportToPDF}
+              className="flex items-center gap-2 bg-rose-600 text-white px-5 py-3 rounded-xl text-xs font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-100 active:scale-95"
+            >
+              <FileIcon size={16} /> PDF
+            </button>
           </div>
         </div>
 

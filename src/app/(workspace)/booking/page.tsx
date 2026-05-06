@@ -329,10 +329,15 @@ export default function VehicleRequestPage() {
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="grid grid-cols-1 gap-8">
         <div className="w-full space-y-8">
-          <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+          <div className="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none select-none">
+              <Car size={180} />
+            </div>
+
             <div className="relative space-y-10">
-              <div className="flex items-center gap-3 border-gray-200">
-                <h2 className="text-xl font-semibold text-black uppercase tracking-tight">
+              <div className="flex items-center gap-3 border-b border-gray-100 pb-5">
+                <div className="w-1.5 h-6 bg-blue-600 rounded-full shadow-sm"></div>
+                <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
               </div>
@@ -671,10 +676,10 @@ function FormField({
 }) {
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-        <Icon className="w-4 h-4 text-blue-500" />
+      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+        <Icon size={12} className="text-blue-500" />
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {required && <span className="text-rose-500 ml-1">*</span>}
       </label>
       {children}
     </div>
