@@ -1,10 +1,5 @@
 "use client";
-import {
-  showSuccess,
-  showError,
-  showWarning,
-  showConfirm,
-} from "@/lib/sweetalert";
+import { showSuccess, showError, showWarning } from "@/lib/sweetalert";
 import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
@@ -19,7 +14,6 @@ import flatpickr from "flatpickr";
 import { useRef } from "react";
 import "flatpickr/dist/flatpickr.min.css";
 import {
-  FileText,
   Car,
   MapPin,
   Calendar,
@@ -32,7 +26,6 @@ import {
   X,
   Loader2,
   Navigation as NavIcon,
-  Map as MapIcon,
 } from "lucide-react";
 
 export default function VehicleRequestPage() {
@@ -40,7 +33,6 @@ export default function VehicleRequestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [carSpecs, setCarSpecs] = useState<any[]>([]);
   const [orgs, setOrgs] = useState<any[]>([]);
-  const getTodayDate = () => new Date().toISOString().split("T")[0];
   const [drivers, setDrivers] = useState<any[]>([]);
   const startDateRef = useRef<HTMLInputElement>(null);
   const endDateRef = useRef<HTMLInputElement>(null);
@@ -66,21 +58,30 @@ export default function VehicleRequestPage() {
         : state.isFocused
           ? "#f8fafc"
           : "#ffffff",
-      color: "#1e293b",
+      color: "#000000",
       cursor: "pointer",
       padding: "0.75rem 1.5rem",
+      fontSize: "0.875rem",
+      fontWeight: "bold",
     }),
     singleValue: (base: any) => ({
       ...base,
       fontWeight: "bold",
       color: "#000000",
+      fontSize: "0.875rem",
     }),
     placeholder: (base: any) => ({
       ...base,
+      color: "#6b7280",
+      fontWeight: "bold",
+      fontSize: "0.875rem",
+    }),
+    input: (base: any) => ({
+      ...base,
       color: "#000000",
       fontWeight: "bold",
+      fontSize: "0.875rem",
     }),
-    input: (base: any) => ({ ...base, color: "#000000", fontWeight: "bold" }),
     menu: (base: any) => ({
       ...base,
       borderRadius: "1rem",
@@ -92,10 +93,6 @@ export default function VehicleRequestPage() {
   };
   const [mapKey, setMapKey] = useState(0);
   const router = useRouter();
-  const getCurrentTime = () => {
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  };
 
   const [formData, setFormData] = useState({
     ownerDept: "",
@@ -307,12 +304,10 @@ export default function VehicleRequestPage() {
     return () => fp?.destroy();
   }, []);
 
-  // ส่วนของวันที่เดินทางกลับ (ทำเหมือนกัน)
   useEffect(() => {
-    let fp: any; // ประกาศตัวแปร
+    let fp: any;
     if (endDateRef.current) {
       fp = flatpickr(endDateRef.current, {
-        // เก็บ instance ไว้ใน fp
         dateFormat: "d/m/Y",
         onChange: (dates) => {
           if (!dates || dates.length === 0 || !dates[0]) return;
@@ -322,7 +317,7 @@ export default function VehicleRequestPage() {
         },
       });
     }
-    return () => fp?.destroy(); // ต้องมีบรรทัดนี้เพื่อป้องกัน UI บั๊ก
+    return () => fp?.destroy();
   }, []);
 
   return (
@@ -427,8 +422,8 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
 
-                {/* Row 3 - Destination & Map */}
-                <div className="md:col-span-2 space-y-4">
+                {/* Row 3, Map */}
+                <div className="md:col-span-2 space-y-4 placeholder:text-gray-500">
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
                     <MapBox
                       key={mapKey}
@@ -444,47 +439,41 @@ export default function VehicleRequestPage() {
                     />
                   </FormField>
 
+                  {/* Latitude, Longitude */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" /> Latitude
-                      </label>
+                    <FormField label="ละติจูด" icon={NavIcon}>
                       <input
                         type="text"
                         value={
                           formData.lat ? Number(formData.lat).toFixed(6) : ""
                         }
                         readOnly
-                        placeholder="รอเลือกปลายทาง"
+                        placeholder="-"
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />{" "}
-                        Longitude
-                      </label>
+                    </FormField>
+                    <FormField label="ลองจิจูด" icon={NavIcon}>
                       <input
                         type="text"
                         value={
-                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                          formData.lon ? Number(formData.lon).toFixed(6) : ""
                         }
                         readOnly
-                        placeholder="รอเลือกปลายทาง"
+                        placeholder="-"
                         className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
-                    </div>
+                    </FormField>
                   </div>
                 </div>
 
-                {/* Departure */}
+                {/* Row 4 */}
                 <FormField label="วันที่เดินทางไป" icon={Calendar} required>
                   <input
                     ref={startDateRef}
                     type="text"
-                    placeholder="dd/mm/yyyy"
+                    placeholder="วัน/เดือน/ปี"
                     readOnly
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางไป" icon={Clock} required>
@@ -494,14 +483,14 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
 
-                {/* Return */}
+                {/* Row 5 */}
                 <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
                   <input
                     ref={endDateRef}
                     type="text"
-                    placeholder="dd/mm/yyyy"
+                    placeholder="วัน/เดือน/ปี"
                     readOnly
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
+                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
                   />
                 </FormField>
                 <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
@@ -511,26 +500,24 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
 
-                {/* Self Drive */}
-                <div className="md:col-span-2 space-y-3 relative">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
-                    <input
-                      type="checkbox"
-                      checked={formData.selfDrive}
-                      onChange={(e) => {
-                        handleInputChange("selfDrive", e.target.checked);
-                        handleInputChange("driverId", 0);
-                      }}
-                      className="w-5 h-5 cursor-pointer"
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="w-full text-sm font-bold text-black">
-                        ขับรถด้วยตนเอง
+                {/* Row 6 */}
+                <div className="md:col-span-2 space-y-3">
+                  <FormField label="ขับรถด้วยตนเอง" icon={User}>
+                    <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                      <input
+                        type="checkbox"
+                        checked={formData.selfDrive}
+                        onChange={(e) => {
+                          handleInputChange("selfDrive", e.target.checked);
+                          handleInputChange("driverId", 0);
+                        }}
+                        className="w-5 h-5 cursor-pointer"
+                      />
+                      <span className="text-sm font-bold text-gray-700">
+                        ยืนยัน
                       </span>
-                    </div>
-                  </label>
-
-
+                    </label>
+                  </FormField>
 
                   {formData.selfDrive && (
                     <div className="px-4">
@@ -567,8 +554,8 @@ export default function VehicleRequestPage() {
                         />
                         {!formData.driverId && (
                           <p className="text-xs text-red-500 font-medium mt-1">
-                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
-                            กรุณาติดต่อ Admin
+                            กรุณาเลือกชื่อคนขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ
+                            Admin *
                           </p>
                         )}
                       </FormField>
@@ -576,6 +563,7 @@ export default function VehicleRequestPage() {
                   )}
                 </div>
 
+                {/* Row 7 */}
                 <div className="md:col-span-2">
                   <FormField label="หมายเหตุ" icon={MessageSquare} required>
                     <textarea
@@ -585,11 +573,12 @@ export default function VehicleRequestPage() {
                         handleInputChange("objective", e.target.value)
                       }
                       placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
-                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm resize-none placeholder:text-gray-500"
                     />
                   </FormField>
                 </div>
 
+                {/* Row 8 */}
                 <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4 md:gap-x-8">
                   <FormField label="จำนวนผู้เดินทาง" icon={Users} required>
                     <div className="relative">
@@ -601,7 +590,7 @@ export default function VehicleRequestPage() {
                         }
                         placeholder="0"
                         min="1"
-                        className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm placeholder:text-gray-500"
                       />
                       <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
                         คน
@@ -623,13 +612,14 @@ export default function VehicleRequestPage() {
                         handleInputChange("phone", val);
                       }}
                       placeholder="0xxxxxxxxx"
-                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm placeholder:text-gray-500"
                     />
                   </FormField>
                 </div>
               </div>
             </div>
 
+            {/* Button */}
             <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
               <button
                 onClick={resetForm}
@@ -671,7 +661,7 @@ function FormField({
 }) {
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
+      <label className="flex items-center gap-2 text-sm font-bold text-black">
         <Icon className="w-4 h-4 text-blue-500" />
         {label}
         {required && <span className="text-red-500">*</span>}
