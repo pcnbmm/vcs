@@ -787,147 +787,154 @@ export default function VehicleTab() {
       >
         <div className="space-y-8">
           <FormSection title="ข้อมูลหลักของรถยนต์">
-            <InputField
-              label="เลขทะเบียนรถ"
-              required
-              value={formData.car_number}
-              onChange={(v: any) => setFormData({ ...formData, car_number: v })}
-              disabled={modalMode === "view"}
-              placeholder="เช่น กข 1234"
-            />
-            <SelectField
-              label="จังหวัด"
-              required
-              value={formData.car_province_id}
-              onChange={(v: any) => setFormData({ ...formData, car_province_id: v })}
-              options={options?.provinces}
-              valueKey="province_id"
-              labelKey="province_name"
-              disabled={modalMode === "view"}
-            />
-            <div className="space-y-2.5">
-              <label className="text-sm font-semibold text-gray-800 ml-1">ยี่ห้อรถ</label>
-              <input
-                type="text"
-                value={formData.temp_brand_name || ""}
-                disabled
-                className="w-full px-4 py-3.5 bg-gray-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 shadow-sm"
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <InputField
+                label="เลขทะเบียนรถ"
+                required
+                value={formData.car_number}
+                onChange={(v: any) => setFormData({ ...formData, car_number: v })}
+                disabled={modalMode === "view"}
+                placeholder="เช่น กข 1234"
+              />
+              <SelectField
+                label="จังหวัด"
+                required
+                value={formData.car_province_id}
+                onChange={(v: any) => setFormData({ ...formData, car_province_id: v })}
+                options={options?.provinces}
+                valueKey="province_id"
+                labelKey="province_name"
+                disabled={modalMode === "view"}
+              />
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">ยี่ห้อรถ</label>
+                <input
+                  type="text"
+                  value={formData.temp_brand_name || ""}
+                  disabled
+                  className="w-full px-4 py-2.5 bg-gray-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-500"
+                />
+              </div>
+              <SelectField
+                label="สีรถ"
+                value={formData.color_id}
+                onChange={(v: any) => setFormData({ ...formData, color_id: v })}
+                options={options?.colors}
+                valueKey="color_id"
+                labelKey="color_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="สเปครถ"
+                value={formData.car_spec_id}
+                onChange={(v: any) => setFormData({ ...formData, car_spec_id: v })}
+                options={options?.carSpecs}
+                valueKey="car_spec_id"
+                labelKey="car_spec_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="สถานะรถยนต์"
+                value={formData.car_status_id}
+                onChange={(v: any) => setFormData({ ...formData, car_status_id: v })}
+                options={options?.statuses}
+                valueKey="car_status_id"
+                labelKey="car_status_name"
+                disabled={modalMode === "view" || modalMode === "add"}
               />
             </div>
-            <SelectField
-              label="สีรถ"
-              value={formData.color_id}
-              onChange={(v: any) => setFormData({ ...formData, color_id: v })}
-              options={options?.colors}
-              valueKey="color_id"
-              labelKey="color_name"
-              disabled={modalMode === "view"}
-            />
-            <SelectField
-              label="สเปครถ"
-              value={formData.car_spec_id}
-              onChange={(v: any) => setFormData({ ...formData, car_spec_id: v })}
-              options={options?.carSpecs}
-              valueKey="car_spec_id"
-              labelKey="car_spec_name"
-              disabled={modalMode === "view"}
-            />
-            <SelectField
-              label="สถานะรถยนต์"
-              value={formData.car_status_id}
-              onChange={(v: any) => setFormData({ ...formData, car_status_id: v })}
-              options={options?.statuses}
-              valueKey="car_status_id"
-              labelKey="car_status_name"
-              disabled={modalMode === "view" || modalMode === "add"}
-            />
           </FormSection>
 
           <FormSection title="ข้อมูลทางเทคนิค">
-            <InputField
-              label="เลขเครื่องยนต์"
-              value={formData.machine_no}
-              onChange={(v: any) => setFormData({ ...formData, machine_no: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="เลขตัวถัง"
-              value={formData.body_no}
-              onChange={(v: any) => setFormData({ ...formData, body_no: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="รหัสเครื่องยนต์"
-              value={formData.machine_id}
-              onChange={(v: any) => setFormData({ ...formData, machine_id: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="ความจุกระบอกสูบ (CC)"
-              type="number"
-              value={formData.cylinder_capacityp}
-              onChange={(v: any) => setFormData({ ...formData, cylinder_capacityp: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="แรงม้า"
-              type="number"
-              value={formData.horse_power}
-              onChange={(v: any) => setFormData({ ...formData, horse_power: v })}
-              disabled={modalMode === "view"}
-            />
-            <SelectField
-              label="ประเภทน้ำมัน"
-              value={formData.oil_type_id}
-              onChange={(v: any) => setFormData({ ...formData, oil_type_id: v })}
-              options={options?.oilTypes}
-              valueKey="oil_type_id"
-              labelKey="oil_type_name"
-              disabled={modalMode === "view"}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <InputField
+                label="เลขเครื่องยนต์"
+                value={formData.machine_no}
+                onChange={(v: any) => setFormData({ ...formData, machine_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="เลขตัวถัง"
+                value={formData.body_no}
+                onChange={(v: any) => setFormData({ ...formData, body_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="รหัสเครื่องยนต์"
+                value={formData.machine_id}
+                onChange={(v: any) => setFormData({ ...formData, machine_id: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="ความจุกระบอกสูบ (CC)"
+                type="number"
+                value={formData.cylinder_capacityp}
+                onChange={(v: any) => setFormData({ ...formData, cylinder_capacityp: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="แรงม้า"
+                type="number"
+                value={formData.horse_power}
+                onChange={(v: any) => setFormData({ ...formData, horse_power: v })}
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="ประเภทน้ำมัน"
+                value={formData.oil_type_id}
+                onChange={(v: any) => setFormData({ ...formData, oil_type_id: v })}
+                options={options?.oilTypes}
+                valueKey="oil_type_id"
+                labelKey="oil_type_name"
+                disabled={modalMode === "view"}
+              />
+            </div>
           </FormSection>
 
           <FormSection title="ข้อมูลการจดทะเบียนและสัญญา">
-            <SelectField
-              label="ประเภทรถยนต์"
-              value={formData.car_type_id}
-              onChange={(v: any) => setFormData({ ...formData, car_type_id: v })}
-              options={options?.carTypes}
-              valueKey="car_type_id"
-              labelKey="car_type_name"
-              disabled={modalMode === "view"}
-            />
-            <SelectField
-              label="ประเภทการจดทะเบียน"
-              value={formData.car_type_regis_id}
-              onChange={(v: any) => setFormData({ ...formData, car_type_regis_id: v })}
-              options={options?.typeRegis}
-              valueKey="type_regis_id"
-              labelKey="type_regis_name"
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="วันที่จดทะเบียน"
-              type="date"
-              value={formData.regis_date}
-              onChange={(v: any) => setFormData({ ...formData, regis_date: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="เลขที่ Fleet Card"
-              value={formData.fleetcard_no}
-              onChange={(v: any) => setFormData({ ...formData, fleetcard_no: v })}
-              disabled={modalMode === "view"}
-            />
-            <InputField
-              label="รหัสอ้างอิงรถยนต์ (Ref)"
-              value={formData.ref_car}
-              onChange={(v: any) => setFormData({ ...formData, ref_car: v })}
-              disabled={modalMode === "view"}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <SelectField
+                label="ประเภทรถยนต์"
+                value={formData.car_type_id}
+                onChange={(v: any) => setFormData({ ...formData, car_type_id: v })}
+                options={options?.carTypes}
+                valueKey="car_type_id"
+                labelKey="car_type_name"
+                disabled={modalMode === "view"}
+              />
+              <SelectField
+                label="ประเภทการจดทะเบียน"
+                value={formData.car_type_regis_id}
+                onChange={(v: any) => setFormData({ ...formData, car_type_regis_id: v })}
+                options={options?.typeRegis}
+                valueKey="type_regis_id"
+                labelKey="type_regis_name"
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="วันที่จดทะเบียน"
+                type="date"
+                value={formData.regis_date}
+                onChange={(v: any) => setFormData({ ...formData, regis_date: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="เลขที่ Fleet Card"
+                value={formData.fleetcard_no}
+                onChange={(v: any) => setFormData({ ...formData, fleetcard_no: v })}
+                disabled={modalMode === "view"}
+              />
+              <InputField
+                label="รหัสอ้างอิงรถยนต์ (Ref)"
+                value={formData.ref_car}
+                onChange={(v: any) => setFormData({ ...formData, ref_car: v })}
+                disabled={modalMode === "view"}
+              />
+            </div>
           </FormSection>
 
           <FormSection title="ภาษี ประกัน และต้นทุน">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               <InputField
                 label="วันที่เริ่มสัญญา/ประกัน"
                 type="date"
@@ -973,6 +980,7 @@ export default function VehicleTab() {
                 value={formData.flag}
                 disabled={true}
               />
+            </div>
           </FormSection>
         </div>
       </Modal>
@@ -1139,14 +1147,12 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-slate-50 p-7 rounded-2xl border border-slate-100 col-span-1 lg:col-span-3">
-      <h3 className="text-sm font-bold text-slate-800 mb-6 pb-4 border-b border-slate-200/60 flex items-center gap-3">
+    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 col-span-1 lg:col-span-3">
+      <h3 className="text-sm font-bold text-slate-800 mb-5 pb-3 border-b border-slate-200/60 flex items-center gap-2">
         <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
         {title}
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
@@ -1163,8 +1169,8 @@ function InputField({
   maxLength,
 }: any) {
   return (
-    <div className="space-y-2.5">
-      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1 ml-1">
+    <div className="space-y-1.5 group">
+      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <input
@@ -1175,7 +1181,7 @@ function InputField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none disabled:bg-slate-100/50 disabled:text-slate-400 disabled:cursor-not-allowed placeholder:font-normal placeholder:text-slate-300 shadow-sm"
+        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none disabled:bg-slate-100/50 disabled:text-slate-400 disabled:cursor-not-allowed placeholder:font-normal placeholder:text-slate-300 shadow-sm"
       />
     </div>
   );
@@ -1200,8 +1206,8 @@ function SelectField({
     formattedOptions.find((o: any) => o.value === String(value)) || null;
 
   return (
-    <div className="space-y-2.5">
-      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1 ml-1">
+    <div className="space-y-1.5 group">
+      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <Select
