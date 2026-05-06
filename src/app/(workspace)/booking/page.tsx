@@ -114,6 +114,7 @@ export default function VehicleRequestPage() {
     phone: "",
     selfDrive: false,
     driverId: 0,
+    isUrgent: false,
   });
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -194,7 +195,8 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_causes", formData.objective);
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
-      dataToSubmit.append("self_drive", formData.selfDrive ? "1" : "0");
+      dataToSubmit.append("self_drive", formData.selfDrive ? "true" : "false");
+      dataToSubmit.append("is_urgent", formData.isUrgent ? "true" : "false");
       if (formData.selfDrive && formData.driverId) {
         dataToSubmit.append("driver_id", formData.driverId.toString());
       }
@@ -233,6 +235,7 @@ export default function VehicleRequestPage() {
       phone: "",
       selfDrive: false,
       driverId: 0,
+      isUrgent: false,
     });
     if (startDateRef.current) (startDateRef.current as any)._flatpickr?.clear();
     if (endDateRef.current) (endDateRef.current as any)._flatpickr?.clear();
@@ -527,6 +530,22 @@ export default function VehicleRequestPage() {
                     <div className="flex items-center gap-2">
                       <span className="w-full text-sm font-bold text-black">
                         ขับรถด้วยตนเอง
+                      </span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-red-50 transition-colors cursor-pointer border border-transparent hover:border-red-200">
+                    <input
+                      type="checkbox"
+                      checked={formData.isUrgent}
+                      onChange={(e) => {
+                        handleInputChange("isUrgent", e.target.checked);
+                      }}
+                      className="w-5 h-5 cursor-pointer accent-red-600"
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className={`w-full text-sm font-bold ${formData.isUrgent ? "text-red-600" : "text-black"}`}>
+                        เป็นคำขอแบบเร่งด่วน (Urgent)
                       </span>
                     </div>
                   </label>
