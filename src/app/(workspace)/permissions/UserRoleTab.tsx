@@ -169,6 +169,11 @@ export default function UserRoleTab() {
     }
   };
 
+  // ตรวจสอบว่า User ที่เลือกอยู่ในตารางที่มีการมอบหมายบทบาทไปแล้วหรือไม่
+  const isEditMode = groupedUserRoles.some(ur => String(ur.user_id) === formData.user_id);
+  // ตรวจสอบว่าเป็นการกด Edit มาจากรายการเดิม (มีข้อมูลบทบาทติดมา)
+  const isActualEditing = formData.roles_ids.length > 0 && isEditMode;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Action Bar */}
@@ -240,8 +245,12 @@ export default function UserRoleTab() {
               cell: (ur) => (
                 <div className="flex justify-end gap-2">
                   <button
-                    onClick={() => openModal(ur)}
-                    className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors shrink-0"
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
+                      ? "bg-amber-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -304,21 +313,34 @@ export default function UserRoleTab() {
                   onChange={(e) =>
                     setFormData({ ...formData, user_id: e.target.value })
                   }
-                  disabled={
-                    !!groupedUserRoles.find(
-                      (u) => String(u.user_id) === formData.user_id,
-                    ) && formData.roles_ids.length > 0
-                  } // Disable if editing existing
+                  disabled={isActualEditing}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all outline-none font-medium text-gray-700 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <option value="">-- ค้นหาและเลือกผู้ใช้ --</option>
-                  {users.map((u) => (
-                    <option key={u.userid} value={u.userid}>
-                      {u.username} - {u.firstname} {u.lastname}{" "}
-                      {u.positionname ? `(${u.positionname})` : ""}
-                    </option>
-                  ))}
+                  {users.map((u) => {
+                    // ตรวจสอบว่าผู้ใช้นี้มีอยู่ในตารางที่ถูกกำหนดสิทธิ์ไปแล้วหรือไม่
+                    const isAssigned = groupedUserRoles.some(
+                      (ur) => String(ur.user_id) === String(u.userid)
+                    );
+
+                    // จะเลือกได้ก็ต่อเมื่อ "ยังไม่ถูกกำหนดสิทธิ์" หรือ "เป็นการกด Edit แล้วผู้ใช้คนนั้นคือคนที่กำลังถูก Edit อยู่"
+                    const isDisabled = isAssigned && !(isActualEditing && formData.user_id === String(u.userid));
+
+                    return (
+                      <option key={u.userid} value={u.userid} disabled={isDisabled}>
+                        {u.username} - {u.firstname} {u.lastname}{" "}
+                        {u.positionname ? `(${u.positionname})` : ""}
+                        {isDisabled ? " (กำหนดสิทธิ์แล้ว)" : ""}
+                      </option>
+                    );
+                  })}
                 </select>
+
+                {!isActualEditing && (
+                  <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-md border border-amber-100">
+                    ⚠️ ผู้ใช้ที่กำหนดสิทธิ์ไว้แล้วจะไม่แสดงในรายการ — หากต้องการแก้ไขให้กดปุ่ม ✏️ ที่รายการนั้นแทน
+                  </p>
+                )}
               </div>
 
               <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm space-y-4">
@@ -338,18 +360,16 @@ export default function UserRoleTab() {
                       <div
                         key={r.roles_id}
                         onClick={() => handleRoleToggle(r.roles_id)}
-                        className={`flex items-start gap-3 p-4 rounded-md border transition-all cursor-pointer select-none group ${
-                          isSelected
-                            ? "border-amber-500 bg-amber-50"
-                            : "border-gray-100 bg-white hover:border-amber-200 hover:bg-amber-50/50"
-                        }`}
+                        className={`flex items-start gap-3 p-4 rounded-md border transition-all cursor-pointer select-none group ${isSelected
+                          ? "border-amber-500 bg-amber-50"
+                          : "border-gray-100 bg-white hover:border-amber-200 hover:bg-amber-50/50"
+                          }`}
                       >
                         <div
-                          className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${
-                            isSelected
-                              ? "bg-amber-500 text-white"
-                              : "border border-gray-300 group-hover:border-amber-400"
-                          }`}
+                          className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${isSelected
+                            ? "bg-amber-500 text-white"
+                            : "border border-gray-300 group-hover:border-amber-400"
+                            }`}
                         >
                           {isSelected && (
                             <svg

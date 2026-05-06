@@ -243,6 +243,17 @@ export default function DriverTab() {
 
       if (!res.ok) throw new Error("Saving failed");
 
+      if (formData.end_date) {
+        await fetch("/api/drivers/notify-expiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            driver_code: formData.driver_code,
+            end_date: formData.end_date,
+          }),
+        });
+      }
+
       await fetchData();
       closeModal();
     } catch (error) {
@@ -258,11 +269,17 @@ export default function DriverTab() {
       return;
     try {
       const res = await fetch(`/api/drivers/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Deletion failed");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error);
+      }
+
       await fetchData();
-    } catch (error) {
+      showSuccess("ลบข้อมูลสำเร็จ"); // แจ้งเตือนเมื่อลบสำเร็จ
+    } catch (error: any) {
       console.error("Error deleting driver:", error);
-      showError("เกิดข้อผิดพลาดในการลบข้อมูล");
+      // แสดง Error ด้วย SweetAlert แทนข้อความตายตัว
+      showError(error.message);
     }
   };
 
