@@ -228,7 +228,7 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
             }}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 250)}
             placeholder={placeholder || "ค้นหาสถานที่..."}
-            className="w-full pl-14 pr-4 py-4 bg-white border border-gray-200 rounded-2xl font-bold text-slate-700 placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none shadow-sm transition-all text-[15px]"
+            className="w-full pl-14 pr-4 py-4 bg-white border border-gray-200 rounded-2xl font-bold text-slate-700 placeholder:text-gray-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none shadow-sm transition-all text-[15px]"
           />
 
           {showSuggestions && suggestions.length > 0 && (
@@ -268,11 +268,7 @@ const MapBox: React.FC<LongdoMapBoxProps> = ({
           disabled={isSearching}
           className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all flex items-center justify-center gap-2 flex-shrink-0"
         >
-          {isSearching ? (
-            <Loader2 className="animate-spin" size={20} />
-          ) : (
-            <SearchIcon size={20} />
-          )}
+          {isSearching && <Loader2 className="animate-spin" size={20} />}
           ค้นหา
         </button>
       </div>
