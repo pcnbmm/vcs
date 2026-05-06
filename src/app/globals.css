@@ -66,13 +66,24 @@ button,
 input[type="button"],
 input[type="submit"],
 input[type="reset"],
-select {
-  cursor: pointer;
+select,
+label,
+a,
+.cursor-pointer {
+  cursor: pointer !important;
 }
 
 button:disabled,
 [role="button"]:disabled,
 input:disabled,
-select:disabled {
+select:disabled,
+.cursor-not-allowed {
   cursor: not-allowed !important;
+}
+
+/* Subtle Hover Effect for all buttons */
+button:not(:disabled):active,
+[role="button"]:not(:disabled):active {
+  transform: scale(0.98);
+  transition: transform 0.1s;
 }

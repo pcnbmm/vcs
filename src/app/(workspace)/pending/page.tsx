@@ -122,7 +122,7 @@ export default function PendingPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-10 animate-in fade-in duration-500">
+    <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       {/* Search & Filter */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:max-w-md">
@@ -158,8 +158,13 @@ export default function PendingPage() {
         <DataTable
           columns={[
             {
-              header: "เลขที่",
-              cell: (req) => <span className="font-bold text-slate-900 italic">#{req.id}</span>
+              header: "คำขอ",
+              cell: (req) => (
+                <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
+                  <span className="text-[10px] text-slate-400">REQ</span>
+                  <span className="text-sm">{String(req.id).padStart(3, "0")}</span>
+                </div>
+              )
             },
             {
               header: "ผู้ขอ / สังกัด",
