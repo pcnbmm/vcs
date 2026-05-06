@@ -24,6 +24,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
+import Modal from "@/components/ui/Modal";
 import {
   getOrdersForReturn,
   saveReturnRecord,
@@ -80,7 +81,6 @@ export default function ReturnsPage() {
   const fetchDispatchers = async () => {
     const result = await getDispatchers();
     if (result.success && result.data) {
-      console.log("dispatchers:", result.data);
       setDispatchers(result.data);
     }
   };
@@ -115,11 +115,9 @@ export default function ReturnsPage() {
   });
 
   const sortedOrders = [...filteredOrders].sort((a, b) => {
-    // 1. Grouping: Waiting for return (status 4) comes before Returned (status 5)
     if (a.status_use_id === 4 && b.status_use_id !== 4) return -1;
     if (a.status_use_id !== 4 && b.status_use_id === 4) return 1;
 
-    // Helper to get journey timestamp
     const getJourneyDt = (order: any) => {
       const dateStr = order.journey_date
         ? new Date(order.journey_date).toISOString().split("T")[0]
@@ -130,12 +128,9 @@ export default function ReturnsPage() {
       return isNaN(dt) ? 0 : dt;
     };
 
-    // 2. Sorting within the same group
     if (a.status_use_id === 4) {
-      // Waiting for return: Sort by journey time (earliest first)
       return getJourneyDt(a) - getJourneyDt(b);
     } else {
-      // Returned: Sort by ID descending (newest first)
       return b.request_id - a.request_id;
     }
   });
@@ -155,7 +150,6 @@ export default function ReturnsPage() {
     setSelectedItem(item);
     setModalMode("view");
 
-    // ดึงข้อมูลจาก vc_use (ถ้ามี) มาแสดงผลในหน้าดีเทล
     const usage = item.vc_use?.[0];
     setReturnFormData({
       mile_begin: usage?.mile_begin ?? "",
@@ -178,7 +172,6 @@ export default function ReturnsPage() {
     setSelectedItem(item);
     setModalMode("edit");
 
-    // Fetch latest mileage for this car
     let lastMileEnd = 0;
     if (item.car_id) {
       const res = await getLatestCarMileage(item.car_id);
@@ -360,35 +353,35 @@ export default function ReturnsPage() {
                   {item.status_use_id === 5 ? (
                     <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                      คืนรถแล้ว (เสร็จสิ้น)
+                      คืนรถแล้ว
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                      อนุมัติให้ใช้งาน (รอส่งคืน)
+                      กำลังใช้งาน
                     </span>
                   )}
                 </div>
               ),
             },
             {
-              header: "จัดการรายการ",
+              header: "จัดการ",
               className: "text-center",
               cell: (item) => (
-                <div className="flex items-center justify-center gap-3 align-top">
+                <div className="flex items-center justify-center gap-2 align-top">
                   <button
                     onClick={() => handleOpenViewModal(item)}
-                    className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+                    className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
                     title="ดูรายละเอียด"
                   >
-                    <Eye size={20} />
+                    <Eye size={18} />
                   </button>
                   {item.status_use_id !== 5 && (
                     <button
                       onClick={() => handleOpenEditModal(item)}
-                      className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
+                      className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
                     >
-                      <FileEdit size={18} />
+                      <FileEdit size={14} />
                       บันทึกรับคืน
                     </button>
                   )}
@@ -405,441 +398,168 @@ export default function ReturnsPage() {
         />
       </div>
 
-      {/* MODAL */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 border-white border-2">
-            <div className="bg-[#1a2332] px-6 py-4 flex items-center justify-between text-white rounded-xl">
-              <div className="flex items-center gap-5">
-                <div className="bg-emerald-500 p-3 rounded-lg shadow-lg ring-4 ring-emerald-500/20">
-                  <Car size={28} className="text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold tracking-tight leading-none">
-                    {modalMode === "view"
-                      ? "VIEW TRIP RECORD"
-                      : "RECORD VEHICLE RETURN"}
-                  </h2>
-                  <p className="text-[11px] text-slate-400 mt-2 font-semibold uppercase tracking-widest opacity-60">
-                    เลขที่คำขอ: REQ-
-                    {String(selectedItem?.request_id).padStart(4, "0")}
-                  </p>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={
+          modalMode === "view"
+            ? `รายละเอียดคำขอ REQ-${String(selectedItem?.request_id).padStart(4, "0")}`
+            : "บันทึกการส่งคืนยานพาหนะ"
+        }
+        maxWidth="3xl"
+        accentColor="bg-emerald-600"
+        footer={
+          <>
+            <button
+              onClick={handleCloseModal}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
+              {modalMode === "view" ? "ปิดหน้าต่าง" : "ยกเลิก"}
+            </button>
+            {modalMode === "edit" && (
+              <button
+                onClick={handleSaveReturn}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {isSubmitting ? "กำลังบันทึก..." : "ยืนยันการรับคืน"}
+              </button>
+            )}
+          </>
+        }
+      >
+        <div className="space-y-8">
+          {/* ข้อมูลพื้นฐาน */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-emerald-600">
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+              <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
+                ข้อมูลการเดินทาง (Journey Info)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ต้นทาง</p>
+                <p className="text-sm font-bold text-slate-700">{selectedItem?.vc_start_place?.start_place_name || "-"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ปลายทาง</p>
+                <p className="text-sm font-bold text-slate-700">{selectedItem?.journey_place || "-"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ผู้ขอใช้รถ</p>
+                <p className="text-sm font-bold text-slate-700">
+                  {selectedItem?.vc_user?.firstname} {selectedItem?.vc_user?.lastname}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ทะเบียนรถ</p>
+                <p className="text-sm font-bold text-blue-600">{selectedItem?.vc_car_master?.car_number || "-"}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* ระยะทาง */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-emerald-600">
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+              <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
+                บันทึกเลขไมล์ (Mileage Record)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 uppercase">เลขไมล์เริ่มต้น</label>
+                <div className="relative">
+                  <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input
+                    type="number"
+                    readOnly
+                    value={returnFormData.mile_begin}
+                    className="w-full pl-12 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-lg font-bold text-slate-600 outline-none"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">KM</span>
                 </div>
               </div>
-              <button
-                onClick={handleCloseModal}
-                className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-                title="ปิด"
-              >
-                <X size={24} />
-              </button>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-emerald-600 uppercase">เลขไมล์สิ้นสุด <span className="text-rose-500">*</span></label>
+                <div className="relative">
+                  <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={18} />
+                  <input
+                    type="number"
+                    min="1"
+                    readOnly={modalMode === "view"}
+                    value={returnFormData.mile_end}
+                    onChange={(e) => setReturnFormData({ ...returnFormData, mile_end: e.target.value })}
+                    placeholder="0"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-emerald-200 rounded-xl text-lg font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-400">KM</span>
+                </div>
+              </div>
             </div>
+            {Number(returnFormData.mile_end) > 0 && (
+              <div className="bg-emerald-600 rounded-xl p-4 flex justify-between items-center text-white shadow-lg shadow-emerald-100">
+                <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">ระยะทางรวม</span>
+                <span className="text-xl font-bold italic">
+                  {Math.max(0, (Number(returnFormData.mile_end) || 0) - (Number(returnFormData.mile_begin) || 0)).toLocaleString()} กม.
+                </span>
+              </div>
+            )}
+          </section>
 
-            <div className="p-10 overflow-y-auto flex-1 space-y-12 bg-white custom-scrollbar mt-4">
-              {/* 1. ข้อมูลเส้นทาง */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-semibold text-sm uppercase tracking-widest">
-                    ข้อมูลเส้นทาง (ROUTE INFO)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      เอาจากไหน (ORIGIN)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 transition-all group-hover:border-slate-200">
-                      {selectedItem?.vc_start_place?.start_place_name ||
-                        "ไม่ระบุ"}
-                    </div>
-                  </div>
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      ไปกลับ (DESTINATION)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 transition-all group-hover:border-slate-200">
-                      {selectedItem?.journey_place || "-"}
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 2. ผู้รับผิดชอบ */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-semibold text-sm uppercase tracking-widest">
-                    ผู้รับผิดชอบ (PERSONNEL)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      ผู้ขอใช้รถ (REQUESTER)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.vc_user?.firstname
-                        ? `${selectedItem.vc_user.bname || ""} ${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname}`.trim()
-                        : "(ไม่มีข้อมูล)"}
-                    </div>
-                  </div>
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1 italic">
-                      ใครอนุมัติใช้รถตอนแรก (APPROVER)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.approver_name || "(ไม่มีข้อมูลในระบบ)"}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      ลักษณะการขับขี่ที่ใช้จริง
-                    </label>
-                    <div className="flex bg-slate-100 border border-slate-100 p-1.5 rounded-md shadow-inner">
-                      {[
-                        { id: "self", label: "ขับเอง", color: "indigo" },
-                        { id: "staff", label: "มีคนขับ", color: "emerald" },
-                      ].map((type) => (
-                        <button
-                          key={type.id}
-                          disabled={true}
-                          className={`
-                            flex-1 text-center py-2.5 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all cursor-not-allowed
-                            ${
-                              returnFormData.drive_type === type.id
-                                ? `bg-white text-${type.color}-600 shadow-md ring-1 ring-slate-200`
-                                : "text-slate-400 opacity-50"
-                            }
-                          `}
-                        >
-                          {type.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      ใครขับ (DRIVER)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.vc_driver?.vc_users?.firstname
-                        ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}${selectedItem?.self_drive ? " (ขอขับเอง)" : ""}`
-                        : selectedItem?.self_drive
-                          ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
-                          : "ไม่ระบุพนักงานขับรถ"}
-                    </div>
-                  </div>
-                  <div className="group">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      ทะเบียน / ประเภทรถ ที่ใช้จริง
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {selectedItem?.vc_car_master?.car_number || "-"}
-                      {selectedItem?.vc_car_master?.vc_car_spec?.car_spec_name
-                        ? ` • ${selectedItem.vc_car_master.vc_car_spec.car_spec_name}`
-                        : ""}
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 3. วันเวลาเดินทาง */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-semibold text-sm uppercase tracking-widest">
-                    วันเวลาเดินทาง (TRIP DATE &amp; TIME)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      วันที่ออกเดินทางตามแผน
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.journey_date
-                        ? new Date(
-                            selectedItem.journey_date,
-                          ).toLocaleDateString("th-TH", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          }) + ` - ${selectedItem?.journey_time || "00:00"} น.`
-                        : "-"}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      วันที่คืนรถตามแผน
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.return_date
-                        ? new Date(selectedItem.return_date).toLocaleDateString(
-                            "th-TH",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          ) + ` - ${selectedItem?.return_time || "00:00"} น.`
-                        : "-"}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-slate-100 pt-4">
-                    <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
-                      วันที่และเวลาคืนรถจริง (ACTUAL RETURN DATE & TIME) *
-                    </label>
-                    {modalMode === "view" ? (
-                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                        {returnFormData.return_real_date
-                          ? new Date(
-                              returnFormData.return_real_date,
-                            ).toLocaleDateString("th-TH", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            }) +
-                            ` - ${returnFormData.return_real_time || "00:00"} น.`
-                          : "-"}
-                      </div>
-                    ) : (
-                      <TimeInput24hr
-                        value={`${returnFormData.return_real_date}T${returnFormData.return_real_time}`}
-                        onChange={(val) => {
-                          const [date, time] = val.split("T");
-                          setReturnFormData((prev) => ({
-                            ...prev,
-                            return_real_date: date,
-                            return_real_time: time,
-                          }));
-                        }}
-                        showDate
-                      />
-                    )}
-                  </div>
-                </div>
-              </section>
-
-              {/* 4. เลขไมล์ */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-semibold text-sm uppercase tracking-widest">
-                    เลขไมล์ (MILEAGE RECORD)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-8 ring-4 ring-emerald-50/50 p-6 rounded-xl bg-emerald-50/20">
-                  <div className="space-y-2">
-                    <label className="block text-[11px] font-semibold text-emerald-700 uppercase tracking-widest mb-1 ml-1">
-                      เลขไมล์เริ่มต้น (ก่อนใช้)
-                    </label>
-                    <div className="relative">
-                      <Gauge
-                        className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300"
-                        size={20}
-                      />
-                      <input
-                        type="number"
-                        min="1"
-                        readOnly={modalMode === "view"}
-                        value={returnFormData.mile_begin}
-                        onKeyDown={(e) => {
-                          if (e.key === "-" || e.key === "e" || e.key === "E")
-                            e.preventDefault();
-                        }}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/[^0-9]/g, "");
-                          setReturnFormData((prev) => ({
-                            ...prev,
-                            mile_begin: val,
-                          }));
-                        }}
-                        placeholder="ระบุเลขไมล์เริ่มต้น"
-                        className="w-full bg-white border border-emerald-100 rounded-lg py-4 pl-16 pr-6 text-2xl font-bold text-slate-900 outline-none focus:border-emerald-500 transition-all shadow-sm"
-                      />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-slate-300 uppercase">
-                        KM
-                      </span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-[11px] font-semibold text-emerald-700 uppercase tracking-widest mb-1 ml-1">
-                      เลขไมล์สิ้นสุด (หลังใช้) *
-                    </label>
-                    <div className="relative">
-                      <Gauge
-                        className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-400"
-                        size={20}
-                      />
-                      <input
-                        type="number"
-                        min="1"
-                        readOnly={modalMode === "view"}
-                        value={returnFormData.mile_end}
-                        onKeyDown={(e) => {
-                          if (e.key === "-" || e.key === "e" || e.key === "E")
-                            e.preventDefault();
-                        }}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/[^0-9]/g, "");
-                          setReturnFormData((prev) => ({
-                            ...prev,
-                            mile_end: val,
-                          }));
-                        }}
-                        placeholder="ระบุเลขไมล์สิ้นสุด"
-                        className="w-full bg-white border border-emerald-500/30 rounded-lg py-4 pl-16 pr-6 text-2xl font-bold text-emerald-800 outline-none focus:border-emerald-500 transition-all shadow-md focus:ring-4 focus:ring-emerald-50"
-                      />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-emerald-400 uppercase">
-                        KM
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <div className="bg-emerald-600 rounded-lg p-4 flex justify-between items-center text-white shadow-xl shadow-emerald-100">
-                      <span className="text-xs font-semibold uppercase tracking-widest opacity-80">
-                        ระยะทางรวมทั้งสิ้น (TOTAL DISTANCE)
-                      </span>
-                      <span className="text-xl font-semibold tracking-tighter">
-                        {Math.max(
-                          0,
-                          (Number(returnFormData.mile_end) || 0) -
-                            (Number(returnFormData.mile_begin) || 0),
-                        ).toLocaleString()}{" "}
-                        <span className="text-xs">กม.</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 5. ผู้บันทึก */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-semibold text-sm uppercase tracking-widest">
-                    การตรวจรับและบันทึก (RECORDER)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="col-span-2">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      นายเวรผู้อนุมัติรับคืนรถ (APPROVED BY) *
-                    </label>
-                    {modalMode === "view" ? (
-                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                        {dispatchers.find(
-                          (d) => d.userid === returnFormData.approved_by,
-                        )?.firstname || "-"}{" "}
-                        {dispatchers.find(
-                          (d) => d.userid === returnFormData.approved_by,
-                        )?.lastname || ""}
-                      </div>
-                    ) : (
-                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                        {modalMode === "edit"
-                          ? (() => {
-                              const d = dispatchers.find(
-                                (d) =>
-                                  d.userid ===
-                                  (session?.user?.id
-                                    ? parseInt(session.user.id)
-                                    : 0),
-                              );
-                              return d
-                                ? `${d.bname || ""} ${d.firstname || ""} ${d.lastname || ""}`.trim()
-                                : "-";
-                            })()
-                          : (() => {
-                              const d = dispatchers.find(
-                                (d) => d.userid === returnFormData.approved_by,
-                              );
-                              return d
-                                ? `${d.bname || ""} ${d.firstname || ""} ${d.lastname || ""}`.trim()
-                                : "-";
-                            })()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="col-span-2 mt-4">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      หมายเหตุบรรยาย (RETURN NOTE)
-                    </label>
-                    <textarea
-                      readOnly={modalMode === "view"}
-                      value={returnFormData.note}
-                      onChange={(e) =>
-                        setReturnFormData((prev) => ({
-                          ...prev,
-                          note: e.target.value.substring(0, 64),
-                        }))
-                      }
-                      placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)..."
-                      rows={3}
-                      className="w-full bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
-                    />
-                  </div>
-                </div>
-              </section>
+          {/* วันเวลาคืนจริง */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-emerald-600">
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+              <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
+                วันและเวลาที่คืนจริง (Actual Return)
+              </h3>
             </div>
-
-            {/* Footer ของ Modal */}
-            <div className="px-6 py-6 bg-slate-50 flex items-center justify-end gap-6 rounded-b-xl">
+            <div className="grid grid-cols-1 gap-4">
               {modalMode === "view" ? (
-                <button
-                  onClick={handleCloseModal}
-                  className="px-8 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-lg transition-all active:scale-95"
-                >
-                  Close Detail
-                </button>
+                <div className="px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold">
+                  {returnFormData.return_real_date ? new Date(returnFormData.return_real_date).toLocaleDateString("th-TH", {
+                    day: "numeric", month: "long", year: "numeric"
+                  }) : "-"} - {returnFormData.return_real_time || "00:00"} น.
+                </div>
               ) : (
-                <>
-                  <button
-                    onClick={handleCloseModal}
-                    className="px-8 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all"
-                  >
-                    Discard Change
-                  </button>
-                  <button
-                    onClick={handleSaveReturn}
-                    disabled={isSubmitting}
-                    className="flex items-center gap-3 px-12 py-4 text-sm font-semibold uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-all shadow-2xl shadow-emerald-200 ring-4 ring-emerald-50 active:scale-95 disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Save size={20} />
-                    )}
-                    {isSubmitting
-                      ? "Processing..."
-                      : "Finish Task & Save Record"}
-                  </button>
-                </>
+                <TimeInput24hr
+                  value={`${returnFormData.return_real_date}T${returnFormData.return_real_time}`}
+                  onChange={(val) => {
+                    const [date, time] = val.split("T");
+                    setReturnFormData(prev => ({ ...prev, return_real_date: date, return_real_time: time }));
+                  }}
+                  showDate
+                />
               )}
             </div>
-          </div>
-        </div>
-      )}
+          </section>
 
-      {/* Tailwind & Custom Utility */}
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e2e8f0;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #cbd5e1;
-        }
-      `}</style>
+          {/* หมายเหตุ */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-emerald-600">
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+              <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
+                หมายเหตุเพิ่มเติม (Return Note)
+              </h3>
+            </div>
+            <textarea
+              readOnly={modalMode === "view"}
+              value={returnFormData.note}
+              onChange={(e) => setReturnFormData(prev => ({ ...prev, note: e.target.value.substring(0, 100) }))}
+              placeholder="ระบุปัญหาที่พบหรือหมายเหตุการคืนรถ (ถ้ามี)..."
+              rows={3}
+              className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all resize-none"
+            />
+          </section>
+        </div>
+      </Modal>
     </div>
   );
 }

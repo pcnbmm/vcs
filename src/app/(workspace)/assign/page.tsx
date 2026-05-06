@@ -18,6 +18,7 @@ import {
   Save,
   Bell,
   Edit2,
+  Loader2,
   CheckCircle,
   Truck,
   Navigation,
@@ -35,6 +36,7 @@ import {
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
+import Modal from "@/components/ui/Modal";
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
@@ -54,7 +56,6 @@ const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
       "-" +
       String(d.getDate()).padStart(2, "0");
       
-    // Clean up journeyTime (e.g. remove " น.", trailing spaces)
     let timeStr = journeyTime ? journeyTime.replace(/[^0-9:]/g, "") : "23:59:59";
     if (!timeStr || timeStr.length < 4) timeStr = "23:59:59";
     
@@ -113,16 +114,17 @@ export default function AssignPage() {
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      borderRadius: "1rem",
-      padding: "0.3rem 0.5rem",
-      borderColor: state.isFocused ? "#3b82f6" : "transparent",
-      backgroundColor: state.isFocused ? "#ffffff" : "#f8fafc",
-      boxShadow: state.isFocused ? "0 0 0 4px #eff6ff" : "none",
-      borderWidth: "2px",
+      borderRadius: "0.5rem",
+      padding: "0.1rem 0.2rem",
+      borderColor: state.isFocused ? "#2563eb" : "#e2e8f0",
+      backgroundColor: "#ffffff",
+      boxShadow: state.isFocused ? "0 0 0 2px #dbeafe" : "none",
+      borderWidth: "1px",
       cursor: "pointer",
+      fontSize: "0.875rem",
       transition: "all 0.2s",
       "&:hover": {
-        borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
+        borderColor: "#2563eb",
       },
     }),
     option: (base: any, state: any) => ({
@@ -134,31 +136,21 @@ export default function AssignPage() {
           : "#ffffff",
       color: "#1e293b",
       cursor: "pointer",
-      padding: "0.75rem 1.5rem",
+      padding: "0.5rem 1rem",
+      fontSize: "0.875rem",
     }),
     singleValue: (base: any) => ({
       ...base,
-      fontWeight: "bold",
-      color: "#000000",
-    }),
-    placeholder: (base: any) => ({
-      ...base,
-      color: "#000000",
-      fontWeight: "bold",
-    }),
-    input: (base: any) => ({
-      ...base,
-      color: "#000000",
-      fontWeight: "bold",
+      color: "#1e293b",
+      fontWeight: "500",
     }),
     menu: (base: any) => ({
       ...base,
-      borderRadius: "1rem",
+      borderRadius: "0.5rem",
       overflow: "hidden",
       zIndex: 100,
-      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
     }),
-    menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
   };
 
   const formatCarOptionLabel = (option: any, { context }: any) => {
@@ -173,9 +165,11 @@ export default function AssignPage() {
       <div className="flex flex-col gap-0.5 w-full">
         <div className="flex justify-between items-center">
           <span className="font-bold text-slate-800">{option.number}</span>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
+          {option.isRequestedSpec && (
+            <span className="bg-emerald-50 text-emerald-600 text-[10px] px-1.5 py-0.5 rounded border border-emerald-100">ตรงตามสเปคที่ขอ</span>
+          )}
         </div>
-        <span className="text-xs text-slate-500 uppercase tracking-wide font-semibold">
+        <span className="text-xs text-slate-500 font-medium">
           {option.brand || "ไม่ระบุ"} • {option.spec || "ไม่ระบุสเปค"}
         </span>
       </div>
@@ -200,20 +194,16 @@ export default function AssignPage() {
 
   useEffect(() => {
     fetchData();
-    // Set current time for pickup defaults
     const now = new Date();
     setPickupTime(now.toTimeString().slice(0, 5));
   }, []);
 
-  // Handle Logic: "Self-Drive"
   useEffect(() => {
     if (dispatchType === "self_drive" && selectedOrder) {
       if (selectedOrder.self_drive) {
-        // ถ้ามีการระบุ driver_id มาตั้งแต่ตอนจอง ให้ยึดตามนั้น
         if (selectedOrder.driver_id) {
           setSelectedDriver(String(selectedOrder.driver_id));
         } else {
-          // ถ้าไม่มีการระบุคนขับ ให้ fallback เป็นผู้จอง
           setSelectedDriver("self");
         }
       }
@@ -251,14 +241,6 @@ export default function AssignPage() {
       return;
     }
 
-    console.log(
-      "Submitting with Car ID:",
-      selectedCar,
-      "Driver ID:",
-      selectedDriver,
-    );
-
-    // แปลงค่าและเตรียมข้อมูล
     const finalCarId = parseInt(selectedCar);
     let finalDriverId: number | null = null;
 
@@ -285,7 +267,7 @@ export default function AssignPage() {
       if (result.success) {
         showSuccess("จัดรถและส่งอีเมลแจ้งเตือนสำเร็จ!");
         setIsModalOpen(false);
-        fetchData(); // Refresh list
+        fetchData();
       } else {
         showError(result.error || "เกิดข้อผิดพลาดในการจัดรถและส่งอีเมล");
       }
@@ -377,10 +359,9 @@ export default function AssignPage() {
       return true;
     })
     .sort((a, b) => {
-      // 1. Sort by status priority
       const getPriority = (order: any) => {
-        if (order.status_use_id === 2) return 1; // รอจัดรถ
-        if (order.status_use_id === 4 && !order.pickup_status) return 2; // จัดรถแล้ว รอการรับรถ
+        if (order.status_use_id === 2) return 1;
+        if (order.status_use_id === 4 && !order.pickup_status) return 2;
         return 3;
       };
 
@@ -391,7 +372,6 @@ export default function AssignPage() {
         return priorityA - priorityB;
       }
 
-      // 2. Sort by Urgency (is_urgent = true comes first)
       const isUrgentA = !!a.is_urgent || a.journey_causes?.includes("ด่วน");
       const isUrgentB = !!b.is_urgent || b.journey_causes?.includes("ด่วน");
       
@@ -401,7 +381,6 @@ export default function AssignPage() {
         return urgentA - urgentB;
       }
 
-      // 3. Sort by date and time
       const dateStrA = a.journey_date ? new Date(a.journey_date).toISOString().split('T')[0] : '1970-01-01';
       const timeStrA = a.journey_time ? a.journey_time.trim() : '00:00:00';
       const fullDateA = new Date(`${dateStrA}T${timeStrA.split(':').length === 2 ? timeStrA + ':00' : timeStrA}`);
@@ -413,189 +392,27 @@ export default function AssignPage() {
       return fullDateA.getTime() - fullDateB.getTime();
     });
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const paginatedOrders = filteredOrders.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const columns: DataTableColumn<any>[] = [
-    {
-      header: "เลขที่คำขอ",
-      cell: (order) => (
-        <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold mx-auto">
-          <span className="text-[10px] text-slate-400">REQ</span>
-          <span>{String(order.request_id).padStart(3, "0")}</span>
-        </div>
-      ),
-    },
-    {
-      header: "ปลายทาง / สถานะ",
-      cell: (order) => (
-        <div>
-          <h3 className="font-bold text-slate-900 text-lg">
-            {order.journey_place}
-          </h3>
-          <div className="mt-1 flex flex-wrap gap-2">
-            {order.status_use_id === 4 && !order.pickup_status && (
-              <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 tracking-wide border border-emerald-200">
-                จัดรถแล้ว (รอการรับรถ)
-              </span>
-            )}
-            {order.status_use_id === 4 &&
-              (order.pickup_status === "PICKED_UP" ||
-                order.pickup_status === "TAXI_CALLED") && (
-                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500 tracking-wide border border-gray-200">
-                  {order.pickup_status === "TAXI_CALLED"
-                    ? "เรียกรถแท็กซี่แล้ว"
-                    : "รับรถเรียบร้อยแล้ว"}
-                </span>
-              )}
-            {order.status_use_id === 5 &&
-              order.pickup_method === "TAXI" && (
-                <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600 tracking-wide border border-amber-200">
-                  อนุมัติ taxi
-                </span>
-              )}
-          </div>
-        </div>
-      ),
-    },
-    {
-      header: "วันเวลาเดินทาง",
-      cell: (order) => (
-        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
-          <div className="flex items-center gap-2">
-            <Calendar size={14} className="text-slate-400" />
-            <span>
-              {new Date(order.journey_date).toLocaleDateString("th-TH")} 
-              {order.journey_time ? ` เวลา ${order.journey_time.slice(0, 5)} น.` : ""}
-            </span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      header: "ผู้ขอใช้รถ",
-      cell: (order) => (
-        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
-          <div className="flex items-center gap-2">
-            <User size={14} className="text-slate-400" />
-            <span>{order.vc_user?.firstname} {order.vc_user?.lastname}</span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      header: "ยานพาหนะที่จัดสรร",
-      cell: (order) => (
-        <div className="flex flex-col gap-1.5 text-sm text-slate-600">
-          {order.car_id && (
-            <div className="flex items-center gap-2">
-              <Truck size={14} className="text-blue-400" />
-              <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                {order.vc_car_master?.car_number} ({order.vc_car_master?.vc_car_brand?.car_brand_name || "ไม่ระบุ"})
-              </span>
-            </div>
-          )}
-          
-          {(order.driver_id || order.self_drive) && (
-            <div className="flex items-center gap-2">
-              <Navigation size={14} className="text-amber-400" />
-              <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                {order.self_drive 
-                  ? "ขับเอง (ผู้ขอใช้รถ)" 
-                  : `${order.vc_driver?.vc_users?.firstname || ""} ${order.vc_driver?.vc_users?.lastname || ""}`}
-              </span>
-            </div>
-          )}
-
-          {order.pickup_method === "TAXI" && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm">🚕</span>
-              <span className="text-orange-700 bg-orange-50 px-2 py-0.5 rounded-md font-medium text-[12px]">
-                ใช้รถรับจ้าง (Taxi)
-              </span>
-            </div>
-          )}
-          {!order.car_id && !order.driver_id && !order.self_drive && order.pickup_method !== "TAXI" && (
-            <span className="text-gray-400 italic text-xs">ยังไม่จัดสรร</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      header: "จัดการ",
-      className: "text-right",
-      cell: (order) => (
-        <div className="flex justify-end gap-2">
-          {(order.status_use_id === 4 &&
-            (order.pickup_status === "PICKED_UP" ||
-              order.pickup_status === "TAXI_CALLED")) ||
-            (order.status_use_id === 5 &&
-              order.pickup_method === "TAXI") ? (
-            <button
-              disabled
-              className="bg-gray-100 text-gray-400 px-4 py-2 rounded-md flex items-center gap-2 cursor-not-allowed border border-gray-200"
-            >
-              <CheckCircle size={16} />
-              <span className="font-bold text-sm">เสร็จสิ้น</span>
-            </button>
-          ) : isAssignExpired(order.journey_date, order.journey_time) ? (
-            <button
-              disabled
-              className="bg-rose-50 text-rose-500 px-4 py-2 rounded-md flex items-center gap-2 cursor-not-allowed border border-rose-200"
-            >
-              <AlertCircle size={16} />
-              <span className="font-bold text-sm">หมดอายุ</span>
-            </button>
-          ) : order.status_use_id === 4 ? (
-            <div className="flex gap-2">
-              <button
-                onClick={() => openAssignModal(order)}
-                className="bg-slate-50 text-slate-600 px-3 py-2 rounded-md flex items-center gap-2 hover:bg-slate-200 transition-colors duration-300 border border-slate-200"
-              >
-                <Edit2 size={16} />
-              </button>
-              <button
-                onClick={() => openPickupModal(order)}
-                className="bg-emerald-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-emerald-700 transition-colors duration-300 shadow-sm"
-              >
-                <CheckCircle size={16} />
-                <span className="font-bold text-sm">รับรถ</span>
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => openAssignModal(order)}
-              className="bg-slate-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300 shadow-sm"
-            >
-              <Settings size={16} />
-              <span className="font-medium text-sm">จัดสรรรถ</span>
-            </button>
-          )}
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
-      {/* --- (SECTION 1: PENDING ASSIGNMENT) --- */}
       <section>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-2">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
             <h2 className="text-lg font-bold text-slate-900">
-              รายการจัดสรร (ASSIGNMENT)
+              การจัดสรรทรัพยากร (ASSIGNMENT)
             </h2>
             <span className="bg-blue-100 text-blue-700 px-3 py-0.5 rounded-full text-sm font-bold">
               {filteredOrders.length}
             </span>
           </div>
 
-          <div className="w-full sm:w-64 z-[45]">
+          <div className="w-full sm:w-64">
             <Select
               options={statusFilterOptions}
               value={statusFilterOptions.find((o) => o.value === filterStatus)}
@@ -604,21 +421,121 @@ export default function AssignPage() {
                 setCurrentPage(1);
               }}
               isSearchable={false}
-              styles={{
-                ...reactSelectStyles,
-                menuPortal: (base: any) => ({ ...base, zIndex: 50 }),
-              }}
+              styles={reactSelectStyles}
             />
           </div>
         </div>
 
-        {filteredOrders.length === 0 && !loading ? (
-          <div className="bg-white rounded-md border border-slate-100 p-12 flex items-center justify-center shadow-sm">
-            <p className="text-slate-400">ไม่มีรายการในสถานะนี้</p>
-          </div>
-        ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
           <DataTable
-            columns={columns}
+            columns={[
+              {
+                header: "คำขอ",
+                cell: (order) => (
+                  <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
+                    <span className="text-[10px] text-slate-400">REQ</span>
+                    <span className="text-sm">{String(order.request_id).padStart(3, "0")}</span>
+                  </div>
+                ),
+              },
+              {
+                header: "จุดหมาย / สถานะ",
+                cell: (order) => (
+                  <div>
+                    <h3 className="font-bold text-slate-900">
+                      {order.journey_place}
+                    </h3>
+                    <div className="mt-1">
+                      {order.status_use_id === 4 && !order.pickup_status && (
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                          จัดรถแล้ว (รอรับรถ)
+                        </span>
+                      )}
+                      {order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED") && (
+                        <span className="inline-flex items-center rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200 uppercase tracking-tighter">
+                          {order.pickup_status === "TAXI_CALLED" ? "เรียก TAXI แล้ว" : "ส่งมอบแล้ว"}
+                        </span>
+                      )}
+                      {order.status_use_id === 2 && (
+                        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100 uppercase tracking-tighter">
+                          รอจัดรถ
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                header: "วันเวลา",
+                cell: (order) => (
+                  <div className="text-sm text-slate-600 font-medium">
+                    <p>{new Date(order.journey_date).toLocaleDateString("th-TH")}</p>
+                    <p className="text-xs text-slate-400 font-bold">{order.journey_time ? order.journey_time.slice(0, 5) : "--:--"} น.</p>
+                  </div>
+                ),
+              },
+              {
+                header: "ทรัพยากร",
+                cell: (order) => (
+                  <div className="flex flex-col gap-1">
+                    {order.car_id ? (
+                      <div className="flex items-center gap-1.5">
+                        <Truck size={12} className="text-blue-500" />
+                        <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                          {order.vc_car_master?.car_number}
+                        </span>
+                      </div>
+                    ) : order.pickup_method === "TAXI" ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs">🚕</span>
+                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">TAXI</span>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 italic">ยังไม่จัดรถ</span>
+                    )}
+                    {(order.driver_id || order.self_drive) && (
+                      <div className="flex items-center gap-1.5">
+                        <User size={12} className="text-emerald-500" />
+                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                          {order.self_drive ? "ขอขับเอง" : order.vc_driver?.vc_users?.firstname}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ),
+              },
+              {
+                header: "จัดการ",
+                className: "text-right",
+                cell: (order) => (
+                  <div className="flex justify-end gap-2">
+                    {order.status_use_id === 4 && !order.pickup_status ? (
+                      <button
+                        onClick={() => openPickupModal(order)}
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100"
+                      >
+                        รับรถ
+                      </button>
+                    ) : (order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) ? (
+                      <button disabled className="bg-slate-100 text-slate-400 px-4 py-2 rounded-lg text-xs font-bold cursor-not-allowed">
+                        เสร็จสิ้น
+                      </button>
+                    ) : isAssignExpired(order.journey_date, order.journey_time) ? (
+                      <button disabled className="bg-rose-50 text-rose-500 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100">
+                        หมดอายุ
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => openAssignModal(order)}
+                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md"
+                      >
+                        จัดสรรรถ
+                      </button>
+                    )}
+                  </div>
+                ),
+              },
+            ]}
             data={paginatedOrders}
             isLoading={loading}
             rowKey={(row) => row.request_id}
@@ -626,409 +543,189 @@ export default function AssignPage() {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        )}
+        </div>
       </section>
 
-      {/* --- ASSIGNMENT MODAL --- */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            {/* Modal Header */}
-            <div className="bg-slate-900 px-10 py-8 flex justify-between items-center text-white">
-              <h2 className="text-xl font-bold tracking-tight">
-                การระบุทรัพยากร
-              </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
-                title="Close"
-              >
-                <X size={24} />
-              </button>
+      {/* ASSIGNMENT MODAL */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="การจัดสรรทรัพยากร (Vehicle Assignment)"
+        maxWidth="2xl"
+        accentColor="bg-blue-600"
+        footer={
+          <>
+            <button onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+              ยกเลิก
+            </button>
+            <button
+              onClick={handleAssignSubmit}
+              disabled={isSubmitting}
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
+            >
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              บันทึกและส่งอีเมล
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-8">
+          {/* Dispatch Type */}
+          <div className="space-y-4">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">ประเภทการจัดส่ง</label>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { id: "with_driver", label: "รถพร้อมคนขับ", icon: Truck, color: "blue" },
+                { id: "self_drive", label: "ผู้ขอขับเอง", icon: Navigation, color: "indigo" },
+                { id: "taxi", label: "แท็กซี่ (TAXI)", icon: MapPin, color: "amber" },
+              ].map((type) => (
+                <button
+                  key={type.id}
+                  onClick={() => { setDispatchType(type.id as DispatchType); setSelectedDriver(""); }}
+                  className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${dispatchType === type.id ? `border-${type.color}-600 bg-${type.color}-50 text-${type.color}-700 shadow-sm` : "border-slate-100 text-slate-400 hover:border-slate-200"}`}
+                >
+                  <type.icon size={20} />
+                  <span className="text-[11px] font-bold">{type.label}</span>
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Modal Content */}
-            <div className="p-10 space-y-8 max-h-[70vh] overflow-y-auto">
-              {/* Dispatch Type Selection */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block mb-4">
-                  รูปแบบการจัดรถ (DISPATCH TYPE)
-                </label>
-                <div className="grid grid-cols-3 gap-4">
-                  {[
-                    {
-                      id: "with_driver",
-                      label: "รถพร้อมคนขับ",
-                      icon: Truck,
-                      color: "blue",
-                    },
-                    {
-                      id: "self_drive",
-                      label: "ผู้ขอขับเอง",
-                      icon: Navigation,
-                      color: "indigo",
-                    },
-                    {
-                      id: "taxi",
-                      label: "รถรับจ้าง (TAXI)",
-                      icon: MapPin,
-                      color: "amber",
-                    },
-                  ].map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() => {
-                        if (dispatchType !== type.id) {
-                          setDispatchType(type.id as DispatchType);
-                          setSelectedDriver("");
-                        }
-                      }}
-                      className={`
-                        flex flex-col items-center justify-center gap-3 p-6 rounded-md border transition-all duration-300
-                        ${dispatchType === type.id
-                          ? `bg-${type.color}-600 border-${type.color}-600 text-white shadow-xl shadow-${type.color}-100 scale-105`
-                          : "bg-white border-slate-50 text-slate-400 hover:border-slate-200"
-                        }
-                      `}
-                    >
-                      <type.icon size={28} />
-                      <span className="text-xs font-bold">{type.label}</span>
-                    </button>
-                  ))}
-                </div>
+          {dispatchType !== "taxi" ? (
+            <>
+              {/* Vehicle Filter */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">กรองตามประเภทรถ</label>
+                <Select
+                  options={[{ value: "all", label: "แสดงรถทุกประเภท" }, ...carSpecs.map(s => ({ value: String(s.car_spec_id), label: s.car_spec_name }))]}
+                  value={{ value: selectedSpecFilter, label: selectedSpecFilter === "all" ? "แสดงรถทุกประเภท" : carSpecs.find(s => String(s.car_spec_id) === selectedSpecFilter)?.car_spec_name }}
+                  onChange={(opt: any) => { setSelectedSpecFilter(opt.value); setSelectedCar(""); }}
+                  styles={reactSelectStyles}
+                />
               </div>
 
-              {/* วางเงื่อนไขซ่อนส่วนเลือกรถและคนขับ ถ้าเป็นแท็กซี่ */}
-              {dispatchType !== "taxi" ? (
-                <>
-                  {/* Vehicle Type Filter */}
-                  <div className="space-y-4 relative z-[60]">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
-                        ประเภทรถที่ต้องการจัดสรร
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                          ประเภทที่ขอมา:
-                        </span>
-                        <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold">
-                          {selectedOrder?.vc_car_spec?.car_spec_name || "ไม่ระบุ"}
-                        </span>
-                      </div>
-                    </div>
-                    <Select
-                      options={[
-                        { value: "all", label: "|- เลือกประเภทรถ -|" },
-                        ...carSpecs.map(spec => ({
-                          value: String(spec.car_spec_id),
-                          label: spec.car_spec_name || "ไม่ระบุ"
-                        }))
-                      ]}
-                      value={
-                        selectedSpecFilter === "all" 
-                          ? { value: "all", label: "|- เลือกประเภทรถ -|" } 
-                          : {
-                              value: selectedSpecFilter,
-                              label: carSpecs.find(s => String(s.car_spec_id) === selectedSpecFilter)?.car_spec_name || "ไม่ระบุ"
-                            }
-                      }
-                      onChange={(selectedOption: any) => {
-                        setSelectedSpecFilter(selectedOption ? selectedOption.value : "all");
-                        setSelectedCar(""); // reset selected car when type changes
-                      }}
-                      isSearchable
-                      menuPortalTarget={typeof document !== "undefined" ? document.body : null}
-                      menuPosition="fixed"
-                      styles={{...reactSelectStyles, menuPortal: (base: any) => ({ ...base, zIndex: 9999 })}}
-                    />
-                  </div>
+              {/* Car Select */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">เลือกยานพาหนะ <span className="text-rose-500">*</span></label>
+                <Select
+                  options={cars.filter(car => selectedSpecFilter === "all" || String(car.car_spec_id) === selectedSpecFilter).map(car => ({
+                    value: String(car.car_id),
+                    label: car.car_number,
+                    number: car.car_number,
+                    brand: car.vc_car_brand?.car_brand_name,
+                    spec: car.vc_car_spec?.car_spec_name,
+                    isRequestedSpec: car.car_spec_id === selectedOrder?.car_spec_id,
+                  }))}
+                  value={selectedCar ? { value: selectedCar, label: cars.find(c => String(c.car_id) === selectedCar)?.car_number } : null}
+                  onChange={(opt: any) => setSelectedCar(opt ? opt.value : "")}
+                  formatOptionLabel={formatCarOptionLabel}
+                  placeholder="ค้นหาทะเบียนรถ..."
+                  styles={reactSelectStyles}
+                  isClearable
+                />
+              </div>
 
-                  {/* Vehicle Selection */}
-                  <div className="space-y-4 relative z-[55]">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
-                        เลือกยานพาหนะ
-                      </label>
-                    </div>
+              {/* Driver Select */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">พนักงานขับรถ <span className="text-rose-500">*</span></label>
+                <Select
+                  options={dispatchType === "self_drive" ? [
+                    { value: "self", label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname} (ผู้ขอขับเอง)` },
+                    ...drivers.filter(d => d.driver_type_id === 2).map(d => ({ value: String(d.driver_id), label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}` }))
+                  ] : drivers.filter(d => d.driver_type_id === 1 || !d.driver_type_id).map(d => ({ value: String(d.driver_id), label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}` }))}
+                  value={selectedDriver === "self" ? { value: "self", label: "ผู้ขอขับเอง" } : selectedDriver ? { value: selectedDriver, label: `นาย ${drivers.find(d => String(d.driver_id) === selectedDriver)?.vc_users?.firstname}` } : null}
+                  onChange={(opt: any) => setSelectedDriver(opt ? opt.value : "")}
+                  placeholder="ค้นหาพนักงานขับรถ..."
+                  styles={reactSelectStyles}
+                  isClearable
+                />
+              </div>
+            </>
+          ) : (
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-800">เหตุผลที่ใช้ TAXI</label>
+              <textarea
+                value={taxiReason}
+                onChange={(e) => setTaxiReason(e.target.value)}
+                placeholder="เช่น รถว่างไม่พอ หรือ เป็นกรณีเร่งด่วน..."
+                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-amber-500 transition-all resize-none"
+                rows={4}
+              />
+            </div>
+          )}
+        </div>
+      </Modal>
 
-                    <Select
-                      options={cars
-                        .filter(car => selectedSpecFilter === "all" || String(car.car_spec_id) === selectedSpecFilter)
-                        .map((car) => ({
-                          value: String(car.car_id),
-                          label: `${car.car_number} (${car.vc_car_brand?.car_brand_name || "ไม่ระบุยี่ห้อ"})`,
-                          number: car.car_number,
-                          brand: car.vc_car_brand?.car_brand_name,
-                          spec: car.vc_car_spec?.car_spec_name,
-                          isRequestedSpec: car.car_spec_id === selectedOrder?.car_spec_id,
-                        }))
-                        .sort((a, b) => {
-                          if (a.isRequestedSpec && !b.isRequestedSpec) return -1;
-                          if (!a.isRequestedSpec && b.isRequestedSpec) return 1;
-                          return 0;
-                        })}
-                      value={
-                        selectedCar
-                          ? {
-                            value: selectedCar,
-                            label:
-                              cars.find(
-                                (c) => String(c.car_id) === selectedCar,
-                              )?.car_number +
-                              " (" +
-                              (cars.find(
-                                (c) => String(c.car_id) === selectedCar,
-                              )?.vc_car_brand?.car_brand_name ||
-                                "ไม่ระบุยี่ห้อ") +
-                              ")",
-                            number: cars.find(
-                              (c) => String(c.car_id) === selectedCar,
-                            )?.car_number,
-                            brand: cars.find(
-                              (c) => String(c.car_id) === selectedCar,
-                            )?.vc_car_brand?.car_brand_name,
-                          }
-                          : null
-                      }
-                      onChange={(selectedOption: any) =>
-                        setSelectedCar(
-                          selectedOption ? selectedOption.value : "",
-                        )
-                      }
-                      formatOptionLabel={formatCarOptionLabel}
-                      placeholder="ค้นหาทะเบียน หรือยี่ห้อรถ..."
-                      isClearable
-                      isSearchable
-                      menuPortalTarget={
-                        typeof document !== "undefined" ? document.body : null
-                      }
-                      menuPosition="fixed"
-                      styles={reactSelectStyles}
-                      noOptionsMessage={() => (
-                        <div className="p-4 text-center text-slate-400 italic text-sm space-y-2">
-                          <p>ไม่พบรถว่างของประเภทที่ค้นหา</p>
-                        </div>
-                      )}
-                    />
-                  </div>
+      {/* PICKUP MODAL */}
+      <Modal
+        isOpen={isPickupModalOpen}
+        onClose={() => setIsPickupModalOpen(false)}
+        title="บันทึกการส่งมอบรถ (Pickup Confirmation)"
+        maxWidth="md"
+        accentColor="bg-emerald-600"
+        footer={
+          <>
+            <button onClick={() => setIsPickupModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+              ยกเลิก
+            </button>
+            <button
+              onClick={handlePickupSubmit}
+              disabled={isPickupSubmitting}
+              className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md transition-all disabled:opacity-50"
+            >
+              {isPickupSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              บันทึกการส่งมอบ
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-6">
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-gray-800">สถานะการส่งมอบ</label>
+            <select
+              value={pickupStatus}
+              onChange={(e) => setPickupStatus(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all"
+            >
+              <option value="PICKED_UP">ส่งมอบเรียบร้อย</option>
+              <option value="NO_SHOW">ผู้ขอไม่มาติดต่อรับรถ</option>
+            </select>
+          </div>
 
-                  {/* Driver Selection Using React-Select */}
-                  <div className="space-y-4 relative z-[50]">
-                    <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
-                      เลือกพนักงานขับรถ
-                    </label>
-                    <div className="relative group z-40">
-                      <Select
-                        options={
-                          dispatchType === "self_drive"
-                            ? [
-                              {
-                                value: "self",
-                                label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                              },
-                              ...drivers
-                                .filter((d) => d.driver_type_id === 2)
-                                .map((driver) => ({
-                                value: String(driver.driver_id),
-                                label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                              })),
-                            ].sort((a, b) => {
-                              if (a.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return -1;
-                              if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
-                              return 0;
-                            })
-                            : drivers
-                                .filter((d) => d.driver_type_id === 1 || !d.driver_type_id)
-                                .map((driver) => ({
-                              value: String(driver.driver_id),
-                              label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
-                            }))
-                        }
-                        value={
-                          selectedDriver === "self"
-                            ? {
-                              value: "self",
-                              label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                            }
-                            : selectedDriver
-                              ? {
-                                value: selectedDriver,
-                                label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname || ""} ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === selectedDriver ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
-                              }
-                              : null
-                        }
-                        onChange={(selectedOption: any) =>
-                          setSelectedDriver(
-                            selectedOption ? selectedOption.value : "",
-                          )
-                        }
-                        placeholder="พิมพ์ค้นหาชื่อคนขับ..."
-                        isClearable
-                        isSearchable
-                        menuPortalTarget={
-                          typeof document !== "undefined" ? document.body : null
-                        }
-                        menuPosition="fixed"
-                        styles={reactSelectStyles}
-                        noOptionsMessage={() => "ไม่พบชื่อพนักงานขับรถ"}
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-4">
-                  <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest block">
-                    เหตุผลที่จัดรถแท็กซี่
-                  </label>
-                  <textarea
-                    value={taxiReason}
-                    onChange={(e) => setTaxiReason(e.target.value)}
-                    placeholder="ระบุเหตุผล..."
-                    className="w-full border-2 border-slate-200 rounded-xl p-3 font-semibold text-slate-800 focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none min-h-[100px] transition-all"
+          {pickupStatus === "PICKED_UP" && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-gray-800">วันที่ส่งมอบ</label>
+                  <input
+                    type="date"
+                    value={pickupDate}
+                    onChange={(e) => setPickupDate(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none"
                   />
                 </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-slate-50 border-t border-slate-100">
-              <div className="px-10 py-6">
-                <button
-                  onClick={handleAssignSubmit}
-                  disabled={isSubmitting}
-                  className="w-full bg-blue-600 text-white font-extrabold py-5 rounded-lg shadow-xl shadow-blue-100 hover:bg-blue-700 hover:shadow-blue-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
-                >
-                  <Save size={20} />
-                  {isSubmitting ? "กำลังบันทึก..." : "บันทึกและส่งอีเมลแจ้งเตือน"}
-                </button>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-gray-800">เวลาที่ส่งมอบ</label>
+                  <TimeInput24hr value={pickupTime} onChange={setPickupTime} />
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* --- PICKUP MODAL --- */}
-      {isPickupModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            {/* Modal Header */}
-            <div className="bg-emerald-600 px-8 py-6 flex justify-between items-center text-white">
-              <h2 className="text-xl font-bold tracking-tight">
-                บันทึกการส่งมอบรถ
-              </h2>
-              <button
-                onClick={() => setIsPickupModalOpen(false)}
-                className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
-                title="Close"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-8 space-y-6">
-              <div>
-                <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">
-                  สถานะการส่งมอบ
-                </label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">วิธีการส่งมอบ</label>
                 <select
-                  value={pickupStatus}
-                  onChange={(e) => setPickupStatus(e.target.value)}
-                  className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 focus:ring-0 outline-none transition-colors"
+                  value={pickupMethod}
+                  onChange={(e) => setPickupMethod(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none"
                 >
-                  <option value="PICKED_UP">ดำเนินการรับรถแล้ว</option>
-                  <option value="NO_SHOW">ผู้ขอไม่มารับรถ</option>
+                  <option value="STAFF_DELIVERY">เจ้าหน้าที่ขับไปส่ง</option>
+                  <option value="SELF_PICKUP">ผู้ขอรับรถด้วยตนเอง</option>
+                  <option value="TAXI">เรียก TAXI ให้</option>
                 </select>
               </div>
-
-              {pickupStatus === "PICKED_UP" && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">
-                        วันที่
-                      </label>
-                      <input
-                        type="date"
-                        value={pickupDate}
-                        onChange={(e) => setPickupDate(e.target.value)}
-                        className="w-full border-2 border-slate-200 rounded-xl p-3 font-semibold text-slate-800 focus:border-emerald-500 outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">
-                        เวลา
-                      </label>
-                      <TimeInput24hr
-                        value={pickupTime}
-                        onChange={(val) => setPickupTime(val)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">
-                      รูปแบบการส่งมอบ
-                    </label>
-                    <select
-                      value={pickupMethod}
-                      onChange={(e) => setPickupMethod(e.target.value)}
-                      className="w-full border-2 border-slate-200 rounded-xl p-3 font-bold text-slate-800 focus:border-emerald-500 outline-none transition-colors"
-                    >
-                      <option value="STAFF_DELIVERY">
-                        เจ้าหน้าที่นำรถไปส่ง
-                      </option>
-                      <option value="SELF_PICKUP">ผู้ขอรับรถด้วยตนเอง</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-8 py-6 bg-slate-50">
-              <button
-                onClick={handlePickupSubmit}
-                disabled={isPickupSubmitting}
-                className="w-full bg-emerald-600 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:shadow-emerald-300 transition-all active:scale-[0.98] disabled:opacity-50"
-              >
-                {isPickupSubmitting ? "กำลังบันทึก..." : "บันทึกการส่งมอบ"}
-              </button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
-      )}
-
-      {/* Tailwind Style Helper for Dynamic colors if needed by class string */}
-      <style jsx global>{`
-        .bg-blue-600 {
-          background-color: #2563eb;
-        }
-        .bg-indigo-600 {
-          background-color: #4f46e5;
-        }
-        .bg-amber-600 {
-          background-color: #d97706;
-        }
-        .border-blue-600 {
-          border-color: #2563eb;
-        }
-        .border-indigo-600 {
-          border-color: #4f46e5;
-        }
-        .border-amber-600 {
-          border-color: #d97706;
-        }
-        .shadow-blue-100 {
-          --tw-shadow-color: rgba(37, 99, 235, 0.1);
-        }
-        .shadow-indigo-100 {
-          --tw-shadow-color: rgba(79, 70, 229, 0.1);
-        }
-        .shadow-amber-100 {
-          --tw-shadow-color: rgba(217, 119, 6, 0.1);
-        }
-      `}</style>
+      </Modal>
     </div>
   );
 }
