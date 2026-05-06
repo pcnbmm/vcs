@@ -14,7 +14,9 @@ import {
   XCircle,
   AlertCircle,
   Loader2,
+  Search,
 } from "lucide-react";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function PendingPage() {
   // 1. เตรียม State สำหรับรับข้อมูลจาก Database
@@ -24,7 +26,7 @@ export default function PendingPage() {
 
   // 2. State สำหรับการค้นหา และ Modal
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
-
+  const [searchQuery, setSearchQuery] = useState("");
   // 3. ฟังก์ชันดึงข้อมูลจาก API (Database)
   useEffect(() => {
     const fetchRequests = async () => {
@@ -69,6 +71,7 @@ export default function PendingPage() {
             startDateTime: b.journey_date
               ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00`
               : "",
+            rejectReason: b.reject_reason || null,
           }));
           setRequests(formattedList);
         } else {
@@ -105,7 +108,15 @@ export default function PendingPage() {
           req.status === "6" ||
           (req.status === "1" && expired)));
 
-    return matchesStatus;
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      q === "" ||
+      req.id.includes(q) ||
+      req.requester.toLowerCase().includes(q) ||
+      req.date.toLowerCase().includes(q) ||
+      req.time.includes(q);
+
+    return matchesStatus && matchesSearch;
   });
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
   const paginatedRequests = filteredRequests.slice(
@@ -113,27 +124,159 @@ export default function PendingPage() {
     currentPage * itemsPerPage,
   );
   const tabs = [
-    { id: "ALL", label: "ทั้งหมด", icon: RefreshCw },
-    { id: "PENDING", label: "รออนุมัติ", icon: Clock, color: "amber" },
+    {
+      id: "ALL",
+      label: "ทั้งหมด",
+      icon: RefreshCw,
+      iconColor: "text-gray-500",
+    },
+    {
+      id: "PENDING",
+      label: "รออนุมัติ",
+      icon: Clock,
+      iconColor: "text-amber-500",
+    },
     {
       id: "APPROVED",
       label: "อนุมัติแล้ว",
       icon: CheckCircle2,
-      color: "emerald",
+      iconColor: "text-emerald-500",
     },
     {
       id: "REJECTED",
       label: "ยกเลิก/ไม่อนุมัติ/หมดเวลาอนุมัติ",
       icon: XCircle,
-      color: "rose",
+      iconColor: "text-rose-500",
     },
   ];
   useEffect(() => {
     setCurrentPage(1);
   }, [statusFilter]);
 
+  const columns: DataTableColumn<any>[] = [
+    {
+      header: "เลขที่คำขอ",
+      cell: (req) => (
+        <span className="text-xs font-bold text-gray-800">
+          {req.id}
+        </span>
+      ),
+    },
+    {
+      header: "ผู้ขอ",
+      cell: (req) => (
+        <div>
+          <p className="text-sm font-bold text-gray-800 leading-tight">
+            {req.requester}
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {req.department}
+          </p>
+        </div>
+      ),
+    },
+    {
+      header: "ปลายทาง",
+      cell: (req) => (
+        <div className="flex flex-col gap-1 min-w-0">
+          <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">
+            <span className="text-gray-500 shrink-0">
+              {req.origin}
+            </span>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+            <span className="text-blue-600 truncate">
+              {req.destination}
+            </span>
+          </p>
+          <p className="text-xs text-gray-400 truncate mt-0.5">
+            {req.objective}
+          </p>
+        </div>
+      ),
+    },
+    {
+      header: "วันเวลาเดินทาง",
+      cell: (req) => (
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <span className="text-sm font-semibold text-gray-700">
+              {req.date}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+            <span className="text-xs text-gray-400 font-medium">
+              {req.time} น.
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "สถานะ",
+      cell: (req) => {
+        const status = Number(req.status);
+        const expired = isBookingExpired(
+          req.startDateTime ?? "",
+          req.status,
+        );
+        const statusName = expired
+          ? "หมดเวลาอนุมัติ"
+          : getStatusName(status) || "สถานะไม่ระบุ";
+        const statusColor = expired
+          ? "text-orange-600 bg-orange-50 border-orange-200"
+          : getStatusColor(status) ||
+            "text-gray-600 bg-gray-50 border-gray-100";
+        return (
+          <div
+            className={`inline-flex items-center justify-center min-w-[120px] px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide ${statusColor}`}
+          >
+            {statusName}
+          </div>
+        );
+      },
+    },
+    {
+      header: "",
+      className: "text-right",
+      cell: () => (
+        <div className="flex justify-end">
+          <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors shrink-0">
+            <ChevronRight className="w-4 h-4" />
+          </div>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="ค้นหาเลขที่คำขอ, ชื่อผู้ขอ, วันเดินทาง"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all shadow-sm"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => {
+              setSearchQuery("");
+              setCurrentPage(1);
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <XCircle className="w-4 h-4" />
+          </button>
+        )}
+      </div>
       {/* Status Tabs */}
       <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 rounded-2xl overflow-x-auto no-scrollbar border border-gray-100">
         {tabs.map((tab) => {
@@ -144,16 +287,18 @@ export default function PendingPage() {
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
               className={`
-                                flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shrink-0
-                                ${
-                                  isActive
-                                    ? "bg-white text-blue-600 shadow-md scale-[1.02]"
-                                    : "text-gray-400 hover:text-gray-600 hover:bg-white/50"
-                                }
-                            `}
+  flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shrink-0 cursor-pointer
+  ${
+    isActive
+      ? "bg-white shadow-md scale-[1.02] ring-1 ring-blue-100"
+      : "hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200"
+  }
+`}
             >
-              <Icon size={16} />
-              {tab.label}
+              <Icon size={16} className={tab.iconColor} />
+              <span className={isActive ? "text-gray-800" : "text-gray-500"}>
+                {tab.label}
+              </span>
               {isActive && (
                 <span className="ml-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px]">
                   {filteredRequests.length}
@@ -185,131 +330,22 @@ export default function PendingPage() {
           <div className="bg-white p-20 rounded-md text-center border border-gray-100 shadow-sm flex flex-col items-center gap-4">
             <AlertCircle size={48} className="text-gray-200" />
             <p className="font-semibold text-xl text-gray-400 uppercase tracking-widest">
-              ไม่พบรายการคำขอในหมวดนี้
+              ไม่พบรายการคำขอ
             </p>
           </div>
         ) : (
           /* แสดงข้อมูลจริง */
-          <div className="grid grid-cols-1 gap-4">
-            {paginatedRequests.map((req) => {
-              const status = Number(req.status);
-              const expired = isBookingExpired(
-                req.startDateTime ?? "",
-                req.status,
-              );
-              const statusName = expired
-                ? "หมดเวลาอนุมัติ"
-                : getStatusName(status) || "สถานะไม่ระบุ";
-              const statusColor = expired
-                ? "text-orange-600 bg-orange-50 border-orange-200"
-                : getStatusColor(status) ||
-                  "text-gray-600 bg-gray-50 border-gray-100";
-              const StatusIcon = Clock;
-
-              return (
-                <div
-                  key={req.id}
-                  onClick={() => setSelectedRequest(req)}
-                  className="bg-white px-6 py-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center gap-4">
-                    {/* ID */}
-                    <span className="text-xs font-bold text-gray-800 w-8 shrink-0">
-                      {req.id}
-                    </span>
-
-                    {/* Requester */}
-                    <div className="w-44 shrink-0">
-                      <p className="text-sm font-bold text-gray-800 leading-tight">
-                        {req.requester}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        {req.department}
-                      </p>
-                    </div>
-
-                    {/* Origin → Destination */}
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
-                        <MapPin className="w-4 h-4 text-gray-400 group-hover:text-blue-500" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">
-                          <span className="text-gray-500 shrink-0">
-                            {req.origin}
-                          </span>
-                          <ChevronRight className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                          <span className="text-blue-600 truncate">
-                            {req.destination}
-                          </span>
-                        </p>
-                        <p className="text-xs text-gray-400 truncate mt-0.5">
-                          {req.objective}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Date & Time */}
-                    <div className="shrink-0 w-40 space-y-1">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                        <span className="text-sm font-semibold text-gray-700">
-                          {req.date}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        <span className="text-xs text-gray-400 font-medium">
-                          {req.time} น.
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Status */}
-                    <div className="shrink-0 flex items-center justify-end gap-3 w-44">
-                      <div
-                        className={`inline-flex items-center justify-center min-w-[120px] px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide ${statusColor}`}
-                      >
-                        {statusName}
-                      </div>
-                      <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <ChevronRight className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <DataTable
+            columns={columns}
+            data={paginatedRequests}
+            onRowClick={(req) => setSelectedRequest(req)}
+            rowKey={(row) => row.id}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
-      {/* Pagination — อยู่นอก List Section */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 pt-4">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`w-9 h-9 rounded-full text-sm font-bold transition-all
-                ${
-                  currentPage === page
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                    : "text-blue-600 hover:bg-blue-50"
-                }`}
-            >
-              {page}
-            </button>
-          ))}
-          {currentPage < totalPages && (
-            <button
-              onClick={() => setCurrentPage((p) => p + 1)}
-              className="px-4 h-9 rounded-full text-sm font-bold text-blue-600 hover:bg-blue-50 transition-all"
-            >
-              Next
-            </button>
-          )}
-        </div>
-      )}
 
       {/* ส่วน Detail Modal */}
       {selectedRequest && (
@@ -425,6 +461,19 @@ export default function PendingPage() {
                   {selectedRequest.objective}
                 </p>
               </div>
+
+              {(selectedRequest.status === "3" ||
+                selectedRequest.status === "6") &&
+                selectedRequest.rejectReason && (
+                  <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.15em] mb-2">
+                      เหตุผลที่ไม่อนุมัติ / ยกเลิก
+                    </p>
+                    <p className="text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {selectedRequest.rejectReason}
+                    </p>
+                  </div>
+                )}
             </div>
             {selectedRequest?.status === "1" &&
               !isBookingExpired(

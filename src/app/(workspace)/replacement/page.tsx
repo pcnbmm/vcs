@@ -17,10 +17,14 @@ import {
   Eye,
   Edit2,
   Search,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Select from "react-select";
 import { usePermissions } from "@/hooks/usePermissions";
 import { getProvinces, getCarSpecs } from "@/app/actions/dropdownActions";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function ReplacementPage() {
   const { hasAccess } = usePermissions();
@@ -33,6 +37,12 @@ export default function ReplacementPage() {
   const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
   const [masterSearchTerm, setMasterSearchTerm] = useState("");
 
+  // Pagination & Search
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "view" | "edit">("add");
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -42,6 +52,7 @@ export default function ReplacementPage() {
   const [isChecked, setIsChecked] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isReturning, setIsReturning] = useState(false); // To toggle cancel checkbox
+  const [carSearchInput, setCarSearchInput] = useState("");
 
   const [formData, setFormData] = useState({
     car_id: "",
@@ -57,6 +68,23 @@ export default function ReplacementPage() {
     cre_by: "",
     existing_car_id: "" as string | number,
   });
+
+  const availableCarOptions = React.useMemo(() => {
+    return availableCars.map((c) => ({
+      value: c.car_id.toString(),
+      label: c.car_number,
+    }));
+  }, [availableCars]);
+
+  const filteredCarOptions = React.useMemo(() => {
+    if (!carSearchInput) {
+      return availableCarOptions.slice(0, 50);
+    }
+    const lowerSearch = carSearchInput.toLowerCase();
+    return availableCarOptions
+      .filter((opt) => (opt.label || "").toLowerCase().includes(lowerSearch))
+      .slice(0, 50);
+  }, [availableCarOptions, carSearchInput]);
 
   useEffect(() => {
     fetchReplacements();
@@ -172,13 +200,13 @@ export default function ReplacementPage() {
   };
 
   const handleSelectMasterCar = (car: any) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       replacement_car_number: car.car_number,
       car_province_id: car.car_province_id?.toString() || "",
       car_spec_id: car.car_spec_id?.toString() || "",
       existing_car_id: car.car_id,
-    });
+    }));
     setIsChecked(true);
     setIsMasterModalOpen(false);
   };
@@ -225,13 +253,20 @@ export default function ReplacementPage() {
         }
       }
 
+      const payload = {
+        ...formData,
+        start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null,
+        end_date: formData.end_date ? new Date(formData.end_date).toISOString() : null,
+        broken_datetime: formData.broken_datetime ? new Date(formData.broken_datetime).toISOString() : null,
+      };
+
       if (modalMode === "add") {
         if (!formData.car_spec_id) return showWarning("กรุณาเลือกสเปครถ");
 
         const res = await fetch("/api/replacements", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error("Saving failed");
         showSuccess("บันทึกข้อมูลรถทดแทนใหม่เรียบร้อยแล้ว");
@@ -242,9 +277,12 @@ export default function ReplacementPage() {
           const res = await fetch(`/api/replacements/${selectedId}/cancel`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ end_date: formData.end_date }),
+            body: JSON.stringify({ end_date: payload.end_date }),
           });
-          if (!res.ok) throw new Error("Cancel failed");
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || errData.details || "Cancel failed");
+          }
           showSuccess("ยกเลิกการใช้รถทดแทนและคืนค่าทะเบียนเดิมเรียบร้อยแล้ว");
         } else {
           // Step 5: Fill details and link broken car
@@ -254,7 +292,7 @@ export default function ReplacementPage() {
           const res = await fetch(`/api/replacements/${selectedId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error("Updating failed");
           showSuccess("อัปเดตข้อมูลการทดแทนเรียบร้อยแล้ว");
@@ -270,6 +308,34 @@ export default function ReplacementPage() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const filteredReplacements = replacements.filter((r) => {
+    const isIdle = !r.car_id && !r.end_datetime;
+    const isActive = r.car_id && !r.end_datetime;
+    const isEnded = !!r.end_datetime;
+
+    if (filterStatus === "active" && !isActive) return false;
+    if (filterStatus === "idle" && !isIdle) return false;
+    if (filterStatus === "ended" && !isEnded) return false;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchBroken = (r.broken_car_id || "").toLowerCase().includes(q);
+      const matchNew = (r.car_number || "").toLowerCase().includes(q);
+      if (!matchBroken && !matchNew) return false;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredReplacements.length / itemsPerPage) || 1;
+  const currentReplacements = filteredReplacements.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) setCurrentPage(newPage);
   };
 
   return (
@@ -302,128 +368,153 @@ export default function ReplacementPage() {
         )}
       </div>
 
+      {/* Search & Filters */}
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-md shadow-sm border border-gray-100">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="ค้นหา ทะเบียนรถที่ถูกทดแทน หรือ ทะเบียนรถทดแทน..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-400"
+          />
+        </div>
+        <div className="w-full md:w-56">
+          <select
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer appearance-none"
+            style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
+          >
+            <option value="all">สถานะทั้งหมด</option>
+            <option value="idle">รอการระบุรถที่ถูกทดแทน</option>
+            <option value="active">กำลังใช้งานทดแทน</option>
+            <option value="ended">คืนรถแล้ว</option>
+          </select>
+        </div>
+      </div>
+
+
       {/* Data Table */}
       <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  สถานะ
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ทะเบียนรถที่ถูกแทนที่ (เดิม)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  ทะเบียนรถทดแทน (ใหม่)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  วันที่เริ่มทดแทน
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  วันที่สิ้นสุด (คืนรถ)
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูล...
-                    </p>
-                  </td>
-                </tr>
-              ) : replacements.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="py-12 text-center text-sm font-medium text-gray-500"
-                  >
-                    ไม่พบประวัติการใช้รถทดแทน
-                  </td>
-                </tr>
-              ) : (
-                replacements.map((r) => {
-                  const isIdle = !r.car_id && !r.end_datetime; // Wait for assignment
-                  const isActive = r.car_id && !r.end_datetime; // Actively replacing
-                  const isEnded = r.end_datetime; // Finished
+        <DataTable
+          columns={[
+            {
+              header: "สถานะ",
+              cell: (r) => {
+                const isIdle = !r.car_id && !r.end_datetime;
+                const isActive = r.car_id && !r.end_datetime;
+                
+                if (isActive) {
                   return (
-                    <tr
-                      key={r.replacement_id}
-                      className={`hover:bg-slate-50 transition-colors ${isActive ? "bg-blue-50/20" : isIdle ? "bg-amber-50/20" : ""}`}
-                    >
-                      <td className="py-4 px-6">
-                        {isActive ? (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-blue-100 text-blue-800 font-semibold text-xs border border-blue-200">
-                            <Clock className="w-3.5 h-3.5" />
-                            กำลังใช้งานทดแทน
-                          </span>
-                        ) : isIdle ? (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-xs border border-amber-200">
-                            <Clock className="w-3.5 h-3.5" />
-                            รอการระบุรถที่ถูกทดแทน
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200">
-                            <CheckCircle className="w-3.5 h-3.5" />
-                            คืนรถแล้ว
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="font-semibold text-slate-700">
-                          {r.broken_car_id || "-"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
-                          {r.car_number || "-"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-sm text-slate-600">
-                        {r.start_date
-                          ? new Date(r.start_date).toLocaleDateString("th-TH")
-                          : "-"}
-                      </td>
-                      <td className="py-4 px-6 text-sm text-slate-600">
-                        {r.end_date
-                          ? new Date(r.end_date).toLocaleDateString("th-TH")
-                          : "-"}
-                      </td>
-                      <td className="py-4 px-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          {hasAccess("view") && (
-                            <button
-                              onClick={() => openModal("view", r)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-md transition-colors border border-blue-200"
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                              รายละเอียด
-                            </button>
-                          )}
-                          {!isEnded && hasAccess("update") && (
-                            <button
-                              onClick={() => openModal("edit", r)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 font-semibold text-xs rounded-md transition-colors border border-amber-200"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                              จัดการรถทดแทน
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-blue-100 text-blue-800 font-semibold text-xs border border-blue-200">
+                      <Clock className="w-3.5 h-3.5" />
+                      กำลังใช้งานทดแทน
+                    </span>
                   );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                } else if (isIdle) {
+                  return (
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-xs border border-amber-200">
+                      <Clock className="w-3.5 h-3.5" />
+                      รอการระบุรถที่ถูกทดแทน
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      คืนรถแล้ว
+                    </span>
+                  );
+                }
+              },
+            },
+            {
+              header: "ทะเบียนรถที่ถูกแทนที่ (เดิม)",
+              cell: (r) => (
+                <span className="font-semibold text-slate-700">
+                  {r.broken_car_id || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "ทะเบียนรถทดแทน (ใหม่)",
+              cell: (r) => (
+                <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                  {r.car_number || "-"}
+                </span>
+              ),
+            },
+            {
+              header: "วันที่เริ่มทดแทน",
+              cell: (r) => (
+                <span className="text-sm text-slate-600">
+                  {r.start_date
+                    ? `${new Date(r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                    : "-"}
+                </span>
+              ),
+            },
+            {
+              header: "วันที่สิ้นสุด (คืนรถ)",
+              cell: (r) => (
+                <span className="text-sm text-slate-600">
+                  {r.end_date
+                    ? `${new Date(r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                    : "-"}
+                </span>
+              ),
+            },
+            {
+              header: "จัดการ",
+              className: "text-right",
+              cell: (r) => {
+                const isEnded = r.end_datetime;
+                return (
+                  <div className="flex items-center justify-end gap-2">
+                    {hasAccess("view") && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal("view", r);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-md transition-colors border border-blue-200"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        รายละเอียด
+                      </button>
+                    )}
+                    {!isEnded && hasAccess("update") && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal("edit", r);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 font-semibold text-xs rounded-md transition-colors border border-amber-200"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                        จัดการรถทดแทน
+                      </button>
+                    )}
+                  </div>
+                );
+              },
+            },
+          ]}
+          data={currentReplacements}
+          isLoading={isLoading}
+          rowKey={(row) => row.replacement_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
       {/* Modal Form */}
@@ -604,20 +695,20 @@ export default function ReplacementPage() {
                         </label>
                         {modalMode === "edit" && !formData.broken_car_id ? (
                           <Select
-                            options={availableCars.map((c) => ({
-                              value: c.car_id.toString(),
-                              label: c.car_number,
-                            }))}
+                            options={filteredCarOptions}
+                            onInputChange={(inputValue, { action }) => {
+                              if (action === "input-change") {
+                                setCarSearchInput(inputValue);
+                              } else if (action === "menu-close") {
+                                setCarSearchInput("");
+                              }
+                            }}
+                            filterOption={() => true}
                             placeholder="-- ค้นหาและเลือกรถที่ต้องการนำมาแทนที่ --"
                             value={
-                              availableCars.find(
-                                (c) => c.car_id.toString() === formData.car_id,
-                              )
-                                ? {
-                                    value: formData.car_id,
-                                    label: availableCars.find((c) => c.car_id.toString() === formData.car_id)?.car_number,
-                                  }
-                                : null
+                              availableCarOptions.find(
+                                (option) => option.value === formData.car_id,
+                              ) || null
                             }
                             onChange={(selected: any) =>
                               setFormData({
@@ -860,19 +951,21 @@ export default function ReplacementPage() {
 
             <div className="flex-1 overflow-y-auto p-6">
               <div className="grid grid-cols-1 gap-3">
-                {masterReplacementCars.filter(car => 
-                  car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
-                  car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
-                ).length === 0 ? (
+                {masterReplacementCars.filter(car => {
+                  const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                  const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                  return numMatch || specMatch;
+                }).length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     ไม่พบข้อมูลรถทดแทนที่ค้นหา
                   </div>
                 ) : (
                   masterReplacementCars
-                    .filter(car => 
-                      car.car_number?.toLowerCase().includes(masterSearchTerm.toLowerCase()) ||
-                      car.vc_car_spec?.car_spec_name?.toLowerCase().includes(masterSearchTerm.toLowerCase())
-                    )
+                    .filter(car => {
+                      const numMatch = (car.car_number || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                      const specMatch = (car.vc_car_spec?.car_spec_name || "").toLowerCase().includes(masterSearchTerm.toLowerCase());
+                      return numMatch || specMatch;
+                    })
                     .map((car) => {
                     const activeReplacement = car.vc_replacement?.[0];
                     const isBusy = !!activeReplacement;

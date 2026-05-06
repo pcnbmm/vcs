@@ -17,8 +17,15 @@ import {
   X,
   Loader2,
   Save,
+  Download,
+  ChevronDown,
+  FileText,
+  FileSpreadsheet,
+  File as FileIcon,
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { exportToExcel, exportToDocx, exportToPdf } from "@/lib/exportUtils";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 export default function DriverTab() {
   const { hasAccess } = usePermissions();
@@ -34,13 +41,14 @@ export default function DriverTab() {
   } | null>(null);
   const itemsPerPage = 8;
   const [searchQuery, setSearchQuery] = useState("");
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   // Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"view" | "add" | "edit">("add");
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [driverType, setDriverType] = useState<"driver" | "staff">("driver");
+  const [driverTypeId, setDriverTypeId] = useState<number>(1);
 
   const [formData, setFormData] = useState<any>({});
 
@@ -145,7 +153,7 @@ export default function DriverTab() {
     setModalMode(mode);
     setSelectedDriver(driver);
     if (mode === "add") {
-      setDriverType("driver");
+      setDriverTypeId(1);
       setFormData({
         driver_code: "",
         driver_status: "A",
@@ -159,6 +167,7 @@ export default function DriverTab() {
         flag: "Y",
       });
     } else {
+      setDriverTypeId(driver.driver_type_id || 1);
       setFormData({
         ...driver,
         start_date: safeDate(driver.start_date),
@@ -222,7 +231,7 @@ export default function DriverTab() {
 
       const payload = {
         ...formData,
-        driver_type: driverType,
+        driver_type_id: driverTypeId,
         flag: formData.driver_status === "A" ? null : "x",
       };
 
@@ -274,6 +283,148 @@ export default function DriverTab() {
     }
   };
 
+  const handleExportMenu = (type: string) => {
+    setIsExportOpen(false);
+
+    try {
+      if (type === "excel") {
+        const columns = [
+          { header: "รหัสคนขับ", key: "driver_code", width: 15 },
+          { header: "ชื่อ", key: "firstname", width: 20 },
+          { header: "นามสกุล", key: "lastname", width: 20 },
+          { header: "เบอร์โทรศัพท์", key: "tel", width: 15 },
+          { header: "เลขที่ใบขับขี่", key: "licence_no", width: 20 },
+          { header: "สถานะ", key: "status", width: 15 },
+        ];
+
+        const data = filteredDrivers.map((driver) => ({
+          driver_code: driver.driver_code || "-",
+          firstname: driver.vc_users?.firstname || "-",
+          lastname: driver.vc_users?.lastname || "-",
+          tel: driver.tel || "-",
+          licence_no: driver.licence_no || "-",
+          status: driver.driver_status === "A" ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน",
+        }));
+
+        exportToExcel("drivers_export", "Drivers", columns, data)
+          .then(() => showSuccess("Export Excel สำเร็จ"))
+          .catch(() => showError("Export Error"));
+      } else if (type === "docx" || type === "pdf") {
+        const headers = ["รหัสคนขับ", "ชื่อ", "นามสกุล", "เบอร์โทรศัพท์", "เลขที่ใบขับขี่", "สถานะ"];
+        const data = filteredDrivers.map((driver) => [
+          driver.driver_code || "-",
+          driver.vc_users?.firstname || "-",
+          driver.vc_users?.lastname || "-",
+          driver.tel || "-",
+          driver.licence_no || "-",
+          driver.driver_status === "A" ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน",
+        ]);
+
+        if (type === "docx") {
+          exportToDocx("drivers_export", "ข้อมูลพนักงานขับรถ", headers, data)
+            .then(() => showSuccess("Export DOCX สำเร็จ"))
+            .catch(() => showError("Export Error"));
+        } else {
+          exportToPdf("รายงานข้อมูลพนักงานขับรถ", headers, data);
+          showSuccess("เปิดหน้าต่าง PDF แล้ว (กรุณาสั่ง Print หรือ Save as PDF)");
+        }
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      showError("เกิดข้อผิดพลาดในการ Export ข้อมูล");
+    }
+  };
+
+  const columns: DataTableColumn<any>[] = [
+    {
+      header: "รหัสคนขับ",
+      sortable: true,
+      sortKey: "driver_code",
+      cell: (driver) => (
+        <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">
+          {driver.driver_code || "-"}
+        </span>
+      ),
+    },
+    {
+      header: "ชื่อ - นามสกุล",
+      sortable: true,
+      sortKey: "firstname",
+      cell: (driver) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+            {driver.vc_users?.firstname?.charAt(0) || "?"}
+          </div>
+          <div>
+            <span className="block text-sm font-bold text-gray-900">
+              {driver.vc_users?.firstname} {driver.vc_users?.lastname}
+            </span>
+            <span className="block text-xs text-gray-500">
+              {driver.licence_no || "ยังไม่ระบุใบขับขี่"}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "เบอร์โทรศัพท์",
+      sortable: true,
+      sortKey: "tel",
+      cell: (driver) => (
+        <span className="text-sm font-medium text-gray-600">{driver.tel || "-"}</span>
+      ),
+    },
+    {
+      header: "สถานะ",
+      sortable: true,
+      sortKey: "driver_status",
+      cell: (driver) =>
+        driver.driver_status === "A" ? (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm uppercase tracking-tight">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            พร้อมใช้งาน
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-rose-50 text-rose-700 border-rose-100 shadow-sm uppercase tracking-tight">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            ไม่พร้อมใช้งาน
+          </span>
+        ),
+    },
+    {
+      header: "จัดการ",
+      className: "text-right",
+      cell: (driver) => (
+        <div className="flex justify-end gap-2">
+          {hasAccess("view") && (
+            <button
+              onClick={() => openModal("view", driver)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("update") && (
+            <button
+              onClick={() => openModal("edit", driver)}
+              className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          )}
+          {hasAccess("delete") && (
+            <button
+              onClick={() => handleDelete(driver.driver_id)}
+              className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header & Search */}
@@ -288,234 +439,66 @@ export default function DriverTab() {
             className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-500 placeholder:font-medium"
           />
         </div>
-        {hasAccess("create") && (
+        <div className="flex items-center gap-2 w-full md:w-auto relative">
           <button
-            onClick={() => openModal("add")}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+            onClick={() => setIsExportOpen(!isExportOpen)}
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all whitespace-nowrap"
           >
-            <Plus className="w-5 h-5" />
-            เพิ่มข้อมูลคนขับ
+            <Download className="w-5 h-5" />
+            Export Data
+            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
           </button>
-        )}
+          
+          {isExportOpen && (
+            <div className="absolute top-full right-0 md:right-auto md:left-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+              <button
+                onClick={() => handleExportMenu("excel")}
+                className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-3 transition-colors"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                Export เป็น Excel
+              </button>
+              <button
+                onClick={() => handleExportMenu("pdf")}
+                className="w-full text-left px-4 py-2.5 hover:bg-rose-50 text-sm font-bold text-gray-700 hover:text-rose-700 flex items-center gap-3 transition-colors"
+              >
+                <FileIcon className="w-4 h-4 text-rose-600" />
+                Export เป็น PDF
+              </button>
+              <button
+                onClick={() => handleExportMenu("docx")}
+                className="w-full text-left px-4 py-2.5 hover:bg-blue-50 text-sm font-bold text-gray-700 hover:text-blue-700 flex items-center gap-3 transition-colors"
+              >
+                <FileText className="w-4 h-4 text-blue-600" />
+                Export เป็น Word
+              </button>
+            </div>
+          )}
+
+          {hasAccess("create") && (
+            <button
+              onClick={() => openModal("add")}
+              className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
+            >
+              <Plus className="w-5 h-5" />
+              เพิ่มข้อมูลคนขับ
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th
-                  onClick={() => handleSort("driver_code")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  รหัสคนขับ{" "}
-                  {sortConfig?.key === "driver_code"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("firstname")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  ชื่อ - นามสกุล{" "}
-                  {sortConfig?.key === "firstname"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("tel")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  เบอร์โทรศัพท์{" "}
-                  {sortConfig?.key === "tel"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th
-                  onClick={() => handleSort("driver_status")}
-                  className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
-                >
-                  สถานะ{" "}
-                  {sortConfig?.key === "driver_status"
-                    ? sortConfig.direction === "asc"
-                      ? "↑"
-                      : "↓"
-                    : ""}
-                </th>
-                <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  จัดการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto" />
-                    <p className="mt-4 text-sm font-medium text-gray-500">
-                      กำลังโหลดข้อมูลคนขับ...
-                    </p>
-                  </td>
-                </tr>
-              ) : currentDrivers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <p className="text-sm font-medium text-gray-500">
-                      ไม่พบข้อมูลที่ค้นหา
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                currentDrivers.map((driver) => (
-                  <tr
-                    key={driver.driver_id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="py-4 px-6">
-                      <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">
-                        {driver.driver_code || "-"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                          {driver.vc_users?.firstname?.charAt(0) || "?"}
-                        </div>
-                        <div>
-                          <span className="block text-sm font-bold text-gray-900">
-                            {driver.vc_users?.firstname}{" "}
-                            {driver.vc_users?.lastname}
-                          </span>
-                          <span className="block text-xs text-gray-500">
-                            {driver.licence_no || "ยังไม่ระบุใบขับขี่"}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-sm font-medium text-gray-600">
-                      {driver.tel || "-"}
-                    </td>
-                    <td className="py-4 px-6">
-                      {driver.driver_status === "A" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm uppercase tracking-tight">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          พร้อมใช้งาน
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border bg-rose-50 text-rose-700 border-rose-100 shadow-sm uppercase tracking-tight">
-                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                          ไม่พร้อมใช้งาน
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        {hasAccess("view") && (
-                          <button
-                            onClick={() => openModal("view", driver)}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("update") && (
-                          <button
-                            onClick={() => openModal("edit", driver)}
-                            className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                        )}
-                        {hasAccess("delete") && (
-                          <button
-                            onClick={() => handleDelete(driver.driver_id)}
-                            className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {!isLoading && totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
-              แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง{" "}
-              {Math.min(currentPage * itemsPerPage, filteredDrivers.length)} จาก{" "}
-              {filteredDrivers.length} รายการ
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => jumpPages(-5)}
-                disabled={currentPage <= 1}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                -5 หน้า
-              </button>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                ก่อนหน้า
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter(
-                  (p) =>
-                    p === 1 ||
-                    p === totalPages ||
-                    Math.abs(p - currentPage) <= 1,
-                )
-                .map((page, index, array) => (
-                  <React.Fragment key={page}>
-                    {index > 0 && array[index - 1] !== page - 1 && (
-                      <span className="px-2 text-gray-400">...</span>
-                    )}
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      className={`w-8 h-8 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
-                    >
-                      {page}
-                    </button>
-                  </React.Fragment>
-                ))}
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                ถัดไป
-              </button>
-              <button
-                onClick={() => jumpPages(5)}
-                disabled={currentPage >= totalPages}
-                className="px-3 py-1.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors"
-              >
-                +5 หน้า
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      <DataTable
+        columns={columns}
+        data={currentDrivers}
+        isLoading={isLoading}
+        onSort={handleSort}
+        sortConfig={sortConfig}
+        rowKey={(row) => row.driver_id}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {/* Modal */}
       {isModalOpen && (
@@ -547,15 +530,15 @@ export default function DriverTab() {
                   เลือกประเภทพนักงานขับรถ <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "driver" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverTypeId === 1 ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <input type="radio" name="driver_type" value="driver" checked={driverType === "driver"} onChange={() => setDriverType("driver")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <input type="radio" name="driver_type_id" value="1" checked={driverTypeId === 1} onChange={() => setDriverTypeId(1)} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
                       <span className="font-bold text-gray-900">1. พนักงานขับรถโดยตรง</span>
                     </div>
                   </label>
-                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "staff" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverTypeId === 2 ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <input type="radio" name="driver_type" value="staff" checked={driverType === "staff"} onChange={() => setDriverType("staff")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <input type="radio" name="driver_type_id" value="2" checked={driverTypeId === 2} onChange={() => setDriverTypeId(2)} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
                       <span className="font-bold text-gray-900">2. พนักงาน (ทำหน้าที่ขับรถ)</span>
                     </div>
                   </label>

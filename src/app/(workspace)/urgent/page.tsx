@@ -7,18 +7,20 @@ import {
 } from "@/lib/sweetalert";
 import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import { useState, useEffect } from "react";
-import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
+import MapBox from "@/components/ui/LongdoMapBox";
 import { getMyOrgs, getOrgsByUserId } from "@/app/actions/orgActions";
 import {
   getUrgentRequesters,
   createUrgentBooking,
 } from "@/app/actions/urgentBookingActions";
 import { useRouter } from "next/navigation";
-import LongdoMapBox from "@/components/ui/LongdoMapBox";
 import { getDrivers } from "@/app/actions/driverActions";
 import Select from "react-select";
+import flatpickr from "flatpickr";
+import { useRef } from "react";
+import "flatpickr/dist/flatpickr.min.css";
 import {
   FileText,
   Car,
@@ -46,6 +48,8 @@ export default function VehicleRequestPage() {
   const [provinceList, setProvinceList] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [requesters, setRequesters] = useState<any[]>([]);
+  const startDateRef = useRef<HTMLInputElement>(null);
+  const endDateRef = useRef<HTMLInputElement>(null);
 
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
@@ -124,9 +128,18 @@ export default function VehicleRequestPage() {
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+  const startPlaceMap = startPlaces.reduce(
+    (acc, sp) => {
+      acc[sp.start_place_name] = sp.start_place_id;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const handleSave = async () => {
     if (
+      !formData.vehicleType ||
+      !formData.requesterId ||
       !formData.destination ||
       !formData.startDate ||
       !formData.startTime ||
@@ -141,32 +154,30 @@ export default function VehicleRequestPage() {
       return;
     }
 
-    if (!/^\d{10}$/.test(formData.phone)) {
-      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น");
+    if (!/^\d{9,10}$/.test(formData.phone)) {
+      showWarning("เบอร์โทรศัพท์ต้องเป็นตัวเลข 9-10 หลัก");
+      return;
+    }
+    if (!formData.passengers || Number(formData.passengers) < 1) {
+      showWarning("จำนวนผู้เดินทางต้องมีอย่างน้อย 1 คน");
       return;
     }
 
     const now = new Date();
-    const startDateTime = new Date(
-      `${formData.startDate}T${formData.startTime}:00`,
+    const startDT = new Date(
+      `${formData.startDate}T${formData.startTime}:00+07:00`,
     );
-    if (startDateTime < now) {
+    const endDT = new Date(`${formData.endDate}T${formData.endTime}:00+07:00`);
+    if (startDT < now) {
       showWarning("วันที่และเวลาเดินทางไปต้องไม่น้อยกว่าเวลาปัจจุบัน");
       return;
     }
 
-    if (formData.startDate > formData.endDate) {
-      showWarning("วันที่กลับต้องไม่น้อยกว่าวันที่เดินทางไป");
+    if (endDT <= startDT) {
+      showWarning("วันที่และเวลากลับต้องมากกว่าวันที่และเวลาเดินทางไป");
       return;
     }
 
-    if (
-      formData.startDate === formData.endDate &&
-      formData.endTime <= formData.startTime
-    ) {
-      showWarning("เวลาที่เดินทางกลับต้องมากกว่าเวลาที่เดินทางไป");
-      return;
-    }
     setIsSubmitting(true);
 
     try {
@@ -193,7 +204,7 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_causes", formData.objective);
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
-      dataToSubmit.append("self_drive", formData.selfDrive.toString());
+      dataToSubmit.append("self_drive", formData.selfDrive ? "true" : "false");
       dataToSubmit.append("is_urgent", "true");
 
       if (formData.selfDrive && formData.driverId) {
@@ -239,16 +250,21 @@ export default function VehicleRequestPage() {
       isUrgent: true,
       requesterId: 0,
     });
-    // States removed
+    if (startDateRef.current) (startDateRef.current as any)._flatpickr?.clear();
+    if (endDateRef.current) (endDateRef.current as any)._flatpickr?.clear();
     setMapKey((prev) => prev + 1);
   };
 
   useEffect(() => {
-    const fetchStartPlaces = async () => {
-      const result = await getStartPlaces();
-      if (result.success) setStartPlaces(result.data);
+    const fetchData = async () => {
+      const [startRes, driverRes] = await Promise.all([
+        getStartPlaces(),
+        getDrivers(),
+      ]);
+      if (startRes.success) setStartPlaces(startRes.data);
+      if (driverRes.success) setDrivers(driverRes.data);
     };
-    fetchStartPlaces();
+    fetchData();
   }, []);
   useEffect(() => {
     const fetchSpecs = async () => {
@@ -279,6 +295,53 @@ export default function VehicleRequestPage() {
     fetchOrgs();
   }, []);
   useEffect(() => {
+    let fp: any;
+    if (startDateRef.current) {
+      fp = flatpickr(startDateRef.current, {
+        dateFormat: "d/m/Y",
+        onChange: (dates) => {
+          if (dates && dates.length > 0) {
+            const d = dates[0];
+            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            handleInputChange("startDate", iso);
+          }
+        },
+      });
+    }
+    return () => fp?.destroy();
+  }, []);
+
+  // ส่วนของวันที่เดินทางกลับ (ทำเหมือนกัน)
+  useEffect(() => {
+    let fp: any; // ประกาศตัวแปร
+    if (endDateRef.current) {
+      fp = flatpickr(endDateRef.current, {
+        // เก็บ instance ไว้ใน fp
+        dateFormat: "d/m/Y",
+        onChange: (dates) => {
+          if (!dates || dates.length === 0 || !dates[0]) return;
+          const d = dates[0];
+          const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+          handleInputChange("endDate", iso);
+        },
+      });
+    }
+    return () => fp?.destroy(); // ต้องมีบรรทัดนี้เพื่อป้องกัน UI บั๊ก
+  }, []);
+
+  useEffect(() => {
+    const fetchRequesters = async () => {
+      const result = await getUrgentRequesters();
+      if (result.success) setRequesters(result.data);
+    };
+    fetchRequesters();
+  }, []);
+
+  useEffect(() => {
+    if (!formData.origin) {
+      handleInputChange("province", "");
+      return;
+    }
     const selected = startPlaces.find(
       (sp) => sp.start_place_name === formData.origin,
     );
@@ -286,29 +349,6 @@ export default function VehicleRequestPage() {
       handleInputChange("province", selected.province_id);
     }
   }, [formData.origin, startPlaces]);
-  useEffect(() => {
-    const fetchDrivers = async () => {
-      const result = await getDrivers();
-      if (result.success) setDrivers(result.data);
-    };
-    fetchDrivers();
-  }, []);
-
-  useEffect(() => {
-    const fetchRequesters = async () => {
-      const result = await getUrgentRequesters();
-      if (result.success && result.data) setRequesters(result.data);
-    };
-    fetchRequesters();
-  }, []);
-
-  const startPlaceMap = startPlaces.reduce(
-    (acc, sp) => {
-      acc[sp.start_place_name] = sp.start_place_id;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500 pb-10">
@@ -363,7 +403,6 @@ export default function VehicleRequestPage() {
                           const orgRes = await getOrgsByUserId(sel.value);
                           if (orgRes.success) {
                             setOrgs(orgRes.data);
-                            // ถ้ามีแค่ org เดียว auto-set เลย
                             if (orgRes.data.length === 1) {
                               handleInputChange(
                                 "ownerDept",
@@ -385,6 +424,12 @@ export default function VehicleRequestPage() {
                       menuPosition="fixed"
                       noOptionsMessage={() => "ไม่พบพนักงานที่ค้นหา"}
                     />
+                    {/* driverId — pattern เดิมที่มีอยู่แล้ว */}
+                    {!formData.requesterId && (
+                      <p className="text-xs text-red-500 font-medium mt-1">
+                        * กรุณาเลือกพนักงานผู้ขอใช้รถ
+                      </p>
+                    )}
                   </FormField>
                 </div>
               </div>
@@ -429,7 +474,7 @@ export default function VehicleRequestPage() {
                       label: cs.car_spec_name,
                     }))}
                     value={
-                      formData.vehicleType
+                      formData.vehicleType && carSpecs.length > 0
                         ? {
                             value: String(formData.vehicleType),
                             label: carSpecs.find(
@@ -480,27 +525,12 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
 
-                <FormField label="จังหวัด" icon={MapIcon} required>
-                  <select
-                    value={formData.province}
-                    disabled={true} // ← auto-set จาก start_place ไม่ให้ user เลือกเอง
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm font-bold text-black shadow-sm opacity-60 cursor-not-allowed bg-gray-100"
-                  >
-                    {startPlaces.map((sp) => (
-                      <option key={sp.start_place_id} value={sp.province_id}>
-                        {sp.province?.province_name ?? "-"}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-
                 {/* Row 3 - Destination & Map (Full Width) */}
                 <div className="md:col-span-2 space-y-4">
                   <FormField label="สถานที่ (ปลายทาง)" icon={MapPin} required>
-                    <LongdoMapBox
+                    <MapBox
                       key={mapKey}
                       onLocationSelect={(loc: any) => {
-                        // ปรับปรุง: Batch update เพื่อลดความซ้ำซ้อนในการ re-render
                         setFormData((prev) => ({
                           ...prev,
                           destination: loc.name,
@@ -508,36 +538,39 @@ export default function VehicleRequestPage() {
                           lon: loc.lon,
                         }));
                       }}
-                      placeholder="ค้นหาจุดหมายปลายทาง (ระบุเลขที่บ้าน, อาคาร, ซอย)"
+                      placeholder="ค้นหาสถานที่ แล้วคลิกจุดหมายบนแผนที่เพื่อปักหมุด"
                     />
                   </FormField>
 
                   {/* Lat/Long Display Fields */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />
-                        Latitude
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                        <NavIcon size={12} className="text-blue-500" /> Latitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lat || ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <NavIcon size={12} className="text-blue-500" />
+                      <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                        <NavIcon size={12} className="text-blue-500" />{" "}
                         Longitude
                       </label>
                       <input
                         type="text"
-                        value={formData.lon || ""}
+                        value={
+                          formData.lat ? Number(formData.lat).toFixed(6) : ""
+                        }
                         readOnly
-                        placeholder="0.000000"
-                        className="w-full bg-gray-50 border-gray-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-700 shadow-inner"
+                        placeholder="รอเลือกปลายทาง"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -546,13 +579,10 @@ export default function VehicleRequestPage() {
                 {/* Row 3 - Departure */}
                 <FormField label="วันที่เดินทางไป" icon={Calendar} required>
                   <input
-                    type="date"
-                    value={formData.startDate}
-                    min={getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("startDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
+                    ref={startDateRef}
+                    type="text"
+                    placeholder="dd/mm/yyyy"
+                    readOnly
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
@@ -563,16 +593,13 @@ export default function VehicleRequestPage() {
                   />
                 </FormField>
 
-                {/* Row 4 - Return */}
+                {/* Return */}
                 <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
                   <input
-                    type="date"
-                    value={formData.endDate}
-                    min={formData.startDate || getTodayDate()}
-                    onChange={(e) =>
-                      handleInputChange("endDate", e.target.value)
-                    }
-                    onClick={(e) => (e.target as any).showPicker?.()}
+                    ref={endDateRef}
+                    type="text"
+                    placeholder="dd/mm/yyyy"
+                    readOnly
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer"
                   />
                 </FormField>
@@ -585,7 +612,7 @@ export default function VehicleRequestPage() {
 
                 {/* Self Drive Checkbox + Driver Combobox */}
                 <div className="md:col-span-2 space-y-3 relative">
-                  <label className="flex items-center gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
                     <input
                       type="checkbox"
                       checked={formData.selfDrive}
@@ -593,12 +620,11 @@ export default function VehicleRequestPage() {
                         handleInputChange("selfDrive", e.target.checked);
                         handleInputChange("driverId", 0);
                       }}
-                      className="w-5 h-5 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                      className="w-5 h-5 cursor-pointer"
                     />
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-emerald-900">
-                        ขอขับเอง (Self Drive)
+                      <span className="w-full text-sm font-bold text-black">
+                        ขับรถด้วยตนเอง
                       </span>
                     </div>
                   </label>
@@ -631,14 +657,17 @@ export default function VehicleRequestPage() {
                           isSearchable
                           styles={reactSelectStyles}
                           menuPortalTarget={
-                            typeof document !== "undefined" ? document.body : null
+                            typeof document !== "undefined"
+                              ? document.body
+                              : null
                           }
                           menuPosition="fixed"
                           noOptionsMessage={() => "ไม่พบชื่อในระบบ"}
                         />
                         {!formData.driverId && (
                           <p className="text-xs text-red-500 font-medium mt-1">
-                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ Admin
+                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
+                            กรุณาติดต่อ Admin
                           </p>
                         )}
                       </FormField>
@@ -699,7 +728,7 @@ export default function VehicleRequestPage() {
                         .slice(0, 10);
                       handleInputChange("phone", val);
                     }}
-                    placeholder="0x-xxxx-xxxx"
+                    placeholder="0xxxxxxxxx"
                     className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm"
                   />
                 </FormField>

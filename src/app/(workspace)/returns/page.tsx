@@ -23,6 +23,7 @@ import {
   Save,
   Loader2,
 } from "lucide-react";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import {
   getOrdersForReturn,
   saveReturnRecord,
@@ -42,6 +43,9 @@ export default function ReturnsPage() {
   const [dispatchers, setDispatchers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Form State
   const [returnFormData, setReturnFormData] = useState({
@@ -82,16 +86,65 @@ export default function ReturnsPage() {
   };
 
   const filteredOrders = returnOrders.filter((order) => {
+    let matchFilter = true;
     if (selectedFilter === "กำลังใช้งาน (In Use)")
-      return order.status_use_id === 4;
-    if (selectedFilter === "คืนแล้ว (Returned)") {
-      // คืนแล้วต้องมีข้อมูลใน vc_use ด้วยถึงจะนับ (ตามที่ user สงสัยเรื่องจำนวน)
+      matchFilter = order.status_use_id === 4;
+    else if (selectedFilter === "คืนแล้ว (Returned)") {
+      matchFilter =
+        order.status_use_id === 5 && order.vc_use && order.vc_use.length > 0;
+    }
+
+    if (!matchFilter) return false;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const reqStr =
+        `req-${String(order.request_id).padStart(4, "0")}`.toLowerCase();
+      const reqStrNum = String(order.request_id).toLowerCase();
+      const carPlate = (order.vc_car_master?.car_number || "").toLowerCase();
+      const userFull =
+        `${order.vc_user?.firstname || ""} ${order.vc_user?.lastname || ""}`.toLowerCase();
       return (
-        order.status_use_id === 5 && order.vc_use && order.vc_use.length > 0
+        reqStr.includes(q) ||
+        reqStrNum.includes(q) ||
+        carPlate.includes(q) ||
+        userFull.includes(q)
       );
     }
-    return true; // "แสดงทุกสถานะ"
+    return true;
   });
+
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
+    // 1. Grouping: Waiting for return (status 4) comes before Returned (status 5)
+    if (a.status_use_id === 4 && b.status_use_id !== 4) return -1;
+    if (a.status_use_id !== 4 && b.status_use_id === 4) return 1;
+
+    // Helper to get journey timestamp
+    const getJourneyDt = (order: any) => {
+      const dateStr = order.journey_date
+        ? new Date(order.journey_date).toISOString().split("T")[0]
+        : "1970-01-01";
+      let timeStr = order.journey_time ? order.journey_time.trim() : "00:00:00";
+      if (timeStr.split(":").length === 2) timeStr += ":00";
+      const dt = new Date(`${dateStr}T${timeStr}`).getTime();
+      return isNaN(dt) ? 0 : dt;
+    };
+
+    // 2. Sorting within the same group
+    if (a.status_use_id === 4) {
+      // Waiting for return: Sort by journey time (earliest first)
+      return getJourneyDt(a) - getJourneyDt(b);
+    } else {
+      // Returned: Sort by ID descending (newest first)
+      return b.request_id - a.request_id;
+    }
+  });
+
+  const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
+  const paginatedOrders = sortedOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   useEffect(() => {
     fetchData();
@@ -205,8 +258,12 @@ export default function ReturnsPage() {
         <div className="flex items-center gap-3 flex-1 px-4 py-2">
           <Search className="text-slate-400" size={20} />
           <input
-            type="text"
-            placeholder="ค้นหาเลขที่ใบขอใช้รถ, ทะเบียนรถ, ชื่อผู้เดินทาง..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="ค้นหาเลขที่คำขอ, ทะเบียนรถ, ชื่อผู้เดินทาง..."
             className="flex-1 outline-none text-slate-600 placeholder:text-slate-400 bg-transparent w-full text-sm"
           />
         </div>
@@ -229,6 +286,7 @@ export default function ReturnsPage() {
                   onClick={() => {
                     setSelectedFilter(option);
                     setIsFilterOpen(false);
+                    setCurrentPage(1);
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                     selectedFilter === option
@@ -246,124 +304,105 @@ export default function ReturnsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/80 text-slate-600 text-[11px] tracking-widest uppercase border-b border-slate-100">
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  ID / ทะเบียนรถ
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  ผู้เดินทาง / หน่วยงาน
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  พนักงานขับ / ประเภทรถ
-                </th>
-                <th className="px-4 py-3 font-semibold whitespace-nowrap">
-                  สถานะการคืน
-                </th>
-                <th className="px-4 py-3 font-semibold text-center whitespace-nowrap">
-                  จัดการรายการ
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-                      <p className="text-slate-400 font-medium italic text-sm">
-                        กำลังโหลดข้อมูล...
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              ) : filteredOrders.length > 0 ? (
-                filteredOrders.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white hover:bg-slate-50 transition-colors group"
+        <DataTable
+          columns={[
+            {
+              header: "ID / ทะเบียนรถ",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-semibold text-slate-900 italic tracking-tighter">
+                    REQ-{String(item.request_id).padStart(4, "0")}
+                  </p>
+                  <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
+                    {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "ผู้เดินทาง / หน่วยงาน",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-bold text-slate-800">
+                    {item.vc_user?.firstname} {item.vc_user?.lastname}
+                  </p>
+                  <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
+                    {item.use_div_name || "-"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "พนักงานขับ / ประเภทรถ",
+              cell: (item) => (
+                <div className="align-top">
+                  <p className="font-bold text-slate-800">
+                    {item.self_drive
+                      ? item.vc_user?.firstname
+                        ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
+                        : "-"
+                      : item.vc_driver?.vc_users?.firstname
+                        ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
+                        : "-"}
+                  </p>
+                  <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
+                    {item.vc_car_master?.vc_car_spec?.car_spec_name ||
+                      item.vc_car_spec?.car_spec_name ||
+                      "-"}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              header: "สถานะการคืน",
+              cell: (item) => (
+                <div className="align-top">
+                  {item.status_use_id === 5 ? (
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      คืนรถแล้ว (เสร็จสิ้น)
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                      อนุมัติให้ใช้งาน (รอส่งคืน)
+                    </span>
+                  )}
+                </div>
+              ),
+            },
+            {
+              header: "จัดการรายการ",
+              className: "text-center",
+              cell: (item) => (
+                <div className="flex items-center justify-center gap-3 align-top">
+                  <button
+                    onClick={() => handleOpenViewModal(item)}
+                    className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+                    title="ดูรายละเอียด"
                   >
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-semibold text-slate-900 italic tracking-tighter">
-                        REQ-{String(item.request_id).padStart(4, "0")}
-                      </p>
-                      <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
-                        {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-bold text-slate-800">
-                        {item.vc_user?.firstname} {item.vc_user?.lastname}
-                      </p>
-                      <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
-                        {item.use_div_name || "-"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <p className="font-bold text-slate-800">
-                        {item.self_drive
-                          ? "(ขับเอง)"
-                          : item.vc_driver?.vc_users?.firstname
-                            ? `นาย ${item.vc_driver.vc_users.firstname}`
-                            : "-"}
-                      </p>
-                      <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
-                        {item.vc_car_spec?.car_spec_name || "-"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      {item.status_use_id === 5 ? (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 italic">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                          คืนรถแล้ว (เสร็จสิ้น)
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                          อนุมัติให้ใช้งาน (รอส่งคืน)
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          onClick={() => handleOpenViewModal(item)}
-                          className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
-                          title="ดูรายละเอียด"
-                        >
-                          <Eye size={20} />
-                        </button>
-                        {item.status_use_id !== 5 && (
-                          <button
-                            onClick={() => handleOpenEditModal(item)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
-                          >
-                            <FileEdit size={18} />
-                            บันทึกรับคืน
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center">
-                    <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Car className="text-slate-200" size={32} />
-                    </div>
-                    <p className="text-slate-400 font-bold italic">
-                      ยังไม่มีข้อมูลรายการรอส่งคืนรถในขณะนี้
-                    </p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    <Eye size={20} />
+                  </button>
+                  {item.status_use_id !== 5 && (
+                    <button
+                      onClick={() => handleOpenEditModal(item)}
+                      className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
+                    >
+                      <FileEdit size={18} />
+                      บันทึกรับคืน
+                    </button>
+                  )}
+                </div>
+              ),
+            },
+          ]}
+          data={paginatedOrders}
+          isLoading={loading}
+          rowKey={(row) => row.request_id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* MODAL */}
@@ -484,10 +523,10 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.self_drive
-                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
-                        : selectedItem?.vc_driver?.vc_users?.firstname
-                          ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}`
+                      {selectedItem?.vc_driver?.vc_users?.firstname
+                        ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}${selectedItem?.self_drive ? " (ขอขับเอง)" : ""}`
+                        : selectedItem?.self_drive
+                          ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
                           : "ไม่ระบุพนักงานขับรถ"}
                     </div>
                   </div>
@@ -496,8 +535,10 @@ export default function ReturnsPage() {
                       ทะเบียน / ประเภทรถ ที่ใช้จริง
                     </label>
                     <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {selectedItem?.vc_car_master?.car_number || "-"} •{" "}
-                      {selectedItem?.vc_car_spec?.car_spec_name}
+                      {selectedItem?.vc_car_master?.car_number || "-"}
+                      {selectedItem?.vc_car_master?.vc_car_spec?.car_spec_name
+                        ? ` • ${selectedItem.vc_car_master.vc_car_spec.car_spec_name}`
+                        : ""}
                     </div>
                   </div>
                 </div>
@@ -511,7 +552,7 @@ export default function ReturnsPage() {
                     วันเวลาเดินทาง (TRIP DATE &amp; TIME)
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่ออกเดินทางตามแผน
@@ -520,18 +561,15 @@ export default function ReturnsPage() {
                       {selectedItem?.journey_date
                         ? new Date(
                             selectedItem.journey_date,
-                          ).toLocaleDateString("th-TH")
+                          ).toLocaleDateString("th-TH", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }) + ` - ${selectedItem?.journey_time || "00:00"} น.`
                         : "-"}
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      เวลาออกตามแผน
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.journey_time || "00:00"} น.
-                    </div>
-                  </div>
+
                   <div>
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
                       วันที่คืนรถตามแผน
@@ -540,35 +578,32 @@ export default function ReturnsPage() {
                       {selectedItem?.return_date
                         ? new Date(selectedItem.return_date).toLocaleDateString(
                             "th-TH",
-                          )
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          ) + ` - ${selectedItem?.return_time || "00:00"} น.`
                         : "-"}
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
-                      เวลาคืนรถตามแผน (PLANNED RETURN)
-                    </label>
-                    <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                      {selectedItem?.return_time || "00:00"} น.
-                    </div>
-                  </div>
-                  <div className="col-span-2 border-t border-slate-100 my-4 pt-4"></div>
-                  <div className="col-span-2">
+
+                  <div className="border-t border-slate-100 pt-4">
                     <label className="block text-[10px] font-semibold text-emerald-600 uppercase tracking-widest mb-3 px-1">
                       วันที่และเวลาคืนรถจริง (ACTUAL RETURN DATE & TIME) *
                     </label>
                     {modalMode === "view" ? (
-                      <div className="grid grid-cols-2 gap-8">
-                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                          {returnFormData.return_real_date
-                            ? new Date(
-                                returnFormData.return_real_date,
-                              ).toLocaleDateString("th-TH")
-                            : "-"}
-                        </div>
-                        <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
-                          {returnFormData.return_real_time || "-"} น.
-                        </div>
+                      <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900">
+                        {returnFormData.return_real_date
+                          ? new Date(
+                              returnFormData.return_real_date,
+                            ).toLocaleDateString("th-TH", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            }) +
+                            ` - ${returnFormData.return_real_time || "00:00"} น.`
+                          : "-"}
                       </div>
                     ) : (
                       <TimeInput24hr

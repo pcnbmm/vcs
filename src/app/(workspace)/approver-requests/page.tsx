@@ -19,6 +19,7 @@ import {
   ArrowRight,
   Loader2,
 } from "lucide-react";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 
 // Help mapping status_use_id to Booking status strings
 const mapStatus = (id: number | null): Booking["status"] => {
@@ -102,93 +103,16 @@ function StatusBadge({
   );
 }
 
-function BookingRow({
-  booking,
-  onClick,
-}: {
-  booking: Booking;
-  onClick: () => void;
-}) {
-  const isExpired = isBookingExpired(
-    booking.startDateTime ?? "",
-    booking.status,
-  );
-  return (
-    <div
-      onClick={onClick}
-      className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors group"
-    >
-      {/* Col 1: เลขที่คำขอ + วันที่ขอ */}
-      <div className="w-40 shrink-0">
-        <p className="text-sm font-semibold text-slate-800">{booking.id}</p>
-        <p className="text-xs text-slate-400 mt-0.5">
-          {formatThaiDate(booking.requestDate)}
-        </p>
-      </div>
 
-      {/* Col 2: ต้นทาง → ปลายทาง */}
-      <div className="w-80 shrink-0 flex items-center gap-2">
-        <MapPin size={14} className="text-slate-400 shrink-0" />
-        <span className="text-sm text-slate-600 truncate">
-          {booking.origin}
-        </span>
-        <ArrowRight size={14} className="text-slate-400 shrink-0" />
-        <span className="text-sm font-medium text-slate-800 truncate">
-          {booking.destination}
-        </span>
-      </div>
-
-      {/* Col 3: วันเวลาเดินทาง */}
-      <div className="w-40 shrink-0">
-        <div className="flex items-center gap-2">
-          <Calendar size={14} className="text-slate-400 shrink-0" />
-          <span className="text-xs text-slate-600">
-            {formatThaiDateTime(booking.startDateTime)}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 mt-1">
-          <Calendar size={14} className="text-transparent shrink-0" />{" "}
-          {/* spacer */}
-          <span className="text-xs text-slate-600">
-            ถึง {formatThaiDateTime(booking.endDateTime)}
-          </span>
-        </div>
-      </div>
-
-      {/* Col 4: ชื่อผู้ขอ + แผนก */}
-      <div className="w-40 shrink-0">
-        <p className="text-sm font-medium text-slate-700">
-          {booking.requesterName}
-        </p>
-        <p className="text-xs text-slate-400 mt-0.5">{booking.department}</p>
-      </div>
-
-      {/* Col 5: จำนวนผู้โดยสาร */}
-      <div className="w-20 shrink-0 flex items-center gap-2">
-        <Users size={14} className="text-slate-400" />
-        <span className="text-sm text-slate-600">
-          {booking.passengerCount} คน
-        </span>
-      </div>
-
-      {/* Col 6: Status */}
-      <div className="w-30 shrink-0 flex justify-center">
-        <StatusBadge status={booking.status} isExpired={isExpired} />
-      </div>
-
-      {/* Col 7: Arrow */}
-      <ChevronRight
-        size={15}
-        className="text-slate-300 group-hover:text-slate-500 transition-colors shrink-0"
-      />
-    </div>
-  );
-}
 
 export default function ApproverRequestsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -233,6 +157,7 @@ export default function ApproverRequestsPage() {
           phone: b.user_mobile || "-",
           carType: b.vc_car_spec?.car_spec_name || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
+          rejectReason: b.reject_reason || null,
         };
       });
       setBookings(mapped);
@@ -250,6 +175,12 @@ export default function ApproverRequestsPage() {
       !isBookingExpired(b.startDateTime ?? "", b.status),
   );
   const pendingCount = pendingBookings.length;
+
+  const totalPages = Math.ceil(pendingBookings.length / itemsPerPage);
+  const currentBookings = pendingBookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   const handleApprove = async (id: string) => {
     const isConfirmed = await showConfirm(
@@ -275,7 +206,7 @@ export default function ApproverRequestsPage() {
     if (!isConfirmed) return;
     // We don't save reason in DB yet based on user request "no approve_id",
     // but we update status to 3.
-    const res = await updateRequestStatus(Number(id), 3);
+    const res = await updateRequestStatus(Number(id), 3, reason);
     if (res.success) {
       showSuccess("ปฏิเสธคำขอสำเร็จ");
       setSelectedBooking(null);
@@ -293,6 +224,83 @@ export default function ApproverRequestsPage() {
     );
   }
 
+  const columns: DataTableColumn<Booking>[] = [
+    {
+      header: "เลขที่คำขอ",
+      cell: (booking) => (
+        <div>
+          <p className="text-sm font-semibold text-slate-800">{booking.id}</p>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {formatThaiDate(booking.requestDate)}
+          </p>
+        </div>
+      ),
+    },
+    {
+      header: "เส้นทาง",
+      cell: (booking) => (
+        <div className="flex items-center gap-2">
+          <MapPin size={14} className="text-slate-400 shrink-0" />
+          <span className="text-sm text-slate-600 truncate">{booking.origin}</span>
+          <ArrowRight size={14} className="text-slate-400 shrink-0" />
+          <span className="text-sm font-medium text-slate-800 truncate">{booking.destination}</span>
+        </div>
+      ),
+    },
+    {
+      header: "วันเวลาเดินทาง",
+      cell: (booking) => (
+        <div>
+          <div className="flex items-center gap-2">
+            <Calendar size={14} className="text-slate-400 shrink-0" />
+            <span className="text-xs text-slate-600">
+              {formatThaiDateTime(booking.startDateTime)}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <Calendar size={14} className="text-transparent shrink-0" />
+            <span className="text-xs text-slate-600">
+              ถึง {formatThaiDateTime(booking.endDateTime)}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "ผู้ขอ",
+      cell: (booking) => (
+        <div>
+          <p className="text-sm font-medium text-slate-700">{booking.requesterName}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{booking.department}</p>
+        </div>
+      ),
+    },
+    {
+      header: "ผู้โดยสาร",
+      cell: (booking) => (
+        <div className="flex items-center gap-2">
+          <Users size={14} className="text-slate-400" />
+          <span className="text-sm text-slate-600">{booking.passengerCount} คน</span>
+        </div>
+      ),
+    },
+    {
+      header: "สถานะ",
+      className: "text-center justify-center",
+      cell: (booking) => {
+        const isExpired = isBookingExpired(booking.startDateTime ?? "", booking.status);
+        return <StatusBadge status={booking.status} isExpired={isExpired} />;
+      },
+    },
+    {
+      header: "",
+      className: "text-right",
+      cell: () => (
+        <ChevronRight size={15} className="text-slate-300 group-hover:text-slate-500 transition-colors inline-block" />
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -306,44 +314,16 @@ export default function ApproverRequestsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
-        {/* ... Column Header เหมือนเดิม */}
-        <div className="flex items-center gap-4 px-6 py-3 bg-slate-50 border-b border-slate-200">
-          <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            เลขที่คำขอ
-          </div>
-          <div className="w-80 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide ">
-            เส้นทาง
-          </div>
-          <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            วันเวลาเดินทาง
-          </div>
-          <div className="w-40 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            ผู้ขอ
-          </div>
-          <div className="w-20 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            ผู้โดยสาร
-          </div>
-          <div className="w-30 shrink-0 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">
-            สถานะ
-          </div>
-          <div className="w-5 shrink-0" />
-        </div>
-
-        {pendingBookings.length > 0 ? (
-          pendingBookings.map((booking: Booking) => (
-            <BookingRow
-              key={booking.id}
-              booking={booking}
-              onClick={() => setSelectedBooking(booking)}
-            />
-          ))
-        ) : (
-          <div className="py-16 text-center text-slate-400 text-sm">
-            ไม่มีรายการที่รอการพิจารณาในขณะนี้
-          </div>
-        )}
-      </div>
+      <DataTable
+        columns={columns}
+        data={currentBookings}
+        onRowClick={(booking) => setSelectedBooking(booking)}
+        rowKey={(row) => row.id}
+        emptyMessage="ไม่มีรายการที่รอการพิจารณาในขณะนี้"
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
 
       {/* Modal */}
       {selectedBooking && (

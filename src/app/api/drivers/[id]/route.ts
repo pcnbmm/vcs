@@ -18,6 +18,7 @@ export async function PUT(
           : null,
         driver_status:
           body.driver_status !== undefined ? body.driver_status : undefined,
+        driver_type_id: body.driver_type_id !== undefined ? parseInt(body.driver_type_id.toString()) : undefined,
         div_code: body.div_code !== undefined ? body.div_code : undefined,
         start_date: body.start_date ? new Date(body.start_date) : null,
         end_date: body.end_date ? new Date(body.end_date) : null,

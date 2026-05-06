@@ -145,12 +145,24 @@ export const sendApproveEmail = async (payload: ApproveEmailPayload) => {
                             </tr>
                             <tr>
                                 <th>วันเดินทาง</th>
-                                <td>${payload.startDate}</td>
+                                <td>${payload.startDate} ${payload.startTime ? `เวลา ${payload.startTime} น.` : ''}</td>
                             </tr>
+                            ${payload.startPlace ? `
+                            <tr>
+                                <th>สถานที่รับรถ (ต้นทาง)</th>
+                                <td>${payload.startPlace}</td>
+                            </tr>
+                            ` : ''}
                             <tr>
                                 <th>จุดประสงค์ (หมายเหตุ)</th>
                                 <td>${payload.objective}</td>
                             </tr>
+                            ${payload.taxiReason ? `
+                            <tr>
+                                <th>เหตุผลที่จัดแท็กซี่</th>
+                                <td>${payload.taxiReason}</td>
+                            </tr>
+                            ` : ''}
                         </table>
 
                         <div class="button-wrapper">
@@ -266,7 +278,7 @@ export const sendAssignEmail = async (payload: AssignEmailPayload) => {
                         <div class="greeting">สวัสดีคุณ <strong>${payload.requesterName}</strong>,</div>
                         
                         <div class="status-box">
-                            <p>🚗 ระบบได้ทำการ <span>"จัดสรรยานพาหนะและคนขับ"</span> สำหรับคำขอของคุณเรียบร้อยแล้ว</p>
+                            <p>${payload.isEdit ? '⚠️ ระบบได้ทำการ <span>"แก้ไขข้อมูลการจัดสรรยานพาหนะและคนขับ"</span> สำหรับคำขอของคุณ' : '🚗 ระบบได้ทำการ <span>"จัดสรรยานพาหนะและคนขับ"</span> สำหรับคำขอของคุณเรียบร้อยแล้ว'}</p>
                         </div>
                         
                         <table class="info-table">
@@ -284,12 +296,24 @@ export const sendAssignEmail = async (payload: AssignEmailPayload) => {
                             </tr>
                             <tr>
                                 <th>วันเดินทาง</th>
-                                <td>${payload.startDate}</td>
+                                <td>${payload.startDate} ${payload.startTime ? `เวลา ${payload.startTime} น.` : ''}</td>
                             </tr>
+                            ${payload.startPlace ? `
+                            <tr>
+                                <th>สถานที่รับรถ (ต้นทาง)</th>
+                                <td>${payload.startPlace}</td>
+                            </tr>
+                            ` : ''}
                             <tr>
                                 <th>จุดหมายปลายทาง</th>
                                 <td>${payload.destination}</td>
                             </tr>
+                            ${payload.taxiReason ? `
+                            <tr>
+                                <th>เหตุผลที่จัดแท็กซี่</th>
+                                <td>${payload.taxiReason}</td>
+                            </tr>
+                            ` : ''}
                         </table>
 
                         <div class="button-wrapper">
