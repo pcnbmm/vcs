@@ -17,11 +17,25 @@ export default function Sidebar() {
       if (roles.length === 0) return;
       const result = await getMenusByRoleIds(roles);
       if (result.success) {
-        // Sort menus: "อนุมัติคำขอ" first, then the rest
+        // Define menu order weights
+        const menuOrder: { [key: string]: number } = {
+          อนุมัติคำขอ: 10,
+          จัดการสิทธิ์: 20,
+          ข้อมูลรถและคนขับ: 30,
+          จัดการรถทดแทน: 40,
+          คืนรถ: 50,
+          จัดรถ: 60,
+          ขอใช้รถ: 70,
+          ขอใช้งานรถยนต์: 71, // Alternative name
+          ติดตามคำขอ: 75, // Always adjacent to Request menu
+          ขอเร่งด่วน: 80,
+          รายงาน: 90,
+        };
+
         const sortedMenus = [...result.data].sort((a, b) => {
-          if (a.menuname === "อนุมัติคำขอ") return -1;
-          if (b.menuname === "อนุมัติคำขอ") return 1;
-          return 0;
+          const weightA = menuOrder[a.menuname] || 999;
+          const weightB = menuOrder[b.menuname] || 999;
+          return weightA - weightB;
         });
         setMenuItems(sortedMenus);
       }
