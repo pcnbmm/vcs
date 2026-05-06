@@ -142,6 +142,7 @@ export default function MenuRoleTab() {
       showSuccess("บันทึกข้อมูลเรียบร้อย");
       fetchData();
       closeModal();
+      showSuccess("บันทึกข้อมูลสำเร็จ");
     } catch (error) {
       console.error("Error saving menu roles:", error);
       showError("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -162,6 +163,11 @@ export default function MenuRoleTab() {
       showError("เกิดข้อผิดพลาดในการลบข้อมูล");
     }
   };
+
+  const assignedRoleIds = groupedMenuRoles.map((mr) => String(mr.roles_id));
+  // สร้างตัวแปรเช็ค Mode
+  const isEditMode = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
+  const isActualEditing = isEditMode; // กำหนดตัวแปรสำหรับใช้ในเงื่อนไขแสดงข้อความเตือน
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">

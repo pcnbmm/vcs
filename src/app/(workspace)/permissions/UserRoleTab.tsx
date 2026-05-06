@@ -155,6 +155,11 @@ export default function UserRoleTab() {
     }
   };
 
+  // ตรวจสอบว่า User ที่เลือกอยู่ในตารางที่มีการมอบหมายบทบาทไปแล้วหรือไม่
+  const isEditMode = groupedUserRoles.some(ur => String(ur.user_id) === formData.user_id);
+  // ตรวจสอบว่าเป็นการกด Edit มาจากรายการเดิม (มีข้อมูลบทบาทติดมา)
+  const isActualEditing = formData.roles_ids.length > 0 && isEditMode;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
