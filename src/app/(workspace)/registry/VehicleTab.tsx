@@ -304,6 +304,7 @@ export default function VehicleTab() {
     const requiredFields = [
       formData.car_number,
       formData.car_province_id,
+      formData.own_div_code,
     ];
 
     if (requiredFields.some((field) => !field)) {
@@ -517,11 +518,23 @@ export default function VehicleTab() {
       ),
     },
     {
-      header: "หน่วยงาน",
+      header: "สังกัด",
       sortable: true,
       sortKey: "own_div_code",
       cell: (vehicle) => {
         if (!vehicle.own_div_code) return <span className="text-sm font-medium text-gray-700">-</span>;
+        // Try sections first (formatted label)
+        const section = options?.sections?.find(
+          (s: any) => String(s.orgid) === String(vehicle.own_div_code)
+        );
+        if (section) {
+          return (
+            <span className="text-sm font-medium text-gray-700">
+              {section.display_label}
+            </span>
+          );
+        }
+        // Fallback to orgs
         const org = options?.orgs?.find(
           (o: any) => String(o.orgid) === String(vehicle.own_div_code)
         );
@@ -969,10 +982,12 @@ export default function VehicleTab() {
                 onChange={(v: any) => setFormData({ ...formData, fiscal_year: v })}
                 disabled={modalMode === "view"}
               />
-              <InputField
-                label="รหัสหน่วยงานเจ้าของรถ"
+              <SectionSelectField
+                label="สังกัด"
+                required
                 value={formData.own_div_code}
                 onChange={(v: any) => setFormData({ ...formData, own_div_code: v })}
+                sections={options?.sections}
                 disabled={modalMode === "view"}
               />
               <InputField
@@ -1217,6 +1232,48 @@ function SelectField({
         isSearchable
         isClearable
         placeholder="-- เลือก --"
+        isDisabled={disabled}
+        styles={popupReactSelectStyles}
+        menuPortalTarget={
+          typeof document !== "undefined" ? document.body : null
+        }
+        menuPosition="fixed"
+        className="text-sm"
+      />
+    </div>
+  );
+}
+
+function SectionSelectField({
+  label,
+  value,
+  onChange,
+  sections,
+  disabled,
+  required,
+}: any) {
+  // sections: [{ orgid, orgname, parent_orgname, display_label }]
+  const formattedOptions =
+    sections?.map((s: any) => ({
+      value: String(s.orgid),
+      label: s.display_label || s.orgname || s.orgid,
+    })) || [];
+
+  const currentValue =
+    formattedOptions.find((o: any) => o.value === String(value)) || null;
+
+  return (
+    <div className="space-y-1.5 group">
+      <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
+        {label} {required && <span className="text-rose-500">*</span>}
+      </label>
+      <Select
+        value={currentValue}
+        onChange={(sel: any) => onChange(sel ? sel.value : "")}
+        options={formattedOptions}
+        isSearchable
+        isClearable
+        placeholder="-- เลือกสังกัด --"
         isDisabled={disabled}
         styles={popupReactSelectStyles}
         menuPortalTarget={
