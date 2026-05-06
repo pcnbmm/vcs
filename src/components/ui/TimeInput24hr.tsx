@@ -2,13 +2,12 @@
 import Select from "react-select";
 
 interface TimeInput24hrProps {
-  value: string; // "HH:mm" หรือ "YYYY-MM-DDTHH:mm"
+  value: string;
   onChange: (value: string) => void;
   showDate?: boolean; // เพิ่ม prop นี้
   disabled?: boolean;
   className?: string;
 }
-
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => ({
   value: String(i).padStart(2, "0"),
@@ -24,15 +23,15 @@ const selectStyles = (disabled: boolean) => ({
   control: (base: any, state: any) => ({
     ...base,
     borderRadius: "0.5rem",
-    borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
+    borderColor: state.isFocused ? "#3b82f6" : "#d1d5db",
     backgroundColor: disabled
       ? "#f3f4f6"
       : state.isFocused
         ? "#ffffff"
-        : "#f8fafc",
+        : "#f9fafb",
     boxShadow: state.isFocused ? "0 0 0 2px #eff6ff" : "none",
     borderWidth: "1px",
-    minHeight: "44px",
+    minHeight: "51px",
   }),
   option: (base: any, state: any) => ({
     ...base,
@@ -50,9 +49,11 @@ const selectStyles = (disabled: boolean) => ({
     color: "#000000",
   }),
   placeholder: (base: any) => ({
+    // ✅ เหลือแค่อันเดียว
     ...base,
-    color: "#9ca3af",
+    color: "#6b7280", // gray-500
     fontSize: "0.875rem",
+    fontWeight: "bold",
   }),
   menu: (base: any) => ({ ...base, borderRadius: "0.5rem", zIndex: 100 }),
   menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
@@ -102,7 +103,7 @@ export default function TimeInput24hr({
           disabled={disabled}
           onChange={handleDate}
           onClick={(e) => (e.target as any).showPicker?.()}
-          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-gray-700 font-bold disabled:bg-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-gray-700 font-bold disabled:bg-gray-100 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-500"
         />
       )}
       <div className="flex items-center gap-2">
