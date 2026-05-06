@@ -523,10 +523,10 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.self_drive
-                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
-                        : selectedItem?.vc_driver?.vc_users?.firstname
-                          ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}`
+                      {selectedItem?.vc_driver?.vc_users?.firstname
+                        ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}${selectedItem?.self_drive ? " (ขอขับเอง)" : ""}`
+                        : selectedItem?.self_drive
+                          ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
                           : "ไม่ระบุพนักงานขับรถ"}
                     </div>
                   </div>

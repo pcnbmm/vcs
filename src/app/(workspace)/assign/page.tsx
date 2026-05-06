@@ -391,7 +391,17 @@ export default function AssignPage() {
         return priorityA - priorityB;
       }
 
-      // 2. Sort by date and time
+      // 2. Sort by Urgency (is_urgent = true comes first)
+      const isUrgentA = !!a.is_urgent || a.journey_causes?.includes("ด่วน");
+      const isUrgentB = !!b.is_urgent || b.journey_causes?.includes("ด่วน");
+      
+      const urgentA = isUrgentA ? 0 : 1;
+      const urgentB = isUrgentB ? 0 : 1;
+      if (urgentA !== urgentB) {
+        return urgentA - urgentB;
+      }
+
+      // 3. Sort by date and time
       const dateStrA = a.journey_date ? new Date(a.journey_date).toISOString().split('T')[0] : '1970-01-01';
       const timeStrA = a.journey_time ? a.journey_time.trim() : '00:00:00';
       const fullDateA = new Date(`${dateStrA}T${timeStrA.split(':').length === 2 ? timeStrA + ':00' : timeStrA}`);
@@ -816,7 +826,9 @@ export default function AssignPage() {
                                 value: "self",
                                 label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                               },
-                              ...drivers.map((driver) => ({
+                              ...drivers
+                                .filter((d) => d.driver_type_id === 2)
+                                .map((driver) => ({
                                 value: String(driver.driver_id),
                                 label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                               })),
@@ -825,7 +837,9 @@ export default function AssignPage() {
                               if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
                               return 0;
                             })
-                            : drivers.map((driver) => ({
+                            : drivers
+                                .filter((d) => d.driver_type_id === 1 || !d.driver_type_id)
+                                .map((driver) => ({
                               value: String(driver.driver_id),
                               label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
                             }))

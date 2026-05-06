@@ -204,7 +204,7 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_causes", formData.objective);
       dataToSubmit.append("passenger_amount", formData.passengers.toString());
       dataToSubmit.append("user_mobile", formData.phone);
-      dataToSubmit.append("self_drive", formData.selfDrive ? "1" : "0");
+      dataToSubmit.append("self_drive", formData.selfDrive ? "true" : "false");
       dataToSubmit.append("is_urgent", "true");
 
       if (formData.selfDrive && formData.driverId) {
