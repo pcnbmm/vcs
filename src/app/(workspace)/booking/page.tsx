@@ -1,6 +1,5 @@
 "use client";
 import { showSuccess, showError, showWarning } from "@/lib/sweetalert";
-import TimeInput24hr from "@/components/ui/TimeInput24hr";
 import { useState, useEffect } from "react";
 import { createBooking } from "@/app/actions/bookingActions";
 import { getStartPlaces } from "@/app/actions/startPlaceActions";
@@ -291,12 +290,19 @@ export default function VehicleRequestPage() {
     let fp: any;
     if (startDateRef.current) {
       fp = flatpickr(startDateRef.current, {
-        dateFormat: "d/m/Y",
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i",
         onChange: (dates) => {
           if (dates && dates.length > 0) {
             const d = dates[0];
-            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-            handleInputChange("startDate", iso);
+            const isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            const isoTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+            setFormData((prev) => ({
+              ...prev,
+              startDate: isoDate,
+              startTime: isoTime,
+            }));
           }
         },
       });
@@ -308,12 +314,19 @@ export default function VehicleRequestPage() {
     let fp: any;
     if (endDateRef.current) {
       fp = flatpickr(endDateRef.current, {
-        dateFormat: "d/m/Y",
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i",
         onChange: (dates) => {
           if (!dates || dates.length === 0 || !dates[0]) return;
           const d = dates[0];
-          const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-          handleInputChange("endDate", iso);
+          const isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+          const isoTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+          setFormData((prev) => ({
+            ...prev,
+            endDate: isoDate,
+            endTime: isoTime,
+          }));
         },
       });
     }
@@ -472,38 +485,33 @@ export default function VehicleRequestPage() {
                 </div>
 
                 {/* Row 4 */}
-                <FormField label="วันที่เดินทางไป" icon={Calendar} required>
-                  <input
-                    ref={startDateRef}
-                    type="text"
-                    placeholder="วัน/เดือน/ปี"
-                    readOnly
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
-                  />
-                </FormField>
-                <FormField label="เวลาเดินทางไป" icon={Clock} required>
-                  <TimeInput24hr
-                    value={formData.startTime}
-                    onChange={(val) => handleInputChange("startTime", val)}
-                  />
-                </FormField>
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <FormField label="วันเวลาเดินทางไป" icon={Calendar} required>
+                    <div className="relative">
+                      <input
+                        ref={startDateRef}
+                        type="text"
+                        placeholder="วัน/เดือน/ปี --:--"
+                        readOnly
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
+                      />
+                      <Clock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    </div>
+                  </FormField>
 
-                {/* Row 5 */}
-                <FormField label="วันที่เดินทางกลับ" icon={Calendar} required>
-                  <input
-                    ref={endDateRef}
-                    type="text"
-                    placeholder="วัน/เดือน/ปี"
-                    readOnly
-                    className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
-                  />
-                </FormField>
-                <FormField label="เวลาเดินทางกลับ" icon={Clock} required>
-                  <TimeInput24hr
-                    value={formData.endTime}
-                    onChange={(val) => handleInputChange("endTime", val)}
-                  />
-                </FormField>
+                  <FormField label="วันเวลาเดินทางกลับ" icon={Calendar} required>
+                    <div className="relative">
+                      <input
+                        ref={endDateRef}
+                        type="text"
+                        placeholder="วัน/เดือน/ปี --:--"
+                        readOnly
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
+                      />
+                      <Clock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    </div>
+                  </FormField>
+                </div>
 
                 {/* Row 6 */}
                 <div className="md:col-span-2 space-y-3">
