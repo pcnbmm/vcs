@@ -443,6 +443,7 @@ model vc_driver {
   driver_id              Int                     @id @default(autoincrement())
   driver_code            Int?                    @unique
   driver_status          String?                 @db.Char(1)
+  driver_type_id         Int?                    @default(1)
   div_code               String?                 @db.VarChar(8)
   start_date             DateTime?               @db.Date
   end_date               DateTime?               @db.Date
@@ -457,8 +458,15 @@ model vc_driver {
   tel                    String?                 @db.VarChar(15)
   vc_users               vc_users?               @relation(fields: [driver_code], references: [userid])
   vc_driver_license_type vc_driver_license_type? @relation(fields: [licence_type], references: [license_type_id])
+  vc_driver_type         vc_driver_type?         @relation(fields: [driver_type_id], references: [driver_type_id])
   vc_fuel_item           vc_fuel_item[]
   vc_order_item          vc_order_item[]
+}
+
+model vc_driver_type {
+  driver_type_id   Int         @id
+  desc             String?     @db.VarChar(50)
+  vc_driver        vc_driver[]
 }
 
 model vc_driver_license_type {

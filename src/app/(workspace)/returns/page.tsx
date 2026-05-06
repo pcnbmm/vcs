@@ -361,17 +361,14 @@ export default function ReturnsPage() {
                     </td>
                     <td className="px-4 py-3 align-top">
                       <p className="font-bold text-slate-800">
-                        {item.self_drive
-                          ? item.vc_user?.firstname
+                        {item.vc_driver?.vc_users?.firstname
+                          ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
+                          : item.self_drive && item.vc_user?.firstname
                             ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
-                            : "-"
-                          : item.vc_driver?.vc_users?.firstname
-                            ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
                             : "-"}
                       </p>
                       <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
                         {item.vc_car_master?.vc_car_spec?.car_spec_name ||
-                          item.vc_car_spec?.car_spec_name ||
                           "-"}
                       </p>
                     </td>
@@ -587,10 +584,10 @@ export default function ReturnsPage() {
                       ใครขับ (DRIVER)
                     </label>
                     <div className="bg-slate-50 border border-slate-100/50 rounded-lg px-6 py-4 text-base font-bold text-slate-900 group-hover:border-slate-200">
-                      {selectedItem?.self_drive
-                        ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
-                        : selectedItem?.vc_driver?.vc_users?.firstname
-                          ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}`
+                      {selectedItem?.vc_driver?.vc_users?.firstname
+                        ? `นาย ${selectedItem.vc_driver.vc_users.firstname} ${selectedItem.vc_driver.vc_users.lastname || ""}${selectedItem?.self_drive ? " (ขอขับเอง)" : ""}`
+                        : selectedItem?.self_drive
+                          ? `ผู้ขอขับเอง${selectedItem?.vc_user?.firstname ? ` (${selectedItem.vc_user.firstname} ${selectedItem.vc_user.lastname || ""})` : ""}`
                           : "ไม่ระบุพนักงานขับรถ"}
                     </div>
                   </div>

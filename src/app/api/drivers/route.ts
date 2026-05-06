@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
             license_type_name: true,
           },
         },
+        vc_driver_type: true,
       },
       orderBy: {
         driver_id: "asc",
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest) {
       driver_code: d.driver_code !== null ? d.driver_code : "",
       licence_type: d.licence_type !== null ? d.licence_type : "",
       licence_by: d.licence_by !== null ? d.licence_by : "",
+      driver_type_id: d.driver_type_id || 1,
     }));
 
     return NextResponse.json(sanitizedDrivers);
@@ -49,6 +51,7 @@ export async function POST(req: NextRequest) {
           ? parseInt(body.driver_code.toString())
           : null,
         driver_status: body.driver_status || null,
+        driver_type_id: body.driver_type_id ? parseInt(body.driver_type_id.toString()) : 1,
         div_code: body.div_code || null,
         start_date: body.start_date ? new Date(body.start_date) : null,
         end_date: body.end_date ? new Date(body.end_date) : null,

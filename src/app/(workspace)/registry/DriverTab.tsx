@@ -40,7 +40,7 @@ export default function DriverTab() {
   const [modalMode, setModalMode] = useState<"view" | "add" | "edit">("add");
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [driverType, setDriverType] = useState<"driver" | "staff">("driver");
+  const [driverTypeId, setDriverTypeId] = useState<number>(1);
 
   const [formData, setFormData] = useState<any>({});
 
@@ -145,7 +145,7 @@ export default function DriverTab() {
     setModalMode(mode);
     setSelectedDriver(driver);
     if (mode === "add") {
-      setDriverType("driver");
+      setDriverTypeId(1);
       setFormData({
         driver_code: "",
         driver_status: "A",
@@ -159,6 +159,7 @@ export default function DriverTab() {
         flag: "Y",
       });
     } else {
+      setDriverTypeId(driver.driver_type_id || 1);
       setFormData({
         ...driver,
         start_date: safeDate(driver.start_date),
@@ -222,7 +223,7 @@ export default function DriverTab() {
 
       const payload = {
         ...formData,
-        driver_type: driverType,
+        driver_type_id: driverTypeId,
         flag: formData.driver_status === "A" ? null : "x",
       };
 
@@ -376,9 +377,18 @@ export default function DriverTab() {
                             {driver.vc_users?.firstname}{" "}
                             {driver.vc_users?.lastname}
                           </span>
-                          <span className="block text-xs text-gray-500">
-                            {driver.licence_no || "ยังไม่ระบุใบขับขี่"}
+                          <span className="block text-xs text-gray-500 mt-0.5">
+                            ใบขับขี่: {driver.licence_no || "ไม่ระบุ"}
                           </span>
+                          {driver.driver_type_id === 2 ? (
+                            <span className="inline-block mt-1 px-2 py-0.5 bg-amber-50 text-amber-700 rounded text-[10px] font-bold border border-amber-200">
+                              พนักงาน (ขอขับเอง)
+                            </span>
+                          ) : (
+                            <span className="inline-block mt-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-bold border border-blue-200">
+                              พนักงานขับรถ
+                            </span>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -530,15 +540,15 @@ export default function DriverTab() {
                   เลือกประเภทพนักงานขับรถ <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "driver" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverTypeId === 1 ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <input type="radio" name="driver_type" value="driver" checked={driverType === "driver"} onChange={() => setDriverType("driver")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <input type="radio" name="driver_type_id" value="1" checked={driverTypeId === 1} onChange={() => setDriverTypeId(1)} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
                       <span className="font-bold text-gray-900">1. พนักงานขับรถโดยตรง</span>
                     </div>
                   </label>
-                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "staff" ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
+                  <label className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverTypeId === 2 ? "border-blue-600 bg-blue-50 shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <input type="radio" name="driver_type" value="staff" checked={driverType === "staff"} onChange={() => setDriverType("staff")} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
+                      <input type="radio" name="driver_type_id" value="2" checked={driverTypeId === 2} onChange={() => setDriverTypeId(2)} className="w-4 h-4 text-blue-600" disabled={modalMode === "view"} />
                       <span className="font-bold text-gray-900">2. พนักงาน (ทำหน้าที่ขับรถ)</span>
                     </div>
                   </label>

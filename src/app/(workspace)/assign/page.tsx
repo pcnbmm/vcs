@@ -390,7 +390,17 @@ export default function AssignPage() {
         return priorityA - priorityB;
       }
 
-      // 2. Sort by date and time
+      // 2. Sort by Urgency (is_urgent = true comes first)
+      const isUrgentA = !!a.is_urgent || a.journey_causes?.includes("ด่วน");
+      const isUrgentB = !!b.is_urgent || b.journey_causes?.includes("ด่วน");
+      
+      const urgentA = isUrgentA ? 0 : 1;
+      const urgentB = isUrgentB ? 0 : 1;
+      if (urgentA !== urgentB) {
+        return urgentA - urgentB;
+      }
+
+      // 3. Sort by date and time
       const dateStrA = a.journey_date ? new Date(a.journey_date).toISOString().split('T')[0] : '1970-01-01';
       const timeStrA = a.journey_time ? a.journey_time.trim() : '00:00:00';
       const fullDateA = new Date(`${dateStrA}T${timeStrA.split(':').length === 2 ? timeStrA + ':00' : timeStrA}`);
@@ -454,15 +464,31 @@ export default function AssignPage() {
               >
                 <div className="flex items-center gap-6">
                   {/* ID Tag */}
-                  <div className="bg-slate-50 border border-slate-100 w-16 h-16 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
-                    <span className="text-[10px] text-slate-400">REQ</span>
-                    <span>{String(order.request_id).padStart(3, "0")}</span>
-                  </div>
+                  {(() => {
+                    const isUrgent = !!order.is_urgent || order.journey_causes?.includes("ด่วน");
+                    return (
+                      <div className={`${isUrgent ? "bg-red-50 border-red-200 text-red-600 animate-pulse" : "bg-slate-50 border-slate-100 text-blue-600"} border w-16 h-16 rounded-lg flex flex-col items-center justify-center font-bold relative`}>
+                        {isUrgent && (
+                          <div className="absolute -top-1 -right-1">
+                            <AlertCircle size={14} className="text-red-500 bg-white rounded-full" />
+                          </div>
+                        )}
+                        <span className={`text-[10px] ${isUrgent ? "text-red-400" : "text-slate-400"}`}>REQ</span>
+                        <span>{String(order.request_id).padStart(3, "0")}</span>
+                      </div>
+                    );
+                  })()}
 
                   {/* Details */}
                   <div>
-                    <h3 className="font-bold text-slate-900 text-lg">
+                    <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
                       {order.journey_place}
+                      {(!!order.is_urgent || order.journey_causes?.includes("ด่วน")) && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-600 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider animate-bounce">
+                          <AlertCircle size={10} />
+                          เร่งด่วน
+                        </span>
+                      )}
                       {order.status_use_id === 4 && !order.pickup_status && (
                         <span className="ml-3 inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 tracking-wide border border-emerald-200">
                           จัดรถแล้ว (รอการรับรถ)
@@ -824,7 +850,9 @@ export default function AssignPage() {
                                 value: "self",
                                 label: `นาย ${selectedOrder?.vc_user?.firstname || ""} ${selectedOrder?.vc_user?.lastname || ""}`.trim() + (selectedOrder?.self_drive && !selectedOrder?.driver_id ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                               },
-                              ...drivers.map((driver) => ({
+                              ...drivers
+                                .filter((d) => d.driver_type_id === 2)
+                                .map((driver) => ({
                                 value: String(driver.driver_id),
                                 label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`.trim() + (selectedOrder?.self_drive && String(selectedOrder.driver_id) === String(driver.driver_id) ? " (ผู้ขอขับรถด้วยตนเอง)" : ""),
                               })),
@@ -833,7 +861,9 @@ export default function AssignPage() {
                               if (b.label.includes("(ผู้ขอขับรถด้วยตนเอง)")) return 1;
                               return 0;
                             })
-                            : drivers.map((driver) => ({
+                            : drivers
+                                .filter((d) => d.driver_type_id === 1 || !d.driver_type_id)
+                                .map((driver) => ({
                               value: String(driver.driver_id),
                               label: `นาย ${driver.vc_users?.firstname || ""} ${driver.vc_users?.lastname || ""}`,
                             }))

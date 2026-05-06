@@ -1,4 +1,5 @@
-import { prisma } from '../src/lib/prisma';
+const { PrismaClient } = require('./prisma/generated/prisma/client');
+const prisma = new PrismaClient();
 
 async function main() {
   try {
@@ -14,11 +15,6 @@ async function main() {
       INSERT INTO "vc_driver_type" ("driver_type_id", "desc")
       VALUES (1, 'พนักงานขับรถโดยตรง'), (2, 'พนักงาน (ทำหน้าที่ขับรถ)')
       ON CONFLICT DO NOTHING;
-    `);
-
-    // Clean up existing invalid foreign keys if any
-    await prisma.$executeRawUnsafe(`
-      UPDATE "vc_driver" SET "driver_type_id" = 1 WHERE "driver_type_id" IS NULL;
     `);
 
     console.log("Seeded successfully");
