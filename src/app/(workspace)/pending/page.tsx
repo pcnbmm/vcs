@@ -244,7 +244,7 @@ export default function PendingPage() {
         footer={
           <>
             <button onClick={() => setSelectedRequest(null)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
-              ปิดหน้าต่าง
+              ยกเลิก
             </button>
             {selectedRequest?.status === "1" && !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
               <button
@@ -260,18 +260,18 @@ export default function PendingPage() {
         <div className="space-y-8">
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-1">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ผู้ขอใช้รถ</p>
-              <p className="text-lg font-bold text-slate-900">{selectedRequest?.requester}</p>
-              <p className="text-sm font-semibold text-blue-600">{selectedRequest?.phone}</p>
+              <p className="text-sm font-bold text-slate-400">ผู้ขอใช้รถ</p>
+              <p className="text-sm font-bold text-slate-900">{selectedRequest?.requester}</p>
+              <p className="text-sm font-bold text-blue-600">{selectedRequest?.phone}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">สังกัด / แผนก</p>
-              <p className="text-lg font-bold text-slate-900">{selectedRequest?.department}</p>
+              <p className="text-sm font-bold text-slate-400">สังกัด / แผนก</p>
+              <p className="text-sm font-bold text-slate-900">{selectedRequest?.department}</p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">เส้นทางเดินทาง</p>
+            <p className="text-sm font-bold text-slate-400">เส้นทางเดินทาง</p>
             <div className="flex items-center gap-3 bg-slate-50 p-5 rounded-2xl border border-slate-100">
               <span className="bg-white px-4 py-2 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 shadow-sm">{selectedRequest?.origin}</span>
               <ChevronRight className="w-5 h-5 text-slate-300 shrink-0" />
@@ -281,7 +281,7 @@ export default function PendingPage() {
 
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-3">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">กำหนดเวลา</p>
+              <p className="text-sm font-bold text-slate-400">กำหนดเวลา</p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
                   <span className="w-12 text-slate-400 font-bold">ไป:</span>
@@ -294,24 +294,24 @@ export default function PendingPage() {
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ข้อมูลทรัพยากร</p>
+              <p className="text-sm font-bold text-slate-400">ข้อมูลทรัพยากร</p>
               <div className="space-y-1">
                 <p className="text-sm font-bold text-slate-800">{selectedRequest?.carType}</p>
-                <p className="text-xs font-bold text-slate-400">
-                  ผู้โดยสาร {selectedRequest?.passengers} คน • <span className="text-blue-600 italic">{selectedRequest?.selfDrive}</span>
+                <p className="text-sm font-bold text-slate-400">
+                  ผู้โดยสาร {selectedRequest?.passengers} คน • <span className="text-blue-600">{selectedRequest?.selfDrive}</span>
                 </p>
               </div>
             </div>
           </div>
 
           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">วัตถุประสงค์ / หมายเหตุ</p>
-            <p className="text-sm font-medium text-slate-700 leading-relaxed">{selectedRequest?.objective}</p>
+            <p className="text-sm font-bold text-slate-400 mb-2">วัตถุประสงค์ / หมายเหตุ</p>
+            <p className="text-sm font-bold text-slate-700 leading-relaxed">{selectedRequest?.objective}</p>
           </div>
 
           {(selectedRequest?.status === "3" || selectedRequest?.status === "6") && selectedRequest?.rejectReason && (
             <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
-              <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-2">เหตุผลที่ยกเลิก/ไม่อนุมัติ</p>
+              <p className="text-sm font-bold text-rose-400 mb-2">เหตุผลที่ยกเลิก/ไม่อนุมัติ</p>
               <p className="text-sm font-bold text-rose-700 leading-relaxed">{selectedRequest?.rejectReason}</p>
             </div>
           )}

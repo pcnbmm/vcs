@@ -56,38 +56,47 @@ export default function VehicleRequestPage() {
       ...base,
       borderRadius: "1rem",
       padding: "0.3rem 0.5rem",
-      borderColor: state.isFocused ? "#ef4444" : "transparent",
+      borderColor: state.isFocused ? "#3b82f6" : "transparent",
       backgroundColor: state.isFocused ? "#ffffff" : "#f8fafc",
-      boxShadow: state.isFocused ? "0 0 0 4px #fee2e2" : "none",
+      boxShadow: state.isFocused ? "0 0 0 4px #eff6ff" : "none",
       borderWidth: "2px",
       cursor: "pointer",
       transition: "all 0.2s",
       "&:hover": {
-        borderColor: state.isFocused ? "#ef4444" : "#fca5a5",
+        borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
       },
     }),
     option: (base: any, state: any) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? "#fee2e2"
+        ? "#eff6ff"
         : state.isFocused
-          ? "#fef2f2"
+          ? "#f8fafc"
           : "#ffffff",
-      color: state.isSelected ? "#7f1d1d" : "#1e293b",
+      color: "#000000",
       cursor: "pointer",
       padding: "0.75rem 1.5rem",
+      fontSize: "0.875rem",
+      fontWeight: "bold",
     }),
     singleValue: (base: any) => ({
       ...base,
       fontWeight: "bold",
       color: "#000000",
+      fontSize: "0.875rem",
     }),
     placeholder: (base: any) => ({
       ...base,
+      color: "#6b7280",
+      fontWeight: "bold",
+      fontSize: "0.875rem",
+    }),
+    input: (base: any) => ({
+      ...base,
       color: "#000000",
       fontWeight: "bold",
+      fontSize: "0.875rem",
     }),
-    input: (base: any) => ({ ...base, color: "#000000", fontWeight: "bold" }),
     menu: (base: any) => ({
       ...base,
       borderRadius: "1rem",
@@ -387,11 +396,11 @@ export default function VehicleRequestPage() {
                       value={
                         formData.requesterId
                           ? {
-                              value: formData.requesterId,
-                              label:
-                                `${requesters.find((r) => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find((r) => r.userid === formData.requesterId)?.lastname ?? ""}`.trim() +
-                                ` (ID: ${formData.requesterId})`,
-                            }
+                            value: formData.requesterId,
+                            label:
+                              `${requesters.find((r) => r.userid === formData.requesterId)?.firstname ?? ""} ${requesters.find((r) => r.userid === formData.requesterId)?.lastname ?? ""}`.trim() +
+                              ` (ID: ${formData.requesterId})`,
+                          }
                           : null
                       }
                       onChange={async (sel: any) => {
@@ -445,12 +454,12 @@ export default function VehicleRequestPage() {
                     value={
                       formData.ownerDept
                         ? {
-                            value: String(formData.ownerDept),
-                            label: orgs.find(
-                              (o) =>
-                                String(o.orgid) === String(formData.ownerDept),
-                            )?.orgname,
-                          }
+                          value: String(formData.ownerDept),
+                          label: orgs.find(
+                            (o) =>
+                              String(o.orgid) === String(formData.ownerDept),
+                          )?.orgname,
+                        }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -477,13 +486,13 @@ export default function VehicleRequestPage() {
                     value={
                       formData.vehicleType && carSpecs.length > 0
                         ? {
-                            value: String(formData.vehicleType),
-                            label: carSpecs.find(
-                              (c) =>
-                                String(c.car_spec_id) ===
-                                String(formData.vehicleType),
-                            )?.car_spec_name,
-                          }
+                          value: String(formData.vehicleType),
+                          label: carSpecs.find(
+                            (c) =>
+                              String(c.car_spec_id) ===
+                              String(formData.vehicleType),
+                          )?.car_spec_name,
+                        }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -614,23 +623,23 @@ export default function VehicleRequestPage() {
                 </FormField>
 
                 {/* Self Drive Checkbox + Driver Combobox */}
-                <div className="md:col-span-2 space-y-3 relative">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
-                    <input
-                      type="checkbox"
-                      checked={formData.selfDrive}
-                      onChange={(e) => {
-                        handleInputChange("selfDrive", e.target.checked);
-                        handleInputChange("driverId", 0);
-                      }}
-                      className="w-5 h-5 cursor-pointer"
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="w-full text-sm font-bold text-black">
-                        ขับรถด้วยตนเอง
+                <div className="md:col-span-2 space-y-3">
+                  <FormField label="ขับรถด้วยตนเอง" icon={User}>
+                    <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                      <input
+                        type="checkbox"
+                        checked={formData.selfDrive}
+                        onChange={(e) => {
+                          handleInputChange("selfDrive", e.target.checked);
+                          handleInputChange("driverId", 0);
+                        }}
+                        className="w-5 h-5 cursor-pointer"
+                      />
+                      <span className="text-sm font-bold text-gray-700">
+                        ยืนยัน
                       </span>
-                    </div>
-                  </label>
+                    </label>
+                  </FormField>
 
                   {formData.selfDrive && (
                     <div className="px-4">
@@ -639,17 +648,15 @@ export default function VehicleRequestPage() {
                           options={drivers.map((d) => ({
                             value: d.driver_id,
                             label:
-                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim() +
-                              ` (${d.driver_code})`,
+                              `${d.vc_users?.firstname ?? ""} ${d.vc_users?.lastname ?? ""}`.trim(),
                           }))}
                           value={
                             formData.driverId
                               ? {
-                                  value: formData.driverId,
-                                  label:
-                                    `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim() +
-                                    ` (${drivers.find((d) => d.driver_id === formData.driverId)?.driver_code})`,
-                                }
+                                value: formData.driverId,
+                                label:
+                                  `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
+                              }
                               : null
                           }
                           onChange={(sel: any) =>
@@ -669,8 +676,8 @@ export default function VehicleRequestPage() {
                         />
                         {!formData.driverId && (
                           <p className="text-xs text-red-500 font-medium mt-1">
-                            * กรุณาเลือกชื่อผู้ขับ ถ้าไม่มีชื่อในระบบ
-                            กรุณาติดต่อ Admin
+                            กรุณาเลือกชื่อคนขับ ถ้าไม่มีชื่อในระบบ กรุณาติดต่อ
+                            Admin *
                           </p>
                         )}
                       </FormField>
