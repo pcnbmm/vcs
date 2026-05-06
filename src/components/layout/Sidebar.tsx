@@ -19,17 +19,17 @@ export default function Sidebar() {
       if (result.success) {
         // Define menu order weights
         const menuOrder: { [key: string]: number } = {
-          อนุมัติคำขอ: 10,
-          จัดการสิทธิ์: 20,
-          ข้อมูลรถและคนขับ: 30,
-          จัดการรถทดแทน: 40,
-          คืนรถ: 50,
-          จัดรถ: 60,
-          ขอใช้รถ: 70,
-          ขอใช้งานรถยนต์: 71, // Alternative name
-          ติดตามคำขอ: 75, // Always adjacent to Request menu
-          ขอเร่งด่วน: 80,
-          รายงาน: 90,
+          จัดรถ: 10,
+          คืนรถ: 20,
+          ขอเร่งด่วน: 30,
+          ขอใช้รถ: 40,
+          ขอใช้งานรถยนต์: 41,
+          ติดตามคำขอ: 50,
+          จัดการรถทดแทน: 60,
+          รายงาน: 70,
+          ข้อมูลรถและคนขับ: 80,
+          อนุมัติคำขอ: 90,
+          จัดการสิทธิ์: 100,
         };
 
         const sortedMenus = [...result.data].sort((a, b) => {
