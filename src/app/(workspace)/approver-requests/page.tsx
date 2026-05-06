@@ -226,13 +226,18 @@ export default function ApproverRequestsPage() {
 
   const columns: DataTableColumn<Booking>[] = [
     {
-      header: "เลขที่คำขอ",
+      header: "คำขอ",
       cell: (booking) => (
-        <div>
-          <p className="text-sm font-semibold text-slate-800">{booking.id}</p>
-          <p className="text-xs text-slate-400 mt-0.5">
-            {formatThaiDate(booking.requestDate)}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
+            <span className="text-[10px] text-slate-400">REQ</span>
+            <span className="text-sm">{String(booking.id).padStart(3, "0")}</span>
+          </div>
+          <div className="flex flex-col justify-center">
+            <p className="text-[11px] text-slate-400 font-medium">
+              {formatThaiDate(booking.requestDate)}
+            </p>
+          </div>
         </div>
       ),
     },

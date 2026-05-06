@@ -179,7 +179,7 @@ export default function BookingDetailModal({
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div>
             <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-              {booking.id}
+              REQ-{String(booking.id).padStart(3, "0")}
             </span>
             <div className="flex items-center gap-3 mt-1">
               <StatusBadge status={booking.status} isExpired={isExpired} />

@@ -99,7 +99,7 @@ export default function ReturnsPage() {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const reqStr =
-        `req-${String(order.request_id).padStart(4, "0")}`.toLowerCase();
+        `req-${String(order.request_id).padStart(3, "0")}`.toLowerCase();
       const reqStrNum = String(order.request_id).toLowerCase();
       const carPlate = (order.vc_car_master?.car_number || "").toLowerCase();
       const userFull =
@@ -245,7 +245,7 @@ export default function ReturnsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-8 space-y-6 pt-4 pb-10 relative animate-in fade-in duration-500">
+    <div className="space-y-6 pt-4 pb-10 relative animate-in fade-in duration-500">
       {/* Search Bar */}
       <div className="bg-white rounded-full p-2 shadow-sm border border-slate-100 flex items-center gap-4">
         <div className="flex items-center gap-3 flex-1 px-4 py-2">
@@ -300,15 +300,18 @@ export default function ReturnsPage() {
         <DataTable
           columns={[
             {
-              header: "ID / ทะเบียนรถ",
+              header: "คำขอ / ทะเบียนรถ",
               cell: (item) => (
-                <div className="align-top">
-                  <p className="font-semibold text-slate-900 italic tracking-tighter">
-                    REQ-{String(item.request_id).padStart(4, "0")}
-                  </p>
-                  <p className="text-sm text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
-                    {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
-                  </p>
+                <div className="flex items-center gap-3 align-top">
+                  <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
+                    <span className="text-[10px] text-slate-400">REQ</span>
+                    <span className="text-sm">{String(item.request_id).padStart(3, "0")}</span>
+                  </div>
+                  <div>
+                    <p className="text-[13px] text-emerald-600 font-bold bg-emerald-50 inline-block px-2 py-0.5 rounded-lg border border-emerald-100">
+                      {item.vc_car_master?.car_number || "ยังไม่ระบุ"}
+                    </p>
+                  </div>
                 </div>
               ),
             },
@@ -319,7 +322,7 @@ export default function ReturnsPage() {
                   <p className="font-bold text-slate-800">
                     {item.vc_user?.firstname} {item.vc_user?.lastname}
                   </p>
-                  <p className="text-[13px] text-slate-500 mt-1 font-medium italic">
+                  <p className="text-[11px] text-slate-400 font-medium">
                     {item.use_div_name || "-"}
                   </p>
                 </div>
@@ -330,18 +333,14 @@ export default function ReturnsPage() {
               cell: (item) => (
                 <div className="align-top">
                   <p className="font-bold text-slate-800">
-                    {item.self_drive
-                      ? item.vc_user?.firstname
+                    {item.vc_driver?.vc_users?.firstname
+                      ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
+                      : item.self_drive && item.vc_user?.firstname
                         ? `${item.vc_user.firstname} ${item.vc_user.lastname || ""}`
-                        : "-"
-                      : item.vc_driver?.vc_users?.firstname
-                        ? `${item.vc_driver.vc_users.firstname} ${item.vc_driver.vc_users.lastname || ""}`
                         : "-"}
                   </p>
-                  <p className="text-[13px] text-slate-500 mt-1 font-semibold uppercase tracking-wide">
-                    {item.vc_car_master?.vc_car_spec?.car_spec_name ||
-                      item.vc_car_spec?.car_spec_name ||
-                      "-"}
+                  <p className="text-[11px] text-slate-400 font-medium mt-1">
+                    {item.vc_car_master?.vc_car_spec?.car_spec_name || "-"}
                   </p>
                 </div>
               ),
@@ -403,7 +402,7 @@ export default function ReturnsPage() {
         onClose={handleCloseModal}
         title={
           modalMode === "view"
-            ? `รายละเอียดคำขอ REQ-${String(selectedItem?.request_id).padStart(4, "0")}`
+            ? `รายละเอียดคำขอ REQ-${String(selectedItem?.request_id).padStart(3, "0")}`
             : "บันทึกการส่งคืนยานพาหนะ"
         }
         maxWidth="3xl"
@@ -445,21 +444,21 @@ export default function ReturnsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
               <div className="space-y-1">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ต้นทาง</p>
-                <p className="text-sm font-bold text-slate-700">{selectedItem?.vc_start_place?.start_place_name || "-"}</p>
+                <p className="text-lg font-bold text-slate-900">{selectedItem?.vc_start_place?.start_place_name || "-"}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ปลายทาง</p>
-                <p className="text-sm font-bold text-slate-700">{selectedItem?.journey_place || "-"}</p>
+                <p className="text-lg font-bold text-slate-900">{selectedItem?.journey_place || "-"}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ผู้ขอใช้รถ</p>
-                <p className="text-sm font-bold text-slate-700">
+                <p className="text-lg font-bold text-slate-900">
                   {selectedItem?.vc_user?.firstname} {selectedItem?.vc_user?.lastname}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ทะเบียนรถ</p>
-                <p className="text-sm font-bold text-blue-600">{selectedItem?.vc_car_master?.car_number || "-"}</p>
+                <p className="text-lg font-bold text-blue-600">{selectedItem?.vc_car_master?.car_number || "-"}</p>
               </div>
             </div>
           </section>

@@ -399,7 +399,7 @@ export default function AssignPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+    <div className="space-y-8 pb-12">
       <section>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-2">
           <div className="flex items-center gap-3">
