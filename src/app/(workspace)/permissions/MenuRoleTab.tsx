@@ -178,7 +178,7 @@ export default function MenuRoleTab() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 px-6 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 shadow-lg shadow-rose-100 transition-all active:scale-95"
+          className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95"
         >
           <Plus size={18} />
           กำหนดสิทธิ์เมนู
@@ -246,7 +246,7 @@ export default function MenuRoleTab() {
         onClose={closeModal}
         title="กำหนดสิทธิ์เข้าถึงเมนูและฟังก์ชัน"
         maxWidth="4xl"
-        accentColor="bg-rose-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -255,7 +255,7 @@ export default function MenuRoleTab() {
             <button
               onClick={handleSave}
               disabled={isSaving || formData.mappings.length === 0}
-              className="flex items-center gap-2 px-8 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
               {isSaving ? "กำลังบันทึก..." : "บันทึกและอัปเดตสิทธิ์"}

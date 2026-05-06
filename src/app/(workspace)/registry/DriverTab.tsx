@@ -433,7 +433,7 @@ export default function DriverTab() {
               : "รายละเอียดคนขับ"
         }
         maxWidth="5xl"
-        accentColor="bg-emerald-600"
+        accentColor="bg-blue-600"
         footer={
           modalMode !== "view" ? (
             <>
@@ -448,7 +448,7 @@ export default function DriverTab() {
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all disabled:opacity-70"
+                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -470,14 +470,14 @@ export default function DriverTab() {
         }
       >
         <div className="space-y-8">
-          <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-sm">
-            <label className="text-sm font-bold text-emerald-900 block mb-4 flex items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-600"></span>
+          <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
+            <label className="text-sm font-bold text-blue-900 block mb-4 flex items-center gap-2">
+              <span className="flex h-2 w-2 rounded-full bg-blue-600"></span>
               เลือกประเภทพนักงานขับรถ <span className="text-rose-500">*</span>
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label
-                className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "driver" ? "border-emerald-600 bg-white shadow-md" : "border-gray-200 bg-white hover:border-emerald-300"}`}
+                className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "driver" ? "border-blue-600 bg-white shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}
               >
                 <div className="flex items-center gap-3 mb-1">
                   <input
@@ -486,7 +486,7 @@ export default function DriverTab() {
                     value="driver"
                     checked={driverType === "driver"}
                     onChange={() => setDriverType("driver")}
-                    className="w-4 h-4 text-emerald-600"
+                    className="w-4 h-4 text-blue-600"
                     disabled={modalMode === "view"}
                   />
                   <span className="font-bold text-gray-900">
@@ -495,7 +495,7 @@ export default function DriverTab() {
                 </div>
               </label>
               <label
-                className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "staff" ? "border-emerald-600 bg-white shadow-md" : "border-gray-200 bg-white hover:border-emerald-300"}`}
+                className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${driverType === "staff" ? "border-blue-600 bg-white shadow-md" : "border-gray-200 bg-white hover:border-blue-300"}`}
               >
                 <div className="flex items-center gap-3 mb-1">
                   <input
@@ -504,7 +504,7 @@ export default function DriverTab() {
                     value="staff"
                     checked={driverType === "staff"}
                     onChange={() => setDriverType("staff")}
-                    className="w-4 h-4 text-emerald-600"
+                    className="w-4 h-4 text-blue-600"
                     disabled={modalMode === "view"}
                   />
                   <span className="font-bold text-gray-900">
@@ -516,7 +516,7 @@ export default function DriverTab() {
           </div>
 
           <FormSection title="ข้อมูลส่วนตัว">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
               <SelectField
                 label="รหัสผู้ใช้งาน (User)"
                 required
@@ -537,7 +537,7 @@ export default function DriverTab() {
                 labelKey2="lastname"
                 disabled={modalMode === "view"}
               />
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
                     รหัสหน่วยงาน (Div Code)
                   </label>
@@ -545,7 +545,7 @@ export default function DriverTab() {
                     type="text"
                     disabled
                     value={formData.div_code || "-"}
-                    className="w-full bg-gray-100 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-500"
+                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-500 shadow-sm"
                   />
                 </div>
                 <InputField
@@ -560,7 +560,7 @@ export default function DriverTab() {
             </FormSection>
 
             <FormSection title="ข้อมูลใบอนุญาตและการทำงาน">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
                 <InputField
                   label="เลขที่ใบอนุญาตขับรถ"
                   value={formData.driver_license_no}
@@ -585,7 +585,7 @@ export default function DriverTab() {
                   }
                   disabled={modalMode === "view"}
                 />
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-800 flex items-center gap-1">
                     สถานะการทำงาน <span className="text-rose-500">*</span>
                   </label>
@@ -595,7 +595,7 @@ export default function DriverTab() {
                       setFormData({ ...formData, driver_status: e.target.value })
                     }
                     disabled={modalMode === "view"}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none shadow-sm"
                   >
                     <option value="1">ปฏิบัติงาน</option>
                     <option value="0">พ้นสภาพ</option>
@@ -620,12 +620,12 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm col-span-1 lg:col-span-3">
-      <h3 className="text-sm font-semibold text-blue-900 mb-4 border-b border-gray-50 pb-3 flex items-center gap-2">
+    <div className="bg-white p-7 rounded-2xl border border-gray-100 shadow-sm col-span-1 lg:col-span-3">
+      <h3 className="text-sm font-bold text-blue-900 mb-6 border-b border-gray-50 pb-4 flex items-center gap-3">
         <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
         {title}
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
         {children}
       </div>
     </div>
@@ -643,8 +643,8 @@ function InputField({
   maxLength,
 }: any) {
   return (
-    <div className="space-y-1.5 focus-within:z-10">
-      <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
+    <div className="space-y-2.5">
+      <label className="text-xs font-bold text-gray-600 flex items-center gap-1 ml-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <input
@@ -654,7 +654,7 @@ function InputField({
         placeholder={placeholder}
         disabled={disabled}
         maxLength={maxLength}
-        className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100"
+        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none disabled:opacity-60 disabled:bg-gray-100 shadow-sm"
       />
     </div>
   );
@@ -732,8 +732,8 @@ function SelectField({
     formattedOptions.find((o: any) => o.value === String(value)) || null;
 
   return (
-    <div className="space-y-1.5 focus-within:z-10">
-      <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
+    <div className="space-y-2.5">
+      <label className="text-xs font-bold text-gray-600 flex items-center gap-1 ml-1">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       <Select

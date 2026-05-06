@@ -170,7 +170,7 @@ export default function UserRoleTab() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 px-6 py-2.5 bg-amber-600 text-white rounded-xl font-bold text-sm hover:bg-amber-700 shadow-lg shadow-amber-100 transition-all active:scale-95"
+          className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95"
         >
           <Plus size={18} />
           มอบหมายสิทธิ์
@@ -184,7 +184,7 @@ export default function UserRoleTab() {
               header: "ผู้ใช้ (User)",
               cell: (ur) => (
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold border border-amber-100">
+                  <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold border border-blue-100">
                     {ur.username?.charAt(0).toUpperCase()}
                   </div>
                   <div>
@@ -199,7 +199,7 @@ export default function UserRoleTab() {
               cell: (ur) => (
                 <div className="flex flex-wrap gap-1.5">
                   {ur.roles.map((r: any) => (
-                    <span key={r.roles_id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold uppercase tracking-tighter">
+                    <span key={r.roles_id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold uppercase tracking-tighter">
                       <ShieldCheck size={10} />
                       {r.roles_name}
                     </span>
@@ -236,7 +236,7 @@ export default function UserRoleTab() {
         onClose={closeModal}
         title="มอบหมายบทบาทให้ผู้ใช้"
         maxWidth="2xl"
-        accentColor="bg-amber-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -245,7 +245,7 @@ export default function UserRoleTab() {
             <button
               onClick={handleSave}
               disabled={isSaving || formData.roles_ids.length === 0}
-              className="flex items-center gap-2 px-8 py-2.5 bg-amber-600 text-white rounded-lg font-bold text-sm hover:bg-amber-700 shadow-md transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
               {isSaving ? "กำลังบันทึก..." : "บันทึกและอัปเดตสิทธิ์"}

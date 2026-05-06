@@ -662,7 +662,7 @@ export default function AssignPage() {
         onClose={() => setIsPickupModalOpen(false)}
         title="บันทึกการส่งมอบรถ (Pickup Confirmation)"
         maxWidth="md"
-        accentColor="bg-emerald-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button onClick={() => setIsPickupModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -671,7 +671,7 @@ export default function AssignPage() {
             <button
               onClick={handlePickupSubmit}
               disabled={isPickupSubmitting}
-              className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
             >
               {isPickupSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               บันทึกการส่งมอบ

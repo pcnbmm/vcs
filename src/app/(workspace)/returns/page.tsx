@@ -407,7 +407,7 @@ export default function ReturnsPage() {
             : "บันทึกการส่งคืนยานพาหนะ"
         }
         maxWidth="3xl"
-        accentColor="bg-emerald-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button
@@ -420,7 +420,7 @@ export default function ReturnsPage() {
               <button
                 onClick={handleSaveReturn}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-200 transition-all disabled:opacity-70"
+                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -436,8 +436,8 @@ export default function ReturnsPage() {
         <div className="space-y-8">
           {/* ข้อมูลพื้นฐาน */}
           <section className="space-y-4">
-            <div className="flex items-center gap-3 text-emerald-600">
-              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+            <div className="flex items-center gap-3 text-blue-600">
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
               <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
                 ข้อมูลการเดินทาง (Journey Info)
               </h3>
@@ -466,8 +466,8 @@ export default function ReturnsPage() {
 
           {/* ระยะทาง */}
           <section className="space-y-4">
-            <div className="flex items-center gap-3 text-emerald-600">
-              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+            <div className="flex items-center gap-3 text-blue-600">
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
               <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
                 บันทึกเลขไมล์ (Mileage Record)
               </h3>
@@ -487,9 +487,9 @@ export default function ReturnsPage() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-emerald-600 uppercase">เลขไมล์สิ้นสุด <span className="text-rose-500">*</span></label>
+                <label className="text-xs font-bold text-blue-600 uppercase">เลขไมล์สิ้นสุด <span className="text-rose-500">*</span></label>
                 <div className="relative">
-                  <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={18} />
+                  <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" size={18} />
                   <input
                     type="number"
                     min="1"
@@ -497,14 +497,14 @@ export default function ReturnsPage() {
                     value={returnFormData.mile_end}
                     onChange={(e) => setReturnFormData({ ...returnFormData, mile_end: e.target.value })}
                     placeholder="0"
-                    className="w-full pl-12 pr-4 py-3 bg-white border border-emerald-200 rounded-xl text-lg font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-blue-200 rounded-xl text-lg font-bold text-blue-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-400">KM</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-blue-400">KM</span>
                 </div>
               </div>
             </div>
             {Number(returnFormData.mile_end) > 0 && (
-              <div className="bg-emerald-600 rounded-xl p-4 flex justify-between items-center text-white shadow-lg shadow-emerald-100">
+              <div className="bg-blue-600 rounded-xl p-4 flex justify-between items-center text-white shadow-lg shadow-blue-100">
                 <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">ระยะทางรวม</span>
                 <span className="text-xl font-bold italic">
                   {Math.max(0, (Number(returnFormData.mile_end) || 0) - (Number(returnFormData.mile_begin) || 0)).toLocaleString()} กม.
@@ -515,8 +515,8 @@ export default function ReturnsPage() {
 
           {/* วันเวลาคืนจริง */}
           <section className="space-y-4">
-            <div className="flex items-center gap-3 text-emerald-600">
-              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+            <div className="flex items-center gap-3 text-blue-600">
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
               <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
                 วันและเวลาที่คืนจริง (Actual Return)
               </h3>
@@ -543,8 +543,8 @@ export default function ReturnsPage() {
 
           {/* หมายเหตุ */}
           <section className="space-y-4">
-            <div className="flex items-center gap-3 text-emerald-600">
-              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+            <div className="flex items-center gap-3 text-blue-600">
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
               <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
                 หมายเหตุเพิ่มเติม (Return Note)
               </h3>
@@ -555,7 +555,7 @@ export default function ReturnsPage() {
               onChange={(e) => setReturnFormData(prev => ({ ...prev, note: e.target.value.substring(0, 100) }))}
               placeholder="ระบุปัญหาที่พบหรือหมายเหตุการคืนรถ (ถ้ามี)..."
               rows={3}
-              className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all resize-none"
+              className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all resize-none"
             />
           </section>
         </div>

@@ -162,7 +162,7 @@ export default function BookingDetailModal({
                   </button>
                   <button
                     onClick={() => onApprove(booking.id)}
-                    className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-100 transition-all text-xs font-bold"
+                    className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100 transition-all text-xs font-bold"
                   >
                     <CheckCircle2 size={16} />
                     อนุมัติคำขอ

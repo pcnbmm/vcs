@@ -155,7 +155,7 @@ export default function MenuTab() {
             },
             {
               header: "URL Path",
-              cell: (menu) => <span className="text-sm font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-bold">{menu.route_path || "/"}</span>
+              cell: (menu) => <span className="text-sm font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">{menu.route_path || "/"}</span>
             },
             {
               header: "จัดการ",
@@ -186,7 +186,7 @@ export default function MenuTab() {
         onClose={closeModal}
         title={modalMode === "add" ? "เพิ่มเมนูใหม่" : "แก้ไขเมนู"}
         maxWidth="md"
-        accentColor="bg-emerald-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -195,7 +195,7 @@ export default function MenuTab() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-md transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
               {isSaving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
@@ -210,7 +210,7 @@ export default function MenuTab() {
               type="text"
               value={formData.menuname}
               onChange={(e) => setFormData({ ...formData, menuname: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-100 outline-none transition-all"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               placeholder="เช่น หน้าแรก, รายงาน..."
             />
           </div>
@@ -220,7 +220,7 @@ export default function MenuTab() {
               type="text"
               value={formData.route_path}
               onChange={(e) => setFormData({ ...formData, route_path: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-bold text-emerald-600 focus:bg-white focus:ring-2 focus:ring-emerald-100 outline-none transition-all"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-bold text-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               placeholder="เช่น /dashboard"
             />
           </div>

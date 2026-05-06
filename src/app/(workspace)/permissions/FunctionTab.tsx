@@ -176,7 +176,7 @@ export default function FunctionTab() {
         onClose={closeModal}
         title={modalMode === "add" ? "เพิ่มฟังก์ชันใหม่" : "แก้ไขฟังก์ชัน"}
         maxWidth="md"
-        accentColor="bg-indigo-600"
+        accentColor="bg-blue-600"
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -185,7 +185,7 @@ export default function FunctionTab() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-bold text-sm hover:bg-indigo-700 shadow-md transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
               {isSaving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
@@ -200,7 +200,7 @@ export default function FunctionTab() {
               type="text"
               value={formData.func_name}
               onChange={(e) => setFormData({ ...formData, func_name: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               placeholder="เช่น CREATE, UPDATE, DELETE..."
             />
           </div>
