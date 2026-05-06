@@ -30,41 +30,54 @@ export async function GET() {
     const oilTypes = await prisma.vc_oil_type.findMany({ where: notDeleted });
     const orgs = await prisma.vc_orgs.findMany({ orderBy: { orgname: "asc" } });
 
-    // Build sections dropdown: fetch all active orgs (status != 'E') then
-    // identify sections by finding orgs that have no children (leaf nodes)
-    // or are referenced as sectionid in vc_users. Build formatted label.
-    const allActiveOrgs = await prisma.vc_orgs.findMany({
-      where: {
-        NOT: { status: "E" },
-      },
-      select: { orgid: true, orgname: true, mom_org: true, status: true },
-    });
+    // Build sections dropdown:
+    // 1. Get distinct own_div_code from vc_own_div_prop (not deleted)
+    // 2. For each code, look up org in vc_orgs where status != 'E'
+    // 3. Resolve parent (mom_org) to build formatted label "ฝ่าย - ส่วน" / "กลุ่ม - ส่วน"
 
-    // Build a set of orgids that appear as mom_org (i.e., they have children)
-    const parentOrgIds = new Set(allActiveOrgs.map((o) => o.mom_org).filter(Boolean));
-
-    // Sections = active orgs that have no children (leaf nodes)
-    const sectionOrgs = allActiveOrgs.filter((o) => !parentOrgIds.has(o.orgid));
-
-    // Build a lookup map for all orgs (including non-active) to resolve parent names
+    // Build a full orgs lookup map (orgid -> org) for resolving parent names
     const allOrgsMap = new Map(orgs.map((o: any) => [o.orgid, o]));
 
-    // For each section, find its parent and build the display label
-    const sections = sectionOrgs
-      .map((section) => {
-        const parent = section.mom_org ? allOrgsMap.get(section.mom_org) : null;
+    // Get distinct own_div_code entries from vc_own_div_prop (not deleted)
+    const ownDivProps = await prisma.vc_own_div_prop.findMany({
+      where: {
+        OR: [{ flag_del: { not: "Y" } }, { flag_del: null }],
+        own_div_code: { not: null },
+      },
+      select: { own_div_code: true },
+      distinct: ["own_div_code"],
+    });
+
+    const uniqueCodes = ownDivProps
+      .map((p) => p.own_div_code)
+      .filter(Boolean) as string[];
+
+    // For each code, find the org in vc_orgs (status != 'E'), then get parent
+    const sections = uniqueCodes
+      .map((code) => {
+        const org = allOrgsMap.get(code) as any | undefined;
+        if (!org) return null;
+        // Skip orgs with status 'E'
+        if (org.status === "E") return null;
+
+        const parent = org.mom_org ? allOrgsMap.get(org.mom_org) : null;
         const parentName = parent ? (parent as any).orgname : null;
         const label = parentName
-          ? `${parentName} - ${section.orgname}`
-          : section.orgname || section.orgid;
+          ? `${parentName} - ${org.orgname}`
+          : org.orgname || code;
+
         return {
-          orgid: section.orgid,
-          orgname: section.orgname,
+          orgid: org.orgid,
+          orgname: org.orgname,
           parent_orgname: parentName,
           display_label: label,
         };
       })
-      .sort((a, b) => (a.display_label ?? "").localeCompare(b.display_label ?? "", "th"));
+      .filter(Boolean)
+      .sort((a: any, b: any) =>
+        (a.display_label ?? "").localeCompare(b.display_label ?? "", "th")
+      );
+
 
     return NextResponse.json({
       users,
