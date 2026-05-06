@@ -427,7 +427,7 @@ export default function VehicleRequestPage() {
                     {/* driverId — pattern เดิมที่มีอยู่แล้ว */}
                     {!formData.requesterId && (
                       <p className="text-xs text-red-500 font-medium mt-1">
-                        * กรุณาเลือกพนักงานผู้ขอใช้รถ
+                        กรุณาเลือกพนักงานผู้ขอใช้รถก่อน *
                       </p>
                     )}
                   </FormField>
@@ -456,6 +456,7 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("ownerDept", sel ? sel.value : "")
                     }
+                    isDisabled={!formData.requesterId}
                     placeholder="-- เลือกสังกัด --"
                     isClearable
                     isSearchable
@@ -488,6 +489,7 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("vehicleType", sel ? sel.value : "")
                     }
+                    isDisabled={!formData.requesterId}
                     placeholder="-- เลือกประเภทรถ --"
                     isClearable
                     isSearchable
@@ -514,6 +516,7 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("origin", sel ? sel.value : "")
                     }
+                    isDisabled={!formData.requesterId}
                     placeholder="-- โปรดเลือกสถานที่ --"
                     isClearable
                     isSearchable
