@@ -32,6 +32,7 @@ export default function Navbar() {
     .join(", ");
 
   const handleLogout = () => {
+    sessionStorage.clear();
     signOut({ callbackUrl: `${window.location.origin}/login` });
   };
 
