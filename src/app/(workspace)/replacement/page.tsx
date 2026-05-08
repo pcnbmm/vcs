@@ -201,15 +201,30 @@ export default function ReplacementPage() {
   };
 
   const handleSelectMasterCar = (car: any) => {
-    setFormData((prev) => ({
-      ...prev,
+    // Pre-fill form with selected car data
+    setFormData({
+      car_id: "",
       replacement_car_number: car.car_number,
       car_province_id: car.car_province_id?.toString() || "",
       car_spec_id: car.car_spec_id?.toString() || "",
+      remark: "",
+      broken_car_id: "",
+      start_date: getLocalISOString(new Date()),
+      broken_datetime: getLocalISOString(new Date()),
+      end_date: getLocalISOString(new Date()),
+      end_datetime: "",
+      cre_by: "",
       existing_car_id: car.car_id,
-    }));
+    });
+    // Mark as already verified (skip the check step)
     setIsChecked(true);
+    setIsReturning(false);
+    setSelectedId(null);
+    setModalMode("add");
+    // Close master modal and open management modal
     setIsMasterModalOpen(false);
+    setMasterSearchTerm("");
+    setIsModalOpen(true);
   };
 
   const handleCheckCar = async () => {
@@ -270,7 +285,16 @@ export default function ReplacementPage() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error("Saving failed");
-        showSuccess("บันทึกข้อมูลรถทดแทนใหม่เรียบร้อยแล้ว");
+        const resData = await res.json();
+        const newRecord = resData.data;
+
+        showSuccess("บันทึกข้อมูลรถทดแทนใหม่เรียบร้อยแล้ว กรุณากรอกข้อมูลรถที่ถูกทดแทนต่อ");
+
+        // Refresh list and auto-open edit modal for the new record
+        await fetchReplacements();
+        fetchAvailableCars();
+        openModal("edit", newRecord);
+        return;
       } else if (modalMode === "edit") {
         // Determine if we are updating active details, or ending the replacement
         if (isReturning) {
@@ -454,21 +478,31 @@ export default function ReplacementPage() {
               ),
             },
             {
-              header: "วันที่เริ่มทดแทน",
+              header: "วัน/เวลาที่แจ้งเสีย",
               cell: (r) => (
                 <span className="text-sm text-slate-600">
-                  {r.start_date
-                    ? `${new Date(r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                  {r.broken_datetime
+                    ? `${new Date(r.broken_datetime).toLocaleDateString("th-TH")} ${new Date(r.broken_datetime).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
                     : "-"}
                 </span>
               ),
             },
             {
-              header: "วันที่สิ้นสุด (คืนรถ)",
+              header: "วัน/เวลาที่เริ่มทดแทน",
               cell: (r) => (
                 <span className="text-sm text-slate-600">
-                  {r.end_date
-                    ? `${new Date(r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                  {(r.start_datetime || r.start_date)
+                    ? `${new Date(r.start_datetime || r.start_date).toLocaleDateString("th-TH")} ${new Date(r.start_datetime || r.start_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
+                    : "-"}
+                </span>
+              ),
+            },
+            {
+              header: "วัน/เวลาที่สิ้นสุด (คืนรถ)",
+              cell: (r) => (
+                <span className="text-sm text-slate-600">
+                  {(r.end_datetime || r.end_date)
+                    ? `${new Date(r.end_datetime || r.end_date).toLocaleDateString("th-TH")} ${new Date(r.end_datetime || r.end_date).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", hour12: false })} น.`
                     : "-"}
                 </span>
               ),
@@ -768,7 +802,7 @@ export default function ReplacementPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-sm font-semibold text-gray-800">
                         วัน/เวลาที่แจ้งเหตุเสีย{" "}
@@ -845,6 +879,26 @@ export default function ReplacementPage() {
                         />
                       )}
                     </div>
+
+                    {modalMode === "view" && formData.end_datetime && (
+                      <div className="space-y-1.5 md:col-span-2">
+                        <label className="text-sm font-semibold text-gray-800">
+                          วัน/เวลาที่ส่งคืนรถ (สิ้นสุดการทดแทน)
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-700">
+                            {new Date(formData.end_datetime).toLocaleDateString("th-TH")}
+                          </div>
+                          <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-700">
+                            {new Date(formData.end_datetime).toLocaleTimeString("th-TH", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: false,
+                            })} น.
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
