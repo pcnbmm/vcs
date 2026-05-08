@@ -36,6 +36,7 @@ export default function UserRoleTab() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [formData, setFormData] = useState<{
     user_id: string;
     roles_ids: number[];
@@ -94,11 +95,13 @@ export default function UserRoleTab() {
 
   const openModal = (ur?: any) => {
     if (ur) {
+      setModalMode("edit");
       setFormData({
         user_id: String(ur.user_id),
         roles_ids: ur.roles.map((r: any) => r.roles_id),
       });
     } else {
+      setModalMode("add");
       setFormData({ user_id: "", roles_ids: [] });
     }
     setIsModalOpen(true);
@@ -107,6 +110,7 @@ export default function UserRoleTab() {
   const closeModal = () => {
     setIsModalOpen(false);
     setFormData({ user_id: "", roles_ids: [] });
+    setModalMode("add");
   };
 
   const handleRoleToggle = (roleId: number) => {
@@ -155,10 +159,7 @@ export default function UserRoleTab() {
     }
   };
 
-  // ตรวจสอบว่า User ที่เลือกอยู่ในตารางที่มีการมอบหมายบทบาทไปแล้วหรือไม่
-  const isEditMode = groupedUserRoles.some(ur => String(ur.user_id) === formData.user_id);
-  // ตรวจสอบว่าเป็นการกด Edit มาจากรายการเดิม (มีข้อมูลบทบาทติดมา)
-  const isActualEditing = formData.roles_ids.length > 0 && isEditMode;
+  const assignedUserIds = groupedUserRoles.map((ur) => String(ur.user_id));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -239,9 +240,9 @@ export default function UserRoleTab() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="มอบหมายบทบาทให้ผู้ใช้"
+        title={modalMode === "add" ? "มอบหมายบทบาทใหม่" : "แก้ไขบทบาทที่ได้รับ"}
         maxWidth="2xl"
-        accentColor="bg-blue-600"
+        accentColor={modalMode === "add" ? "bg-blue-600" : "bg-amber-500"}
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -250,10 +251,12 @@ export default function UserRoleTab() {
             <button
               onClick={handleSave}
               disabled={isSaving || formData.roles_ids.length === 0}
-              className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
+              className={`flex items-center gap-2 px-8 py-2.5 text-white rounded-lg font-bold text-sm shadow-md transition-all disabled:opacity-50 ${
+                modalMode === "add" ? "bg-blue-600 hover:bg-blue-700" : "bg-amber-600 hover:bg-amber-700"
+              }`}
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
-              {isSaving ? "กำลังบันทึก..." : "บันทึกและอัปเดตสิทธิ์"}
+              {isSaving ? "กำลังบันทึก..." : modalMode === "add" ? "บันทึกการมอบหมาย" : "อัปเดตข้อมูลบทบาท"}
             </button>
           </>
         }
@@ -263,15 +266,27 @@ export default function UserRoleTab() {
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">1. เลือกผู้ใช้ที่ต้องการ</label>
             <select
               value={formData.user_id}
+              disabled={modalMode === "edit"}
               onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-amber-100 outline-none transition-all"
+              className={`w-full px-4 py-3 border rounded-xl text-sm font-bold outline-none transition-all ${
+                modalMode === "edit" 
+                  ? "bg-slate-100 border-slate-200 text-slate-500 cursor-not-allowed" 
+                  : "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              }`}
             >
               <option value="">-- ค้นหาและเลือกผู้ใช้ --</option>
-              {users.map((u) => (
-                <option key={u.userid} value={u.userid}>
-                  {u.username} - {u.firstname} {u.lastname}
-                </option>
-              ))}
+              {users.map((u) => {
+                const isAssigned = assignedUserIds.includes(String(u.userid));
+                return (
+                  <option 
+                    key={u.userid} 
+                    value={u.userid}
+                    disabled={modalMode === "add" && isAssigned}
+                  >
+                    {u.username} - {u.firstname} {u.lastname} {modalMode === "add" && isAssigned ? "(มอบหมายแล้ว)" : ""}
+                  </option>
+                );
+              })}
             </select>
           </div>
 

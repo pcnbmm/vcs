@@ -38,6 +38,7 @@ export default function MenuRoleTab() {
   const [isSaving, setIsSaving] = useState(false);
 
   type Mapping = { menu_id: number; function_id: number | null };
+  const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [formData, setFormData] = useState<{
     roles_id: string;
     mappings: Mapping[];
@@ -93,15 +94,24 @@ export default function MenuRoleTab() {
     currentPage * itemsPerPage,
   );
 
+  const getMappingsFromRecord = (mr: any) => {
+    const mappings: Mapping[] = [];
+    mr.menus.forEach((m: any) => {
+      if (m.has_general_access) mappings.push({ menu_id: m.menu_id, function_id: null });
+      m.functions.forEach((f: any) => mappings.push({ menu_id: m.menu_id, function_id: f.function_id }));
+    });
+    return mappings;
+  };
+
   const openModal = (mr?: any) => {
     if (mr) {
-      const restoredMappings: Mapping[] = [];
-      mr.menus.forEach((m: any) => {
-        if (m.has_general_access) restoredMappings.push({ menu_id: m.menu_id, function_id: null });
-        m.functions.forEach((f: any) => restoredMappings.push({ menu_id: m.menu_id, function_id: f.function_id }));
+      setModalMode("edit");
+      setFormData({ 
+        roles_id: String(mr.roles_id), 
+        mappings: getMappingsFromRecord(mr) 
       });
-      setFormData({ roles_id: String(mr.roles_id), mappings: restoredMappings });
     } else {
+      setModalMode("add");
       setFormData({ roles_id: "", mappings: [] });
     }
     setIsModalOpen(true);
@@ -110,6 +120,7 @@ export default function MenuRoleTab() {
   const closeModal = () => {
     setIsModalOpen(false);
     setFormData({ roles_id: "", mappings: [] });
+    setModalMode("add");
   };
 
   const toggleMapping = (menuId: number, functionId: number | null) => {
@@ -165,9 +176,6 @@ export default function MenuRoleTab() {
   };
 
   const assignedRoleIds = groupedMenuRoles.map((mr) => String(mr.roles_id));
-  // สร้างตัวแปรเช็ค Mode
-  const isEditMode = groupedMenuRoles.some(mr => String(mr.roles_id) === formData.roles_id);
-  const isActualEditing = isEditMode; // กำหนดตัวแปรสำหรับใช้ในเงื่อนไขแสดงข้อความเตือน
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -250,9 +258,9 @@ export default function MenuRoleTab() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="กำหนดสิทธิ์เข้าถึงเมนูและฟังก์ชัน"
+        title={modalMode === "add" ? "กำหนดสิทธิ์เข้าถึงเมนูใหม่" : "แก้ไขสิทธิ์การเข้าถึงเมนู"}
         maxWidth="4xl"
-        accentColor="bg-blue-600"
+        accentColor={modalMode === "add" ? "bg-blue-600" : "bg-amber-500"}
         footer={
           <>
             <button onClick={closeModal} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
@@ -261,10 +269,12 @@ export default function MenuRoleTab() {
             <button
               onClick={handleSave}
               disabled={isSaving || formData.mappings.length === 0}
-              className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
+              className={`flex items-center gap-2 px-8 py-2.5 text-white rounded-lg font-bold text-sm shadow-md transition-all disabled:opacity-50 ${
+                modalMode === "add" ? "bg-blue-600 hover:bg-blue-700" : "bg-amber-600 hover:bg-amber-700"
+              }`}
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={18} />}
-              {isSaving ? "กำลังบันทึก..." : "บันทึกและอัปเดตสิทธิ์"}
+              {isSaving ? "กำลังบันทึก..." : modalMode === "add" ? "บันทึกสิทธิ์ใหม่" : "อัปเดตข้อมูลสิทธิ์"}
             </button>
           </>
         }
@@ -274,13 +284,27 @@ export default function MenuRoleTab() {
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">1. เลือกบทบาท</label>
             <select
               value={formData.roles_id}
+              disabled={modalMode === "edit"}
               onChange={(e) => setFormData({ ...formData, roles_id: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-rose-100 outline-none transition-all"
+              className={`w-full px-4 py-3 border rounded-xl text-sm font-bold outline-none transition-all ${
+                modalMode === "edit" 
+                  ? "bg-slate-100 border-slate-200 text-slate-500 cursor-not-allowed" 
+                  : "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              }`}
             >
               <option value="">-- ค้นหาและเลือกบทบาท --</option>
-              {roles.map((r) => (
-                <option key={r.roles_id} value={r.roles_id}>{r.roles_name}</option>
-              ))}
+              {roles.map((r) => {
+                const isAssigned = assignedRoleIds.includes(String(r.roles_id));
+                return (
+                  <option 
+                    key={r.roles_id} 
+                    value={r.roles_id} 
+                    disabled={modalMode === "add" && isAssigned}
+                  >
+                    {r.roles_name} {modalMode === "add" && isAssigned ? "(กำหนดสิทธิ์แล้ว)" : ""}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
