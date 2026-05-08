@@ -445,7 +445,12 @@ export default function AssignPage() {
                     <h3 className="font-bold text-slate-900">
                       {order.journey_place}
                     </h3>
-                    <div className="mt-1">
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      {(!!order.is_urgent || order.journey_causes?.includes("ด่วน")) && (
+                        <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-200 uppercase tracking-tighter">
+                          ด่วน
+                        </span>
+                      )}
                       {order.status_use_id === 4 && !order.pickup_status && (
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
                           จัดรถแล้ว (รอรับรถ)
