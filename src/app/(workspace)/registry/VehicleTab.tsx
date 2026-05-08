@@ -581,8 +581,11 @@ export default function VehicleTab() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 bg-white p-4 rounded-md shadow-sm border border-gray-100">
-        <div className="flex-1 flex flex-col md:flex-row items-center gap-3 w-full relative">
+      {/* Toolbar Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        {/* Top row: Search + buttons */}
+        <div className="flex flex-col md:flex-row items-center gap-3 p-4">
+          {/* Search */}
           <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -593,150 +596,160 @@ export default function VehicleTab() {
               className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-black focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none placeholder:text-gray-400"
             />
           </div>
-          <div className="relative w-full md:w-auto">
-            <button
-              onClick={toggleFilter}
-              className="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-white border border-blue-500 text-blue-600 rounded-xl font-bold text-sm hover:bg-blue-50 transition-all whitespace-nowrap"
-            >
-              <Filter className="w-4 h-4" />
-              Filter เพิ่มเติม
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isAdvancedFilterOpen ? "rotate-180" : ""}`} />
-            </button>
 
-            {isAdvancedFilterOpen && (
-              <div className="absolute top-full right-0 md:right-0 mt-2 w-full md:w-[800px] max-w-[90vw] bg-white rounded-xl shadow-xl border border-gray-100 p-6 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-50">
-                  <h3 className="font-bold text-gray-800">Filter เพิ่มเติม</h3>
-                  <button
-                    onClick={clearFilters}
-                    className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                    ล้างค่า
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-                  <SelectFilter
-                    label="ยี่ห้อรถ"
-                    value={pendingFilters.brand}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, brand: v })}
-                    options={options?.carBrands}
-                    valKey="car_brand_id"
-                    lblKey="car_brand_name"
-                  />
-                  <SelectFilter
-                    label="สถานะ"
-                    value={pendingFilters.status}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, status: v })}
-                    options={options?.statuses}
-                    valKey="car_status_id"
-                    lblKey="car_status_name"
-                  />
-                  <SelectFilter
-                    label="จังหวัด"
-                    value={pendingFilters.province}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, province: v })}
-                    options={options?.provinces}
-                    valKey="province_id"
-                    lblKey="province_name"
-                  />
-                  <SelectFilter
-                    label="สีรถ"
-                    value={pendingFilters.color}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, color: v })}
-                    options={options?.colors}
-                    valKey="color_id"
-                    lblKey="color_name"
-                  />
-                  <SelectFilter
-                    label="สเปค"
-                    value={pendingFilters.spec}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, spec: v })}
-                    options={options?.carSpecs}
-                    valKey="car_spec_id"
-                    lblKey="car_spec_name"
-                  />
-                  <SelectFilter
-                    label="ประเภทรถ"
-                    value={pendingFilters.type}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, type: v })}
-                    options={options?.carTypes}
-                    valKey="car_type_id"
-                    lblKey="car_type_name"
-                  />
-                  <SelectFilter
-                    label="ประเภทจดทะเบียน"
-                    value={pendingFilters.typeRegis}
-                    onChange={(v: any) => setPendingFilters({ ...pendingFilters, typeRegis: v })}
-                    options={options?.typeRegis}
-                    valKey="type_regis_id"
-                    lblKey="type_regis_name"
-                  />
-                </div>
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                  <button
-                    onClick={() => setIsAdvancedFilterOpen(false)}
-                    className="px-6 py-2.5 rounded-lg font-bold text-sm text-gray-600 hover:bg-gray-100 transition-colors border border-gray-200"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button
-                    onClick={applyFilters}
-                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all"
-                  >
-                    Apply Filter
-                  </button>
-                </div>
+          {/* Filter toggle button */}
+          <button
+            onClick={toggleFilter}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap border ${
+              isAdvancedFilterOpen
+                ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-200"
+                : "bg-white border-blue-500 text-blue-600 hover:bg-blue-50"
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Filter
+            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isAdvancedFilterOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          {/* Export */}
+          <div className="relative">
+            <button
+              onClick={() => setIsExportOpen(!isExportOpen)}
+              className="flex items-center justify-center gap-2 px-5 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all whitespace-nowrap"
+            >
+              <Download className="w-5 h-5" />
+              Export
+              <ChevronDown className={`w-4 h-4 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isExportOpen && (
+              <div className="absolute top-full right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                <button
+                  onClick={() => handleExportMenu("excel")}
+                  className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-3 transition-colors"
+                >
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                  Export เป็น Excel
+                </button>
+                <button
+                  onClick={() => handleExportMenu("pdf")}
+                  className="w-full text-left px-4 py-2.5 hover:bg-rose-50 text-sm font-bold text-gray-700 hover:text-rose-700 flex items-center gap-3 transition-colors"
+                >
+                  <FileIcon className="w-4 h-4 text-rose-600" />
+                  Export เป็น PDF
+                </button>
+                <button
+                  onClick={() => handleExportMenu("docx")}
+                  className="w-full text-left px-4 py-2.5 hover:bg-blue-50 text-sm font-bold text-gray-700 hover:text-blue-700 flex items-center gap-3 transition-colors"
+                >
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  Export เป็น Word
+                </button>
               </div>
             )}
           </div>
-        </div>
-        <div className="flex items-center gap-2 w-full md:w-auto relative">
-          <button
-            onClick={() => setIsExportOpen(!isExportOpen)}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all whitespace-nowrap"
-          >
-            <Download className="w-5 h-5" />
-            Export Data
-            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
-          </button>
-          
-          {isExportOpen && (
-            <div className="absolute top-full right-0 md:right-auto md:left-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-              <button
-                onClick={() => handleExportMenu("excel")}
-                className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-3 transition-colors"
-              >
-                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                Export เป็น Excel
-              </button>
-              <button
-                onClick={() => handleExportMenu("pdf")}
-                className="w-full text-left px-4 py-2.5 hover:bg-rose-50 text-sm font-bold text-gray-700 hover:text-rose-700 flex items-center gap-3 transition-colors"
-              >
-                <FileIcon className="w-4 h-4 text-rose-600" />
-                Export เป็น PDF
-              </button>
-              <button
-                onClick={() => handleExportMenu("docx")}
-                className="w-full text-left px-4 py-2.5 hover:bg-blue-50 text-sm font-bold text-gray-700 hover:text-blue-700 flex items-center gap-3 transition-colors"
-              >
-                <FileText className="w-4 h-4 text-blue-600" />
-                Export เป็น Word
-              </button>
-            </div>
-          )}
 
+          {/* Add */}
           {hasAccess("create") && (
             <button
               onClick={() => openModal("add")}
-              className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
+              className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
-              เพิ่มข้อมูลรถยนต์
+              เพิ่มรถยนต์
             </button>
           )}
         </div>
+
+        {/* Inline Filter Panel */}
+        {isAdvancedFilterOpen && (
+          <div className="border-t border-gray-100 px-4 pb-4 pt-4 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                <Filter className="w-4 h-4 text-blue-500" />
+                เลือกเงื่อนไข Filter
+              </h3>
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                ล้างค่า
+              </button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+              <SelectFilter
+                label="ยี่ห้อรถ"
+                value={pendingFilters.brand}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, brand: v })}
+                options={options?.carBrands}
+                valKey="car_brand_id"
+                lblKey="car_brand_name"
+              />
+              <SelectFilter
+                label="สถานะ"
+                value={pendingFilters.status}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, status: v })}
+                options={options?.statuses}
+                valKey="car_status_id"
+                lblKey="car_status_name"
+              />
+              <SelectFilter
+                label="จังหวัด"
+                value={pendingFilters.province}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, province: v })}
+                options={options?.provinces}
+                valKey="province_id"
+                lblKey="province_name"
+              />
+              <SelectFilter
+                label="สีรถ"
+                value={pendingFilters.color}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, color: v })}
+                options={options?.colors}
+                valKey="color_id"
+                lblKey="color_name"
+              />
+              <SelectFilter
+                label="สเปค"
+                value={pendingFilters.spec}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, spec: v })}
+                options={options?.carSpecs}
+                valKey="car_spec_id"
+                lblKey="car_spec_name"
+              />
+              <SelectFilter
+                label="ประเภทรถ"
+                value={pendingFilters.type}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, type: v })}
+                options={options?.carTypes}
+                valKey="car_type_id"
+                lblKey="car_type_name"
+              />
+              <SelectFilter
+                label="ประเภทจดทะเบียน"
+                value={pendingFilters.typeRegis}
+                onChange={(v: any) => setPendingFilters({ ...pendingFilters, typeRegis: v })}
+                options={options?.typeRegis}
+                valKey="type_regis_id"
+                lblKey="type_regis_name"
+              />
+            </div>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setIsAdvancedFilterOpen(false)}
+                className="px-5 py-2 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors border border-gray-200"
+              >
+                ยกเลิก
+              </button>
+              <button
+                onClick={applyFilters}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-200 transition-all"
+              >
+                Apply Filter
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <DataTable
@@ -819,13 +832,76 @@ export default function VehicleTab() {
                 labelKey="province_name"
                 disabled={modalMode === "view"}
               />
+              {/* ยี่ห้อรถ: เลือก brand name ก่อน แล้วกรอง series */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-800">ยี่ห้อรถ</label>
-                <input
-                  type="text"
-                  value={formData.temp_brand_name || ""}
-                  disabled
-                  className="w-full px-4 py-2.5 bg-gray-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-500"
+                <label className="text-sm font-semibold text-gray-800">
+                  ยี่ห้อรถ
+                </label>
+                <Select
+                  value={
+                    formData.temp_brand_name
+                      ? { value: formData.temp_brand_name, label: formData.temp_brand_name }
+                      : null
+                  }
+                  onChange={(sel: any) => {
+                    setFormData({
+                      ...formData,
+                      temp_brand_name: sel ? sel.value : "",
+                      car_brand_id: "", // reset series when brand changes
+                    });
+                  }}
+                  options={(
+                    Array.from(
+                      new Map(
+                        (options?.allCarBrands ?? []).map((b: any) => [b.car_brand_name, b])
+                      ).values()
+                    ) as any[]
+                  ).map((b: any) => ({ value: b.car_brand_name, label: b.car_brand_name }))}
+                  isSearchable
+                  isClearable
+                  placeholder="-- เลือกยี่ห้อ --"
+                  isDisabled={modalMode === "view"}
+                  styles={popupReactSelectStyles}
+                  menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                  menuPosition="fixed"
+                  className="text-sm"
+                />
+              </div>
+              {/* รุ่น/Series: filter จาก brand ที่เลือก */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800">
+                  รุ่นรถ
+                </label>
+                <Select
+                  value={
+                    formData.car_brand_id
+                      ? (() => {
+                          const found = (options?.allCarBrands ?? []).find(
+                            (b: any) => String(b.car_brand_id) === String(formData.car_brand_id)
+                          );
+                          return found
+                            ? { value: String(found.car_brand_id), label: found.car_series_name ?? found.car_brand_name }
+                            : null;
+                        })()
+                      : null
+                  }
+                  onChange={(sel: any) => {
+                    setFormData({ ...formData, car_brand_id: sel ? sel.value : "" });
+                  }}
+                  options={(options?.allCarBrands ?? []).filter(
+                    (b: any) => b.car_brand_name === formData.temp_brand_name
+                  ).map((b: any) => ({
+                    value: String(b.car_brand_id),
+                    label: b.car_series_name ?? b.car_brand_name,
+                  }))}
+                  isSearchable
+                  isClearable
+                  placeholder={formData.temp_brand_name ? "-- เลือกรุ่น --" : "-- เลือกยี่ห้อก่อน --"}
+                  isDisabled={modalMode === "view" || !formData.temp_brand_name}
+                  styles={popupReactSelectStyles}
+                  menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                  menuPosition="fixed"
+                  className="text-sm"
                 />
               </div>
               <SelectField
