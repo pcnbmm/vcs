@@ -32,6 +32,7 @@ import {
   getDrivers,
   assignResource,
   recordPickupResource,
+  cancelBooking,
 } from "./actions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
@@ -44,7 +45,7 @@ type DispatchType = "with_driver" | "self_drive" | "taxi";
 // Helper function
 const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
   if (!journeyDate) return false;
-  
+
   try {
     const d = new Date(journeyDate);
     if (isNaN(d.getTime())) return false;
@@ -55,20 +56,20 @@ const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
       String(d.getMonth() + 1).padStart(2, "0") +
       "-" +
       String(d.getDate()).padStart(2, "0");
-      
+
     let timeStr = journeyTime ? journeyTime.replace(/[^0-9:]/g, "") : "23:59:59";
     if (!timeStr || timeStr.length < 4) timeStr = "23:59:59";
-    
+
     if (timeStr.split(':').length === 2) {
       timeStr += ':00';
     }
-    
+
     const dt = new Date(`${dateStr}T${timeStr}`);
-    
+
     if (isNaN(dt.getTime())) {
       return d.getTime() < new Date().getTime();
     }
-    
+
     return dt.getTime() < new Date().getTime();
   } catch (err) {
     return false;
@@ -81,9 +82,44 @@ export default function AssignPage() {
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [selectedCancelOrder, setSelectedCancelOrder] = useState<any>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [isCancelSubmitting, setIsCancelSubmitting] = useState(false);
+
+  const handleCancelSubmit = async () => {
+    if (!cancelReason.trim()) {
+      showWarning("กรุณาระบุเหตุผลที่ยกเลิก");
+      return;
+    }
+
+    const isConfirmed = await showConfirm("ยืนยันการยกเลิกคำขอนี้?");
+    if (!isConfirmed) return;
+
+    setIsCancelSubmitting(true);
+    try {
+      const result = await cancelBooking({
+        requestId: selectedCancelOrder.request_id,
+        reason: cancelReason,
+      });
+
+      if (result.success) {
+        showSuccess("ยกเลิกคำขอเรียบร้อยแล้ว");
+        setIsCancelModalOpen(false);
+        fetchData();
+      } else {
+        showError(result.error || "เกิดข้อผิดพลาดในการยกเลิก");
+      }
+    } catch (err: any) {
+      showError(err.message);
+    } finally {
+      setIsCancelSubmitting(false);
+    }
+  };
+
   // Filter state
   const [filterStatus, setFilterStatus] = useState<string>("action_required");
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -374,7 +410,7 @@ export default function AssignPage() {
 
       const isUrgentA = !!a.is_urgent || a.journey_causes?.includes("ด่วน");
       const isUrgentB = !!b.is_urgent || b.journey_causes?.includes("ด่วน");
-      
+
       const urgentA = isUrgentA ? 0 : 1;
       const urgentB = isUrgentB ? 0 : 1;
       if (urgentA !== urgentB) {
@@ -445,12 +481,7 @@ export default function AssignPage() {
                     <h3 className="font-bold text-slate-900">
                       {order.journey_place}
                     </h3>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {(!!order.is_urgent || order.journey_causes?.includes("ด่วน")) && (
-                        <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-200 uppercase tracking-tighter">
-                          ด่วน
-                        </span>
-                      )}
+                    <div className="mt-1">
                       {order.status_use_id === 4 && !order.pickup_status && (
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
                           จัดรถแล้ว (รอรับรถ)
@@ -514,11 +545,9 @@ export default function AssignPage() {
                 className: "text-right",
                 cell: (order) => (
                   <div className="flex justify-end gap-2">
+                    {/* ปุ่มหลัก */}
                     {order.status_use_id === 4 && !order.pickup_status ? (
-                      <button
-                        onClick={() => openPickupModal(order)}
-                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100"
-                      >
+                      <button onClick={() => openPickupModal(order)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100">
                         รับรถ
                       </button>
                     ) : (order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) ? (
@@ -530,13 +559,25 @@ export default function AssignPage() {
                         หมดอายุ
                       </button>
                     ) : (
-                      <button
-                        onClick={() => openAssignModal(order)}
-                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md"
-                      >
+                      <button onClick={() => openAssignModal(order)} className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md">
                         จัดสรรรถ
                       </button>
                     )}
+
+                    {/* ปุ่มยกเลิก */}
+                    {order.status_use_id !== 5 &&
+                      order.status_use_id !== 6 &&
+                      order.pickup_status !== "PICKED_UP" &&
+                      order.pickup_status !== "TAXI_CALLED" &&
+                      !isAssignExpired(order.journey_date, order.journey_time) &&
+                      (
+                        <button
+                          onClick={() => { setSelectedCancelOrder(order); setIsCancelModalOpen(true); setCancelReason(""); }}
+                          className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
+                        >
+                          ยกเลิก
+                        </button>
+                      )}
                   </div>
                 ),
               },
@@ -577,7 +618,7 @@ export default function AssignPage() {
         <div className="space-y-8">
           {/* Dispatch Type */}
           <div className="space-y-4">
-            <label className="text-sm font-semibold text-gray-800">ประเภทการจัดส่ง</label>
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">ประเภทการจัดส่ง</label>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: "with_driver", label: "รถพร้อมคนขับ", icon: Truck, color: "blue" },
@@ -729,6 +770,45 @@ export default function AssignPage() {
               </div>
             </>
           )}
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        title="ยกเลิกคำขอใช้รถ"
+        maxWidth="md"
+        accentColor="bg-rose-600"
+        footer={
+          <>
+            <button onClick={() => setIsCancelModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+              ปิด
+            </button>
+            <button
+              onClick={handleCancelSubmit}
+              disabled={isCancelSubmitting || !cancelReason.trim()}
+              className="flex items-center gap-2 px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md transition-all disabled:opacity-50"
+            >
+              {isCancelSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+              ยืนยันยกเลิก
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 text-sm text-rose-700 font-medium">
+            ยกเลิกคำขอ REQ#{String(selectedCancelOrder?.request_id).padStart(3, "0")} — {selectedCancelOrder?.journey_place}
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-gray-800">เหตุผลที่ยกเลิก <span className="text-rose-500">*</span></label>
+            <textarea
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="ระบุเหตุผลที่ยกเลิก..."
+              className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-rose-500 transition-all resize-none"
+              rows={4}
+            />
+          </div>
         </div>
       </Modal>
     </div>
