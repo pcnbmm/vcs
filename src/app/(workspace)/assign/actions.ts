@@ -16,7 +16,7 @@ export async function getPendingDispatch() {
     const orders = await prisma.vc_order_item.findMany({
       where: {
         OR: [
-          { status_use_id: { in: [2, 4] } },
+          { status_use_id: { in: [2, 3, 4, 6] } },
           { status_use_id: 5, pickup_method: "TAXI" },
         ],
       },
@@ -116,9 +116,9 @@ export async function getAvailableCars(divCode?: string) {
         ...(divCode ? { own_div_code: divCode } : {}),
         vc_car_status: {
           car_status_name: {
-            contains: "ใช้งาน"
-          }
-        }
+            contains: "ใช้งาน",
+          },
+        },
       },
       include: {
         vc_car_brand: true,
@@ -129,7 +129,7 @@ export async function getAvailableCars(divCode?: string) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const validCars = cars.filter(car => {
+    const validCars = cars.filter((car) => {
       if (car.end_date) {
         const endDt = new Date(car.end_date);
         if (!isNaN(endDt.getTime()) && endDt < today) {
@@ -170,12 +170,9 @@ export async function getCarSpecs() {
   try {
     const specs = await prisma.vc_car_spec.findMany({
       where: {
-        OR: [
-          { flag_del: null },
-          { flag_del: { not: "1" } }
-        ]
+        OR: [{ flag_del: null }, { flag_del: { not: "1" } }],
       },
-      orderBy: { car_spec_name: "asc" }
+      orderBy: { car_spec_name: "asc" },
     });
     return specs;
   } catch (error) {
@@ -205,10 +202,16 @@ export async function assignResource(data: {
     // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
       where: { request_id: data.requestId },
-      select: { car_id: true, driver_id: true, journey_causes: true, status_use_id: true },
+      select: {
+        car_id: true,
+        driver_id: true,
+        journey_causes: true,
+        status_use_id: true,
+      },
     });
 
-    const isEdit = existingOrder?.status_use_id === 4 || existingOrder?.status_use_id === 5;
+    const isEdit =
+      existingOrder?.status_use_id === 4 || existingOrder?.status_use_id === 5;
 
     // 2. ใช้ Transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -245,8 +248,11 @@ export async function assignResource(data: {
         updateData.status_use_id = 5;
         updateData.pickup_status = null;
         if (data.taxiReason && existingOrder) {
-          const oldCauses = existingOrder.journey_causes ? existingOrder.journey_causes + "\n\n" : "";
-          updateData.journey_causes = oldCauses + `[เหตุผลการจัดแท็กซี่: ${data.taxiReason}]`;
+          const oldCauses = existingOrder.journey_causes
+            ? existingOrder.journey_causes + "\n\n"
+            : "";
+          updateData.journey_causes =
+            oldCauses + `[เหตุผลการจัดแท็กซี่: ${data.taxiReason}]`;
         }
       }
 
@@ -284,7 +290,9 @@ export async function assignResource(data: {
         startDate: result.journey_date
           ? result.journey_date.toLocaleDateString("th-TH")
           : "-",
-        startTime: result.journey_time ? result.journey_time.slice(0, 5) : undefined,
+        startTime: result.journey_time
+          ? result.journey_time.slice(0, 5)
+          : undefined,
         startPlace: result.vc_start_place?.start_place_name || undefined,
         taxiReason: data.taxiReason,
         isEdit: isEdit,
@@ -363,7 +371,6 @@ export async function recordPickupResource(data: {
       });
     }
 
-
     revalidatePath("/assign");
     return { success: true as const };
   } catch (error: any) {
@@ -384,12 +391,9 @@ export async function cancelBooking(data: {
       where: { request_id: data.requestId },
     });
 
-    if (!order) {
-      return { success: false as const, error: "ไม่พบคำขอนี้ในระบบ" };
-    }
+    if (!order) return { success: false as const, error: "ไม่พบคำขอนี้ในระบบ" };
 
     await prisma.$transaction(async (tx) => {
-      // ปลดล็อกรถถ้ามีการจัดรถไปแล้ว
       if (order.car_id) {
         await tx.vc_car_master.update({
           where: { car_id: order.car_id },
@@ -397,12 +401,11 @@ export async function cancelBooking(data: {
         });
       }
 
-      // อัปเดตสถานะเป็น 6 (ยกเลิก) พร้อมบันทึกเหตุผล
       await tx.vc_order_item.update({
         where: { request_id: data.requestId },
         data: {
           status_use_id: 6,
-          reject_reason: data.reason,
+          dispatcher_reject_reason: data.reason,
           car_id: null,
           driver_id: null,
           upd_date: new Date(),
@@ -413,7 +416,6 @@ export async function cancelBooking(data: {
     revalidatePath("/assign");
     return { success: true as const };
   } catch (error: any) {
-    console.error("❌ FAILED to cancel booking:", error.message);
     return { success: false as const, error: error.message };
   }
 }

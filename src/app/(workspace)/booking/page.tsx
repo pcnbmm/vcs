@@ -71,7 +71,7 @@ export default function VehicleRequestPage() {
     }),
     placeholder: (base: any) => ({
       ...base,
-      color: "#6b7280",
+      color: "#000000",
       fontWeight: "bold",
       fontSize: "0.875rem",
     }),
@@ -351,7 +351,7 @@ export default function VehicleRequestPage() {
             <div className="relative space-y-10">
               <div className="flex items-center gap-3 border-b border-gray-100 pb-5">
                 <div className="w-1.5 h-6 bg-blue-600 rounded-full shadow-sm"></div>
-                <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
+                <h2 className="text-xl font-bold text-black uppercase tracking-tight">
                   รายละเอียดแผนการเดินทาง
                 </h2>
               </div>
@@ -473,7 +473,7 @@ export default function VehicleRequestPage() {
                         }
                         readOnly
                         placeholder="-"
-                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-black cursor-not-allowed"
                       />
                     </FormField>
                     <FormField label="ลองจิจูด" icon={NavIcon}>
@@ -484,7 +484,7 @@ export default function VehicleRequestPage() {
                         }
                         readOnly
                         placeholder="-"
-                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed"
+                        className="w-full bg-slate-100 border-slate-200 border rounded-md px-4 py-2 text-sm font-bold text-black cursor-not-allowed"
                       />
                     </FormField>
                   </div>
@@ -499,7 +499,7 @@ export default function VehicleRequestPage() {
                         type="text"
                         placeholder="วัน/เดือน/ปี --:--"
                         readOnly
-                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer placeholder:text-gray-600"
                       />
                       <Clock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                     </div>
@@ -512,7 +512,7 @@ export default function VehicleRequestPage() {
                         type="text"
                         placeholder="วัน/เดือน/ปี --:--"
                         readOnly
-                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm cursor-pointer placeholder:text-gray-500"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm cursor-pointer placeholder:text-gray-600"
                       />
                       <Clock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                     </div>
@@ -532,7 +532,7 @@ export default function VehicleRequestPage() {
                         }}
                         className="w-5 h-5 cursor-pointer"
                       />
-                      <span className="text-sm font-bold text-gray-700">
+                      <span className="text-sm font-bold text-black">
                         ยืนยัน
                       </span>
                     </label>
@@ -592,7 +592,7 @@ export default function VehicleRequestPage() {
                         handleInputChange("objective", e.target.value)
                       }
                       placeholder="ระบุวัตถุประสงค์ในการเดินทาง..."
-                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm resize-none placeholder:text-gray-500"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm resize-none placeholder:text-gray-600"
                     />
                   </FormField>
                 </div>
@@ -609,9 +609,9 @@ export default function VehicleRequestPage() {
                         }
                         placeholder="0"
                         min="1"
-                        className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm placeholder:text-gray-500"
+                        className="w-full bg-gray-50 border-gray-300 border rounded-lg pl-4 pr-16 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm placeholder:text-gray-600"
                       />
-                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
+                      <span className="absolute right-12 top-1/2 -translate-y-1/2 text-xs font-bold text-black pointer-events-none">
                         คน
                       </span>
                     </div>
@@ -631,7 +631,7 @@ export default function VehicleRequestPage() {
                         handleInputChange("phone", val);
                       }}
                       placeholder="0xxxxxxxxx"
-                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-gray-700 shadow-sm placeholder:text-gray-500"
+                      className="w-full bg-gray-50 border-gray-300 border rounded-lg px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-bold text-black shadow-sm placeholder:text-gray-600"
                     />
                   </FormField>
                 </div>
@@ -643,7 +643,7 @@ export default function VehicleRequestPage() {
               <button
                 onClick={resetForm}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-100 transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-8 py-3.5 rounded-lg font-bold text-sm text-black hover:bg-gray-100 transition-all disabled:opacity-50"
               >
                 <X className="w-4 h-4" /> ยกเลิกเนื้อหา
               </button>
@@ -680,7 +680,7 @@ function FormField({
 }) {
   return (
     <div className="space-y-2">
-      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+      <label className="text-[10px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
         <Icon size={12} className="text-blue-500" />
         {label}
         {required && <span className="text-rose-500 ml-1">*</span>}
