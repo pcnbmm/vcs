@@ -266,18 +266,18 @@ export default function PendingPage() {
         <div className="space-y-8">
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-400">ผู้ขอใช้รถ</p>
-              <p className="text-sm font-bold text-slate-900">{selectedRequest?.requester}</p>
+              <p className="text-sm font-semibold text-gray-800">ผู้ขอใช้รถ</p>
+              <p className="text-sm font-bold text-blue-600">{selectedRequest?.requester}</p>
               <p className="text-sm font-bold text-blue-600">{selectedRequest?.phone}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-400">สังกัด / แผนก</p>
-              <p className="text-sm font-bold text-slate-900">{selectedRequest?.department}</p>
+              <p className="text-sm font-semibold text-gray-800">สังกัด / แผนก</p>
+              <p className="text-sm font-bold text-blue-600">{selectedRequest?.department}</p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm font-bold text-slate-400">เส้นทางเดินทาง</p>
+            <p className="text-sm font-semibold text-gray-800">เส้นทางเดินทาง</p>
             <div className="flex items-center gap-3 bg-slate-50 p-5 rounded-2xl border border-slate-100">
               <span className="bg-white px-4 py-2 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 shadow-sm">{selectedRequest?.origin}</span>
               <ChevronRight className="w-5 h-5 text-slate-300 shrink-0" />
@@ -287,23 +287,23 @@ export default function PendingPage() {
 
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-3">
-              <p className="text-sm font-bold text-slate-400">กำหนดเวลา</p>
+              <p className="text-sm font-semibold text-gray-800">กำหนดเวลา</p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="w-12 text-slate-400 font-bold">ไป:</span>
-                  <span className="font-bold text-slate-800">{selectedRequest?.date} - {selectedRequest?.time} น.</span>
+                  <span className="w-12 text-gray-800 font-semibold">ไป:</span>
+                  <span className="font-bold text-blue-600">{selectedRequest?.date} - {selectedRequest?.time} น.</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="w-12 text-slate-400 font-bold">กลับ:</span>
-                  <span className="font-bold text-slate-800">{selectedRequest?.endDate} - {selectedRequest?.endTime} น.</span>
+                  <span className="w-12 text-gray-800 font-semibold">กลับ:</span>
+                  <span className="font-bold text-blue-600">{selectedRequest?.endDate} - {selectedRequest?.endTime} น.</span>
                 </div>
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-sm font-bold text-slate-400">ข้อมูลทรัพยากร</p>
+              <p className="text-sm font-semibold text-gray-800">ข้อมูลทรัพยากร</p>
               <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-800">{selectedRequest?.carType}</p>
-                <p className="text-sm font-bold text-slate-400">
+                <p className="text-sm font-bold text-blue-600">{selectedRequest?.carType}</p>
+                <p className="text-sm font-bold text-blue-600">
                   ผู้โดยสาร {selectedRequest?.passengers} คน • <span className="text-blue-600">{selectedRequest?.selfDrive}</span>
                 </p>
               </div>
@@ -311,7 +311,7 @@ export default function PendingPage() {
           </div>
 
           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-            <p className="text-sm font-bold text-slate-400 mb-2">วัตถุประสงค์ / หมายเหตุ</p>
+            <p className="text-sm font-semibold text-gray-800 mb-2">วัตถุประสงค์ / หมายเหตุ</p>
             <p className="text-sm font-bold text-slate-700 leading-relaxed">{selectedRequest?.objective}</p>
           </div>
 

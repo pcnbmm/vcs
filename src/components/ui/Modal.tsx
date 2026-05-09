@@ -114,7 +114,7 @@ const Modal: React.FC<ModalProps> = ({
             aria-label="ปิด"
             className="shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
-            
+            <X className="w-5 h-5" />
           </button>
         </div>
 

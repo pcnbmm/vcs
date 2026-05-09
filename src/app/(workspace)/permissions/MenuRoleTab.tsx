@@ -281,7 +281,7 @@ export default function MenuRoleTab() {
       >
         <div className="space-y-8">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">1. เลือกบทบาท</label>
+            <label className="text-sm font-bold text-slate-700 uppercase tracking-widest ml-1">1. เลือกบทบาท</label>
             <select
               value={formData.roles_id}
               disabled={modalMode === "edit"}
@@ -310,8 +310,8 @@ export default function MenuRoleTab() {
 
           <div className="space-y-4">
             <div className="flex justify-between items-end px-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">2. กำหนดสิทธิ์เมนูและฟังก์ชัน</label>
-              <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">เลือกไว้ {formData.mappings.length} สิทธิ์</span>
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-widest">2. กำหนดสิทธิ์เมนูและฟังก์ชัน</label>
+              <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">เลือกไว้ {formData.mappings.length} สิทธิ์</span>
             </div>
 
             <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">

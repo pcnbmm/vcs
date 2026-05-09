@@ -263,7 +263,7 @@ export default function UserRoleTab() {
       >
         <div className="space-y-8">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">1. เลือกผู้ใช้ที่ต้องการ</label>
+            <label className="text-sm font-bold text-slate-700 uppercase tracking-widest ml-1">1. เลือกผู้ใช้ที่ต้องการ</label>
             <select
               value={formData.user_id}
               disabled={modalMode === "edit"}
@@ -292,8 +292,8 @@ export default function UserRoleTab() {
 
           <div className="space-y-4">
             <div className="flex justify-between items-end px-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">2. กำหนดบทบาทที่ได้รับ</label>
-              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">เลือกไว้ {formData.roles_ids.length} บทบาท</span>
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-widest">2. กำหนดบทบาทที่ได้รับ</label>
+              <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">เลือกไว้ {formData.roles_ids.length} บทบาท</span>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
