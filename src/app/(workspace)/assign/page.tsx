@@ -32,7 +32,7 @@ import {
   getDrivers,
   assignResource,
   recordPickupResource,
-  cancelBooking
+  cancelBooking,
 } from "./actions";
 import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
@@ -481,12 +481,7 @@ export default function AssignPage() {
                     <h3 className="font-bold text-slate-900">
                       {order.journey_place}
                     </h3>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {(!!order.is_urgent || order.journey_causes?.includes("ด่วน")) && (
-                        <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-200 uppercase tracking-tighter">
-                          ด่วน
-                        </span>
-                      )}
+                    <div className="mt-1">
                       {order.status_use_id === 4 && !order.pickup_status && (
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
                           จัดรถแล้ว (รอรับรถ)
@@ -550,20 +545,9 @@ export default function AssignPage() {
                 className: "text-right",
                 cell: (order) => (
                   <div className="flex justify-end gap-2">
-                    {(order.status_use_id === 2 || (order.status_use_id === 4 && !order.pickup_status)) &&
-                      !isAssignExpired(order.journey_date, order.journey_time) && (
-                        <button
-                          onClick={() => { setSelectedCancelOrder(order); setIsCancelModalOpen(true); setCancelReason(""); }}
-                          className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
-                        >
-                          ยกเลิก
-                        </button>
-                      )}
+                    {/* ปุ่มหลัก */}
                     {order.status_use_id === 4 && !order.pickup_status ? (
-                      <button
-                        onClick={() => openPickupModal(order)}
-                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100"
-                      >
+                      <button onClick={() => openPickupModal(order)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100">
                         รับรถ
                       </button>
                     ) : (order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) ? (
@@ -575,13 +559,25 @@ export default function AssignPage() {
                         หมดอายุ
                       </button>
                     ) : (
-                      <button
-                        onClick={() => openAssignModal(order)}
-                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md"
-                      >
+                      <button onClick={() => openAssignModal(order)} className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md">
                         จัดสรรรถ
                       </button>
                     )}
+
+                    {/* ปุ่มยกเลิก */}
+                    {order.status_use_id !== 5 &&
+                      order.status_use_id !== 6 &&
+                      order.pickup_status !== "PICKED_UP" &&
+                      order.pickup_status !== "TAXI_CALLED" &&
+                      !isAssignExpired(order.journey_date, order.journey_time) &&
+                      (
+                        <button
+                          onClick={() => { setSelectedCancelOrder(order); setIsCancelModalOpen(true); setCancelReason(""); }}
+                          className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
+                        >
+                          ยกเลิก
+                        </button>
+                      )}
                   </div>
                 ),
               },
@@ -622,7 +618,7 @@ export default function AssignPage() {
         <div className="space-y-8">
           {/* Dispatch Type */}
           <div className="space-y-4">
-            <label className="text-sm font-semibold text-gray-800">ประเภทการจัดส่ง</label>
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">ประเภทการจัดส่ง</label>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: "with_driver", label: "รถพร้อมคนขับ", icon: Truck, color: "blue" },
