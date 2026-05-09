@@ -104,10 +104,10 @@ export default function DriverTab() {
       const fullStr =
         `${d.driver_code} ${d.vc_users?.firstname} ${d.vc_users?.lastname} ${d.tel} ${d.licence_no}`.toLowerCase();
       const matchSearch = fullStr.includes(searchQuery.toLowerCase());
-      
-      const matchType = filterDriverType === "all" || 
-                        (filterDriverType === "driver" && d.driver_type_id === 1) ||
-                        (filterDriverType === "staff" && d.driver_type_id === 2);
+
+      const matchType = filterDriverType === "all" ||
+        (filterDriverType === "driver" && d.driver_type_id === 1) ||
+        (filterDriverType === "staff" && d.driver_type_id === 2);
 
       return matchSearch && matchType;
     })
@@ -155,6 +155,7 @@ export default function DriverTab() {
       setDriverType(driver.driver_type_id === 2 ? "staff" : "driver");
       setFormData({
         ...driver,
+        driver_license_no: driver.licence_no || "",
       });
     }
     setIsModalOpen(true);
@@ -178,6 +179,34 @@ export default function DriverTab() {
       return;
     }
 
+    const telNo = formData.tel.replace(/\D/g, "");
+    if (telNo.length !== 10) {
+      showWarning("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
+      return;
+    }
+
+    if (formData.driver_license_no && formData.driver_license_no.length !== 8) {
+      showWarning("กรุณากรอกเลขที่ใบอนุญาตขับรถให้ครบ 8 หลัก");
+      return;
+    }
+
+    if (formData.start_date && formData.end_date) {
+      const start = new Date(formData.start_date);
+      const end = new Date(formData.end_date);
+      const maxDate = new Date(start);
+      maxDate.setFullYear(start.getFullYear() + 3);
+
+      if (end > maxDate) {
+        showWarning("วันที่สิ้นสุดการทำงานต้องไม่เกิน 3 ปีนับจากวันที่เริ่มงาน");
+        return;
+      }
+
+      if (end < start) {
+        showWarning("วันที่สิ้นสุดการทำงานต้องไม่มาก่อนวันที่เริ่มงาน");
+        return;
+      }
+    }
+
     setIsSaving(true);
     try {
       const url =
@@ -189,6 +218,10 @@ export default function DriverTab() {
       const payload = {
         ...formData,
         driver_type_id: driverType === "staff" ? 2 : 1,
+        start_date: formData.start_date || null,
+        end_date: formData.end_date || null,
+        licence_no: formData.driver_license_no || null,
+        driver_license_no: undefined,
       };
 
       const res = await fetch(url, {
@@ -199,7 +232,9 @@ export default function DriverTab() {
 
       if (!res.ok) throw new Error("Saving failed");
 
+
       await fetchData();
+      showSuccess("บันทึกข้อมูลพนักงานขับรถเรียบร้อยแล้ว!");
       closeModal();
     } catch (error) {
       console.error("Error saving driver:", error);
@@ -216,6 +251,7 @@ export default function DriverTab() {
       const res = await fetch(`/api/drivers/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Deletion failed");
       await fetchData();
+      showSuccess("ลบข้อมูลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Error deleting driver:", error);
       showError("เกิดข้อผิดพลาดในการลบข้อมูล");
@@ -295,11 +331,10 @@ export default function DriverTab() {
             <span className="block text-sm font-bold text-gray-900">
               {driver.vc_users?.firstname} {driver.vc_users?.lastname}
             </span>
-            <span className={`inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
-              driver.driver_type_id === 2 
-                ? "bg-indigo-50 text-indigo-600 border border-indigo-100" 
-                : "bg-blue-50 text-blue-600 border border-blue-100"
-            }`}>
+            <span className={`inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${driver.driver_type_id === 2
+              ? "bg-indigo-50 text-indigo-600 border border-indigo-100"
+              : "bg-blue-50 text-blue-600 border border-blue-100"
+              }`}>
               {driver.driver_type_id === 2 ? "พนักงาน (ทำหน้าที่ขับรถ)" : "พนักงานขับรถโดยตรง"}
             </span>
           </div>
@@ -404,7 +439,7 @@ export default function DriverTab() {
             Export Data
             <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isExportOpen ? "rotate-180" : ""}`} />
           </button>
-          
+
           {isExportOpen && (
             <div className="absolute top-full right-0 md:right-auto md:left-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
               <button
@@ -593,9 +628,15 @@ export default function DriverTab() {
               label="เบอร์โทรศัพท์"
               required
               value={formData.tel}
-              onChange={(v: any) => setFormData({ ...formData, tel: v })}
+              onChange={(v: string) => {
+                const onlyNums = v.replace(/[^0-9]/g, ""); // กรองเอาเฉพาะตัวเลข
+                if (onlyNums.length <= 10) {
+                  setFormData({ ...formData, tel: onlyNums });
+                }
+              }}
               disabled={modalMode === "view"}
-              placeholder="08X-XXX-XXXX"
+              placeholder="08XXXXXXXX"
+              maxLength={10}
             />
           </FormSection>
 
@@ -603,26 +644,15 @@ export default function DriverTab() {
             <InputField
               label="เลขที่ใบอนุญาตขับรถ"
               value={formData.driver_license_no}
-              onChange={(v: any) =>
-                setFormData({ ...formData, driver_license_no: v })
-              }
+              onChange={(v: string) => {
+                const onlyNums = v.replace(/[^0-9]/g, "");
+                if (onlyNums.length <= 8) {
+                  setFormData({ ...formData, driver_license_no: onlyNums });
+                }
+              }}
               disabled={modalMode === "view"}
               placeholder="ระบุเลขที่ใบอนุญาต"
-            />
-            <InputField
-              label="วันหมดอายุใบอนุญาต"
-              type="date"
-              value={
-                formData.driver_license_expire
-                  ? new Date(formData.driver_license_expire)
-                      .toISOString()
-                      .split("T")[0]
-                  : ""
-              }
-              onChange={(v: any) =>
-                setFormData({ ...formData, driver_license_expire: v })
-              }
-              disabled={modalMode === "view"}
+              maxLength={8}
             />
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 px-1">
@@ -641,11 +671,40 @@ export default function DriverTab() {
               </select>
             </div>
           </FormSection>
-          </div>
-        </Modal>
-      </div>
-    );
-  }
+
+          <FormSection title="ระยะเวลาการปฏิบัติงาน">
+            <InputField
+              label="วันที่เริ่มงาน"
+              type="date"
+              required
+              value={formData.start_date ? new Date(formData.start_date).toISOString().split("T")[0] : ""}
+              onChange={(v: string) => {
+                const startDate = new Date(v);
+                const endDate = new Date(startDate);
+                endDate.setFullYear(startDate.getFullYear() + 3);
+
+                setFormData({
+                  ...formData,
+                  start_date: v,
+                  end_date: endDate.toISOString().split("T")[0]
+                });
+              }}
+              disabled={modalMode === "view"}
+            />
+
+            <InputField
+              label="วันที่สิ้นสุดการทำงาน"
+              type="date"
+              value={formData.end_date ? new Date(formData.end_date).toISOString().split("T")[0] : ""}
+              onChange={(v: string) => setFormData({ ...formData, end_date: v })}
+              disabled={modalMode === "view"}
+            />
+          </FormSection>
+        </div>
+      </Modal>
+    </div>
+  );
+}
 
 
 
