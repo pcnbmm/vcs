@@ -437,27 +437,27 @@ export default function ReturnsPage() {
           <section className="space-y-4">
             <div className="flex items-center gap-3 text-blue-600">
               <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-              <h3 className="font-bold text-sm uppercase tracking-widest text-slate-800">
+              <h3 className="font-semibold text-sm uppercase tracking-widest text-slate-800">
                 ข้อมูลการเดินทาง (Journey Info)
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
               <div className="space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ต้นทาง</p>
-                <p className="text-lg font-bold text-slate-900">{selectedItem?.vc_start_place?.start_place_name || "-"}</p>
+                <p className="text-sm font-semibold text-gray-800 uppercase tracking-widest">ต้นทาง</p>
+                <p className="text-lg font-bold text-blue-600">{selectedItem?.vc_start_place?.start_place_name || "-"}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ปลายทาง</p>
-                <p className="text-lg font-bold text-slate-900">{selectedItem?.journey_place || "-"}</p>
+                <p className="text-sm font-semibold text-gray-800 uppercase tracking-widest">ปลายทาง</p>
+                <p className="text-lg font-bold text-blue-600">{selectedItem?.journey_place || "-"}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ผู้ขอใช้รถ</p>
-                <p className="text-lg font-bold text-slate-900">
+                <p className="text-sm font-semibold text-gray-800 uppercase tracking-widest">ผู้ขอใช้รถ</p>
+                <p className="text-lg font-bold text-blue-600">
                   {selectedItem?.vc_user?.firstname} {selectedItem?.vc_user?.lastname}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ทะเบียนรถ</p>
+                <p className="text-sm font-semibold text-gray-800 uppercase tracking-widest">ทะเบียนรถ</p>
                 <p className="text-lg font-bold text-blue-600">{selectedItem?.vc_car_master?.car_number || "-"}</p>
               </div>
             </div>
@@ -473,7 +473,7 @@ export default function ReturnsPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">เลขไมล์เริ่มต้น</label>
+                <label className="text-sm font-semibold text-gray-800 uppercase tracking-widest">เลขไมล์เริ่มต้น</label>
                 <div className="relative">
                   <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
@@ -486,7 +486,7 @@ export default function ReturnsPage() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-blue-600 uppercase">เลขไมล์สิ้นสุด <span className="text-rose-500">*</span></label>
+                <label className="text-sm font-semibold text-gray-800 uppercase tracking-widest">เลขไมล์สิ้นสุด <span className="text-rose-500">*</span></label>
                 <div className="relative">
                   <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" size={18} />
                   <input
