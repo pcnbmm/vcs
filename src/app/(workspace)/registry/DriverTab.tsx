@@ -594,7 +594,11 @@ export default function DriverTab() {
 
           <FormSection title="ข้อมูลส่วนตัว">
             <SelectField
-              label="รหัสผู้ใช้งาน (User)"
+              label={
+                <label className="text-xs font-semibold text-gray-800 uppercase tracking-widest flex items-center gap-1 px-1">
+                  รหัสผู้ใช้งาน (User)
+                </label>
+              }
               required
               value={formData.driver_code}
               onChange={(v: any) => {
@@ -614,7 +618,7 @@ export default function DriverTab() {
               disabled={modalMode === "view"}
             />
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 px-1">
+              <label className="text-xs font-semibold text-gray-800 uppercase tracking-widest flex items-center gap-1 px-1">
                 รหัสหน่วยงาน (Div Code)
               </label>
               <input
@@ -625,7 +629,11 @@ export default function DriverTab() {
               />
             </div>
             <InputField
-              label="เบอร์โทรศัพท์"
+              label={
+                <label className="text-xs font-semibold text-gray-800 uppercase tracking-widest flex items-center gap-1 px-1">
+                  เบอร์โทรศัพท์
+                </label>
+              }
               required
               value={formData.tel}
               onChange={(v: string) => {
@@ -642,7 +650,11 @@ export default function DriverTab() {
 
           <FormSection title="ข้อมูลใบอนุญาตและการทำงาน">
             <InputField
-              label="เลขที่ใบอนุญาตขับรถ"
+              label={
+                <label className="text-xs font-semibold text-gray-800 uppercase tracking-widest flex items-center gap-1 px-1">
+                  เลขที่ใบอนุญาตขับรถ
+                </label>
+              }
               value={formData.driver_license_no}
               onChange={(v: string) => {
                 const onlyNums = v.replace(/[^0-9]/g, "");
@@ -655,7 +667,7 @@ export default function DriverTab() {
               maxLength={8}
             />
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 px-1">
+              <label className="text-xs font-semibold text-gray-800 uppercase tracking-widest flex items-center gap-1 px-1">
                 สถานะการทำงาน <span className="text-rose-500">*</span>
               </label>
               <select

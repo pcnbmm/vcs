@@ -577,7 +577,7 @@ export default function AssignPage() {
         <div className="space-y-8">
           {/* Dispatch Type */}
           <div className="space-y-4">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">ประเภทการจัดส่ง</label>
+            <label className="text-sm font-semibold text-gray-800">ประเภทการจัดส่ง</label>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: "with_driver", label: "รถพร้อมคนขับ", icon: Truck, color: "blue" },
