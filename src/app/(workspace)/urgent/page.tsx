@@ -311,10 +311,13 @@ export default function VehicleRequestPage() {
   useEffect(() => {
     let fp: any;
     if (startDateRef.current) {
+      const now = new Date();
       fp = flatpickr(startDateRef.current, {
         enableTime: true,
         time_24hr: true,
         dateFormat: "d/m/Y H:i",
+        defaultHour: now.getHours(),
+        defaultMinute: now.getMinutes(),
         onChange: (dates) => {
           if (dates && dates.length > 0) {
             const d = dates[0];

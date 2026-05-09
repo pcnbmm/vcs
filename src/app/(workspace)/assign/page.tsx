@@ -57,11 +57,13 @@ const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
       "-" +
       String(d.getDate()).padStart(2, "0");
 
-    let timeStr = journeyTime ? journeyTime.replace(/[^0-9:]/g, "") : "23:59:59";
+    let timeStr = journeyTime
+      ? journeyTime.replace(/[^0-9:]/g, "")
+      : "23:59:59";
     if (!timeStr || timeStr.length < 4) timeStr = "23:59:59";
 
-    if (timeStr.split(':').length === 2) {
-      timeStr += ':00';
+    if (timeStr.split(":").length === 2) {
+      timeStr += ":00";
     }
 
     const dt = new Date(`${dateStr}T${timeStr}`);
@@ -202,7 +204,9 @@ export default function AssignPage() {
         <div className="flex justify-between items-center">
           <span className="font-bold text-slate-800">{option.number}</span>
           {option.isRequestedSpec && (
-            <span className="bg-emerald-50 text-emerald-600 text-[10px] px-1.5 py-0.5 rounded border border-emerald-100">ตรงตามสเปคที่ขอ</span>
+            <span className="bg-emerald-50 text-emerald-600 text-[10px] px-1.5 py-0.5 rounded border border-emerald-100">
+              ตรงตามสเปคที่ขอ
+            </span>
           )}
         </div>
         <span className="text-xs text-slate-500 font-medium">
@@ -250,9 +254,17 @@ export default function AssignPage() {
     setSelectedOrder(order);
     setSelectedCar(order.car_id ? String(order.car_id) : "");
     setSelectedDriver(order.driver_id ? String(order.driver_id) : "");
-    setDispatchType(order.pickup_method === "TAXI" ? "taxi" : order.self_drive ? "self_drive" : "with_driver");
+    setDispatchType(
+      order.pickup_method === "TAXI"
+        ? "taxi"
+        : order.self_drive
+          ? "self_drive"
+          : "with_driver",
+    );
     setTaxiReason("");
-    setSelectedSpecFilter(order.car_spec_id ? String(order.car_spec_id) : "all");
+    setSelectedSpecFilter(
+      order.car_spec_id ? String(order.car_spec_id) : "all",
+    );
 
     const carList = await getAvailableCars(order.use_div_code ?? undefined);
     setCars(carList);
@@ -371,18 +383,33 @@ export default function AssignPage() {
     { value: "pending_pickup", label: "จัดรถแล้ว (รอยืนยัน)" },
     { value: "completed", label: "ดำเนินการเสร็จสิ้น (ยืนยันแล้ว)" },
     { value: "expired", label: "คำขอหมดอายุ" },
+    { value: "cancelled", label: "ยกเลิกแล้ว/ไม่มารับรถ" },
   ];
 
   const filteredOrders = pendingOrders
     .filter((order) => {
       const isExpired = isAssignExpired(order.journey_date, order.journey_time);
+      console.log(
+        `REQ#${order.request_id} status=${order.status_use_id} pickup=${order.pickup_status} expired=${isExpired}`,
+      );
       if (filterStatus === "action_required") {
-        return (order.status_use_id === 2 && !isExpired) || (order.status_use_id === 4 && !order.pickup_status && !isExpired);
+        return (
+          (order.status_use_id === 2 && !isExpired) ||
+          (order.status_use_id === 4 && !order.pickup_status && !isExpired)
+        );
       }
       if (filterStatus === "expired") {
-        return isExpired && !order.pickup_status && order.status_use_id !== 5 && order.status_use_id !== 6;
+        return (
+          isExpired &&
+          order.status_use_id !== 5 &&
+          order.status_use_id !== 6 &&
+          order.status_use_id !== 3 &&
+          order.pickup_status !== "PICKED_UP" &&
+          order.pickup_status !== "TAXI_CALLED"
+        );
       }
-      if (filterStatus === "pending_assign") return order.status_use_id === 2 && !isExpired;
+      if (filterStatus === "pending_assign")
+        return order.status_use_id === 2 && !isExpired;
       if (filterStatus === "pending_pickup")
         return order.status_use_id === 4 && !order.pickup_status && !isExpired;
       if (filterStatus === "completed")
@@ -392,46 +419,18 @@ export default function AssignPage() {
               order.pickup_status === "TAXI_CALLED")) ||
           (order.status_use_id === 5 && order.pickup_method === "TAXI")
         );
+      if (filterStatus === "cancelled") return order.status_use_id === 6 || order.status_use_id === 3;
       return true;
     })
     .sort((a, b) => {
-      const getPriority = (order: any) => {
-        if (order.status_use_id === 2) return 1;
-        if (order.status_use_id === 4 && !order.pickup_status) return 2;
-        return 3;
-      };
-
-      const priorityA = getPriority(a);
-      const priorityB = getPriority(b);
-
-      if (priorityA !== priorityB) {
-        return priorityA - priorityB;
-      }
-
-      const isUrgentA = !!a.is_urgent || a.journey_causes?.includes("ด่วน");
-      const isUrgentB = !!b.is_urgent || b.journey_causes?.includes("ด่วน");
-
-      const urgentA = isUrgentA ? 0 : 1;
-      const urgentB = isUrgentB ? 0 : 1;
-      if (urgentA !== urgentB) {
-        return urgentA - urgentB;
-      }
-
-      const dateStrA = a.journey_date ? new Date(a.journey_date).toISOString().split('T')[0] : '1970-01-01';
-      const timeStrA = a.journey_time ? a.journey_time.trim() : '00:00:00';
-      const fullDateA = new Date(`${dateStrA}T${timeStrA.split(':').length === 2 ? timeStrA + ':00' : timeStrA}`);
-
-      const dateStrB = b.journey_date ? new Date(b.journey_date).toISOString().split('T')[0] : '1970-01-01';
-      const timeStrB = b.journey_time ? b.journey_time.trim() : '00:00:00';
-      const fullDateB = new Date(`${dateStrB}T${timeStrB.split(':').length === 2 ? timeStrB + ':00' : timeStrB}`);
-
-      return fullDateA.getTime() - fullDateB.getTime();
+      // เรียงตามเลขที่คำขอ (Request ID) จากมากไปน้อย เพื่อให้รายการล่าสุดอยู่บนสุด
+      return b.request_id - a.request_id;
     });
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const paginatedOrders = filteredOrders.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   return (
@@ -470,7 +469,9 @@ export default function AssignPage() {
                 cell: (order) => (
                   <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
                     <span className="text-[10px] text-slate-400">REQ</span>
-                    <span className="text-sm">{String(order.request_id).padStart(3, "0")}</span>
+                    <span className="text-sm">
+                      {String(order.request_id).padStart(3, "0")}
+                    </span>
                   </div>
                 ),
               },
@@ -487,15 +488,31 @@ export default function AssignPage() {
                           จัดรถแล้ว (รอรับรถ)
                         </span>
                       )}
-                      {order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED") && (
-                        <span className="inline-flex items-center rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200 uppercase tracking-tighter">
-                          {order.pickup_status === "TAXI_CALLED" ? "เรียก TAXI แล้ว" : "ส่งมอบแล้ว"}
-                        </span>
-                      )}
+                      {order.status_use_id === 4 &&
+                        (order.pickup_status === "PICKED_UP" ||
+                          order.pickup_status === "TAXI_CALLED") && (
+                          <span className="inline-flex items-center rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200 uppercase tracking-tighter">
+                            {order.pickup_status === "TAXI_CALLED"
+                              ? "เรียก TAXI แล้ว"
+                              : "ส่งมอบแล้ว"}
+                          </span>
+                        )}
                       {order.status_use_id === 2 && (
                         <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100 uppercase tracking-tighter">
                           รอจัดรถ
                         </span>
+                      )}
+                      {(order.status_use_id === 6 || order.status_use_id === 3) && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-100 uppercase tracking-tighter">
+                            {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                          </span>
+                          {order.dispatcher_reject_reason && (
+                            <span className="text-[10px] font-bold text-rose-600 uppercase tracking-tighter">
+                              เหตุผล: {order.dispatcher_reject_reason}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -505,8 +522,15 @@ export default function AssignPage() {
                 header: "วันเวลา",
                 cell: (order) => (
                   <div className="text-sm text-slate-600 font-medium">
-                    <p>{new Date(order.journey_date).toLocaleDateString("th-TH")}</p>
-                    <p className="text-xs text-slate-400 font-bold">{order.journey_time ? order.journey_time.slice(0, 5) : "--:--"} น.</p>
+                    <p>
+                      {new Date(order.journey_date).toLocaleDateString("th-TH")}
+                    </p>
+                    <p className="text-xs text-slate-400 font-bold">
+                      {order.journey_time
+                        ? order.journey_time.slice(0, 5)
+                        : "--:--"}{" "}
+                      น.
+                    </p>
                   </div>
                 ),
               },
@@ -524,16 +548,22 @@ export default function AssignPage() {
                     ) : order.pickup_method === "TAXI" ? (
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs">🚕</span>
-                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">TAXI</span>
+                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                          TAXI
+                        </span>
                       </div>
                     ) : (
-                      <span className="text-[10px] text-slate-400 italic">ยังไม่จัดรถ</span>
+                      <span className="text-[10px] text-slate-400 italic">
+                        ยังไม่จัดรถ
+                      </span>
                     )}
                     {(order.driver_id || order.self_drive) && (
                       <div className="flex items-center gap-1.5">
                         <User size={12} className="text-emerald-500" />
                         <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
-                          {order.self_drive ? "ขอขับเอง" : order.vc_driver?.vc_users?.firstname}
+                          {order.self_drive
+                            ? "ขอขับเอง"
+                            : order.vc_driver?.vc_users?.firstname}
                         </span>
                       </div>
                     )}
@@ -546,20 +576,39 @@ export default function AssignPage() {
                 cell: (order) => (
                   <div className="flex justify-end gap-2">
                     {/* ปุ่มหลัก */}
-                    {order.status_use_id === 4 && !order.pickup_status ? (
-                      <button onClick={() => openPickupModal(order)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100">
-                        รับรถ
-                      </button>
-                    ) : (order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) ? (
-                      <button disabled className="bg-slate-100 text-slate-400 px-4 py-2 rounded-lg text-xs font-bold cursor-not-allowed">
+                    {((order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) || (order.status_use_id === 5 && order.pickup_method === "TAXI")) ? (
+                      <button
+                        disabled
+                        className="bg-slate-100 text-slate-400 px-4 py-2 rounded-lg text-xs font-bold cursor-not-allowed"
+                      >
                         เสร็จสิ้น
                       </button>
+                    ) : (order.status_use_id === 6 || order.status_use_id === 3) ? (
+                      <button
+                        disabled
+                        className="bg-rose-50 text-rose-400 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100 cursor-not-allowed"
+                      >
+                        {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                      </button>
                     ) : isAssignExpired(order.journey_date, order.journey_time) ? (
-                      <button disabled className="bg-rose-50 text-rose-500 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100">
+                      <button
+                        disabled
+                        className="bg-rose-50 text-rose-500 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100"
+                      >
                         หมดอายุ
                       </button>
+                    ) : order.status_use_id === 4 && !order.pickup_status ? (
+                      <button
+                        onClick={() => openPickupModal(order)}
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100"
+                      >
+                        รับรถ
+                      </button>
                     ) : (
-                      <button onClick={() => openAssignModal(order)} className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md">
+                      <button
+                        onClick={() => openAssignModal(order)}
+                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md"
+                      >
                         จัดสรรรถ
                       </button>
                     )}
@@ -569,10 +618,16 @@ export default function AssignPage() {
                       order.status_use_id !== 6 &&
                       order.pickup_status !== "PICKED_UP" &&
                       order.pickup_status !== "TAXI_CALLED" &&
-                      !isAssignExpired(order.journey_date, order.journey_time) &&
-                      (
+                      !isAssignExpired(
+                        order.journey_date,
+                        order.journey_time,
+                      ) && (
                         <button
-                          onClick={() => { setSelectedCancelOrder(order); setIsCancelModalOpen(true); setCancelReason(""); }}
+                          onClick={() => {
+                            setSelectedCancelOrder(order);
+                            setIsCancelModalOpen(true);
+                            setCancelReason("");
+                          }}
                           className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
                         >
                           ยกเลิก
@@ -601,7 +656,10 @@ export default function AssignPage() {
         accentColor="bg-blue-600"
         footer={
           <>
-            <button onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
               ยกเลิก
             </button>
             <button
@@ -609,7 +667,11 @@ export default function AssignPage() {
               disabled={isSubmitting}
               className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {isSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
               บันทึกและส่งอีเมล
             </button>
           </>
@@ -618,16 +680,36 @@ export default function AssignPage() {
         <div className="space-y-8">
           {/* Dispatch Type */}
           <div className="space-y-4">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">ประเภทการจัดส่ง</label>
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">
+              ประเภทการจัดส่ง
+            </label>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { id: "with_driver", label: "รถพร้อมคนขับ", icon: Truck, color: "blue" },
-                { id: "self_drive", label: "ผู้ขอขับเอง", icon: Navigation, color: "indigo" },
-                { id: "taxi", label: "แท็กซี่ (TAXI)", icon: MapPin, color: "amber" },
+                {
+                  id: "with_driver",
+                  label: "รถพร้อมคนขับ",
+                  icon: Truck,
+                  color: "blue",
+                },
+                {
+                  id: "self_drive",
+                  label: "ผู้ขอขับเอง",
+                  icon: Navigation,
+                  color: "indigo",
+                },
+                {
+                  id: "taxi",
+                  label: "แท็กซี่ (TAXI)",
+                  icon: MapPin,
+                  color: "amber",
+                },
               ].map((type) => (
                 <button
                   key={type.id}
-                  onClick={() => { setDispatchType(type.id as DispatchType); setSelectedDriver(""); }}
+                  onClick={() => {
+                    setDispatchType(type.id as DispatchType);
+                    setSelectedDriver("");
+                  }}
                   className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${dispatchType === type.id ? `border-${type.color}-600 bg-${type.color}-50 text-${type.color}-700 shadow-sm` : "border-slate-100 text-slate-400 hover:border-slate-200"}`}
                 >
                   <type.icon size={20} />
@@ -641,28 +723,65 @@ export default function AssignPage() {
             <>
               {/* Vehicle Filter */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-800">กรองตามประเภทรถ</label>
+                <label className="text-sm font-semibold text-gray-800">
+                  กรองตามประเภทรถ
+                </label>
                 <Select
-                  options={[{ value: "all", label: "แสดงรถทุกประเภท" }, ...carSpecs.map(s => ({ value: String(s.car_spec_id), label: s.car_spec_name }))]}
-                  value={{ value: selectedSpecFilter, label: selectedSpecFilter === "all" ? "แสดงรถทุกประเภท" : carSpecs.find(s => String(s.car_spec_id) === selectedSpecFilter)?.car_spec_name }}
-                  onChange={(opt: any) => { setSelectedSpecFilter(opt.value); setSelectedCar(""); }}
+                  options={[
+                    { value: "all", label: "แสดงรถทุกประเภท" },
+                    ...carSpecs.map((s) => ({
+                      value: String(s.car_spec_id),
+                      label: s.car_spec_name,
+                    })),
+                  ]}
+                  value={{
+                    value: selectedSpecFilter,
+                    label:
+                      selectedSpecFilter === "all"
+                        ? "แสดงรถทุกประเภท"
+                        : carSpecs.find(
+                            (s) => String(s.car_spec_id) === selectedSpecFilter,
+                          )?.car_spec_name,
+                  }}
+                  onChange={(opt: any) => {
+                    setSelectedSpecFilter(opt.value);
+                    setSelectedCar("");
+                  }}
                   styles={reactSelectStyles}
                 />
               </div>
 
               {/* Car Select */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-800">เลือกยานพาหนะ <span className="text-rose-500">*</span></label>
+                <label className="text-sm font-semibold text-gray-800">
+                  เลือกยานพาหนะ <span className="text-rose-500">*</span>
+                </label>
                 <Select
-                  options={cars.filter(car => selectedSpecFilter === "all" || String(car.car_spec_id) === selectedSpecFilter).map(car => ({
-                    value: String(car.car_id),
-                    label: car.car_number,
-                    number: car.car_number,
-                    brand: car.vc_car_brand?.car_brand_name,
-                    spec: car.vc_car_spec?.car_spec_name,
-                    isRequestedSpec: car.car_spec_id === selectedOrder?.car_spec_id,
-                  }))}
-                  value={selectedCar ? { value: selectedCar, label: cars.find(c => String(c.car_id) === selectedCar)?.car_number } : null}
+                  options={cars
+                    .filter(
+                      (car) =>
+                        selectedSpecFilter === "all" ||
+                        String(car.car_spec_id) === selectedSpecFilter,
+                    )
+                    .map((car) => ({
+                      value: String(car.car_id),
+                      label: car.car_number,
+                      number: car.car_number,
+                      brand: car.vc_car_brand?.car_brand_name,
+                      spec: car.vc_car_spec?.car_spec_name,
+                      isRequestedSpec:
+                        car.car_spec_id === selectedOrder?.car_spec_id,
+                    }))}
+                  value={
+                    selectedCar
+                      ? {
+                          value: selectedCar,
+                          label: cars.find(
+                            (c) => String(c.car_id) === selectedCar,
+                          )?.car_number,
+                        }
+                      : null
+                  }
                   onChange={(opt: any) => setSelectedCar(opt ? opt.value : "")}
                   formatOptionLabel={formatCarOptionLabel}
                   placeholder="ค้นหาทะเบียนรถ..."
@@ -673,14 +792,46 @@ export default function AssignPage() {
 
               {/* Driver Select */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-800">พนักงานขับรถ <span className="text-rose-500">*</span></label>
+                <label className="text-sm font-semibold text-gray-800">
+                  พนักงานขับรถ <span className="text-rose-500">*</span>
+                </label>
                 <Select
-                  options={dispatchType === "self_drive" ? [
-                    { value: "self", label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname} (ผู้ขอขับเอง)` },
-                    ...drivers.filter(d => d.driver_type_id === 2).map(d => ({ value: String(d.driver_id), label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}` }))
-                  ] : drivers.filter(d => d.driver_type_id === 1 || !d.driver_type_id).map(d => ({ value: String(d.driver_id), label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}` }))}
-                  value={selectedDriver === "self" ? { value: "self", label: "ผู้ขอขับเอง" } : selectedDriver ? { value: selectedDriver, label: `นาย ${drivers.find(d => String(d.driver_id) === selectedDriver)?.vc_users?.firstname}` } : null}
-                  onChange={(opt: any) => setSelectedDriver(opt ? opt.value : "")}
+                  options={
+                    dispatchType === "self_drive"
+                      ? [
+                          {
+                            value: "self",
+                            label: `นาย ${selectedOrder?.vc_user?.firstname} ${selectedOrder?.vc_user?.lastname} (ผู้ขอขับเอง)`,
+                          },
+                          ...drivers
+                            .filter((d) => d.driver_type_id === 2)
+                            .map((d) => ({
+                              value: String(d.driver_id),
+                              label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}`,
+                            })),
+                        ]
+                      : drivers
+                          .filter(
+                            (d) => d.driver_type_id === 1 || !d.driver_type_id,
+                          )
+                          .map((d) => ({
+                            value: String(d.driver_id),
+                            label: `นาย ${d.vc_users?.firstname} ${d.vc_users?.lastname}`,
+                          }))
+                  }
+                  value={
+                    selectedDriver === "self"
+                      ? { value: "self", label: "ผู้ขอขับเอง" }
+                      : selectedDriver
+                        ? {
+                            value: selectedDriver,
+                            label: `นาย ${drivers.find((d) => String(d.driver_id) === selectedDriver)?.vc_users?.firstname}`,
+                          }
+                        : null
+                  }
+                  onChange={(opt: any) =>
+                    setSelectedDriver(opt ? opt.value : "")
+                  }
                   placeholder="ค้นหาพนักงานขับรถ..."
                   styles={reactSelectStyles}
                   isClearable
@@ -689,7 +840,9 @@ export default function AssignPage() {
             </>
           ) : (
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-800">เหตุผลที่ใช้ TAXI</label>
+              <label className="text-sm font-semibold text-gray-800">
+                เหตุผลที่ใช้ TAXI
+              </label>
               <textarea
                 value={taxiReason}
                 onChange={(e) => setTaxiReason(e.target.value)}
@@ -711,7 +864,10 @@ export default function AssignPage() {
         accentColor="bg-blue-600"
         footer={
           <>
-            <button onClick={() => setIsPickupModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+            <button
+              onClick={() => setIsPickupModalOpen(false)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
               ยกเลิก
             </button>
             <button
@@ -719,7 +875,11 @@ export default function AssignPage() {
               disabled={isPickupSubmitting}
               className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all disabled:opacity-50"
             >
-              {isPickupSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {isPickupSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
               บันทึกการส่งมอบ
             </button>
           </>
@@ -727,7 +887,9 @@ export default function AssignPage() {
       >
         <div className="space-y-6">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-800">สถานะการส่งมอบ</label>
+            <label className="text-sm font-semibold text-gray-800">
+              สถานะการส่งมอบ
+            </label>
             <select
               value={pickupStatus}
               onChange={(e) => setPickupStatus(e.target.value)}
@@ -742,7 +904,9 @@ export default function AssignPage() {
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-800">วันที่ส่งมอบ</label>
+                  <label className="text-sm font-semibold text-gray-800">
+                    วันที่ส่งมอบ
+                  </label>
                   <input
                     type="date"
                     value={pickupDate}
@@ -751,13 +915,17 @@ export default function AssignPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-800">เวลาที่ส่งมอบ</label>
+                  <label className="text-sm font-semibold text-gray-800">
+                    เวลาที่ส่งมอบ
+                  </label>
                   <TimeInput24hr value={pickupTime} onChange={setPickupTime} />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-800">วิธีการส่งมอบ</label>
+                <label className="text-sm font-semibold text-gray-800">
+                  วิธีการส่งมอบ
+                </label>
                 <select
                   value={pickupMethod}
                   onChange={(e) => setPickupMethod(e.target.value)}
@@ -781,7 +949,10 @@ export default function AssignPage() {
         accentColor="bg-rose-600"
         footer={
           <>
-            <button onClick={() => setIsCancelModalOpen(false)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+            <button
+              onClick={() => setIsCancelModalOpen(false)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
               ปิด
             </button>
             <button
@@ -789,7 +960,11 @@ export default function AssignPage() {
               disabled={isCancelSubmitting || !cancelReason.trim()}
               className="flex items-center gap-2 px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md transition-all disabled:opacity-50"
             >
-              {isCancelSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+              {isCancelSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <X className="w-4 h-4" />
+              )}
               ยืนยันยกเลิก
             </button>
           </>
@@ -797,10 +972,14 @@ export default function AssignPage() {
       >
         <div className="space-y-4">
           <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 text-sm text-rose-700 font-medium">
-            ยกเลิกคำขอ REQ#{String(selectedCancelOrder?.request_id).padStart(3, "0")} — {selectedCancelOrder?.journey_place}
+            ยกเลิกคำขอ REQ#
+            {String(selectedCancelOrder?.request_id).padStart(3, "0")} —{" "}
+            {selectedCancelOrder?.journey_place}
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-800">เหตุผลที่ยกเลิก <span className="text-rose-500">*</span></label>
+            <label className="text-sm font-semibold text-gray-800">
+              เหตุผลที่ยกเลิก <span className="text-rose-500">*</span>
+            </label>
             <textarea
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
