@@ -43,10 +43,10 @@ export default function PendingPage() {
           destination: b.journey_place,
           date: b.journey_date
             ? new Date(b.journey_date).toLocaleDateString("th-TH", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
             : "N/A",
           time: b.journey_time || "N/A",
           objective: b.journey_causes || "-",
@@ -59,10 +59,10 @@ export default function PendingPage() {
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
           endDate: b.return_date
             ? new Date(b.return_date).toLocaleDateString("th-TH", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
             : "-",
           endTime: b.return_time || "N/A",
           startDateTime: b.journey_date
@@ -375,7 +375,7 @@ export default function PendingPage() {
               <p className="text-sm font-semibold text-gray-800">กำหนดเวลา</p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="w-12 text-slate-400 font-bold">ไป:</span>
+                  <span className="w-12 text-gray-800 font-semibold">ไป:</span>
                   <span className="font-bold text-slate-800">{selectedRequest?.date} - {selectedRequest?.time} น.</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
