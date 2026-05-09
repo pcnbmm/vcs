@@ -289,10 +289,13 @@ export default function VehicleRequestPage() {
   useEffect(() => {
     let fp: any;
     if (startDateRef.current) {
+      const now = new Date();
       fp = flatpickr(startDateRef.current, {
         enableTime: true,
         time_24hr: true,
         dateFormat: "d/m/Y H:i",
+        defaultHour: now.getHours(),
+        defaultMinute: now.getMinutes(),
         onChange: (dates) => {
           if (dates && dates.length > 0) {
             const d = dates[0];
@@ -313,10 +316,13 @@ export default function VehicleRequestPage() {
   useEffect(() => {
     let fp: any;
     if (endDateRef.current) {
+      const now = new Date();
       fp = flatpickr(endDateRef.current, {
         enableTime: true,
         time_24hr: true,
         dateFormat: "d/m/Y H:i",
+        defaultHour: now.getHours(),
+        defaultMinute: now.getMinutes(),
         onChange: (dates) => {
           if (!dates || dates.length === 0 || !dates[0]) return;
           const d = dates[0];
@@ -513,7 +519,7 @@ export default function VehicleRequestPage() {
                   </FormField>
                 </div>
 
-                {/* Row 6 */}
+                {/* Row 5 */}
                 <div className="md:col-span-2 space-y-3">
                   <FormField label="ขับรถด้วยตนเอง" icon={User}>
                     <label className="flex items-center gap-3 p-4 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer border border-transparent hover:border-gray-200">
@@ -576,7 +582,7 @@ export default function VehicleRequestPage() {
                   )}
                 </div>
 
-                {/* Row 7 */}
+                {/* Row 6 */}
                 <div className="md:col-span-2">
                   <FormField label="หมายเหตุ" icon={MessageSquare} required>
                     <textarea
@@ -632,7 +638,7 @@ export default function VehicleRequestPage() {
               </div>
             </div>
 
-            {/* Button */}
+            {/* Row 7 Button */}
             <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-50">
               <button
                 onClick={resetForm}

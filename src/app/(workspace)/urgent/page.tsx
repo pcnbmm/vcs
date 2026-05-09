@@ -278,11 +278,17 @@ export default function VehicleRequestPage() {
     const fetchSpecs = async () => {
       if (formData.ownerDept) {
         const specRes = await getCarSpecs(formData.ownerDept);
-        if (specRes.success) setCarSpecs(specRes.data);
-        setFormData((prev) => ({ ...prev, vehicleType: "" }));
+        if (specRes.success) {
+          setCarSpecs(specRes.data);
+          setFormData((prev) => {
+            const stillValid = specRes.data.some(
+              (c: any) => String(c.car_spec_id) === String(prev.vehicleType)
+            );
+            return stillValid ? prev : { ...prev, vehicleType: "" };
+          });
+        }
       } else {
         setCarSpecs([]);
-        setFormData((prev) => ({ ...prev, vehicleType: "" }));
       }
     };
     fetchSpecs();
@@ -415,7 +421,6 @@ export default function VehicleRequestPage() {
                       onChange={async (sel: any) => {
                         handleInputChange("requesterId", sel ? sel.value : 0);
                         handleInputChange("ownerDept", "");
-                        handleInputChange("vehicleType", "");
 
                         if (sel) {
                           const orgRes = await getOrgsByUserId(sel.value);
@@ -472,7 +477,6 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("ownerDept", sel ? sel.value : "")
                     }
-                    isDisabled={!formData.requesterId}
                     placeholder="-- เลือกสังกัด --"
                     isClearable
                     isSearchable
@@ -505,7 +509,6 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("vehicleType", sel ? sel.value : "")
                     }
-                    isDisabled={!formData.requesterId}
                     placeholder="-- เลือกประเภทรถ --"
                     isClearable
                     isSearchable
@@ -531,7 +534,6 @@ export default function VehicleRequestPage() {
                     onChange={(sel: any) =>
                       handleInputChange("origin", sel ? sel.value : "")
                     }
-                    isDisabled={!formData.requesterId}
                     placeholder="-- โปรดเลือกสถานที่ --"
                     isClearable
                     isSearchable

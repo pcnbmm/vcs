@@ -25,6 +25,9 @@ export interface ApproveEmailPayload {
     destination: string;
     objective: string;
     startDate: string;
+    startTime?: string;
+    startPlace?: string;
+    taxiReason?: string;
 }
 
 export interface AssignEmailPayload {
@@ -33,6 +36,10 @@ export interface AssignEmailPayload {
     requestId: string | number;
     destination: string;
     startDate: string;
+    startTime?: string;
+    startPlace?: string;
+    taxiReason?: string;
+    isEdit?: boolean;
     carName: string;
     driverName: string;
 }

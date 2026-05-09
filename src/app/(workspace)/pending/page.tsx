@@ -36,25 +36,38 @@ export default function PendingPage() {
       if (result.success && result.data) {
         const formattedList = result.data.map((b: any) => ({
           id: String(b.request_id),
-          requester: b.vc_user ? `${b.vc_user.firstname} ${b.vc_user.lastname}` : "ไม่ระบุชื่อ",
+          requester: b.vc_user
+            ? `${b.vc_user.firstname} ${b.vc_user.lastname}`
+            : "ไม่ระบุชื่อ",
           department: b.vc_org?.orgname || b.use_div_code || "ไม่ระบุแผนก",
           destination: b.journey_place,
-          date: b.journey_date ? new Date(b.journey_date).toLocaleDateString("th-TH", {
-            day: "numeric", month: "short", year: "numeric",
-          }) : "N/A",
+          date: b.journey_date
+            ? new Date(b.journey_date).toLocaleDateString("th-TH", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "N/A",
           time: b.journey_time || "N/A",
           objective: b.journey_causes || "-",
           status: b.status_use_id ? String(b.status_use_id) : "1",
           carType: b.vc_car_spec?.car_spec_name || b.car_spec_id,
-          origin: b.vc_start_place?.start_place_name || String(b.start_place || "-"),
+          origin:
+            b.vc_start_place?.start_place_name || String(b.start_place || "-"),
           passengers: b.passenger_amount,
           phone: b.user_mobile || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
-          endDate: b.return_date ? new Date(b.return_date).toLocaleDateString("th-TH", {
-            day: "numeric", month: "short", year: "numeric",
-          }) : "-",
+          endDate: b.return_date
+            ? new Date(b.return_date).toLocaleDateString("th-TH", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "-",
           endTime: b.return_time || "N/A",
-          startDateTime: b.journey_date ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00` : "",
+          startDateTime: b.journey_date
+            ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00`
+            : "",
           rejectReason: b.reject_reason || null,
         }));
         setRequests(formattedList);
@@ -79,8 +92,12 @@ export default function PendingPage() {
     const matchesStatus =
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1" && !expired) ||
-      (statusFilter === "APPROVED" && (req.status === "2" || req.status === "5" || req.status === "4")) ||
-      (statusFilter === "REJECTED" && (req.status === "3" || req.status === "6" || (req.status === "1" && expired)));
+      (statusFilter === "APPROVED" &&
+        (req.status === "2" || req.status === "5" || req.status === "4")) ||
+      (statusFilter === "REJECTED" &&
+        (req.status === "3" ||
+          req.status === "6" ||
+          (req.status === "1" && expired)));
 
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
@@ -102,8 +119,18 @@ export default function PendingPage() {
   const tabs = [
     { id: "ALL", label: "ทั้งหมด", icon: RefreshCw, color: "text-slate-500" },
     { id: "PENDING", label: "รออนุมัติ", icon: Clock, color: "text-amber-500" },
-    { id: "APPROVED", label: "อนุมัติแล้ว", icon: CheckCircle2, color: "text-emerald-500" },
-    { id: "REJECTED", label: "ยกเลิก/ไม่อนุมัติ", icon: XCircle, color: "text-rose-500" },
+    {
+      id: "APPROVED",
+      label: "อนุมัติแล้ว",
+      icon: CheckCircle2,
+      color: "text-emerald-500",
+    },
+    {
+      id: "REJECTED",
+      label: "ยกเลิก/ไม่อนุมัติ",
+      icon: XCircle,
+      color: "text-rose-500",
+    },
   ];
 
   useEffect(() => {
@@ -130,7 +157,10 @@ export default function PendingPage() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="ค้นหาเลขที่คำขอ หรือชื่อผู้ขอ..."
             className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all shadow-sm"
           />
@@ -162,18 +192,22 @@ export default function PendingPage() {
               cell: (req) => (
                 <div className="bg-slate-50 border border-slate-100 w-10 h-10 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold shrink-0">
                   <span className="text-[8px] text-slate-400">REQ</span>
-                  <span className="text-xs">{String(req.id).padStart(3, "0")}</span>
+                  <span className="text-xs">
+                    {String(req.id).padStart(3, "0")}
+                  </span>
                 </div>
-              )
+              ),
             },
             {
               header: "ผู้ขอ / สังกัด",
               cell: (req) => (
                 <div>
                   <p className="font-bold text-slate-800">{req.requester}</p>
-                  <p className="text-[11px] text-slate-400 font-medium">{req.department}</p>
+                  <p className="text-[11px] text-slate-400 font-medium">
+                    {req.department}
+                  </p>
                 </div>
-              )
+              ),
             },
             {
               header: "เส้นทาง",
@@ -181,28 +215,37 @@ export default function PendingPage() {
                 <div className="flex flex-col gap-0.5 min-w-[150px]">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
-                    <span className="text-[11px] font-medium text-slate-500 truncate">{req.origin}</span>
+                    <span className="text-[11px] font-medium text-slate-500 truncate">
+                      {req.origin}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                    <span className="text-xs font-bold text-blue-600 truncate">{req.destination}</span>
+                    <span className="text-xs font-bold text-blue-600 truncate">
+                      {req.destination}
+                    </span>
                   </div>
                 </div>
-              )
+              ),
             },
             {
               header: "วันเวลาเดินทาง",
               cell: (req) => (
                 <div>
                   <p className="text-xs font-bold text-slate-700">{req.date}</p>
-                  <p className="text-[11px] text-slate-400 font-bold">{req.time} น.</p>
+                  <p className="text-[11px] text-slate-400 font-bold">
+                    {req.time} น.
+                  </p>
                 </div>
-              )
+              ),
             },
             {
               header: "สถานะ",
               cell: (req) => {
-                const expired = isBookingExpired(req.startDateTime ?? "", req.status);
+                const expired = isBookingExpired(
+                  req.startDateTime ?? "",
+                  req.status,
+                );
                 const status = Number(req.status);
                 let name = getStatusName(status);
                 let color = getStatusColor(status);
@@ -211,11 +254,13 @@ export default function PendingPage() {
                   color = "text-orange-600 bg-orange-50 border-orange-100";
                 }
                 return (
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border ${color}`}>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border ${color}`}
+                  >
                     {name}
                   </span>
                 );
-              }
+              },
             },
             {
               header: "จัดการ",
@@ -227,8 +272,8 @@ export default function PendingPage() {
                 >
                   <ChevronRight size={18} />
                 </button>
-              )
-            }
+              ),
+            },
           ]}
           data={paginatedRequests}
           isLoading={isLoading}
@@ -249,39 +294,85 @@ export default function PendingPage() {
         accentColor="bg-blue-600"
         footer={
           <>
-            <button onClick={() => setSelectedRequest(null)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
+            <button
+              onClick={() => setSelectedRequest(null)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
               ยกเลิก
             </button>
-            {selectedRequest?.status === "1" && !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
-              <button
-                onClick={() => handleCancel(selectedRequest.id)}
-                className="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-100 transition-all"
-              >
-                ยกเลิกคำขอ
-              </button>
-            )}
+            {selectedRequest?.status === "1" &&
+              !isBookingExpired(
+                selectedRequest?.startDateTime ?? "",
+                selectedRequest?.status,
+              ) && (
+                <button
+                  onClick={() => handleCancel(selectedRequest.id)}
+                  className="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-100 transition-all"
+                >
+                  ยกเลิกคำขอ
+                </button>
+              )}
           </>
         }
       >
         <div className="space-y-8">
+          <div className="flex items-center gap-3">
+            <p className="text-sm font-bold text-slate-400">
+              เลขที่คำขอ:{" "}
+              <span className="text-slate-700">
+                #{String(selectedRequest?.id).padStart(3, "0")}
+              </span>
+            </p>
+            {selectedRequest &&
+              (() => {
+                const expired = isBookingExpired(
+                  selectedRequest.startDateTime ?? "",
+                  selectedRequest.status,
+                );
+                const status = Number(selectedRequest.status);
+                let name = getStatusName(status);
+                let color = getStatusColor(status);
+                if (expired && status === 1) {
+                  name = "หมดเวลาอนุมัติ";
+                  color = "text-orange-600 bg-orange-50 border-orange-100";
+                }
+                return (
+                  <span
+                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-tighter border ${color}`}
+                  >
+                    {name}
+                  </span>
+                );
+              })()}
+          </div>
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-1">
               <p className="text-sm font-bold text-slate-400">ผู้ขอใช้รถ</p>
-              <p className="text-sm font-bold text-slate-900">{selectedRequest?.requester}</p>
-              <p className="text-sm font-bold text-blue-600">{selectedRequest?.phone}</p>
+              <p className="text-sm font-bold text-slate-900">
+                {selectedRequest?.requester}
+              </p>
+              <p className="text-sm font-bold text-blue-600">
+                {selectedRequest?.phone}
+              </p>
             </div>
             <div className="space-y-1">
               <p className="text-sm font-bold text-slate-400">สังกัด / แผนก</p>
-              <p className="text-sm font-bold text-slate-900">{selectedRequest?.department}</p>
+              <p className="text-sm font-bold text-slate-900">
+                {selectedRequest?.department}
+              </p>
             </div>
           </div>
 
           <div className="space-y-4">
             <p className="text-sm font-bold text-slate-400">เส้นทางเดินทาง</p>
             <div className="flex items-center gap-3 bg-slate-50 p-5 rounded-2xl border border-slate-100">
-              <span className="bg-white px-4 py-2 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 shadow-sm">{selectedRequest?.origin}</span>
+              <span className="bg-white px-4 py-2 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 shadow-sm">
+                {selectedRequest?.origin}
+              </span>
               <ChevronRight className="w-5 h-5 text-slate-300 shrink-0" />
-              <span className="bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-100">{selectedRequest?.destination}</span>
+              <span className="bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-100">
+                {selectedRequest?.destination}
+              </span>
             </div>
           </div>
 
@@ -291,36 +382,55 @@ export default function PendingPage() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
                   <span className="w-12 text-slate-400 font-bold">ไป:</span>
-                  <span className="font-bold text-slate-800">{selectedRequest?.date} - {selectedRequest?.time} น.</span>
+                  <span className="font-bold text-slate-800">
+                    {selectedRequest?.date} - {selectedRequest?.time} น.
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="w-12 text-slate-400 font-bold">กลับ:</span>
-                  <span className="font-bold text-slate-800">{selectedRequest?.endDate} - {selectedRequest?.endTime} น.</span>
+                  <span className="font-bold text-slate-800">
+                    {selectedRequest?.endDate} - {selectedRequest?.endTime} น.
+                  </span>
                 </div>
               </div>
             </div>
             <div className="space-y-3">
               <p className="text-sm font-bold text-slate-400">ข้อมูลทรัพยากร</p>
               <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-800">{selectedRequest?.carType}</p>
+                <p className="text-sm font-bold text-slate-800">
+                  {selectedRequest?.carType}
+                </p>
                 <p className="text-sm font-bold text-slate-400">
-                  ผู้โดยสาร {selectedRequest?.passengers} คน • <span className="text-blue-600">{selectedRequest?.selfDrive}</span>
+                  ผู้โดยสาร {selectedRequest?.passengers} คน •{" "}
+                  <span className="text-blue-600">
+                    {selectedRequest?.selfDrive}
+                  </span>
                 </p>
               </div>
             </div>
           </div>
 
           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-            <p className="text-sm font-bold text-slate-400 mb-2">วัตถุประสงค์ / หมายเหตุ</p>
-            <p className="text-sm font-bold text-slate-700 leading-relaxed">{selectedRequest?.objective}</p>
+            <p className="text-sm font-bold text-slate-400 mb-2">
+              วัตถุประสงค์ / หมายเหตุ
+            </p>
+            <p className="text-sm font-bold text-slate-700 leading-relaxed">
+              {selectedRequest?.objective}
+            </p>
           </div>
 
-          {(selectedRequest?.status === "3" || selectedRequest?.status === "6") && selectedRequest?.rejectReason && (
-            <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
-              <p className="text-sm font-bold text-rose-400 mb-2">เหตุผลที่ยกเลิก/ไม่อนุมัติ</p>
-              <p className="text-sm font-bold text-rose-700 leading-relaxed">{selectedRequest?.rejectReason}</p>
-            </div>
-          )}
+          {(selectedRequest?.status === "3" ||
+            selectedRequest?.status === "6") &&
+            selectedRequest?.rejectReason && (
+              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
+                <p className="text-sm font-bold text-rose-400 mb-2">
+                  เหตุผลที่ยกเลิก/ไม่อนุมัติ
+                </p>
+                <p className="text-sm font-bold text-rose-700 leading-relaxed">
+                  {selectedRequest?.rejectReason}
+                </p>
+              </div>
+            )}
         </div>
       </Modal>
     </div>
@@ -341,7 +451,8 @@ const getStatusName = (status: number | string) => {
 const getStatusColor = (status: number | string) => {
   const s = String(status);
   if (s === "1") return "text-amber-600 bg-amber-50 border-amber-100";
-  if (s === "2" || s === "5") return "text-emerald-600 bg-emerald-50 border-emerald-100";
+  if (s === "2" || s === "5")
+    return "text-emerald-600 bg-emerald-50 border-emerald-100";
   if (s === "3" || s === "6") return "text-rose-600 bg-rose-50 border-rose-100";
   if (s === "4") return "text-blue-600 bg-blue-50 border-blue-100";
   return "text-slate-400 bg-slate-50 border-slate-100";

@@ -207,7 +207,7 @@ export async function assignResource(data: {
       where: { request_id: data.requestId },
       select: { car_id: true, driver_id: true, journey_causes: true, status_use_id: true },
     });
-    
+
     const isEdit = existingOrder?.status_use_id === 4 || existingOrder?.status_use_id === 5;
 
     // 2. ใช้ Transaction
@@ -268,7 +268,6 @@ export async function assignResource(data: {
 
     console.log("✅ Update Complete in DB");
 
-    // ส่ง Email ถ้ามีข้อมูล
     if (result.vc_user?.email) {
       const carName = `${result.vc_car_master?.car_number || "ไม่ระบุ"} ${result.vc_car_master?.vc_car_brand?.car_brand_name || ""}`;
       let driverName = "ขับเอง";
@@ -364,10 +363,57 @@ export async function recordPickupResource(data: {
       });
     }
 
+
     revalidatePath("/assign");
     return { success: true as const };
   } catch (error: any) {
     console.error("❌ FAILED to record pickup:", error.message);
+    return { success: false as const, error: error.message };
+  }
+}
+
+/**
+ * ยกเลิกคำขอใช้รถ (โดยนายเวร)
+ */
+export async function cancelBooking(data: {
+  requestId: number;
+  reason: string;
+}) {
+  try {
+    const order = await prisma.vc_order_item.findUnique({
+      where: { request_id: data.requestId },
+    });
+
+    if (!order) {
+      return { success: false as const, error: "ไม่พบคำขอนี้ในระบบ" };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // ปลดล็อกรถถ้ามีการจัดรถไปแล้ว
+      if (order.car_id) {
+        await tx.vc_car_master.update({
+          where: { car_id: order.car_id },
+          data: { flag: null },
+        });
+      }
+
+      // อัปเดตสถานะเป็น 6 (ยกเลิก) พร้อมบันทึกเหตุผล
+      await tx.vc_order_item.update({
+        where: { request_id: data.requestId },
+        data: {
+          status_use_id: 6,
+          reject_reason: data.reason,
+          car_id: null,
+          driver_id: null,
+          upd_date: new Date(),
+        },
+      });
+    });
+
+    revalidatePath("/assign");
+    return { success: true as const };
+  } catch (error: any) {
+    console.error("❌ FAILED to cancel booking:", error.message);
     return { success: false as const, error: error.message };
   }
 }
