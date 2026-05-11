@@ -14,8 +14,9 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchMenus = async () => {
       const roles = session?.user?.roles ?? [];
+      const sectionid = (session?.user as any)?.sectionid;
       if (roles.length === 0) return;
-      const result = await getMenusByRoleIds(roles);
+      const result = await getMenusByRoleIds(roles, sectionid);
       if (result.success) {
         // Define menu order weights
         const menuOrder: { [key: string]: number } = {

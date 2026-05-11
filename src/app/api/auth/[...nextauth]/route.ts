@@ -71,6 +71,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           username: user.username ?? "",
           roles: roles.length > 0 ? roles : [1],
+          sectionid: user.sectionid,
         };
       },
     }),
@@ -81,14 +82,16 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.username = (user as any).username;
         token.roles = (user as any).roles;
+        token.sectionid = (user as any).sectionid;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
-        session.user.roles = token.roles as number[];
+        (session.user as any).id = token.id as string;
+        (session.user as any).username = token.username as string;
+        (session.user as any).roles = token.roles as number[];
+        (session.user as any).sectionid = token.sectionid as string;
       }
       return session;
     },
