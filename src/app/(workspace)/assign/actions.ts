@@ -89,6 +89,11 @@ export async function getPendingDispatch() {
 
       if (pA !== pB) return pA - pB;
 
+      // ถ้าลำดับสถานะเท่ากัน ให้เอาที่ "เร่งด่วน" ขึ้นก่อน
+      if (a.is_urgent !== b.is_urgent) {
+        return a.is_urgent ? -1 : 1;
+      }
+
       // วันที่ใกล้ถึงที่สุด เอาขึ้นก่อน
       const dateA = getDateTimeStamp(a.journey_date, a.journey_time);
       const dateB = getDateTimeStamp(b.journey_date, b.journey_time);

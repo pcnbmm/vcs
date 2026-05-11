@@ -467,11 +467,19 @@ export default function AssignPage() {
               {
                 header: "คำขอ",
                 cell: (order) => (
-                  <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
-                    <span className="text-[10px] text-slate-400">REQ</span>
-                    <span className="text-sm">
-                      {String(order.request_id).padStart(3, "0")}
-                    </span>
+                  <div className="relative">
+                    <div className="bg-slate-50 border border-slate-100 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-blue-600 font-bold">
+                      <span className="text-[10px] text-slate-400">REQ</span>
+                      <span className="text-sm">
+                        {String(order.request_id).padStart(3, "0")}
+                      </span>
+                    </div>
+                    {order.is_urgent && (
+                      <div className="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-sm flex items-center gap-0.5 ring-2 ring-white">
+                        <AlertCircle size={8} strokeWidth={3} />
+                        ขอใช้ด่วน
+                      </div>
+                    )}
                   </div>
                 ),
               },
@@ -640,6 +648,7 @@ export default function AssignPage() {
             data={paginatedOrders}
             isLoading={loading}
             rowKey={(row) => row.request_id}
+            getRowClassName={(row) => row.is_urgent ? "bg-rose-50/30" : ""}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}

@@ -24,6 +24,7 @@ export interface DataTableProps<T> {
   onPageChange?: (page: number) => void;
   onRowClick?: (row: T) => void;
   dense?: boolean;
+  getRowClassName?: (row: T) => string;
 }
 
 export function DataTable<T>({
@@ -40,6 +41,7 @@ export function DataTable<T>({
   onPageChange,
   onRowClick,
   dense = false,
+  getRowClassName,
 }: DataTableProps<T>) {
   return (
     <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
@@ -93,7 +95,7 @@ export function DataTable<T>({
                 <tr
                   key={rowKey ? rowKey(row) : rowIndex}
                   onClick={() => onRowClick?.(row)}
-                  className={`transition-colors ${onRowClick ? "cursor-pointer hover:bg-slate-50" : "hover:bg-gray-50/50"}`}
+                  className={`transition-colors ${onRowClick ? "cursor-pointer hover:bg-slate-50" : "hover:bg-gray-50/50"} ${getRowClassName ? getRowClassName(row) : ""}`}
                 >
                   {columns.map((col, colIndex) => (
                     <td key={colIndex} className={`${dense ? "py-2 px-4" : "py-4 px-6"} ${col.className || ""}`}>
