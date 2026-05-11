@@ -51,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     if (isOpen && modalRef.current) {
       const focusable = modalRef.current.querySelector<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       focusable?.focus();
     } else if (!isOpen && previousFocusRef.current) {
@@ -113,9 +113,7 @@ const Modal: React.FC<ModalProps> = ({
             onClick={onClose}
             aria-label="ปิด"
             className="shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          ></button>
         </div>
 
         {/* Body */}
