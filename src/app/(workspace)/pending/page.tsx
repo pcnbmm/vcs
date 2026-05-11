@@ -18,6 +18,9 @@ import {
 } from "lucide-react";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import Modal from "@/components/ui/Modal";
+import { pdf } from "@react-pdf/renderer";
+import BookingPDF from "@/components/pdf/BookingPDF";
+import { Download } from "lucide-react";
 
 export default function PendingPage() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -29,6 +32,17 @@ export default function PendingPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const handleExportPDF = async () => {
+    if (!selectedRequest) return;
+    const blob = await pdf(<BookingPDF request={selectedRequest} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `คำขอใช้รถ-${selectedRequest.id}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const fetchRequests = async () => {
     try {
       setIsLoading(true);
@@ -36,12 +50,16 @@ export default function PendingPage() {
       if (result.success && result.data) {
         const formattedList = result.data.map((b: any) => ({
           id: String(b.request_id),
-          requester: b.vc_user ? `${b.vc_user.firstname} ${b.vc_user.lastname}` : "ไม่ระบุชื่อ",
+          requester: b.vc_user
+            ? `${b.vc_user.bname ?? ""} ${b.vc_user.firstname} ${b.vc_user.lastname}`.trim()
+            : "ไม่ระบุชื่อ",
           department: b.vc_org?.orgname || b.use_div_code || "ไม่ระบุแผนก",
           destination: b.journey_place,
-          date: b.journey_date ? new Date(b.journey_date).toLocaleDateString("th-TH", {
-            day: "numeric", month: "short", year: "numeric",
-          }) : "N/A",
+          date: b.journey_date
+            ? new Date(b.journey_date).toLocaleDateString("th-TH", {
+              day: "numeric", month: "short", year: "numeric",
+            })
+            : "N/A",
           time: b.journey_time || "N/A",
           objective: b.journey_causes || "-",
           status: b.status_use_id ? String(b.status_use_id) : "1",
@@ -50,12 +68,25 @@ export default function PendingPage() {
           passengers: b.passenger_amount,
           phone: b.user_mobile || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
-          endDate: b.return_date ? new Date(b.return_date).toLocaleDateString("th-TH", {
-            day: "numeric", month: "short", year: "numeric",
-          }) : "-",
+          endDate: b.return_date
+            ? new Date(b.return_date).toLocaleDateString("th-TH", {
+              day: "numeric", month: "short", year: "numeric",
+            })
+            : "-",
           endTime: b.return_time || "N/A",
-          startDateTime: b.journey_date ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00` : "",
+          startDateTime: b.journey_date
+            ? `${b.journey_date.toISOString().split("T")[0]}T${b.journey_time || "00:00"}:00`
+            : "",
           rejectReason: b.reject_reason || null,
+          requesterUsername: b.vc_user?.username || null,
+          approver: b.approver
+            ? `${b.approver.username} - ${b.approver.name}`
+            : null,
+          dispatcher: b.dispatcher
+            ? `${b.dispatcher.username} - ${b.dispatcher.name}`
+            : null,
+          pickupMethod: b.pickup_method || null,
+          selfDriveBool: b.self_drive || false,
         }));
         setRequests(formattedList);
       } else {
@@ -249,18 +280,30 @@ export default function PendingPage() {
         accentColor="bg-blue-600"
         footer={
           <>
-            <button onClick={() => setSelectedRequest(null)} className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">
-              ยกเลิก
+            <button
+              onClick={() => setSelectedRequest(null)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
+              ปิด
             </button>
-            {selectedRequest?.status === "1" && !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
-              <button
-                onClick={() => handleCancel(selectedRequest.id)}
-                className="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-100 transition-all"
-              >
-                ยกเลิกคำขอ
-              </button>
-            )}
+            <button
+              onClick={handleExportPDF}
+              className="flex items-center gap-2 px-6 py-2.5 bg-slate-700 text-white rounded-lg font-bold text-sm hover:bg-slate-800 transition-all"
+            >
+              <Download size={16} />
+              ดาวน์โหลด PDF
+            </button>
+            {selectedRequest?.status === "1" &&
+              !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
+                <button
+                  onClick={() => handleCancel(selectedRequest.id)}
+                  className="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-100 transition-all"
+                >
+                  ยกเลิกคำขอ
+                </button>
+              )}
           </>
+
         }
       >
         <div className="space-y-8">
