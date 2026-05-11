@@ -168,12 +168,23 @@ export async function getDispatchers() {
 export async function getLatestCarMileage(carId: number | null) {
   if (!carId) return { success: false, mile_end: 0 };
   try {
-    const latestUse = await prisma.vc_use.findFirst({
-      where: { car_id: carId },
-      orderBy: { use_id: "desc" },
-      select: { mile_end: true },
-    });
-    return { success: true, mile_end: latestUse?.mile_end ?? 0 };
+    const [latestUse, latestMaint] = await Promise.all([
+      prisma.vc_use.findFirst({
+        where: { car_id: carId },
+        orderBy: { use_id: "desc" },
+        select: { mile_end: true },
+      }),
+      prisma.vc_maintenance_item.findFirst({
+        where: { car_id: carId },
+        orderBy: { maintenance_item_id: "desc" },
+        select: { mile_car_out: true },
+      })
+    ]);
+
+    const useMile = latestUse?.mile_end ?? 0;
+    const maintMile = latestMaint?.mile_car_out ?? 0;
+
+    return { success: true, mile_end: Math.max(useMile, maintMile) };
   } catch (error) {
     console.error("Error fetching latest car mileage:", error);
     return { success: false, error: "Failed to fetch mileage", mile_end: 0 };
