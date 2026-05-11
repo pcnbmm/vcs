@@ -214,6 +214,28 @@ export default function MaintenancePage() {
     }),
   };
 
+  const resetForm = () => {
+    setSelectedCar(null);
+    setSelectedCause(null);
+    setCauseDetail("");
+    setNeedReplacement(false);
+    setEntryDate(new Date().toISOString().split('T')[0]);
+    setEntryTime(new Date().toTimeString().slice(0, 5));
+    setEntryMileage("");
+    setExitDate("");
+    setExitTime("");
+    setExitMileage("");
+    setSelectedTreats([]);
+    setServiceLocation("");
+    setSelectedDriver(null);
+    setVatPercent("7");
+    setSpareItems([{ name: "", amount: 1, price: 0, hasVat: true }]);
+    
+    // Clear flatpickr inputs
+    if (entryDateRef.current) (entryDateRef.current as any)._flatpickr?.setDate(new Date());
+    if (exitDateRef.current) (exitDateRef.current as any)._flatpickr?.clear();
+  };
+
   const handleSubmit = async () => {
     if (!selectedCar) {
       showError("กรุณาเลือกยานพาหนะที่ต้องการแจ้งซ่อม");
@@ -268,7 +290,8 @@ export default function MaintenancePage() {
       if (needReplacement) {
         router.push("/replace-car");
       } else {
-        router.push("/maintenance");
+        resetForm();
+        router.refresh();
       }
     } else {
       showError("เกิดข้อผิดพลาด: " + res.error);
