@@ -80,7 +80,6 @@ export async function getMyBookings(
   try {
     let filterId = userid;
 
-    // If personalOnly is true and no userid is passed, get it from the session
     if (personalOnly && !filterId) {
       const session = await getServerSession(authOptions);
       if (session?.user?.id) {
@@ -94,23 +93,74 @@ export async function getMyBookings(
         vc_user: true,
         vc_car_spec: true,
         vc_start_place: true,
+        vc_use: {
+          include: {
+            // recorder_id เป็น Int → join vc_users ไม่ได้โดยตรง
+            // ต้องดึงมาแล้ว manual map ข้างล่าง
+          },
+        },
       },
       orderBy: { request_id: "desc" },
     });
 
-    // Manual mapping for org names since there's no direct relation
+    // ดึง orgs
     const orgs = await prisma.vc_orgs.findMany({
       where: { status: "X" },
     });
 
+    // รวบรวม recorder_id และ approve_id ทั้งหมด เพื่อ query ครั้งเดียว
+    const recorderIds = [
+      ...new Set(
+        bookings.flatMap((b) =>
+          b.vc_use.map((u) => u.recorder_id).filter(Boolean)
+        )
+      ),
+    ] as number[];
+
+    const dispatcherUsers = recorderIds.length > 0
+      ? await prisma.vc_users.findMany({
+        where: { userid: { in: recorderIds } },
+        select: { userid: true, username: true, firstname: true, lastname: true, bname: true },
+      })
+      : [];
+
+    const approveIds = [
+      ...new Set(bookings.map((b) => b.approve_id ? Number(b.approve_id) : null).filter((id): id is number => id !== null && !isNaN(id))),
+    ];
+
+    const approverUsers = approveIds.length > 0
+      ? await prisma.vc_users.findMany({
+        where: { userid: { in: approveIds } },
+        select: { userid: true, username: true, firstname: true, lastname: true, bname: true },
+      })
+      : [];
+
     const enrichedBookings = bookings.map((b) => {
       const org = orgs.find((o) => String(o.orgid) === b.use_div_code);
+      const latestUse = b.vc_use[b.vc_use.length - 1];
+
+      const dispatcherUser = latestUse?.recorder_id
+        ? dispatcherUsers.find((u) => u.userid === latestUse.recorder_id)
+        : null;
+
+      const approverUser = b.approve_id
+        ? approverUsers.find((u) => u.userid === Number(b.approve_id))
+        : null;
+
+      const formatName = (u: { bname?: string | null; firstname?: string | null; lastname?: string | null } | null) =>
+        u ? `${u.bname ?? ""} ${u.firstname ?? ""} ${u.lastname ?? ""}`.trim() : null;
+
       return {
         ...b,
-        vc_org: org || null,
+        vc_org: org ?? null,
+        approver: approverUser
+          ? { username: approverUser.username, name: formatName(approverUser) }
+          : null,
+        dispatcher: dispatcherUser
+          ? { username: dispatcherUser.username, name: formatName(dispatcherUser) }
+          : null,
       };
     });
-
     return { success: true, data: enrichedBookings };
   } catch (error) {
     console.error("Error fetching bookings:", error);
