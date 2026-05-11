@@ -243,8 +243,6 @@ export default function VehicleRequestPage() {
         getDrivers(),
       ]);
 
-      console.log("driverRes:", driverRes);
-
       if (startRes.success) setStartPlaces(startRes.data);
       if (driverRes.success) setDrivers(driverRes.data);
 
