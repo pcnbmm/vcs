@@ -208,3 +208,32 @@ export async function saveMaintenance(data: {
     return { success: false, error: error.message };
   }
 }
+export async function getMaintenanceHistory() {
+  try {
+    const history = await prisma.vc_maintenance_item.findMany({
+      include: {
+        vc_car_master: {
+          include: {
+            vc_car_brand: true,
+          }
+        },
+        vc_maintenance_cause: true,
+        vc_maintenance_spare_item: true,
+        vc_maintenance_treat: {
+          include: {
+            vc_treat: true,
+          }
+        }
+      },
+      orderBy: {
+        cre_date: "desc",
+      },
+      take: 100,
+    });
+
+    return { success: true, data: history };
+  } catch (error) {
+    console.error("Error fetching maintenance history:", error);
+    return { success: false, error: "Failed to fetch history" };
+  }
+}
