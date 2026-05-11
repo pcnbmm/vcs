@@ -680,7 +680,7 @@ export default function AssignPage() {
         <div className="space-y-8">
           {/* Dispatch Type */}
           <div className="space-y-4">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block">
+            <label className="text-sm font-bold text-slate-700 uppercase tracking-widest block">
               ประเภทการจัดส่ง
             </label>
             <div className="grid grid-cols-3 gap-3">
