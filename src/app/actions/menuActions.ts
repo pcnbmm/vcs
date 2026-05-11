@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 
-export async function getMenusByRoleIds(roleIds: number[]) {
+export async function getMenusByRoleIds(roleIds: number[], sectionId?: string) {
   try {
     const menuRoles = await prisma.vc_menu_role.findMany({
       where: { roles_id: { in: roleIds } },
@@ -38,6 +38,33 @@ export async function getMenusByRoleIds(roleIds: number[]) {
         }
       }
     }
+
+    // --- กรองเมนู "ขอใช้รถส่วนภูมิภาค" ตามสิทธิ์ในตาราง vc_own_div_prop ---
+    const regionalMenuEntry = Array.from(menuMap.entries()).find(
+      ([_, m]) => m.menuname === "ขอใช้รถส่วนภูมิภาค"
+    );
+
+    if (regionalMenuEntry && sectionId) {
+      const [menuId] = regionalMenuEntry;
+      const isAuthorized = await prisma.vc_own_div_prop.findFirst({
+        where: {
+          own_div_code: sectionId,
+          OR: [{ flag_del: "N" }, { flag_del: null }],
+        },
+      });
+
+      if (!isAuthorized) {
+        menuMap.delete(menuId);
+      }
+    } else if (regionalMenuEntry && !sectionId) {
+      // ถ้าไม่มี sectionId และไม่ใช่ Admin (สมมติ Role 1 คือ Admin หรือมี Role อื่นที่ข้ามได้)
+      // แต่ในที่นี้ถ้าไม่มี sectionId ให้ซ่อนไว้ก่อนเพื่อความปลอดภัย
+      const [menuId] = regionalMenuEntry;
+      if (!roleIds.includes(1)) { // ถ้าไม่ใช่ Admin (Role 1)
+         menuMap.delete(menuId);
+      }
+    }
+    // -------------------------------------------------------------
 
     return {
       success: true,

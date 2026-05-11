@@ -47,14 +47,15 @@ export default function PermissionGuard({
 
       try {
         // Check cache first
-        const cacheKey = `menus_roles_${roles.join("_")}`;
+        const sectionid = (session?.user as any)?.sectionid;
+        const cacheKey = `menus_roles_${roles.join("_")}_${sectionid || "none"}`;
         const cachedMenus = sessionStorage.getItem(cacheKey);
         let fetchedMenus = [];
 
         if (cachedMenus) {
           fetchedMenus = JSON.parse(cachedMenus);
         } else {
-          const result = await getMenusByRoleIds(roles);
+          const result = await getMenusByRoleIds(roles, sectionid);
           if (result.success) {
             fetchedMenus = result.data;
             sessionStorage.setItem(cacheKey, JSON.stringify(fetchedMenus));
