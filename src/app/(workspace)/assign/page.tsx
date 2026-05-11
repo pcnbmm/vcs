@@ -788,6 +788,12 @@ export default function AssignPage() {
                           label: cars.find(
                             (c) => String(c.car_id) === selectedCar,
                           )?.car_number,
+                          number: cars.find(
+                            (c) => String(c.car_id) === selectedCar,
+                          )?.car_number,
+                          brand: cars.find(
+                            (c) => String(c.car_id) === selectedCar,
+                          )?.vc_car_brand?.car_brand_name,
                         }
                       : null
                   }

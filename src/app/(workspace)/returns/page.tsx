@@ -478,9 +478,14 @@ export default function ReturnsPage() {
                   <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="number"
-                    readOnly
+                    readOnly={modalMode === "view" || (Number(returnFormData.mile_begin) > 0)}
                     value={returnFormData.mile_begin}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-lg font-bold text-slate-600 outline-none"
+                    onChange={(e) => setReturnFormData({ ...returnFormData, mile_begin: e.target.value })}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl text-lg font-bold outline-none transition-all ${
+                      Number(returnFormData.mile_begin) > 0 
+                        ? "bg-slate-100 border-slate-200 text-slate-600" 
+                        : "bg-white border-blue-200 text-blue-700 focus:ring-2 focus:ring-blue-500"
+                    }`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">KM</span>
                 </div>

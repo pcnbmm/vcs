@@ -132,7 +132,7 @@ const getStatusName = (status: string) => {
     if (status === "1") return "รออนุมัติ";
     if (status === "2" || status === "5") return "อนุมัติแล้ว";
     if (status === "3") return "ไม่อนุมัติ";
-    if (status === "4") return "กำลังใช้งาน";
+    if (status === "4") return "กำลังใช้งาน ";
     if (status === "6") return "ยกเลิกคำขอ";
     return "-";
 };
