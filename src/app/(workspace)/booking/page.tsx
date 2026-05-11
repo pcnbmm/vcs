@@ -367,12 +367,12 @@ export default function VehicleRequestPage() {
                     value={
                       formData.ownerDept
                         ? {
-                          value: String(formData.ownerDept),
-                          label: orgs.find(
-                            (o) =>
-                              String(o.orgid) === String(formData.ownerDept),
-                          )?.orgname,
-                        }
+                            value: String(formData.ownerDept),
+                            label: orgs.find(
+                              (o) =>
+                                String(o.orgid) === String(formData.ownerDept),
+                            )?.orgname,
+                          }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -398,12 +398,13 @@ export default function VehicleRequestPage() {
                     value={
                       formData.vehicleType && carSpecs.length > 0
                         ? {
-                          value: String(formData.vehicleType),
-                          label: carSpecs.find(
-                            (c) =>
-                              String(c.car_spec_id) === String(formData.vehicleType),
-                          )?.car_spec_name,
-                        }
+                            value: String(formData.vehicleType),
+                            label: carSpecs.find(
+                              (c) =>
+                                String(c.car_spec_id) ===
+                                String(formData.vehicleType),
+                            )?.car_spec_name,
+                          }
                         : null
                     }
                     onChange={(sel: any) =>
@@ -505,7 +506,11 @@ export default function VehicleRequestPage() {
                     </div>
                   </FormField>
 
-                  <FormField label="วันเวลาเดินทางกลับ" icon={Calendar} required>
+                  <FormField
+                    label="วันเวลาเดินทางกลับ"
+                    icon={Calendar}
+                    required
+                  >
                     <div className="relative">
                       <input
                         ref={endDateRef}
@@ -550,10 +555,10 @@ export default function VehicleRequestPage() {
                           value={
                             formData.driverId
                               ? {
-                                value: formData.driverId,
-                                label:
-                                  `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
-                              }
+                                  value: formData.driverId,
+                                  label:
+                                    `${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.firstname ?? ""} ${drivers.find((d) => d.driver_id === formData.driverId)?.vc_users?.lastname ?? ""}`.trim(),
+                                }
                               : null
                           }
                           onChange={(sel: any) =>
