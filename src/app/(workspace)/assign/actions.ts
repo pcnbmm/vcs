@@ -31,43 +31,55 @@ export async function getPendingDispatch() {
         vc_driver: {
           include: { vc_users: true },
         },
+        vc_use: {
+          orderBy: { use_id: "desc" },
+          take: 1,
+        },
+        vc_start_place: true,
       },
     });
 
-    // Helper for expired check
-    const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
-      if (!journeyDate) return false;
-      const d = new Date(journeyDate);
-      const dateStr =
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0");
-      let timeStr = journeyTime ? journeyTime.trim() : "23:59:59";
-      if (timeStr.split(":").length === 2) {
-        timeStr += ":00";
-      }
-      const deadline = new Date(`${dateStr}T${timeStr}`);
-      return new Date() > deadline;
-    };
+    // ดึง recorder_id ทั้งหมดจาก vc_use เพื่อ join vc_users
+    const recorderIds = [
+      ...new Set(
+        orders
+          .map((o: any) => o.vc_use?.[0]?.recorder_id)
+          .filter((id: any) => id != null),
+      ),
+    ] as number[];
 
-    const getDateTimeStamp = (journeyDate: any, journeyTime: string | null) => {
-      if (!journeyDate) return 0;
-      const d = new Date(journeyDate);
-      const dateStr =
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0");
-      let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
-      if (timeStr.split(":").length === 2) {
-        timeStr += ":00";
-      }
-      return new Date(`${dateStr}T${timeStr}`).getTime();
-    };
+    // ดึง approver username จาก approve_id (Char(8) = username)
+    const approverUsernames = [
+      ...new Set(
+        orders.map((o: any) => o.approve_id).filter((id: any) => id != null),
+      ),
+    ] as string[];
 
+    // batch fetch users
+    const [recorderUsers, approverUsers] = await Promise.all([
+      recorderIds.length > 0
+        ? prisma.vc_users.findMany({
+            where: { userid: { in: recorderIds } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+            },
+          })
+        : [],
+      approverUsernames.length > 0
+        ? prisma.vc_users.findMany({
+            where: { username: { in: approverUsernames } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+            },
+          })
+        : [],
+    ]);
     // Custom Sorting:
     orders.sort((a: any, b: any) => {
       const getPriority = (o: any) => {
@@ -105,13 +117,47 @@ export async function getPendingDispatch() {
       return b.request_id - a.request_id;
     });
 
-    return orders;
+    return orders.map((o: any) => {
+      const latestUse = o.vc_use?.[0];
+
+      const dispatcher = latestUse?.recorder_id
+        ? recorderUsers.find((u: any) => u.userid === latestUse.recorder_id)
+        : null;
+
+      const approver = o.approve_id
+        ? approverUsers.find((u: any) => u.username === o.approve_id)
+        : null;
+
+      return {
+        ...o,
+
+        // PDF ใช้ field นี้
+        selfDriveBool:
+          o.self_drive === true || o.self_drive === "Y" || o.self_drive === 1,
+
+        // approver
+        approverUsername: approver?.username ?? null,
+
+        approver: approver
+          ? `${approver.firstname ?? ""} ${approver.lastname ?? ""}`.trim()
+          : null,
+
+        // dispatcher
+        dispatcherUsername: dispatcher?.username ?? null,
+
+        dispatcher: dispatcher
+          ? `${dispatcher.firstname ?? ""} ${dispatcher.lastname ?? ""}`.trim()
+          : null,
+
+        // pickup method จาก vc_use ล่าสุด
+        pickupMethod: latestUse?.pickup_method ?? o.pickup_method ?? null,
+      };
+    });
   } catch (error) {
     console.error("Error fetching pending assignments:", error);
     return [];
   }
 }
-
 /**
  * ดึงรายชื่อรถยนต์ (เฉพาะคันที่ flag เป็น null)
  */
@@ -198,14 +244,14 @@ export async function assignResource(data: {
   isTaxi?: boolean;
   taxiReason?: string;
 }) {
-  const session = await getServerSession(authOptions); 
+  const session = await getServerSession(authOptions);
   const recorderId = session?.user?.id ? parseInt(session.user.id) : null;
   console.log("=== API ASSIGN RESOURCE ===");
   console.log("Request ID:", data.requestId);
   console.log("Selected Car ID:", data.carId);
   console.log("Selected Driver ID:", data.driverId);
   console.log("===========================");
- 
+
   try {
     // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
@@ -434,4 +480,23 @@ export async function cancelBooking(data: {
   } catch (error: any) {
     return { success: false as const, error: error.message };
   }
+}
+function getDateTimeStamp(date?: Date | string | null, time?: string | null) {
+  if (!date) return Number.MAX_SAFE_INTEGER;
+
+  const d = new Date(date);
+
+  if (time) {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    d.setHours(hours || 0);
+    d.setMinutes(minutes || 0);
+    d.setSeconds(0);
+  }
+
+  return d.getTime();
+}
+
+function isAssignExpired(date?: Date | string | null, time?: string | null) {
+  return getDateTimeStamp(date, time) < Date.now();
 }

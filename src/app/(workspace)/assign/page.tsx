@@ -25,6 +25,7 @@ import {
   Check,
   Search,
   AlertCircle,
+  FileText,
 } from "lucide-react";
 import {
   getPendingDispatch,
@@ -38,7 +39,8 @@ import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import Modal from "@/components/ui/Modal";
-
+import { pdf } from "@react-pdf/renderer";
+import BookingPDF from "@/components/pdf/BookingPDF"; // ปรับ path ตามที่วางไฟล์จริง
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
@@ -89,6 +91,50 @@ export default function AssignPage() {
   const [selectedCancelOrder, setSelectedCancelOrder] = useState<any>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelSubmitting, setIsCancelSubmitting] = useState(false);
+  const handleDownloadPDF = async (order: any) => {
+    const doc = (
+      <BookingPDF
+        request={{
+          id: String(order.request_id),
+          requester:
+            `${order.vc_user?.firstname ?? ""} ${order.vc_user?.lastname ?? ""}`.trim(),
+          department:
+            order.vc_user?.departmentid ?? order.vc_user?.sectionid ?? "-",
+          phone: order.user_mobile ?? order.vc_user?.mobile_no ?? "-",
+          date: order.journey_date
+            ? new Date(order.journey_date).toLocaleDateString("th-TH")
+            : "-",
+          time: order.journey_time?.slice(0, 5) ?? "-",
+          endDate: order.return_date
+            ? new Date(order.return_date).toLocaleDateString("th-TH")
+            : "-",
+          endTime: order.return_time?.slice(0, 5) ?? "-",
+          origin: order.vc_start_place?.start_place_name ?? "-",
+          destination: order.journey_place ?? "-",
+          objective: order.journey_causes ?? "-",
+          passengers: order.passenger_amount ?? 1,
+          carType: order.vc_car_spec?.car_spec_name ?? "-",
+          selfDrive: order.self_drive ? "ขับเอง" : "มีคนขับ",
+          status: String(order.status_use_id),
+          approver: order.approverName ?? null,
+          approverUsername: order.approverUsername ?? null,
+          dispatcher: order.dispatcherName ?? null,
+          dispatcherUsername: order.dispatcherUsername ?? null,
+          pickupMethod: order.pickup_method ?? null,
+          selfDriveBool: order.selfDriveBool,
+          requesterUsername: order.vc_user?.username ?? null,
+        }}
+      />
+    );
+
+    const blob = await pdf(doc).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `REQ-${String(order.request_id).padStart(3, "0")}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleCancelSubmit = async () => {
     if (!cancelReason.trim()) {
@@ -420,7 +466,8 @@ export default function AssignPage() {
               order.pickup_status === "TAXI_CALLED")) ||
           (order.status_use_id === 5 && order.pickup_method === "TAXI")
         );
-      if (filterStatus === "cancelled") return order.status_use_id === 6 || order.status_use_id === 3;
+      if (filterStatus === "cancelled")
+        return order.status_use_id === 6 || order.status_use_id === 3;
       return true;
     })
     .sort((a, b) => {
@@ -511,10 +558,13 @@ export default function AssignPage() {
                           รอจัดรถ
                         </span>
                       )}
-                      {(order.status_use_id === 6 || order.status_use_id === 3) && (
+                      {(order.status_use_id === 6 ||
+                        order.status_use_id === 3) && (
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-100 uppercase tracking-tighter">
-                            {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                            {order.status_use_id === 3
+                              ? "ไม่มารับรถ"
+                              : "ยกเลิกแล้ว"}
                           </span>
                           {order.dispatcher_reject_reason && (
                             <span className="text-[10px] font-bold text-rose-600 uppercase tracking-tighter">
@@ -584,22 +634,40 @@ export default function AssignPage() {
                 className: "text-right",
                 cell: (order) => (
                   <div className="flex justify-end gap-2">
+                    {/* ปุ่ม PDF */}
+                    <button
+                      onClick={() => handleDownloadPDF(order)}
+                      className="bg-slate-50 text-slate-400 p-2 rounded-lg hover:bg-red-50 hover:text-red-500 border border-slate-100 transition-all"
+                      title={`ดาวน์โหลด PDF REQ-${String(order.request_id).padStart(3, "0")}`}
+                    >
+                      <FileText size={14} />
+                    </button>
                     {/* ปุ่มหลัก */}
-                    {((order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) || (order.status_use_id === 5 && order.pickup_method === "TAXI")) ? (
+                    {(order.status_use_id === 4 &&
+                      (order.pickup_status === "PICKED_UP" ||
+                        order.pickup_status === "TAXI_CALLED")) ||
+                    (order.status_use_id === 5 &&
+                      order.pickup_method === "TAXI") ? (
                       <button
                         disabled
                         className="bg-slate-100 text-slate-400 px-4 py-2 rounded-lg text-xs font-bold cursor-not-allowed"
                       >
                         เสร็จสิ้น
                       </button>
-                    ) : (order.status_use_id === 6 || order.status_use_id === 3) ? (
+                    ) : order.status_use_id === 6 ||
+                      order.status_use_id === 3 ? (
                       <button
                         disabled
                         className="bg-rose-50 text-rose-400 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100 cursor-not-allowed"
                       >
-                        {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                        {order.status_use_id === 3
+                          ? "ไม่มารับรถ"
+                          : "ยกเลิกแล้ว"}
                       </button>
-                    ) : isAssignExpired(order.journey_date, order.journey_time) ? (
+                    ) : isAssignExpired(
+                        order.journey_date,
+                        order.journey_time,
+                      ) ? (
                       <button
                         disabled
                         className="bg-rose-50 text-rose-500 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100"
@@ -649,7 +717,7 @@ export default function AssignPage() {
             data={paginatedOrders}
             isLoading={loading}
             rowKey={(row) => row.request_id}
-            getRowClassName={(row) => row.is_urgent ? "bg-rose-50/30" : ""}
+            getRowClassName={(row) => (row.is_urgent ? "bg-rose-50/30" : "")}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
