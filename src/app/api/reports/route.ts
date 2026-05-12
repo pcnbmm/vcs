@@ -97,6 +97,28 @@ export async function GET(request: Request) {
         return NextResponse.json({ success: true, data });
       }
 
+      case "maintenance_incident": {
+        const incidents = await prisma.vc_maintenance_item.findMany({
+          orderBy: { incident_date: "desc" },
+          take: 100,
+          include: {
+            vc_car_master: {
+              include: { vc_car_brand: true }
+            },
+            vc_maintenance_cause: true,
+          },
+        });
+
+        const data = incidents.map((i) => ({
+          car_desc: i.vc_car_master?.vc_car_brand?.car_brand_name || "-",
+          car_no: i.vc_car_master?.car_number || "-",
+          cause: i.vc_maintenance_cause?.cause_detail || i.cause_detail || "-",
+          date: i.incident_date ? i.incident_date.toLocaleDateString('th-TH') : "-",
+          time: i.incident_time || "-",
+        }));
+        return NextResponse.json({ success: true, data });
+      }
+
       default:
         return NextResponse.json({
           success: false,

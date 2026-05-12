@@ -533,7 +533,7 @@ export default function MaintenancePage() {
                   onChange={(e) => setNeedReplacement(e.target.checked)}
                 />
                 <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-                <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ต้องการรถทดแทน' : 'ไม่ต้องการ'}</span>
+                <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ใช้งาน' : 'ไม่ใช้งาน'}</span>
               </label>
             </div>
           </div>
