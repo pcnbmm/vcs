@@ -36,6 +36,7 @@ import {
   Activity,
   Calendar,
   Filter,
+  Wrench,
 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 
@@ -120,6 +121,7 @@ const REPORT_TYPES = [
   { id: "fueling", name: "รายงานการเติมน้ำมัน", icon: Fuel, desc: "รายการเบิกจ่ายน้ำมันและจำนวนลิตรทั้งหมด" },
   { id: "summary_status", name: "รายงานการขอใช้รถตามสถานะ", icon: Activity, desc: "สถิติการจองรถแยกตามสถานะต่างๆ" },
   { id: "replacement_usage", name: "รายงานการใช้รถทดแทน", icon: Calendar, desc: "ประวัติการนำรถเข้าซ่อมและใช้รถสำรอง" },
+  { id: "maintenance_incident", name: "รายงานเหตุรถเสีย", icon: Wrench, desc: "ข้อมูลรถเสียและสาเหตุการเสียรายวัน" },
 ];
 
 export default function ReportsPage() {
@@ -173,6 +175,14 @@ export default function ReportsPage() {
             { header: "วันที่คืนรถ", key: "end_date", width: 15 },
             { header: "ผู้บันทึก", key: "cre_by", width: 20 },
             { header: "สถานะ", key: "status", width: 20 },
+          ];
+        } else if (selectedReportId === "maintenance_incident") {
+          cols = [
+            { header: "คันที่เสีย (ยี่ห้อ)", key: "car_desc", width: 20 },
+            { header: "ทะเบียนรถ", key: "car_no", width: 15 },
+            { header: "สาเหตุการเสีย", key: "cause", width: 40 },
+            { header: "วันที่", key: "date", width: 15 },
+            { header: "เวลา", key: "time", width: 10 },
           ];
         } else {
           cols = [
