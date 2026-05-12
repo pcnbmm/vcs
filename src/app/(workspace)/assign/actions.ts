@@ -17,10 +17,7 @@ export async function getPendingDispatch() {
   try {
     const orders = await prisma.vc_order_item.findMany({
       where: {
-        OR: [
-          { status_use_id: { in: [2, 3, 4, 6] } },
-          { status_use_id: 5, pickup_method: "TAXI" },
-        ],
+        status_use_id: { in: [2, 3, 4, 5, 6] },
       },
       include: {
         vc_user: {
@@ -95,6 +92,10 @@ export async function getPendingDispatch() {
     });
     // Custom Sorting:
     orders.sort((a: any, b: any) => {
+      // 0. Priority: ขอด่วน
+      if (a.is_urgent && !b.is_urgent) return -1;
+      if (!a.is_urgent && b.is_urgent) return 1;
+
       const dtA = getDateTimeStamp(a.journey_date, a.journey_time);
       const dtB = getDateTimeStamp(b.journey_date, b.journey_time);
 
