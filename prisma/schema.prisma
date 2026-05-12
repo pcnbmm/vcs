@@ -559,6 +559,8 @@ model vc_maintenance_item {
   finish_date         DateTime?                 @db.Date
   finish_time         String?                   @db.VarChar(10)
   vat                 Float?
+  incident_date       DateTime?                 @db.Date
+  incident_time       String?                   @db.VarChar(10)
   cre_by              String?                   @db.VarChar(100)
   cre_date            DateTime?
   upd_by              String?                   @db.VarChar(100)

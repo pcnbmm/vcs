@@ -242,7 +242,7 @@ export default function PendingPage() {
                   color = "text-orange-600 bg-orange-50 border-orange-100";
                 }
                 return (
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border ${color}`}>
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border whitespace-nowrap ${color}`}>
                     {name}
                   </span>
                 );

@@ -23,7 +23,6 @@ import {
   Truck,
   Navigation,
   Check,
-  Search,
   AlertCircle,
   FileText,
 } from "lucide-react";
@@ -195,6 +194,10 @@ export default function AssignPage() {
   const [selectedPickupOrder, setSelectedPickupOrder] = useState<any>(null);
   const [isPickupSubmitting, setIsPickupSubmitting] = useState(false);
 
+  // States for Details Modal
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedDetailsOrder, setSelectedDetailsOrder] = useState<any>(null);
+
   // React-Select styles mapping
   const reactSelectStyles = {
     control: (base: any, state: any) => ({
@@ -313,7 +316,10 @@ export default function AssignPage() {
       order.car_spec_id ? String(order.car_spec_id) : "all",
     );
 
-    const carList = await getAvailableCars(order.use_div_code ?? undefined);
+    const carList = await getAvailableCars(
+      order.use_div_code ?? undefined,
+      order.car_id ?? undefined,
+    );
     setCars(carList);
 
     const specsRes = await getCarSpecs(order.use_div_code ?? undefined);
@@ -346,7 +352,9 @@ export default function AssignPage() {
       finalDriverId = parseInt(selectedDriver);
     }
 
-    const isConfirmed = await showConfirm("ยืนยันการจัดรถ");
+    const isConfirmed = await showConfirm(
+      "ยืนยันการจัดรถและแจ้งเตือนผู้ใช้งาน?",
+    );
     if (!isConfirmed) return;
 
     setIsSubmitting(true);
@@ -364,7 +372,7 @@ export default function AssignPage() {
         setIsModalOpen(false);
         fetchData();
       } else {
-        showError(result.error || "เกิดข้อผิดพลาดในการจัดรถและส่งอีเมล");
+        showError(result.error || "เกิดข้อผิดพลาดในการบันทึก");
       }
     } catch (err) {
       console.error(err);
@@ -471,7 +479,22 @@ export default function AssignPage() {
       return true;
     })
     .sort((a, b) => {
-      // เรียงตามเลขที่คำขอ (Request ID) จากมากไปน้อย เพื่อให้รายการล่าสุดอยู่บนสุด
+      // 1. เรียงตามวันเวลาเดินทาง (ล่าสุด -> เก่ากว่า)
+      const getDT = (item: any) => {
+        if (!item.journey_date) return 0;
+        const d = new Date(item.journey_date);
+        // แยกเวลา HH:mm มาใส่ใน Date object เพื่อการเปรียบเทียบที่แม่นยำ
+        const [h, m] = (item.journey_time || "00:00").split(":").map(Number);
+        d.setHours(h || 0, m || 0, 0, 0);
+        return d.getTime();
+      };
+
+      const dtA = getDT(a);
+      const dtB = getDT(b);
+
+      if (dtB !== dtA) return dtB - dtA; // ใหม่กว่าอยู่บน
+
+      // 2. ถ้าวันเวลาเดินทางเท่ากัน ให้เอาที่ส่งคำขอล่าสุดขึ้นก่อน (Request ID มากไปน้อย)
       return b.request_id - a.request_id;
     });
 
@@ -540,7 +563,7 @@ export default function AssignPage() {
                     </h3>
                     <div className="mt-1">
                       {order.status_use_id === 4 && !order.pickup_status && (
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter whitespace-nowrap">
                           จัดรถแล้ว (รอรับรถ)
                         </span>
                       )}
@@ -554,7 +577,7 @@ export default function AssignPage() {
                           </span>
                         )}
                       {order.status_use_id === 2 && (
-                        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100 uppercase tracking-tighter">
+                        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100 uppercase tracking-tighter whitespace-nowrap">
                           รอจัดรถ
                         </span>
                       )}
@@ -699,16 +722,38 @@ export default function AssignPage() {
                         order.journey_date,
                         order.journey_time,
                       ) && (
-                        <button
-                          onClick={() => {
-                            setSelectedCancelOrder(order);
-                            setIsCancelModalOpen(true);
-                            setCancelReason("");
-                          }}
-                          className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
-                        >
-                          ยกเลิก
-                        </button>
+                        <div className="flex gap-2">
+                          {order.car_id || order.pickup_method === "TAXI" ? (
+                            <button
+                              onClick={() => {
+                                setSelectedDetailsOrder(order);
+                                setIsDetailsModalOpen(true);
+                              }}
+                              className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-all border border-blue-100"
+                              title="ดูรายละเอียดการจัดรถ"
+                            >
+                              <Eye size={14} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => openAssignModal(order)}
+                              className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all border border-slate-200"
+                              title="แก้ไขการจัดรถ"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              setSelectedCancelOrder(order);
+                              setIsCancelModalOpen(true);
+                              setCancelReason("");
+                            }}
+                            className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-100 border border-rose-100 transition-all"
+                          >
+                            ยกเลิก
+                          </button>
+                        </div>
                       )}
                   </div>
                 ),
@@ -748,9 +793,9 @@ export default function AssignPage() {
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Save className="w-4 h-4" />
+                <Bell className="w-4 h-4" />
               )}
-              บันทึกและส่งอีเมล
+              ยืนยันและแจ้งเตือน
             </button>
           </>
         }
@@ -1071,6 +1116,112 @@ export default function AssignPage() {
               className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-rose-500 transition-all resize-none"
               rows={4}
             />
+          </div>
+        </div>
+      </Modal>
+      {/* ASSIGNMENT DETAILS MODAL */}
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        title="รายละเอียดการจัดสรรรถ"
+        maxWidth="md"
+        accentColor="bg-blue-600"
+        footer={
+          <>
+            <button
+              onClick={() => setIsDetailsModalOpen(false)}
+              className="px-5 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors"
+            >
+              ปิด
+            </button>
+            <button
+              onClick={() => {
+                setIsDetailsModalOpen(false);
+                openAssignModal(selectedDetailsOrder);
+              }}
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md transition-all"
+            >
+              <Edit2 size={14} />
+              แก้ไขการจัดรถ
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-6">
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center gap-4">
+            <div className="bg-white p-2 rounded-lg shadow-sm">
+              <Truck className="text-blue-600" size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-blue-400 uppercase tracking-widest">
+                ยานพาหนะที่จัดสรร
+              </p>
+              <p className="text-lg font-black text-blue-700">
+                {selectedDetailsOrder?.vc_car_master?.car_number ||
+                  (selectedDetailsOrder?.pickup_method === "TAXI"
+                    ? "TAXI (แท็กซี่)"
+                    : "ไม่ระบุ")}
+              </p>
+              <p className="text-xs text-blue-600 font-bold">
+                {
+                  selectedDetailsOrder?.vc_car_master?.vc_car_brand
+                    ?.car_brand_name
+                }{" "}
+                •{" "}
+                {
+                  selectedDetailsOrder?.vc_car_master?.vc_car_spec
+                    ?.car_spec_name
+                }
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex items-center gap-4">
+            <div className="bg-white p-2 rounded-lg shadow-sm">
+              <User className="text-emerald-600" size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">
+                พนักงานขับรถ
+              </p>
+              <p className="text-lg font-black text-emerald-700">
+                {selectedDetailsOrder?.self_drive
+                  ? "ผู้ขอขับรถเอง"
+                  : selectedDetailsOrder?.vc_driver?.vc_users
+                    ? `นาย ${selectedDetailsOrder.vc_driver.vc_users.firstname} ${selectedDetailsOrder.vc_driver.vc_users.lastname}`
+                    : "ไม่ระบุ"}
+              </p>
+              <p className="text-xs text-emerald-600 font-bold">
+                {selectedDetailsOrder?.vc_driver?.tel || "ไม่มีเบอร์โทรศัพท์"}
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                ข้อมูลการรับรถ
+              </span>
+              {selectedDetailsOrder?.pickup_status ? (
+                <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  รับรถแล้ว
+                </span>
+              ) : (
+                <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  รอยืนยันการรับรถ
+                </span>
+              )}
+            </div>
+            <p className="text-sm font-bold text-slate-700">
+              วิธีการรับรถ:{" "}
+              <span className="text-blue-600">
+                {selectedDetailsOrder?.pickup_method === "TAXI"
+                  ? "แท็กซี่"
+                  : selectedDetailsOrder?.pickup_method === "SELF_PICKUP"
+                    ? "รับรถเอง"
+                    : "เจ้าหน้าที่ขับไปส่ง"}
+              </span>
+            </p>
           </div>
         </div>
       </Modal>

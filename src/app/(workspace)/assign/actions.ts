@@ -82,38 +82,10 @@ export async function getPendingDispatch() {
     ]);
     // Custom Sorting:
     orders.sort((a: any, b: any) => {
-      const getPriority = (o: any) => {
-        const isCompleted =
-          (o.status_use_id === 4 &&
-            (o.pickup_status === "PICKED_UP" ||
-              o.pickup_status === "TAXI_CALLED")) ||
-          (o.status_use_id === 5 && o.pickup_method === "TAXI");
+      const dtA = getDateTimeStamp(a.journey_date, a.journey_time);
+      const dtB = getDateTimeStamp(b.journey_date, b.journey_time);
 
-        if (!isCompleted && isAssignExpired(o.journey_date, o.journey_time)) {
-          return 4; // คำขอหมดอายุ (Expired)
-        }
-        if (o.status_use_id === 2) return 1; // จัดรถ
-        if (o.status_use_id === 4 && !o.pickup_status) return 2; // จัดรถรอยืนยัน
-        if (isCompleted) return 3; // เสร็จสิ้น
-        return 5;
-      };
-
-      const pA = getPriority(a);
-      const pB = getPriority(b);
-
-      if (pA !== pB) return pA - pB;
-
-      // ถ้าลำดับสถานะเท่ากัน ให้เอาที่ "เร่งด่วน" ขึ้นก่อน
-      if (a.is_urgent !== b.is_urgent) {
-        return a.is_urgent ? -1 : 1;
-      }
-
-      // วันที่ใกล้ถึงที่สุด เอาขึ้นก่อน
-      const dateA = getDateTimeStamp(a.journey_date, a.journey_time);
-      const dateB = getDateTimeStamp(b.journey_date, b.journey_time);
-      if (dateA !== dateB) return dateA - dateB;
-
-      // เรียงจากใหม่ไปเก่าสำหรับ fallback
+      if (dtB !== dtA) return dtB - dtA; // ใหม่กว่าอยู่บน
       return b.request_id - a.request_id;
     });
 
@@ -161,11 +133,17 @@ export async function getPendingDispatch() {
 /**
  * ดึงรายชื่อรถยนต์ (เฉพาะคันที่ flag เป็น null)
  */
-export async function getAvailableCars(divCode?: string) {
+export async function getAvailableCars(
+  divCode?: string,
+  includeCarId?: number,
+) {
   try {
     const cars = await prisma.vc_car_master.findMany({
       where: {
-        flag: { equals: null },
+        OR: [
+          { flag: { equals: null } },
+          includeCarId ? { car_id: includeCarId } : {},
+        ],
         ...(divCode ? { own_div_code: divCode } : {}),
         vc_car_status: {
           car_status_name: {
@@ -289,9 +267,9 @@ export async function assignResource(data: {
 
       const updateData: any = {
         car_id: data.carId,
-        driver_id: data.driverId, // มั่นใจว่าค่านี้ไม่เป็น NaN (ตัวเลขหรือ null เท่านั้น)
-        status_use_id: 4, // 4 = in_use (เพื่อให้ไปปรากฏในหน้าคืนรถ)
-        pickup_status: null, // Reset pickup status เผื่อมี
+        driver_id: data.driverId,
+        status_use_id: 4, // 4 = in_use
+        pickup_status: null,
         upd_date: new Date(),
       };
 

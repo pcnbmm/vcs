@@ -61,7 +61,7 @@ export async function getLatestCarMileage(carId: number | null) {
       orderBy: { use_id: "desc" },
       select: { mile_end: true },
     });
-    
+
     // Also check maintenance records
     const latestMaintenance = await prisma.vc_maintenance_item.findFirst({
       where: { car_id: carId },
@@ -80,16 +80,19 @@ export async function getLatestCarMileage(carId: number | null) {
 }
 
 export async function saveMaintenance(data: {
+  maintenance_item_id?: number; // Added for edit mode
   car_id: number;
-  maintenance_date: string;
-  start_time: string;
-  emp_id: number;
-  station_name: string;
+  incident_date: string; // New field
+  incident_time: string; // New field
+  maintenance_date?: string; // Made optional
+  start_time?: string; // Made optional
+  emp_id?: number; // Made optional
+  station_name?: string; // Made optional
   cause_id?: number;
   cause_detail?: string;
-  treat_ids?: number[]; // Multi-select
-  new_treats?: string[]; // New treats added
-  mile_car_in: number;
+  treat_ids?: number[];
+  new_treats?: string[];
+  mile_car_in?: number; // Made optional
   mile_car_out?: number;
   finish_date?: string;
   finish_time?: string;
@@ -120,7 +123,7 @@ export async function saveMaintenance(data: {
 
       // 2. Handle Multiple Treats
       const finalTreatIds: number[] = [...(data.treat_ids || [])];
-      
+
       if (data.new_treats && data.new_treats.length > 0) {
         for (const name of data.new_treats) {
           const newTreat = await tx.vc_treat.create({
@@ -136,27 +139,56 @@ export async function saveMaintenance(data: {
         }
       }
 
-      // 3. Create Maintenance Item
-      const maintenance = await tx.vc_maintenance_item.create({
-        data: {
-          car_id: data.car_id,
-          maintenance_date: data.maintenance_date ? new Date(data.maintenance_date) : null,
-          start_time: data.start_time,
-          emp_id: data.emp_id,
-          station_name: data.station_name,
-          cause_id: finalCauseId,
-          mile_car_in: data.mile_car_in,
-          mile_car_out: data.mile_car_out,
-          finish_date: data.finish_date ? new Date(data.finish_date) : null,
-          finish_time: data.finish_time,
-          vat: data.vat,
-          treat_id: finalTreatIds.length > 0 ? finalTreatIds[0] : undefined,
-          cre_by: data.cre_by,
-          cre_date: new Date(),
-          upd_by: data.cre_by,
-          upd_date: new Date(),
-        },
-      });
+      // 3. Create or Update Maintenance Item
+      let maintenance;
+      const maintenanceData: any = {
+        incident_date: data.incident_date ? new Date(data.incident_date) : null,
+        incident_time: data.incident_time,
+        maintenance_date: data.maintenance_date ? new Date(data.maintenance_date) : null,
+        start_time: data.start_time,
+        emp_id: data.emp_id,
+        station_name: data.station_name,
+        mile_car_in: data.mile_car_in,
+        mile_car_out: data.mile_car_out,
+        finish_date: data.finish_date ? new Date(data.finish_date) : null,
+        finish_time: data.finish_time,
+        vat: data.vat,
+        treat_id: finalTreatIds.length > 0 ? finalTreatIds[0] : undefined,
+        upd_by: data.cre_by,
+        upd_date: new Date(),
+      };
+
+      if (data.car_id) {
+        maintenanceData.vc_car_master = { connect: { car_id: data.car_id } };
+      }
+      if (finalCauseId) {
+        maintenanceData.vc_maintenance_cause = { connect: { cause_id: finalCauseId } };
+      }
+
+      if (data.maintenance_item_id) {
+        // Update mode
+        maintenance = await tx.vc_maintenance_item.update({
+          where: { maintenance_item_id: data.maintenance_item_id },
+          data: maintenanceData,
+        });
+        
+        // Clear old relations for re-creation
+        await tx.vc_maintenance_treat.deleteMany({
+          where: { maintenance_item_id: data.maintenance_item_id }
+        });
+        await tx.vc_maintenance_spare_item.deleteMany({
+          where: { maintenance_item_id: data.maintenance_item_id }
+        });
+      } else {
+        // Create mode
+        maintenance = await tx.vc_maintenance_item.create({
+          data: {
+            ...maintenanceData,
+            cre_by: data.cre_by,
+            cre_date: new Date(),
+          },
+        });
+      }
 
       // 4. Link Treats
       if (finalTreatIds.length > 0) {
@@ -184,10 +216,11 @@ export async function saveMaintenance(data: {
         });
       }
 
-      // 6. Update Car Status and Flag based on whether it's finished or not
+      // 6. Update Car Status and Flag
       const isFinished = !!data.finish_date;
+      const isInMaintenance = !!data.maintenance_date; // Actually entered shop
       
-      const targetStatusName = isFinished ? "ปกติ" : "ซ่อม";
+      const targetStatusName = isFinished ? "ปกติ" : (isInMaintenance ? "ซ่อม" : "รอซ่อม");
       const targetStatus = await tx.vc_car_status.findFirst({
         where: { car_status_name: { contains: targetStatusName } }
       });
@@ -195,7 +228,7 @@ export async function saveMaintenance(data: {
       await tx.vc_car_master.update({
         where: { car_id: data.car_id },
         data: { 
-          flag: isFinished ? null : "x",
+          flag: isFinished ? null : (isInMaintenance ? "x" : null),
           ...(targetStatus ? { car_status_id: targetStatus.car_status_id } : {})
         }
       });
