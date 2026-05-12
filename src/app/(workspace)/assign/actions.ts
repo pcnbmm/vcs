@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { sendAssignEmail } from "@/lib/mail";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // กำหนดสถานะตามที่คุณระบุ: null = ว่าง, 'x' = กำลังใช้งาน
 const CAR_FLAG_AVAILABLE = null;
@@ -196,13 +198,14 @@ export async function assignResource(data: {
   isTaxi?: boolean;
   taxiReason?: string;
 }) {
-  // สรุปข้อมูลที่ได้รับมา
+  const session = await getServerSession(authOptions); 
+  const recorderId = session?.user?.id ? parseInt(session.user.id) : null;
   console.log("=== API ASSIGN RESOURCE ===");
   console.log("Request ID:", data.requestId);
   console.log("Selected Car ID:", data.carId);
   console.log("Selected Driver ID:", data.driverId);
   console.log("===========================");
-
+ 
   try {
     // 1. ตรวสอบข้อมูลเดิม
     const existingOrder = await prisma.vc_order_item.findUnique({
@@ -271,6 +274,14 @@ export async function assignResource(data: {
           vc_car_master: { include: { vc_car_brand: true } },
           vc_driver: { include: { vc_users: true } },
           vc_start_place: true,
+        },
+      });
+      await tx.vc_use.create({
+        data: {
+          request_id: data.requestId,
+          recorder_id: recorderId,
+          cre_date: new Date(),
+          cre_by: recorderId,
         },
       });
 
