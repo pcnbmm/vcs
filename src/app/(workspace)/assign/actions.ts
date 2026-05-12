@@ -23,7 +23,11 @@ export async function getPendingDispatch() {
         ],
       },
       include: {
-        vc_user: true,
+        vc_user: {
+          include: {
+            department_id: true,
+          },
+        },
         vc_car_spec: true,
         vc_car_master: {
           include: { vc_car_brand: true },
@@ -49,11 +53,14 @@ export async function getPendingDispatch() {
     ] as number[];
 
     // ดึง approver username จาก approve_id (Char(8) = username)
-    const approverUsernames = [
+    // ดึง approver userid
+    const approverUserIds = [
       ...new Set(
-        orders.map((o: any) => o.approve_id).filter((id: any) => id != null),
+        orders
+          .map((o: any) => Number(o.approve_id))
+          .filter((id: any) => !isNaN(id)),
       ),
-    ] as string[];
+    ] as number[];
 
     // batch fetch users
     const [recorderUsers, approverUsers] = await Promise.all([
@@ -68,9 +75,10 @@ export async function getPendingDispatch() {
             },
           })
         : [],
-      approverUsernames.length > 0
+
+      approverUserIds.length > 0
         ? prisma.vc_users.findMany({
-            where: { username: { in: approverUsernames } },
+            where: { userid: { in: approverUserIds } },
             select: {
               userid: true,
               username: true,
@@ -80,6 +88,11 @@ export async function getPendingDispatch() {
           })
         : [],
     ]);
+
+    // Fetch Orgs manually since there's no direct relation in prisma schema
+    const orgs = await prisma.vc_orgs.findMany({
+      where: { status: "X" },
+    });
     // Custom Sorting:
     orders.sort((a: any, b: any) => {
       const dtA = getDateTimeStamp(a.journey_date, a.journey_time);
@@ -97,31 +110,27 @@ export async function getPendingDispatch() {
         : null;
 
       const approver = o.approve_id
-        ? approverUsers.find((u: any) => u.username === o.approve_id)
+        ? approverUsers.find((u: any) => u.userid === Number(o.approve_id))
         : null;
+
+      const org = orgs.find((orgItem: any) => String(orgItem.orgid) === o.use_div_code);
 
       return {
         ...o,
 
-        // PDF ใช้ field นี้
+        department: org?.orgname || o.use_div_code || "ไม่ระบุแผนก",
+
         selfDriveBool:
           o.self_drive === true || o.self_drive === "Y" || o.self_drive === 1,
 
-        // approver
-        approverUsername: approver?.username ?? null,
+        approver_username: approver?.username ?? null,
+        approver_firstname: approver?.firstname ?? null,
+        approver_lastname: approver?.lastname ?? null,
 
-        approver: approver
-          ? `${approver.firstname ?? ""} ${approver.lastname ?? ""}`.trim()
-          : null,
+        dispatcher_username: dispatcher?.username ?? null,
+        dispatcher_firstname: dispatcher?.firstname ?? null,
+        dispatcher_lastname: dispatcher?.lastname ?? null,
 
-        // dispatcher
-        dispatcherUsername: dispatcher?.username ?? null,
-
-        dispatcher: dispatcher
-          ? `${dispatcher.firstname ?? ""} ${dispatcher.lastname ?? ""}`.trim()
-          : null,
-
-        // pickup method จาก vc_use ล่าสุด
         pickupMethod: latestUse?.pickup_method ?? o.pickup_method ?? null,
       };
     });
@@ -294,7 +303,11 @@ export async function assignResource(data: {
         where: { request_id: data.requestId },
         data: updateData,
         include: {
-          vc_user: true,
+          vc_user: {
+            include: {
+              section_id: true,
+            },
+          },
           vc_car_master: { include: { vc_car_brand: true } },
           vc_driver: { include: { vc_users: true } },
           vc_start_place: true,

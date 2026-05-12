@@ -25,6 +25,7 @@ import {
   Check,
   AlertCircle,
   FileText,
+  Eye,
 } from "lucide-react";
 import {
   getPendingDispatch,
@@ -97,8 +98,7 @@ export default function AssignPage() {
           id: String(order.request_id),
           requester:
             `${order.vc_user?.firstname ?? ""} ${order.vc_user?.lastname ?? ""}`.trim(),
-          department:
-            order.vc_user?.departmentid ?? order.vc_user?.sectionid ?? "-",
+          department: order.department,
           phone: order.user_mobile ?? order.vc_user?.mobile_no ?? "-",
           date: order.journey_date
             ? new Date(order.journey_date).toLocaleDateString("th-TH")
@@ -115,10 +115,10 @@ export default function AssignPage() {
           carType: order.vc_car_spec?.car_spec_name ?? "-",
           selfDrive: order.self_drive ? "ขับเอง" : "มีคนขับ",
           status: String(order.status_use_id),
-          approver: order.approverName ?? null,
-          approverUsername: order.approverUsername ?? null,
-          dispatcher: order.dispatcherName ?? null,
-          dispatcherUsername: order.dispatcherUsername ?? null,
+          approver:
+            `${order.approver_username ?? ""} - ${order.approver_firstname ?? ""} ${order.approver_lastname ?? ""}`.trim(),
+          dispatcher:
+            `${order.dispatcher_username ?? ""} - ${order.dispatcher_firstname ?? ""} ${order.dispatcher_lastname ?? ""}`.trim(),
           pickupMethod: order.pickup_method ?? null,
           selfDriveBool: order.selfDriveBool,
           requesterUsername: order.vc_user?.username ?? null,
@@ -449,8 +449,8 @@ export default function AssignPage() {
       );
       if (filterStatus === "action_required") {
         return (
-          (order.status_use_id === 2 && !isExpired) ||
-          (order.status_use_id === 4 && !order.pickup_status && !isExpired)
+          order.status_use_id === 2 ||
+          (order.status_use_id === 4 && !order.pickup_status)
         );
       }
       if (filterStatus === "expired") {
