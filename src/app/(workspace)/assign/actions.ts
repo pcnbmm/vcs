@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { sendAssignEmail } from "@/lib/mail";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // กำหนดสถานะตามที่คุณระบุ: null = ว่าง, 'x' = กำลังใช้งาน
 const CAR_FLAG_AVAILABLE = null;
@@ -18,7 +20,11 @@ export async function getPendingDispatch() {
         status_use_id: { in: [2, 3, 4, 5, 6] },
       },
       include: {
-        vc_user: true,
+        vc_user: {
+          include: {
+            department_id: true,
+          },
+        },
         vc_car_spec: true,
         vc_car_master: {
           include: { vc_car_brand: true },
@@ -26,44 +32,65 @@ export async function getPendingDispatch() {
         vc_driver: {
           include: { vc_users: true },
         },
+        vc_use: {
+          orderBy: { use_id: "desc" },
+          take: 1,
+        },
+        vc_start_place: true,
       },
     });
 
-    // Helper for expired check
-    const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
-      if (!journeyDate) return false;
-      const d = new Date(journeyDate);
-      const dateStr =
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0");
-      let timeStr = journeyTime ? journeyTime.trim() : "23:59:59";
-      if (timeStr.split(":").length === 2) {
-        timeStr += ":00";
-      }
-      const deadline = new Date(`${dateStr}T${timeStr}`);
-      return new Date() > deadline;
-    };
+    // ดึง recorder_id ทั้งหมดจาก vc_use เพื่อ join vc_users
+    const recorderIds = [
+      ...new Set(
+        orders
+          .map((o: any) => o.vc_use?.[0]?.recorder_id)
+          .filter((id: any) => id != null),
+      ),
+    ] as number[];
 
-    const getDateTimeStamp = (journeyDate: any, journeyTime: string | null) => {
-      if (!journeyDate) return 0;
-      const d = new Date(journeyDate);
-      const dateStr =
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0");
-      let timeStr = journeyTime ? journeyTime.trim() : "00:00:00";
-      if (timeStr.split(":").length === 2) {
-        timeStr += ":00";
-      }
-      return new Date(`${dateStr}T${timeStr}`).getTime();
-    };
+    // ดึง approver username จาก approve_id (Char(8) = username)
+    // ดึง approver userid
+    const approverUserIds = [
+      ...new Set(
+        orders
+          .map((o: any) => Number(o.approve_id))
+          .filter((id: any) => !isNaN(id)),
+      ),
+    ] as number[];
 
-    // Custom Sorting: ขอด่วนขึ้นก่อน -> เรียงตามวันเวลาเดินทางล่าสุด ไป เก่ากว่า
+    // batch fetch users
+    const [recorderUsers, approverUsers] = await Promise.all([
+      recorderIds.length > 0
+        ? prisma.vc_users.findMany({
+            where: { userid: { in: recorderIds } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+            },
+          })
+        : [],
+
+      approverUserIds.length > 0
+        ? prisma.vc_users.findMany({
+            where: { userid: { in: approverUserIds } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+            },
+          })
+        : [],
+    ]);
+
+    // Fetch Orgs manually since there's no direct relation in prisma schema
+    const orgs = await prisma.vc_orgs.findMany({
+      where: { status: "X" },
+    });
+    // Custom Sorting:
     orders.sort((a: any, b: any) => {
       // 0. Priority: ขอด่วน
       if (a.is_urgent && !b.is_urgent) return -1;
@@ -76,17 +103,50 @@ export async function getPendingDispatch() {
       return b.request_id - a.request_id;
     });
 
-    return orders;
+    return orders.map((o: any) => {
+      const latestUse = o.vc_use?.[0];
+
+      const dispatcher = latestUse?.recorder_id
+        ? recorderUsers.find((u: any) => u.userid === latestUse.recorder_id)
+        : null;
+
+      const approver = o.approve_id
+        ? approverUsers.find((u: any) => u.userid === Number(o.approve_id))
+        : null;
+
+      const org = orgs.find((orgItem: any) => String(orgItem.orgid) === o.use_div_code);
+
+      return {
+        ...o,
+
+        department: org?.orgname || o.use_div_code || "ไม่ระบุแผนก",
+
+        selfDriveBool:
+          o.self_drive === true || o.self_drive === "Y" || o.self_drive === 1,
+
+        approver_username: approver?.username ?? null,
+        approver_firstname: approver?.firstname ?? null,
+        approver_lastname: approver?.lastname ?? null,
+
+        dispatcher_username: dispatcher?.username ?? null,
+        dispatcher_firstname: dispatcher?.firstname ?? null,
+        dispatcher_lastname: dispatcher?.lastname ?? null,
+
+        pickupMethod: latestUse?.pickup_method ?? o.pickup_method ?? null,
+      };
+    });
   } catch (error) {
     console.error("Error fetching pending assignments:", error);
     return [];
   }
 }
-
 /**
  * ดึงรายชื่อรถยนต์ (เฉพาะคันที่ flag เป็น null)
  */
-export async function getAvailableCars(divCode?: string, includeCarId?: number) {
+export async function getAvailableCars(
+  divCode?: string,
+  includeCarId?: number,
+) {
   try {
     const cars = await prisma.vc_car_master.findMany({
       where: {
@@ -172,7 +232,8 @@ export async function assignResource(data: {
   isTaxi?: boolean;
   taxiReason?: string;
 }) {
-  // สรุปข้อมูลที่ได้รับมา
+  const session = await getServerSession(authOptions);
+  const recorderId = session?.user?.id ? parseInt(session.user.id) : null;
   console.log("=== API ASSIGN RESOURCE ===");
   console.log("Request ID:", data.requestId);
   console.log("Selected Car ID:", data.carId);
@@ -243,10 +304,22 @@ export async function assignResource(data: {
         where: { request_id: data.requestId },
         data: updateData,
         include: {
-          vc_user: true,
+          vc_user: {
+            include: {
+              section_id: true,
+            },
+          },
           vc_car_master: { include: { vc_car_brand: true } },
           vc_driver: { include: { vc_users: true } },
           vc_start_place: true,
+        },
+      });
+      await tx.vc_use.create({
+        data: {
+          request_id: data.requestId,
+          recorder_id: recorderId,
+          cre_date: new Date(),
+          cre_by: recorderId,
         },
       });
 
@@ -399,4 +472,23 @@ export async function cancelBooking(data: {
   } catch (error: any) {
     return { success: false as const, error: error.message };
   }
+}
+function getDateTimeStamp(date?: Date | string | null, time?: string | null) {
+  if (!date) return Number.MAX_SAFE_INTEGER;
+
+  const d = new Date(date);
+
+  if (time) {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    d.setHours(hours || 0);
+    d.setMinutes(minutes || 0);
+    d.setSeconds(0);
+  }
+
+  return d.getTime();
+}
+
+function isAssignExpired(date?: Date | string | null, time?: string | null) {
+  return getDateTimeStamp(date, time) < Date.now();
 }

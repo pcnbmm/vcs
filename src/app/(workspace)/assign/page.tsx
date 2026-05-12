@@ -40,6 +40,8 @@ import { getCarSpecs } from "@/app/actions/carSpecActions";
 import Select from "react-select";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import Modal from "@/components/ui/Modal";
+import { pdf } from "@react-pdf/renderer";
+import BookingPDF from "@/components/pdf/BookingPDF"; // ปรับ path ตามที่วางไฟล์จริง
 
 // Types
 type DispatchType = "with_driver" | "self_drive" | "taxi";
@@ -90,6 +92,49 @@ export default function AssignPage() {
   const [selectedCancelOrder, setSelectedCancelOrder] = useState<any>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelSubmitting, setIsCancelSubmitting] = useState(false);
+  const handleDownloadPDF = async (order: any) => {
+    const doc = (
+      <BookingPDF
+        request={{
+          id: String(order.request_id),
+          requester:
+            `${order.vc_user?.firstname ?? ""} ${order.vc_user?.lastname ?? ""}`.trim(),
+          department: order.department,
+          phone: order.user_mobile ?? order.vc_user?.mobile_no ?? "-",
+          date: order.journey_date
+            ? new Date(order.journey_date).toLocaleDateString("th-TH")
+            : "-",
+          time: order.journey_time?.slice(0, 5) ?? "-",
+          endDate: order.return_date
+            ? new Date(order.return_date).toLocaleDateString("th-TH")
+            : "-",
+          endTime: order.return_time?.slice(0, 5) ?? "-",
+          origin: order.vc_start_place?.start_place_name ?? "-",
+          destination: order.journey_place ?? "-",
+          objective: order.journey_causes ?? "-",
+          passengers: order.passenger_amount ?? 1,
+          carType: order.vc_car_spec?.car_spec_name ?? "-",
+          selfDrive: order.self_drive ? "ขับเอง" : "มีคนขับ",
+          status: String(order.status_use_id),
+          approver:
+            `${order.approver_username ?? ""} - ${order.approver_firstname ?? ""} ${order.approver_lastname ?? ""}`.trim(),
+          dispatcher:
+            `${order.dispatcher_username ?? ""} - ${order.dispatcher_firstname ?? ""} ${order.dispatcher_lastname ?? ""}`.trim(),
+          pickupMethod: order.pickup_method ?? null,
+          selfDriveBool: order.selfDriveBool,
+          requesterUsername: order.vc_user?.username ?? null,
+        }}
+      />
+    );
+
+    const blob = await pdf(doc).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `REQ-${String(order.request_id).padStart(3, "0")}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleCancelSubmit = async () => {
     if (!cancelReason.trim()) {
@@ -309,7 +354,9 @@ export default function AssignPage() {
       finalDriverId = parseInt(selectedDriver);
     }
 
-    const isConfirmed = await showConfirm("ยืนยันการจัดรถและแจ้งเตือนผู้ใช้งาน?");
+    const isConfirmed = await showConfirm(
+      "ยืนยันการจัดรถและแจ้งเตือนผู้ใช้งาน?",
+    );
     if (!isConfirmed) return;
 
     setIsSubmitting(true);
@@ -403,7 +450,10 @@ export default function AssignPage() {
         `REQ#${order.request_id} status=${order.status_use_id} pickup=${order.pickup_status} expired=${isExpired}`,
       );
       if (filterStatus === "action_required") {
-        return true;
+        return (
+          order.status_use_id === 2 ||
+          (order.status_use_id === 4 && !order.pickup_status)
+        );
       }
       if (filterStatus === "expired") {
         return (
@@ -426,7 +476,8 @@ export default function AssignPage() {
               order.pickup_status === "TAXI_CALLED")) ||
           order.status_use_id === 5
         );
-      if (filterStatus === "cancelled") return order.status_use_id === 6 || order.status_use_id === 3;
+      if (filterStatus === "cancelled")
+        return order.status_use_id === 6 || order.status_use_id === 3;
       return true;
     })
     .filter((order) => {
@@ -452,10 +503,10 @@ export default function AssignPage() {
         d.setHours(h || 0, m || 0, 0, 0);
         return d.getTime();
       };
-      
+
       const dtA = getDT(a);
       const dtB = getDT(b);
-      
+
       if (dtB !== dtA) return dtB - dtA; // ใหม่กว่าอยู่บน
 
       // 2. ถ้าวันเวลาเดินทางเท่ากัน ให้เอาที่ส่งคำขอล่าสุดขึ้นก่อน (Request ID มากไปน้อย)
@@ -559,10 +610,13 @@ export default function AssignPage() {
                           รอจัดรถ
                         </span>
                       )}
-                      {(order.status_use_id === 6 || order.status_use_id === 3) && (
+                      {(order.status_use_id === 6 ||
+                        order.status_use_id === 3) && (
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-100 uppercase tracking-tighter">
-                            {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                            {order.status_use_id === 3
+                              ? "ไม่มารับรถ"
+                              : "ยกเลิกแล้ว"}
                           </span>
                           {order.dispatcher_reject_reason && (
                             <span className="text-[10px] font-bold text-rose-600 uppercase tracking-tighter">
@@ -632,22 +686,40 @@ export default function AssignPage() {
                 className: "text-right",
                 cell: (order) => (
                   <div className="flex justify-end gap-2">
+                    {/* ปุ่ม PDF */}
+                    <button
+                      onClick={() => handleDownloadPDF(order)}
+                      className="bg-slate-50 text-slate-400 p-2 rounded-lg hover:bg-red-50 hover:text-red-500 border border-slate-100 transition-all"
+                      title={`ดาวน์โหลด PDF REQ-${String(order.request_id).padStart(3, "0")}`}
+                    >
+                      <FileText size={14} />
+                    </button>
                     {/* ปุ่มหลัก */}
-                    {((order.status_use_id === 4 && (order.pickup_status === "PICKED_UP" || order.pickup_status === "TAXI_CALLED")) || (order.status_use_id === 5 && order.pickup_method === "TAXI")) ? (
+                    {(order.status_use_id === 4 &&
+                      (order.pickup_status === "PICKED_UP" ||
+                        order.pickup_status === "TAXI_CALLED")) ||
+                    (order.status_use_id === 5 &&
+                      order.pickup_method === "TAXI") ? (
                       <button
                         disabled
                         className="bg-slate-100 text-slate-400 px-4 py-2 rounded-lg text-xs font-bold cursor-not-allowed"
                       >
                         เสร็จสิ้น
                       </button>
-                    ) : (order.status_use_id === 6 || order.status_use_id === 3) ? (
+                    ) : order.status_use_id === 6 ||
+                      order.status_use_id === 3 ? (
                       <button
                         disabled
                         className="bg-rose-50 text-rose-400 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100 cursor-not-allowed"
                       >
-                        {order.status_use_id === 3 ? "ไม่มารับรถ" : "ยกเลิกแล้ว"}
+                        {order.status_use_id === 3
+                          ? "ไม่มารับรถ"
+                          : "ยกเลิกแล้ว"}
                       </button>
-                    ) : isAssignExpired(order.journey_date, order.journey_time) ? (
+                    ) : isAssignExpired(
+                        order.journey_date,
+                        order.journey_time,
+                      ) ? (
                       <button
                         disabled
                         className="bg-rose-50 text-rose-500 px-4 py-2 rounded-lg text-xs font-bold border border-rose-100"
@@ -680,26 +752,26 @@ export default function AssignPage() {
                         order.journey_time,
                       ) && (
                         <div className="flex gap-2">
-                           {order.car_id || order.pickup_method === "TAXI" ? (
-                              <button
-                                onClick={() => {
-                                  setSelectedDetailsOrder(order);
-                                  setIsDetailsModalOpen(true);
-                                }}
-                                className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-all border border-blue-100"
-                                title="ดูรายละเอียดการจัดรถ"
-                              >
-                                <Eye size={14} />
-                              </button>
-                           ) : (
-                              <button
-                                onClick={() => openAssignModal(order)}
-                                className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all border border-slate-200"
-                                title="แก้ไขการจัดรถ"
-                              >
-                                <Edit2 size={14} />
-                              </button>
-                           )}
+                          {order.car_id || order.pickup_method === "TAXI" ? (
+                            <button
+                              onClick={() => {
+                                setSelectedDetailsOrder(order);
+                                setIsDetailsModalOpen(true);
+                              }}
+                              className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-all border border-blue-100"
+                              title="ดูรายละเอียดการจัดรถ"
+                            >
+                              <Eye size={14} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => openAssignModal(order)}
+                              className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all border border-slate-200"
+                              title="แก้ไขการจัดรถ"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                          )}
                           <button
                             onClick={() => {
                               setSelectedCancelOrder(order);
@@ -719,7 +791,7 @@ export default function AssignPage() {
             data={paginatedOrders}
             isLoading={loading}
             rowKey={(row) => row.request_id}
-            getRowClassName={(row) => row.is_urgent ? "bg-rose-50/30" : ""}
+            getRowClassName={(row) => (row.is_urgent ? "bg-rose-50/30" : "")}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
@@ -1106,47 +1178,79 @@ export default function AssignPage() {
       >
         <div className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center gap-4">
-             <div className="bg-white p-2 rounded-lg shadow-sm">
-                <Truck className="text-blue-600" size={24} />
-             </div>
-             <div>
-                <p className="text-xs font-black text-blue-400 uppercase tracking-widest">ยานพาหนะที่จัดสรร</p>
-                <p className="text-lg font-black text-blue-700">
-                  {selectedDetailsOrder?.vc_car_master?.car_number || (selectedDetailsOrder?.pickup_method === "TAXI" ? "TAXI (แท็กซี่)" : "ไม่ระบุ")}
-                </p>
-                <p className="text-xs text-blue-600 font-bold">
-                  {selectedDetailsOrder?.vc_car_master?.vc_car_brand?.car_brand_name} • {selectedDetailsOrder?.vc_car_master?.vc_car_spec?.car_spec_name}
-                </p>
-             </div>
+            <div className="bg-white p-2 rounded-lg shadow-sm">
+              <Truck className="text-blue-600" size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-blue-400 uppercase tracking-widest">
+                ยานพาหนะที่จัดสรร
+              </p>
+              <p className="text-lg font-black text-blue-700">
+                {selectedDetailsOrder?.vc_car_master?.car_number ||
+                  (selectedDetailsOrder?.pickup_method === "TAXI"
+                    ? "TAXI (แท็กซี่)"
+                    : "ไม่ระบุ")}
+              </p>
+              <p className="text-xs text-blue-600 font-bold">
+                {
+                  selectedDetailsOrder?.vc_car_master?.vc_car_brand
+                    ?.car_brand_name
+                }{" "}
+                •{" "}
+                {
+                  selectedDetailsOrder?.vc_car_master?.vc_car_spec
+                    ?.car_spec_name
+                }
+              </p>
+            </div>
           </div>
 
           <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex items-center gap-4">
-             <div className="bg-white p-2 rounded-lg shadow-sm">
-                <User className="text-emerald-600" size={24} />
-             </div>
-             <div>
-                <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">พนักงานขับรถ</p>
-                <p className="text-lg font-black text-emerald-700">
-                  {selectedDetailsOrder?.self_drive ? "ผู้ขอขับรถเอง" : (selectedDetailsOrder?.vc_driver?.vc_users ? `นาย ${selectedDetailsOrder.vc_driver.vc_users.firstname} ${selectedDetailsOrder.vc_driver.vc_users.lastname}` : "ไม่ระบุ")}
-                </p>
-                <p className="text-xs text-emerald-600 font-bold">
-                  {selectedDetailsOrder?.vc_driver?.tel || "ไม่มีเบอร์โทรศัพท์"}
-                </p>
-             </div>
+            <div className="bg-white p-2 rounded-lg shadow-sm">
+              <User className="text-emerald-600" size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">
+                พนักงานขับรถ
+              </p>
+              <p className="text-lg font-black text-emerald-700">
+                {selectedDetailsOrder?.self_drive
+                  ? "ผู้ขอขับรถเอง"
+                  : selectedDetailsOrder?.vc_driver?.vc_users
+                    ? `นาย ${selectedDetailsOrder.vc_driver.vc_users.firstname} ${selectedDetailsOrder.vc_driver.vc_users.lastname}`
+                    : "ไม่ระบุ"}
+              </p>
+              <p className="text-xs text-emerald-600 font-bold">
+                {selectedDetailsOrder?.vc_driver?.tel || "ไม่มีเบอร์โทรศัพท์"}
+              </p>
+            </div>
           </div>
 
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-             <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">ข้อมูลการรับรถ</span>
-                {selectedDetailsOrder?.pickup_status ? (
-                  <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-black">รับรถแล้ว</span>
-                ) : (
-                  <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-black">รอยืนยันการรับรถ</span>
-                )}
-             </div>
-             <p className="text-sm font-bold text-slate-700">
-                วิธีการรับรถ: <span className="text-blue-600">{selectedDetailsOrder?.pickup_method === "TAXI" ? "แท็กซี่" : (selectedDetailsOrder?.pickup_method === "SELF_PICKUP" ? "รับรถเอง" : "เจ้าหน้าที่ขับไปส่ง")}</span>
-             </p>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                ข้อมูลการรับรถ
+              </span>
+              {selectedDetailsOrder?.pickup_status ? (
+                <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  รับรถแล้ว
+                </span>
+              ) : (
+                <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  รอยืนยันการรับรถ
+                </span>
+              )}
+            </div>
+            <p className="text-sm font-bold text-slate-700">
+              วิธีการรับรถ:{" "}
+              <span className="text-blue-600">
+                {selectedDetailsOrder?.pickup_method === "TAXI"
+                  ? "แท็กซี่"
+                  : selectedDetailsOrder?.pickup_method === "SELF_PICKUP"
+                    ? "รับรถเอง"
+                    : "เจ้าหน้าที่ขับไปส่ง"}
+              </span>
+            </p>
           </div>
         </div>
       </Modal>

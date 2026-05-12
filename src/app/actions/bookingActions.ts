@@ -138,7 +138,6 @@ export async function getMyBookings(
     const enrichedBookings = bookings.map((b) => {
       const org = orgs.find((o) => String(o.orgid) === b.use_div_code);
       const latestUse = b.vc_use[b.vc_use.length - 1];
-
       const dispatcherUser = latestUse?.recorder_id
         ? dispatcherUsers.find((u) => u.userid === latestUse.recorder_id)
         : null;
