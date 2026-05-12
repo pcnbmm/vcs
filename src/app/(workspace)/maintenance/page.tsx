@@ -5,7 +5,7 @@ import Select from "react-select";
 import { 
   Wrench, CarFront, FileText, Calendar, Clock, MapPin, 
   ArrowRight, Save, ShieldAlert, Plus, Trash2, History,
-  Eye, X, Info
+  Eye, X, Info, Edit2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { showSuccess, showError, showConfirm } from "@/lib/sweetalert";
@@ -45,8 +45,8 @@ export default function MaintenancePage() {
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any | null>(null);
   
   // Maintenance Details State
-  const [entryDate, setEntryDate] = useState(new Date().toISOString().split('T')[0]);
-  const [entryTime, setEntryTime] = useState(new Date().toTimeString().slice(0, 5));
+  const [entryDate, setEntryDate] = useState("");
+  const [entryTime, setEntryTime] = useState("");
   const [entryMileage, setEntryMileage] = useState("");
   
   const [exitDate, setExitDate] = useState("");
@@ -62,11 +62,20 @@ export default function MaintenancePage() {
     { name: "", amount: 1, price: 0, hasVat: true }
   ]);
 
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  // Incident State
+  const [incidentDate, setIncidentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [incidentTime, setIncidentTime] = useState(new Date().toTimeString().slice(0, 5));
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const entryDateRef = useRef<HTMLInputElement>(null);
   const exitDateRef = useRef<HTMLInputElement>(null);
+  const incidentDateRef = useRef<HTMLInputElement>(null);
 
   // Fetch initial data
   useEffect(() => {
@@ -100,15 +109,34 @@ export default function MaintenancePage() {
 
   // Initialize Flatpickr
   useEffect(() => {
+    let fpIncident: any;
     let fpEntry: any;
     let fpExit: any;
+
+    if (incidentDateRef.current) {
+      fpIncident = flatpickr(incidentDateRef.current, {
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i",
+        defaultDate: incidentDate ? new Date(`${incidentDate}T${incidentTime || "00:00"}`) : new Date(),
+        onChange: (dates) => {
+          if (dates && dates.length > 0) {
+            const d = dates[0];
+            const isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            const isoTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+            setIncidentDate(isoDate);
+            setIncidentTime(isoTime);
+          }
+        },
+      });
+    }
 
     if (entryDateRef.current) {
       fpEntry = flatpickr(entryDateRef.current, {
         enableTime: true,
         time_24hr: true,
         dateFormat: "d/m/Y H:i",
-        defaultDate: new Date(),
+        defaultDate: entryDate ? new Date(`${entryDate}T${entryTime || "00:00"}`) : undefined,
         onChange: (dates) => {
           if (dates && dates.length > 0) {
             const d = dates[0];
@@ -126,6 +154,7 @@ export default function MaintenancePage() {
         enableTime: true,
         time_24hr: true,
         dateFormat: "d/m/Y H:i",
+        defaultDate: exitDate ? new Date(`${exitDate}T${exitTime || "00:00"}`) : undefined,
         onChange: (dates) => {
           if (dates && dates.length > 0) {
             const d = dates[0];
@@ -139,10 +168,11 @@ export default function MaintenancePage() {
     }
 
     return () => {
+      fpIncident?.destroy();
       fpEntry?.destroy();
       fpExit?.destroy();
     };
-  }, [isLoading]); // Re-init after loading master data to ensure refs are attached
+  }, [isLoading, activeTab]);
 
   const addSpareItem = () => {
     setSpareItems([...spareItems, { name: "", amount: 1, price: 0, hasVat: true }]);
@@ -176,10 +206,10 @@ export default function MaintenancePage() {
   };
 
   // Calculations
-  const subtotal = spareItems.reduce((acc, item) => acc + (parseFloat(item.price || 0) * parseInt(item.amount || 0)), 0);
+  const subtotal = spareItems.reduce((acc, item) => acc + (parseFloat(item.price || 0) * parseInt(item.amount || 1)), 0);
   const vatableSubtotal = spareItems.reduce((acc, item) => {
     if (item.hasVat) {
-      return acc + (parseFloat(item.price || 0) * parseInt(item.amount || 0));
+      return acc + (parseFloat(item.price || 0) * parseInt(item.amount || 1));
     }
     return acc;
   }, 0);
@@ -236,103 +266,166 @@ export default function MaintenancePage() {
 
   const resetForm = () => {
     setSelectedCar(null);
+    setIncidentDate(new Date().toISOString().split('T')[0]);
+    setIncidentTime(new Date().toTimeString().slice(0, 5));
     setSelectedCause(null);
     setCauseDetail("");
+    setSelectedTreats([]);
     setNeedReplacement(false);
-    setEntryDate(new Date().toISOString().split('T')[0]);
-    setEntryTime(new Date().toTimeString().slice(0, 5));
+    setEntryDate("");
+    setEntryTime("");
     setEntryMileage("");
     setExitDate("");
     setExitTime("");
     setExitMileage("");
-    setSelectedTreats([]);
     setServiceLocation("");
     setSelectedDriver(null);
     setVatPercent("7");
     setSpareItems([{ name: "", amount: 1, price: 0, hasVat: true }]);
-    
-    // Clear flatpickr inputs
-    if (entryDateRef.current) (entryDateRef.current as any)._flatpickr?.setDate(new Date());
-    if (exitDateRef.current) (exitDateRef.current as any)._flatpickr?.clear();
+    setIsEditing(false);
+    setEditingId(null);
   };
 
-  const handleSubmit = async () => {
-    if (!selectedCar) {
-      showError("กรุณาเลือกยานพาหนะที่ต้องการแจ้งซ่อม");
-      return;
-    }
+  const handleEdit = (item: any) => {
+    setIsEditing(true);
+    setEditingId(item.maintenance_item_id);
+    setActiveTab("form");
     
-    if (!selectedCause && !causeDetail) {
-      showError("กรุณาระบุเหตุเสีย");
-      return;
-    }
-
-    if (!entryDate || !entryMileage || !serviceLocation || !selectedDriver) {
-      showError("กรุณากรอกข้อมูลการซ่อมบำรุงให้ครบถ้วน");
-      return;
-    }
-
-    const confirmed = await showConfirm("ยืนยันการบันทึกข้อมูลการแจ้งซ่อม?");
-    if (!confirmed) return;
-
-    setIsSubmitting(true);
-    
-    const treatIds = selectedTreats.map(t => parseInt(t.value));
-
-    const res = await saveMaintenance({
-      car_id: parseInt(selectedCar.value),
-      maintenance_date: entryDate,
-      start_time: entryTime,
-      emp_id: selectedDriver ? parseInt(selectedDriver.value) : 0,
-      station_name: serviceLocation,
-      cause_id: selectedCause?.value && selectedCause.value !== "other" ? parseInt(selectedCause.value) : undefined,
-      cause_detail: causeDetail,
-      treat_ids: treatIds,
-      mile_car_in: parseInt(entryMileage || "0"),
-      mile_car_out: exitMileage ? parseInt(exitMileage) : undefined,
-      finish_date: exitDate,
-      finish_time: exitTime,
-      vat: parseFloat(vatPercent),
-      spare_items: spareItems.filter(item => item.name.trim() !== "").map(item => ({
-        name: item.name,
-        amount: parseInt(item.amount),
-        price: parseFloat(item.price)
-      })),
-      cre_by: session?.user?.name || "SYSTEM",
+    setSelectedCar({
+      value: item.car_id.toString(),
+      label: `${item.vc_car_master?.car_number} (${item.vc_car_master?.vc_car_brand?.car_brand_name || ""})`
     });
 
-    setIsSubmitting(false);
+    if (item.incident_date) {
+      setIncidentDate(new Date(item.incident_date).toISOString().split('T')[0]);
+      setIncidentTime(item.incident_time || "");
+    }
 
-    if (res.success) {
-      showSuccess("บันทึกข้อมูลสำเร็จ!");
-      if (needReplacement) {
-        router.push("/replacement");
-      } else {
-        resetForm();
-        router.refresh();
-      }
+    if (item.vc_maintenance_cause) {
+      setSelectedCause({
+        value: item.cause_id.toString(),
+        label: item.vc_maintenance_cause.cause_detail
+      });
+    }
+
+    const treats = item.vc_maintenance_treat?.map((t: any) => ({
+      value: t.treat_id.toString(),
+      label: t.vc_treat?.treat_name
+    })) || [];
+    setSelectedTreats(treats);
+
+    if (item.maintenance_date) {
+      setEntryDate(new Date(item.maintenance_date).toISOString().split('T')[0]);
+      setEntryTime(item.start_time || "");
+      setEntryMileage(item.mile_car_in?.toString() || "");
+    }
+
+    setServiceLocation(item.station_name || "");
+    
+    if (item.emp_id) {
+       const driver = masterData.drivers.find(d => d.value === item.emp_id.toString());
+       setSelectedDriver(driver || null);
+    }
+
+    if (item.finish_date) {
+      setExitDate(new Date(item.finish_date).toISOString().split('T')[0]);
+      setExitTime(item.finish_time || "");
+      setExitMileage(item.mile_car_out?.toString() || "");
+    }
+
+    if (item.vc_maintenance_spare_item?.length > 0) {
+      setSpareItems(item.vc_maintenance_spare_item.map((s: any) => ({
+        name: s.spare_item_name,
+        amount: s.spare_amount,
+        price: s.spare_price,
+        hasVat: true
+      })));
     } else {
-      showError("เกิดข้อผิดพลาด: " + res.error);
+      setSpareItems([{ name: "", amount: 1, price: 0, hasVat: true }]);
+    }
+
+    setVatPercent(item.vat?.toString() || "7");
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!selectedCar) return showError("กรุณาเลือกยานพาหนะ");
+    if (!incidentDate || !incidentTime) return showError("กรุณาระบุวันเวลาที่เกิดเหตุเสีย");
+    if (!selectedCause && !causeDetail) return showError("กรุณาระบุสาเหตุการซ่อม");
+
+    setIsSubmitting(true);
+    try {
+      const res = await saveMaintenance({
+        maintenance_item_id: editingId || undefined,
+        car_id: parseInt(selectedCar.value),
+        incident_date: incidentDate,
+        incident_time: incidentTime,
+        maintenance_date: entryDate || undefined,
+        start_time: entryTime || undefined,
+        emp_id: selectedDriver ? parseInt(selectedDriver.value) : undefined,
+        station_name: serviceLocation || undefined,
+        cause_id: selectedCause ? parseInt(selectedCause.value) : undefined,
+        cause_detail: causeDetail || undefined,
+        treat_ids: selectedTreats.map(t => parseInt(t.value)),
+        mile_car_in: entryMileage ? parseInt(entryMileage) : undefined,
+        mile_car_out: exitMileage ? parseInt(exitMileage) : undefined,
+        finish_date: exitDate || undefined,
+        finish_time: exitTime || undefined,
+        vat: parseFloat(vatPercent || "0"),
+        spare_items: spareItems.filter(i => i.name.trim()),
+        cre_by: session?.user?.name || "Unknown",
+      });
+
+      if (res.success) {
+        showSuccess(isEditing ? "แก้ไขข้อมูลสำเร็จ" : "บันทึกข้อมูลสำเร็จ");
+        resetForm();
+        if (needReplacement && !isEditing) {
+          router.push(`/replacement?car_id=${selectedCar.value}&maintenance_id=${res.maintenance_id}`);
+        }
+      } else {
+        showError(res.error || "เกิดข้อผิดพลาดในการบันทึก");
+      }
+    } catch (error) {
+      console.error(error);
+      showError("เกิดข้อผิดพลาดที่ไม่คาดคิด");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
+  if (isLoading && masterData.cars.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+        <p className="text-slate-500 font-bold animate-pulse">กำลังโหลดข้อมูลระบบ...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-12">
-      {/* Tab Header */}
-      <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-2xl w-fit">
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Page Header */}
+      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="p-4 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-200">
+            <Wrench size={32} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black text-black tracking-tight">ระบบแจ้งซ่อมและบำรุงรักษา</h1>
+            <p className="text-slate-500 font-medium mt-1">จัดการรายการส่งซ่อมและประวัติการบำรุงรักษายานพาหนะ</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs Switcher */}
+      <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit mb-8">
         <button
           onClick={() => setActiveTab("form")}
           className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "form" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
         >
-          <Wrench size={18} />
+          <Plus size={18} />
           แจ้งซ่อมใหม่
         </button>
         <button
@@ -345,319 +438,348 @@ export default function MaintenancePage() {
       </div>
 
       {activeTab === "form" ? (
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {/* Section 1: Vehicle & Breakdown Info */}
-        <div className="p-8 border-b border-slate-100">
-          <div className="flex items-center gap-2 mb-6 text-black">
-            <CarFront size={20} className="text-blue-600" />
-            <h2 className="text-lg font-bold">1. ข้อมูลยานพาหนะและเหตุเสีย</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-black block">ยานพาหนะ (ทะเบียน) <span className="text-rose-500">*</span></label>
-              <Select
-                options={masterData.cars}
-                value={selectedCar}
-                onChange={handleCarChange}
-                placeholder="ค้นหาหรือเลือกทะเบียนรถ..."
-                styles={reactSelectStyles}
-                isClearable
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-black block">สาเหตุการซ่อม / การเข้าศูนย์ <span className="text-rose-500">*</span></label>
-              <Select
-                options={[...masterData.causes, { value: "other", label: "+ อื่นๆ (ระบุเอง)" }]}
-                value={selectedCause}
-                onChange={(val: any) => {
-                  setSelectedCause(val);
-                  if (val?.value !== "other") setCauseDetail("");
-                }}
-                placeholder="เลือกสาเหตุการซ่อม..."
-                styles={reactSelectStyles}
-                isClearable
-              />
-            </div>
-
-            {(selectedCause?.value === "other" || !selectedCause) && (
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-bold text-black block">ระบุรายละเอียดสาเหตุ <span className="text-rose-500">*</span></label>
-                <textarea
-                  value={causeDetail}
-                  onChange={(e) => setCauseDetail(e.target.value)}
-                  placeholder="ระบุอาการผิดปกติ หรือเหตุผลที่ต้องส่งซ่อม..."
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all resize-none"
-                  rows={3}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Section 2: Replacement Vehicle Toggle */}
-        <div className="p-8 border-b border-slate-100 bg-slate-50/50">
-          <div className="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
-            <div className="flex gap-4">
-              <div className={`p-3 rounded-2xl transition-colors ${needReplacement ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
-                <ShieldAlert size={24} />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-black">ต้องการขอใช้งานรถทดแทนหรือไม่?</h3>
-                <p className="text-sm text-slate-500 mt-1 font-medium">หากต้องการ ระบบจะนำคุณไปยังหน้าฟอร์มกรอกขอรถทดแทนหลังจากบันทึกข้อมูลนี้</p>
-              </div>
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* Section 1: Vehicle & Breakdown Info */}
+          <div className="p-8 border-b border-slate-100">
+            <div className="flex items-center gap-2 mb-6 text-black">
+              <CarFront size={20} className="text-blue-600" />
+              <h2 className="text-lg font-bold">1. ข้อมูลยานพาหนะและเหตุเสีย</h2>
             </div>
             
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                className="sr-only peer" 
-                checked={needReplacement}
-                onChange={(e) => setNeedReplacement(e.target.checked)}
-              />
-              <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ต้องการรถทดแทน' : 'ไม่ต้องการ'}</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Section 2: Maintenance Details */}
-        <div className="p-8 animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="flex items-center gap-2 mb-6 text-black">
-            <FileText size={20} className="text-blue-600" />
-            <h2 className="text-lg font-bold">2. ข้อมูลการซ่อมบำรุง</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Entry Info */}
-            <div className="space-y-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
-              <h3 className="font-bold text-black flex items-center gap-2 border-b border-blue-100 pb-2">
-                <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs">IN</span>
-                นำรถเข้าซ่อม
-              </h3>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-black uppercase opacity-60">วันเวลาที่นำรถเข้า</label>
-                  <div className="relative">
-                    <input 
-                      ref={entryDateRef}
-                      type="text" 
-                      placeholder="วัน/เดือน/ปี --:--" 
-                      readOnly
-                      className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm" 
-                    />
-                    <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                    <Clock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-black uppercase opacity-60">เลขไมล์ก่อนซ่อม</label>
-                <input type="number" value={entryMileage} onChange={(e) => setEntryMileage(e.target.value)} placeholder="เช่น 150000" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-            </div>
-
-            {/* Exit Info */}
-            <div className="space-y-4 p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-              <h3 className="font-bold text-black flex items-center gap-2 border-b border-emerald-100 pb-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xs">OUT</span>
-                นำรถออกจากซ่อม
-              </h3>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-black uppercase opacity-60">วันเวลาที่นำรถออก (ถ้ามี)</label>
-                  <div className="relative">
-                    <input 
-                      ref={exitDateRef}
-                      type="text" 
-                      placeholder="วัน/เดือน/ปี --:--" 
-                      readOnly
-                      className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm" 
-                    />
-                    <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                    <Clock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-black uppercase opacity-60">เลขไมล์หลังซ่อม (ถ้ามี)</label>
-                <input type="number" value={exitMileage} onChange={(e) => setExitMileage(e.target.value)} placeholder="เช่น 150050" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-emerald-500" />
-              </div>
-            </div>
-            
-            {/* Other Details */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-black block">การบำรุงรักษาที่ได้รับ (เลือกได้หลายรายการ) <span className="text-rose-500">*</span></label>
+                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <CarFront size={14} className="text-blue-500" />
+                  ยานพาหนะ (ทะเบียน) <span className="text-rose-500">*</span>
+                </label>
                 <Select
-                  isMulti
-                  options={masterData.treats}
-                  value={selectedTreats}
-                  onChange={(vals: any) => setSelectedTreats(vals || [])}
-                  placeholder="เลือกการบำรุงรักษา..."
-                  styles={reactSelectStyles}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-black block">สถานที่ให้บริการซ่อม <span className="text-rose-500">*</span></label>
-                <div className="relative">
-                  <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input 
-                    type="text" 
-                    value={serviceLocation} 
-                    onChange={(e) => setServiceLocation(e.target.value)} 
-                    placeholder="เช่น อู่สมชายการช่าง..." 
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all" 
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-black block">พนักงานขับรถที่นำไปซ่อม <span className="text-rose-500">*</span></label>
-                <Select
-                  options={masterData.drivers}
-                  value={selectedDriver}
-                  onChange={setSelectedDriver}
-                  placeholder="เลือกพนักงานขับรถ..."
+                  options={masterData.cars}
+                  value={selectedCar}
+                  onChange={handleCarChange}
+                  placeholder="ค้นหาหรือเลือกทะเบียนรถ..."
                   styles={reactSelectStyles}
                   isClearable
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-black block">ภาษี VAT (%)</label>
-                <input 
-                  type="number" 
-                  value={vatPercent} 
-                  onChange={(e) => setVatPercent(e.target.value)} 
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all" 
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Clock size={14} className="text-blue-500" />
+                  วันเวลาที่เกิดเหตุเสีย <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    ref={incidentDateRef}
+                    type="text"
+                    placeholder="เลือกวันเวลาที่เกิดเหตุเสีย..."
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                  />
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                </div>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-sm font-bold text-black block">สาเหตุการซ่อม / การเข้าศูนย์ <span className="text-rose-500">*</span></label>
+                <Select
+                  options={[...masterData.causes, { value: "other", label: "+ อื่นๆ (ระบุเอง)" }]}
+                  value={selectedCause}
+                  onChange={(val: any) => {
+                    setSelectedCause(val);
+                    if (val?.value !== "other") setCauseDetail("");
+                  }}
+                  placeholder="เลือกสาเหตุการซ่อม..."
+                  styles={reactSelectStyles}
+                  isClearable
                 />
               </div>
+
+              {(selectedCause?.value === "other" || !selectedCause) && (
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-bold text-black block">ระบุรายละเอียดสาเหตุ <span className="text-rose-500">*</span></label>
+                  <textarea
+                    value={causeDetail}
+                    onChange={(e) => setCauseDetail(e.target.value)}
+                    placeholder="ระบุอาการผิดปกติ หรือเหตุผลที่ต้องส่งซ่อม..."
+                    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                    rows={3}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Section 4: Spare Parts */}
-          <div className="mt-8 border-t border-slate-100 pt-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2 text-black">
-                <Wrench size={20} className="text-blue-600" />
-                <h2 className="text-lg font-bold">3. รายการอะไหล่ / ค่าบริการ</h2>
+          {/* Toggle Section: Always Visible */}
+          <div className="p-8 border-b border-slate-100 bg-slate-50/50">
+            <div className="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
+              <div className="flex gap-4">
+                <div className={`p-3 rounded-2xl transition-colors ${needReplacement ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
+                  <ShieldAlert size={24} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-black">ใช้งานรถทดแทนหรือไม่?</h3>
+                  <p className="text-sm text-slate-500 mt-1 font-medium">
+                    {needReplacement 
+                      ? "ระบบจะข้ามส่วนการซ่อม และพาคุณไปหน้าขอรถทดแทนทันทีหลังบันทึก" 
+                      : "หากต้องการ ระบบจะนำคุณไปยังหน้าฟอร์มกรอกขอรถทดแทนหลังจากบันทึกข้อมูลนี้"}
+                  </p>
+                </div>
               </div>
-              <button 
-                type="button"
-                onClick={addSpareItem}
-                className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-4 py-2 rounded-lg cursor-pointer"
-              >
-                <Plus size={16} />
-                เพิ่มรายการ
-              </button>
+              
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer" 
+                  checked={needReplacement}
+                  onChange={(e) => setNeedReplacement(e.target.checked)}
+                />
+                <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ต้องการรถทดแทน' : 'ไม่ต้องการ'}</span>
+              </label>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              {spareItems.map((item, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <div className="md:col-span-5 space-y-1.5">
-                    <label className="text-xs font-bold text-black uppercase opacity-60">ชื่ออะไหล่ / บริการ</label>
-                    <input 
-                      type="text" 
-                      value={item.name} 
-                      onChange={(e) => updateSpareItem(index, "name", e.target.value)}
-                      placeholder="เช่น น้ำมันเครื่อง..." 
-                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
-                    />
+          {!needReplacement && (
+            <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+              {/* Section 2: Maintenance Details */}
+              <div className="p-8 border-b border-slate-100">
+                <div className="flex items-center gap-2 mb-6 text-black">
+                  <FileText size={20} className="text-blue-600" />
+                  <h2 className="text-lg font-bold">2. ข้อมูลการซ่อมบำรุง</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Entry Info */}
+                  <div className="space-y-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
+                    <h3 className="font-bold text-black flex items-center gap-2 border-b border-blue-100 pb-2">
+                      <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs">IN</span>
+                      นำรถเข้าซ่อม
+                    </h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">วันเวลาที่นำรถเข้า</label>
+                        <div className="relative">
+                          <input 
+                            ref={entryDateRef}
+                            type="text" 
+                            placeholder="วัน/เดือน/ปี --:--" 
+                            readOnly
+                            className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm" 
+                          />
+                          <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <Clock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-black uppercase opacity-60">เลขไมล์ก่อนซ่อม</label>
+                      <input type="number" value={entryMileage} onChange={(e) => setEntryMileage(e.target.value)} placeholder="เช่น 150000" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
                   </div>
-                  <div className="md:col-span-2 space-y-1.5">
-                    <label className="text-xs font-bold text-black uppercase opacity-60">จำนวน</label>
-                    <input 
-                      type="number" 
-                      value={item.amount} 
-                      onChange={(e) => updateSpareItem(index, "amount", e.target.value)}
-                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
-                    />
+
+                  {/* Exit Info */}
+                  <div className="space-y-4 p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                    <h3 className="font-bold text-black flex items-center gap-2 border-b border-emerald-100 pb-2">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xs">OUT</span>
+                      นำรถออกจากซ่อม
+                    </h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">วันเวลาที่นำรถออก (ถ้ามี)</label>
+                        <div className="relative">
+                          <input 
+                            ref={exitDateRef}
+                            type="text" 
+                            placeholder="วัน/เดือน/ปี --:--" 
+                            readOnly
+                            className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm" 
+                          />
+                          <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <Clock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-black uppercase opacity-60">เลขไมล์หลังซ่อม (ถ้ามี)</label>
+                      <input type="number" value={exitMileage} onChange={(e) => setExitMileage(e.target.value)} placeholder="เช่น 150050" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-emerald-500" />
+                    </div>
                   </div>
-                  <div className="md:col-span-3 space-y-1.5">
-                    <label className="text-xs font-bold text-black uppercase opacity-60">ราคาต่อหน่วย</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">฿</span>
+                  
+                  {/* Other Details */}
+                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-black block">การบำรุงรักษาที่ได้รับ (เลือกได้หลายรายการ) <span className="text-rose-500">*</span></label>
+                      <Select
+                        isMulti
+                        options={masterData.treats}
+                        value={selectedTreats}
+                        onChange={(vals: any) => setSelectedTreats(vals || [])}
+                        placeholder="เลือกการบำรุงรักษา..."
+                        styles={reactSelectStyles}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-black block">สถานที่ให้บริการซ่อม <span className="text-rose-500">*</span></label>
+                      <div className="relative">
+                        <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input 
+                          type="text" 
+                          value={serviceLocation} 
+                          onChange={(e) => setServiceLocation(e.target.value)} 
+                          placeholder="เช่น อู่สมชายการช่าง..." 
+                          className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-black block">พนักงานขับรถที่นำไปซ่อม <span className="text-rose-500">*</span></label>
+                      <Select
+                        options={masterData.drivers}
+                        value={selectedDriver}
+                        onChange={setSelectedDriver}
+                        placeholder="เลือกพนักงานขับรถ..."
+                        styles={reactSelectStyles}
+                        isClearable
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-black block">ภาษี VAT (%)</label>
                       <input 
                         type="number" 
-                        value={item.price} 
-                        onChange={(e) => updateSpareItem(index, "price", e.target.value)}
-                        className="w-full pl-8 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
+                        value={vatPercent} 
+                        onChange={(e) => setVatPercent(e.target.value)} 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all" 
                       />
                     </div>
                   </div>
-                  <div className="md:col-span-1 flex flex-col items-center justify-center space-y-1.5">
-                    <label className="text-xs font-bold text-black uppercase opacity-60">VAT</label>
-                    <input 
-                      type="checkbox" 
-                      checked={item.hasVat} 
-                      onChange={(e) => updateSpareItem(index, "hasVat", e.target.checked)}
-                      className="w-5 h-5 accent-blue-600 cursor-pointer"
-                    />
-                  </div>
-                  <div className="md:col-span-1">
-                    <button 
-                      type="button"
-                      onClick={() => removeSpareItem(index)}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors font-bold text-sm cursor-pointer"
-                    >
-                      <Trash2 size={18} />
-                      ลบ
-                    </button>
-                  </div>
                 </div>
-              ))}
-            </div>
-            
-            <div className="mt-8 flex flex-col md:flex-row justify-end items-end gap-4">
-              <div className="bg-slate-50 border border-slate-200 px-6 py-4 rounded-2xl text-black min-w-[200px]">
-                <p className="text-xs font-bold opacity-60 uppercase tracking-wider mb-1">รวมราคา (ไม่รวม VAT)</p>
-                <p className="text-xl font-bold">฿{subtotal.toLocaleString()}</p>
-              </div>
-              
-              <div className="bg-slate-50 border border-slate-200 px-6 py-4 rounded-2xl text-black min-w-[200px]">
-                <p className="text-xs font-bold opacity-60 uppercase tracking-wider mb-1">ภาษี VAT ({vatPercent}%)</p>
-                <p className="text-xl font-bold text-blue-600">฿{vatAmount.toLocaleString()}</p>
               </div>
 
-              <div className="bg-blue-600 px-8 py-5 rounded-3xl text-white shadow-xl shadow-blue-200 min-w-[250px]">
-                <p className="text-xs font-bold opacity-80 uppercase tracking-wider mb-1">ยอดรวมทั้งสิ้น (รวม VAT)</p>
-                <p className="text-3xl font-black">
-                  ฿{grandTotal.toLocaleString()}
-                </p>
+              {/* Section 3: Spare Parts */}
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2 text-black">
+                    <Wrench size={20} className="text-blue-600" />
+                    <h2 className="text-lg font-bold">3. รายการอะไหล่ / ค่าบริการ</h2>
+                  </div>
+                  <button 
+                    type="button"
+                    onClick={addSpareItem}
+                    className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-4 py-2 rounded-lg cursor-pointer"
+                  >
+                    <Plus size={16} />
+                    เพิ่มรายการ
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {spareItems.map((item, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                      <div className="md:col-span-5 space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">ชื่ออะไหล่ / บริการ</label>
+                        <input 
+                          type="text" 
+                          value={item.name} 
+                          onChange={(e) => updateSpareItem(index, "name", e.target.value)}
+                          placeholder="เช่น น้ำมันเครื่อง..." 
+                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
+                        />
+                      </div>
+                      <div className="md:col-span-2 space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">จำนวน</label>
+                        <input 
+                          type="number" 
+                          value={item.amount} 
+                          onChange={(e) => updateSpareItem(index, "amount", e.target.value)}
+                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
+                        />
+                      </div>
+                      <div className="md:col-span-3 space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">ราคาต่อหน่วย</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">฿</span>
+                          <input 
+                            type="number" 
+                            value={item.price} 
+                            onChange={(e) => updateSpareItem(index, "price", e.target.value)}
+                            className="w-full pl-8 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-black outline-none focus:ring-2 focus:ring-blue-500" 
+                          />
+                        </div>
+                      </div>
+                      <div className="md:col-span-1 flex flex-col items-center justify-center space-y-1.5">
+                        <label className="text-xs font-bold text-black uppercase opacity-60">VAT</label>
+                        <input 
+                          type="checkbox" 
+                          checked={item.hasVat} 
+                          onChange={(e) => updateSpareItem(index, "hasVat", e.target.checked)}
+                          className="w-5 h-5 accent-blue-600 cursor-pointer"
+                        />
+                      </div>
+                      <div className="md:col-span-1">
+                        <button 
+                          type="button"
+                          onClick={() => removeSpareItem(index)}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors font-bold text-sm cursor-pointer"
+                        >
+                          <Trash2 size={18} />
+                          ลบ
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-8 flex flex-col md:flex-row justify-end items-end gap-4">
+                  <div className="bg-slate-50 border border-slate-200 px-6 py-4 rounded-2xl text-black min-w-[200px]">
+                    <p className="text-xs font-bold opacity-60 uppercase tracking-wider mb-1">รวมราคา (ไม่รวม VAT)</p>
+                    <p className="text-xl font-bold">฿{subtotal.toLocaleString()}</p>
+                  </div>
+                  
+                  <div className="bg-slate-50 border border-slate-200 px-6 py-4 rounded-2xl text-black min-w-[200px]">
+                    <p className="text-xs font-bold opacity-60 uppercase tracking-wider mb-1">ภาษี VAT ({vatPercent}%)</p>
+                    <p className="text-xl font-bold text-blue-600">฿{vatAmount.toLocaleString()}</p>
+                  </div>
+
+                  <div className="bg-blue-600 px-8 py-5 rounded-3xl text-white shadow-xl shadow-blue-200 min-w-[250px]">
+                    <p className="text-xs font-bold opacity-80 uppercase tracking-wider mb-1">ยอดรวมทั้งสิ้น (รวม VAT)</p>
+                    <p className="text-3xl font-black">
+                      ฿{grandTotal.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        
-        {/* Footer Actions */}
-        <div className="p-6 bg-slate-900 flex justify-end items-center gap-4">
-          <button 
-            type="button" 
-            onClick={() => router.back()}
-            className="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-          >
-            ยกเลิก
-          </button>
-          <button 
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all shadow-lg shadow-blue-500/20 cursor-pointer ${needReplacement ? 'bg-amber-500 hover:bg-amber-600' : 'bg-blue-600 hover:bg-blue-700'}`}
-          >
-            {isSubmitting ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : needReplacement ? (
-              <ArrowRight size={20} />
-            ) : (
-              <Save size={20} />
+          )}
+          
+          {/* Footer Actions: Always Visible */}
+          <div className="p-6 bg-slate-900 flex justify-end items-center gap-4">
+            {isEditing && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="px-6 py-3 rounded-xl font-bold text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
+              >
+                ยกเลิกการแก้ไข
+              </button>
             )}
-            {needReplacement ? 'บันทึก และขอรถทดแทน' : 'บันทึกข้อมูลการซ่อม'}
-          </button>
-        </div>
-      </div>
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all shadow-lg shadow-blue-500/20 cursor-pointer ${needReplacement ? 'bg-amber-500 hover:bg-amber-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+            >
+              {isSubmitting ? (
+                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              ) : needReplacement ? (
+                <ArrowRight size={20} />
+              ) : (
+                <Save size={20} />
+              )}
+              {isEditing ? "ยืนยันการแก้ไขข้อมูล" : (needReplacement ? 'บันทึก และขอรถทดแทน' : 'บันทึกข้อมูลการซ่อม')}
+            </button>
+          </div>
+        </form>
       ) : (
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="p-8 border-b border-slate-100 flex items-center justify-between">
@@ -686,21 +808,24 @@ export default function MaintenancePage() {
                   )
                 },
                 {
-                  header: "วันที่แจ้งซ่อม",
-                  cell: (row) => (
-                    <div className="text-sm font-medium text-slate-600">
-                      <p>{row.maintenance_date ? new Date(row.maintenance_date).toLocaleDateString("th-TH") : "-"}</p>
-                      <p className="text-xs text-slate-400 font-bold">{row.start_time || "--:--"} น.</p>
+                  header: "วันเวลาที่แจ้งเหตุ",
+                  cell: (item: any) => (
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-slate-700">
+                        {item.incident_date ? new Date(item.incident_date).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' }) : "-"}
+                      </span>
+                      <span className="text-xs text-slate-400 font-medium">{item.incident_time || "-"} น.</span>
                     </div>
                   )
                 },
                 {
-                  header: "อาการ/เหตุเสีย",
-                  cell: (row) => (
-                    <div className="max-w-[200px]">
-                      <p className="text-sm font-bold text-slate-700 truncate" title={row.vc_maintenance_cause?.cause_detail || row.cause_detail}>
-                        {row.vc_maintenance_cause?.cause_detail || row.cause_detail || "-"}
-                      </p>
+                  header: "วันเวลานำเข้าซ่อม",
+                  cell: (item: any) => (
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-slate-600">
+                        {item.maintenance_date ? new Date(item.maintenance_date).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' }) : "-"}
+                      </span>
+                      <span className="text-xs text-slate-400">{item.start_time || "-"} น.</span>
                     </div>
                   )
                 },
@@ -726,15 +851,25 @@ export default function MaintenancePage() {
                   )
                 },
                 {
-                  header: "",
-                  cell: (row) => (
-                    <button
-                      onClick={() => setSelectedHistoryItem(row)}
-                      className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors"
-                      title="ดูรายละเอียด"
-                    >
-                      <Eye size={18} />
-                    </button>
+                  header: "จัดการ",
+                  className: "text-right",
+                  cell: (item: any) => (
+                    <div className="flex items-center gap-2 justify-end">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                        title="แก้ไขข้อมูล"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => setSelectedHistoryItem(item)}
+                        className="p-2 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
+                        title="ดูรายละเอียด"
+                      >
+                        <Eye size={18} />
+                      </button>
+                    </div>
                   )
                 }
               ]}

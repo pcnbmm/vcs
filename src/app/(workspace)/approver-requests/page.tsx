@@ -98,7 +98,7 @@ function StatusBadge({
   const { label, className } = config[status] || config.PENDING;
   return (
     <span
-      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border shadow-sm ${className}`}
+      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border shadow-sm whitespace-nowrap ${className}`}
     >
       {label}
     </span>
