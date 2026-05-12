@@ -26,6 +26,7 @@ import {
   AlertCircle,
   FileText,
   Eye,
+  Search,
 } from "lucide-react";
 import {
   getPendingDispatch,
@@ -121,7 +122,8 @@ export default function AssignPage() {
   };
 
   // Filter state
-  const [filterStatus, setFilterStatus] = useState<string>("action_required");
+  const [filterStatus, setFilterStatus] = useState<string>("pending_assign");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -401,10 +403,7 @@ export default function AssignPage() {
         `REQ#${order.request_id} status=${order.status_use_id} pickup=${order.pickup_status} expired=${isExpired}`,
       );
       if (filterStatus === "action_required") {
-        return (
-          (order.status_use_id === 2 && !isExpired) ||
-          (order.status_use_id === 4 && !order.pickup_status && !isExpired)
-        );
+        return true;
       }
       if (filterStatus === "expired") {
         return (
@@ -425,12 +424,25 @@ export default function AssignPage() {
           (order.status_use_id === 4 &&
             (order.pickup_status === "PICKED_UP" ||
               order.pickup_status === "TAXI_CALLED")) ||
-          (order.status_use_id === 5 && order.pickup_method === "TAXI")
+          order.status_use_id === 5
         );
       if (filterStatus === "cancelled") return order.status_use_id === 6 || order.status_use_id === 3;
       return true;
     })
+    .filter((order) => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      const reqId = `REQ-${String(order.request_id).padStart(3, "0")}`.toLowerCase();
+      const place = (order.journey_place || "").toLowerCase();
+      const user = `${order.vc_user?.firstname || ""} ${order.vc_user?.lastname || ""}`.toLowerCase();
+      const car = (order.vc_car_master?.car_number || "").toLowerCase();
+      return reqId.includes(q) || place.includes(q) || user.includes(q) || car.includes(q);
+    })
     .sort((a, b) => {
+      // 0. ขอด่วน ขึ้นอันบนสุดเสมอ
+      if (a.is_urgent && !b.is_urgent) return -1;
+      if (!a.is_urgent && b.is_urgent) return 1;
+
       // 1. เรียงตามวันเวลาเดินทาง (ล่าสุด -> เก่ากว่า)
       const getDT = (item: any) => {
         if (!item.journey_date) return 0;
@@ -468,6 +480,20 @@ export default function AssignPage() {
             <span className="bg-blue-100 text-blue-700 px-3 py-0.5 rounded-full text-sm font-bold">
               {filteredOrders.length}
             </span>
+          </div>
+          
+          <div className="flex-1 max-w-sm relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="ค้นหาเลขที่คำขอ, สถานที่, ผู้ขอใช้, ทะเบียนรถ..."
+              className="w-full pl-12 pr-4 py-2 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-black placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-50 focus:bg-white transition-all"
+            />
           </div>
 
           <div className="w-full sm:w-64">

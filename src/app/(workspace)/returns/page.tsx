@@ -257,7 +257,7 @@ export default function ReturnsPage() {
               setCurrentPage(1);
             }}
             placeholder="ค้นหาเลขที่คำขอ, ทะเบียนรถ, ชื่อผู้เดินทาง..."
-            className="flex-1 outline-none text-slate-600 placeholder:text-slate-400 bg-transparent w-full text-sm"
+            className="flex-1 outline-none text-black font-bold placeholder:text-slate-400 bg-transparent w-full text-sm"
           />
         </div>
         <div className="w-px h-8 bg-slate-200"></div>

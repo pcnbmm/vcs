@@ -4,18 +4,30 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getMaintenanceFormData() {
+  // Get IDs of cars currently in maintenance
+  const activeMaintenance = await prisma.vc_maintenance_item.findMany({
+    where: { finish_date: null },
+    select: { car_id: true }
+  });
+  const repairingCarIds = activeMaintenance.map(m => m.car_id).filter(Boolean) as number[];
+
   const [cars, drivers, causes, treats] = await Promise.all([
     prisma.vc_car_master.findMany({
       where: {
         flag: null,
+        car_id: { notIn: repairingCarIds },
         vc_car_status: {
-          car_status_name: {
-            contains: "ใช้งาน",
-          },
+          car_status_name: { contains: "ใช้งาน" },
         },
+        NOT: {
+          vc_car_type: {
+            car_type_name: { contains: "รถทดแทน" }
+          }
+        }
       },
       include: {
         vc_car_brand: true,
+        vc_car_type: true,
       },
     }),
     prisma.vc_driver.findMany({
@@ -37,6 +49,7 @@ export async function getMaintenanceFormData() {
       label: `${car.car_number} (${car.vc_car_brand?.car_brand_name || ""})`,
       number: car.car_number,
       brand: car.vc_car_brand?.car_brand_name,
+      isRental: car.vc_car_type?.car_type_name?.includes("รถเช่า") || false,
     })),
     drivers: drivers.map((d) => ({
       value: d.driver_id.toString(),
@@ -241,9 +254,13 @@ export async function saveMaintenance(data: {
     return { success: false, error: error.message };
   }
 }
-export async function getMaintenanceHistory() {
+export async function getMaintenanceHistory(username?: string) {
+  if (!username) return { success: true, data: [] };
   try {
     const history = await prisma.vc_maintenance_item.findMany({
+      where: {
+        cre_by: username
+      },
       include: {
         vc_car_master: {
           include: {
