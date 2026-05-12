@@ -5,7 +5,7 @@ import Select from "react-select";
 import { 
   Wrench, CarFront, FileText, Calendar, Clock, MapPin, 
   ArrowRight, Save, ShieldAlert, Plus, Trash2, History,
-  Eye, X, Info, Edit2
+  Eye, X, Info, Edit2, Search
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { showSuccess, showError, showConfirm } from "@/lib/sweetalert";
@@ -42,6 +42,7 @@ export default function MaintenancePage() {
   const [needReplacement, setNeedReplacement] = useState(false);
   const [activeTab, setActiveTab] = useState<"form" | "history">("form");
   const [historyData, setHistoryData] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<any | null>(null);
   
   // Maintenance Details State
@@ -93,8 +94,9 @@ export default function MaintenancePage() {
   }, []);
 
   const fetchHistory = async () => {
+    if (!session?.user?.name) return;
     setIsLoading(true);
-    const res = await getMaintenanceHistory();
+    const res = await getMaintenanceHistory(session.user.name);
     if (res.success) {
       setHistoryData(res.data);
     }
@@ -106,6 +108,15 @@ export default function MaintenancePage() {
       fetchHistory();
     }
   }, [activeTab]);
+
+  const filteredHistory = historyData.filter((item) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    const carNo = (item.vc_car_master?.car_number || "").toLowerCase();
+    const carBrand = (item.vc_car_master?.vc_car_brand?.car_brand_name || "").toLowerCase();
+    const cause = (item.vc_maintenance_cause?.cause_detail || item.cause_detail || "").toLowerCase();
+    return carNo.includes(q) || carBrand.includes(q) || cause.includes(q);
+  });
 
   // Initialize Flatpickr
   useEffect(() => {
@@ -186,6 +197,9 @@ export default function MaintenancePage() {
   const handleCarChange = async (val: any) => {
     setSelectedCar(val);
     if (val) {
+      if (!val.isRental) {
+        setNeedReplacement(false);
+      }
       try {
         const res = await getLatestCarMileage(parseInt(val.value));
         if (res.success) {
@@ -508,35 +522,37 @@ export default function MaintenancePage() {
             </div>
           </div>
 
-          {/* Toggle Section: Always Visible */}
-          <div className="p-8 border-b border-slate-100 bg-slate-50/50">
-            <div className="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
-              <div className="flex gap-4">
-                <div className={`p-3 rounded-2xl transition-colors ${needReplacement ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
-                  <ShieldAlert size={24} />
+          {/* Toggle Section: Visible only for Rental Cars */}
+          {selectedCar?.isRental && (
+            <div className="p-8 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
+                <div className="flex gap-4">
+                  <div className={`p-3 rounded-2xl transition-colors ${needReplacement ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
+                    <ShieldAlert size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-black">ใช้งานรถทดแทนหรือไม่?</h3>
+                    <p className="text-sm text-slate-500 mt-1 font-medium">
+                      {needReplacement 
+                        ? "ระบบจะข้ามส่วนการซ่อม และพาคุณไปหน้าขอรถทดแทนทันทีหลังบันทึก" 
+                        : "หากต้องการ ระบบจะนำคุณไปยังหน้าฟอร์มกรอกขอรถทดแทนหลังจากบันทึกข้อมูลนี้"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-base font-bold text-black">ใช้งานรถทดแทนหรือไม่?</h3>
-                  <p className="text-sm text-slate-500 mt-1 font-medium">
-                    {needReplacement 
-                      ? "ระบบจะข้ามส่วนการซ่อม และพาคุณไปหน้าขอรถทดแทนทันทีหลังบันทึก" 
-                      : "หากต้องการ ระบบจะนำคุณไปยังหน้าฟอร์มกรอกขอรถทดแทนหลังจากบันทึกข้อมูลนี้"}
-                  </p>
-                </div>
+                
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer" 
+                    checked={needReplacement}
+                    onChange={(e) => setNeedReplacement(e.target.checked)}
+                  />
+                  <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
+                  <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ใช้งานรถทดแทน' : 'ไม่ใช้งานรถทดแทน'}</span>
+                </label>
               </div>
-              
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  className="sr-only peer" 
-                  checked={needReplacement}
-                  onChange={(e) => setNeedReplacement(e.target.checked)}
-                />
-                <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-                <span className="ml-3 text-sm font-bold text-black">{needReplacement ? 'ใช้งาน' : 'ไม่ใช้งาน'}</span>
-              </label>
             </div>
-          </div>
+          )}
 
           {!needReplacement && (
             <div className="animate-in fade-in slide-in-from-top-4 duration-500">
@@ -795,6 +811,20 @@ export default function MaintenancePage() {
               <History size={20} className="text-slate-400" />
             </button>
           </div>
+
+          <div className="px-6 py-4 border-b border-slate-50 bg-white">
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ค้นหาทะเบียนรถ, ยี่ห้อ, หรือสาเหตุการเสีย..."
+                className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-black placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-50 focus:bg-white transition-all"
+              />
+            </div>
+          </div>
+
           <div className="p-4">
             <DataTable
               columns={[
@@ -873,7 +903,7 @@ export default function MaintenancePage() {
                   )
                 }
               ]}
-              data={historyData}
+              data={filteredHistory}
               isLoading={isLoading}
               rowKey={(row) => row.maintenance_item_id}
             />
