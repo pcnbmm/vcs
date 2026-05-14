@@ -194,9 +194,16 @@ export async function getBookingsForManagement() {
       );
     }
 
-    // \u0e16\u0e49\u0e32\u0e40\u0e1b\u0e47\u0e19 Admin \u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e21\u0e48\u0e21\u0e35 sectionid \u2192 \u0e40\u0e2b\u0e47\u0e19\u0e17\u0e38\u0e01 request
-    const whereClause =
-      !isAdmin && sectionid ? { use_div_code: sectionid } : undefined;
+    let whereClause: any = undefined;
+
+    if (!isAdmin && sectionid) {
+      // Approver \u0e08\u0e30\u0e40\u0e2b\u0e47\u0e19\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e04\u0e33\u0e02\u0e2d\u0e17\u0e35\u0e48\u0e21\u0e32\u0e08\u0e32\u0e01\u0e04\u0e19\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19 sectionid \u0e40\u0e14\u0e35\u0e22\u0e27\u0e01\u0e31\u0e19
+      whereClause = {
+        vc_user: {
+          sectionid: sectionid,
+        },
+      };
+    }
 
     const bookings = await prisma.vc_order_item.findMany({
       where: whereClause,

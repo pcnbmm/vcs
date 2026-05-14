@@ -31,12 +31,28 @@ export async function getPendingDispatch() {
       );
     }
 
-    const sectionFilter =
-      !isAdmin && sectionid ? { use_div_code: sectionid } : {};
+    // \u0e14\u0e36\u0e07\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14
+    const regionalProps = await prisma.vc_own_div_prop.findMany({
+      where: { OR: [{ flag_del: "N" }, { flag_del: null }] },
+      select: { own_div_code: true },
+    });
+    const regionalDivCodes = regionalProps.map((p) => p.own_div_code).filter(Boolean) as string[];
+
+    const isRegional = sectionid ? regionalDivCodes.includes(sectionid) : false;
+
+    let sectionFilter: any = {};
+
+    if (!isAdmin) {
+      if (isRegional) {
+        sectionFilter = { use_div_code: sectionid };
+      } else if (regionalDivCodes.length > 0) {
+        sectionFilter = { use_div_code: { notIn: regionalDivCodes } };
+      }
+    }
 
     const orders = await prisma.vc_order_item.findMany({
       where: {
-        status_use_id: { in: [2, 3, 4, 5, 6] },
+        status_use_id: { in: [1, 2, 3, 4, 5, 6] },
         ...sectionFilter,
       },
       include: {
