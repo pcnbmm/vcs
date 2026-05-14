@@ -7,7 +7,7 @@ import {
 } from "@/lib/sweetalert";
 import { isBookingExpired } from "@/lib/bookingUtils";
 import { useEffect, useState } from "react";
-import { getMyBookings } from "@/app/actions/bookingActions";
+import { getBookingsForManagement } from "@/app/actions/bookingActions";
 import { updateRequestStatus } from "@/app/actions/requestActions";
 import { Booking } from "@/types";
 
@@ -142,7 +142,7 @@ export default function ApproverRequestsPage() {
 
   const fetchBookings = async () => {
     setIsLoading(true);
-    const result = await getMyBookings();
+    const result = await getBookingsForManagement();
     if (result.success && result.data) {
       const mapped: Booking[] = result.data.map((b: any) => {
         // Combine Date and Time correctly
