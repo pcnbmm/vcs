@@ -466,12 +466,12 @@ export default function AssignPage() {
         );
       }
       if (filterStatus === "pending_assign")
-        return order.status_use_id === 2 && !isExpired;
+        return (order.status_use_id === 2 || order.status_use_id === 1) && !isExpired;
       if (filterStatus === "pending_pickup")
-        return order.status_use_id === 4 && !order.pickup_status && !isExpired;
+        return (order.status_use_id === 4 || order.status_use_id === 7) && !order.pickup_status && !isExpired;
       if (filterStatus === "completed")
         return (
-          (order.status_use_id === 4 &&
+          ((order.status_use_id === 4 || order.status_use_id === 7) &&
             (order.pickup_status === "PICKED_UP" ||
               order.pickup_status === "TAXI_CALLED")) ||
           order.status_use_id === 5
@@ -591,12 +591,12 @@ export default function AssignPage() {
                       {order.journey_place}
                     </h3>
                     <div className="mt-1">
-                      {order.status_use_id === 4 && !order.pickup_status && (
+                      {(order.status_use_id === 4 || order.status_use_id === 7) && !order.pickup_status && (
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter whitespace-nowrap">
-                          จัดรถแล้ว (รอรับรถ)
+                          {order.status_use_id === 7 ? "จัดรถแล้ว (รออนุมัติ)" : "จัดรถแล้ว (รอรับรถ)"}
                         </span>
                       )}
-                      {order.status_use_id === 4 &&
+                      {(order.status_use_id === 4 || order.status_use_id === 7) &&
                         (order.pickup_status === "PICKED_UP" ||
                           order.pickup_status === "TAXI_CALLED") && (
                           <span className="inline-flex items-center rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200 uppercase tracking-tighter">
@@ -608,6 +608,11 @@ export default function AssignPage() {
                       {order.status_use_id === 2 && (
                         <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100 uppercase tracking-tighter whitespace-nowrap">
                           รอจัดรถ
+                        </span>
+                      )}
+                      {order.status_use_id === 1 && (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-600 border border-amber-100 uppercase tracking-tighter whitespace-nowrap">
+                          รออนุมัติ (จัดรถได้)
                         </span>
                       )}
                       {(order.status_use_id === 6 ||
@@ -736,9 +741,9 @@ export default function AssignPage() {
                     ) : (
                       <button
                         onClick={() => openAssignModal(order)}
-                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 transition-all shadow-md"
+                        className={`${order.status_use_id === 1 ? 'bg-amber-600 hover:bg-amber-700' : 'bg-slate-900 hover:bg-blue-600'} text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-md`}
                       >
-                        จัดสรรรถ
+                        {order.status_use_id === 1 ? 'จัดสรรรถ (ก่อนอนุมัติ)' : 'จัดสรรรถ'}
                       </button>
                     )}
 

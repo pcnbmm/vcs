@@ -42,6 +42,8 @@ const mapStatus = (id: number | null): Booking["status"] => {
       return "COMPLETED";
     case 6:
       return "CANCELLED";
+    case 7:
+      return "DISPATCHED_PENDING";
     default:
       return "PENDING";
   }
@@ -85,6 +87,7 @@ function StatusBadge({
     IN_USE: { label: "กำลังใช้งาน", className: "bg-blue-100 text-blue-700 border-blue-200" },
     COMPLETED: { label: "เสร็จสิ้น", className: "bg-slate-100 text-slate-600 border-slate-200" },
     CANCELLED: { label: "ยกเลิกแล้ว", className: "bg-gray-100 text-gray-600 border-gray-200" },
+    DISPATCHED_PENDING: { label: "จัดรถแล้ว (รออนุมัติ)", className: "bg-indigo-100 text-indigo-700 border-indigo-200" },
   };
 
   if (isExpired) {
@@ -197,7 +200,7 @@ export default function ApproverRequestsPage() {
 
   const pendingBookings = bookings.filter(
     (b) =>
-      b.status === "PENDING" &&
+      (b.status === "PENDING" || b.status === "DISPATCHED_PENDING") &&
       !isBookingExpired(b.startDateTime ?? "", b.status),
   );
   const pendingCount = pendingBookings.length;
@@ -381,7 +384,7 @@ export default function ApproverRequestsPage() {
                 ปิดหน้าต่าง
               </button>
               
-              {selectedBooking.status === "PENDING" && !isBookingExpired(selectedBooking.startDateTime, selectedBooking.status) && (
+              {(selectedBooking.status === "PENDING" || selectedBooking.status === "DISPATCHED_PENDING") && !isBookingExpired(selectedBooking.startDateTime, selectedBooking.status) && (
                 <>
                   {isRejecting ? (
                     <div className="flex items-center gap-2 animate-in slide-in-from-right-4">

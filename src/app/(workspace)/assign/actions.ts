@@ -52,7 +52,7 @@ export async function getPendingDispatch() {
 
     const orders = await prisma.vc_order_item.findMany({
       where: {
-        status_use_id: { in: [1, 2, 3, 4, 5, 6] },
+        status_use_id: { in: [1, 2, 3, 4, 5, 6, 7] },
         ...sectionFilter,
       },
       include: {
@@ -314,7 +314,7 @@ export async function assignResource(data: {
       const updateData: any = {
         car_id: data.carId,
         driver_id: data.driverId,
-        status_use_id: 4, // 4 = in_use
+        status_use_id: existingOrder?.status_use_id === 1 ? 7 : 4, // 7 = dispatched_pending, 4 = in_use
         pickup_status: null,
         upd_date: new Date(),
       };

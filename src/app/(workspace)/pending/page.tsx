@@ -110,7 +110,7 @@ export default function PendingPage() {
     const matchesStatus =
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1" && !expired) ||
-      (statusFilter === "APPROVED" && (req.status === "2" || req.status === "5" || req.status === "4")) ||
+      (statusFilter === "APPROVED" && (req.status === "2" || req.status === "5" || req.status === "4" || req.status === "7")) ||
       (statusFilter === "REJECTED" && (req.status === "3" || req.status === "6" || (req.status === "1" && expired)));
 
     const q = searchQuery.toLowerCase().trim();
@@ -378,6 +378,7 @@ const getStatusName = (status: number | string) => {
   if (s === "4") return "กำลังใช้งาน";
   if (s === "5") return "อนุมัติแล้ว";
   if (s === "6") return "ยกเลิกคำขอ";
+  if (s === "7") return "จัดรถแล้ว (รออนุมัติ)";
   return "ไม่ระบุ";
 };
 
@@ -387,5 +388,6 @@ const getStatusColor = (status: number | string) => {
   if (s === "2" || s === "5") return "text-emerald-600 bg-emerald-50 border-emerald-100";
   if (s === "3" || s === "6") return "text-rose-600 bg-rose-50 border-rose-100";
   if (s === "4") return "text-blue-600 bg-blue-50 border-blue-100";
+  if (s === "7") return "text-indigo-600 bg-indigo-50 border-indigo-100";
   return "text-slate-400 bg-slate-50 border-slate-100";
 };

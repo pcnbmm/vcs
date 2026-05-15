@@ -24,6 +24,7 @@ export async function updateRequestStatus(
     const currentStatusResults: any[] = await prisma.$queryRaw`
       SELECT status_use_id FROM vc_order_item WHERE request_id = ${request_id}
     `;
+    
     if (
       currentStatusResults.length > 0 &&
       currentStatusResults[0].status_use_id === 6
@@ -34,10 +35,31 @@ export async function updateRequestStatus(
       };
     }
 
+    const currentStatus = currentStatusResults.length > 0 ? currentStatusResults[0].status_use_id : 1;
+
+    let targetStatus = status_id;
+    if (currentStatus === 7 && status_id === 2) {
+      targetStatus = 4; // หากจัดรถแล้ว (7) แล้วกดอนุมัติ (2) -> ให้เป็นกำลังใช้งาน (4)
+    }
+
+    // หากปฏิเสธและเคยจัดรถไปแล้ว (Status 7) ต้องคืน Flag รถด้วย
+    if (currentStatus === 7 && status_id === 3) {
+      const order = await prisma.vc_order_item.findUnique({
+        where: { request_id },
+        select: { car_id: true },
+      });
+      if (order?.car_id) {
+        await prisma.vc_car_master.update({
+          where: { car_id: order.car_id },
+          data: { flag: null },
+        });
+      }
+    }
+
     // 1. ใช้ SQL ดิบเพื่ออัปเดตสถานะ ป้องกัน Prisma บ่นเรื่อง Type mismatch ของ userid ที่ขากลับ
     await prisma.$executeRaw`
             UPDATE vc_order_item 
-            SET status_use_id = ${status_id}, 
+            SET status_use_id = ${targetStatus}, 
             approve_id = ${approver_id},
             reject_reason = ${rejectReason ?? null}
             WHERE request_id = ${request_id}
