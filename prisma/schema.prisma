@@ -40,6 +40,7 @@ model vc_order_item {
   pickup_time              String?             @db.VarChar(10)
   reject_reason            String?
   dispatcher_reject_reason String?
+  journey_origin           String?             @db.VarChar(500)
   journey_origin_text      String?             @db.VarChar(500)
   is_regional_booking      Boolean             @default(false)
   vc_car_master            vc_car_master?      @relation(fields: [car_id], references: [car_id])
@@ -91,50 +92,50 @@ model vc_users {
 }
 
 model vc_car_master {
-  car_id             Int              @id @default(autoincrement())
-  car_number         String?          @db.VarChar(50)
-  car_province_id    Int?
-  car_type_id        Int?
-  car_spec_id        Int?
-  car_brand_id       Int?
-  car_type_regis_id  Int?
-  color_id           Int?
-  oil_type_id        Int?
-  own_div_code       String?          @db.VarChar(50)
-  fiscal_year        Int?
-  start_date         String?          @db.VarChar(50)
-  end_date           String?          @db.VarChar(50)
-  regis_date         String?          @db.VarChar(50)
-  car_status_id      Int?
-  machine_no         String?          @db.VarChar(50)
-  body_no            String?          @db.VarChar(50)
-  cylinder_capacityp String?          @db.VarChar(50)
-  oil_expense        Float?           @db.Real
-  refund_vat         Int?
-  fleetcard_no       String?          @db.VarChar(50)
-  flag               String?          @db.VarChar(50)
-  cre_by             Int?
-  cre_date           String?          @db.VarChar(50)
-  upd_by             Int?
-  upd_date           String?          @db.VarChar(50)
-  ref_car            String?          @db.VarChar(50)
-  horse_power        String?          @db.VarChar(50)
-  weight             String?          @db.VarChar(50)
-  machine_id         String?          @db.VarChar(50)
-  vc_car_brand       vc_car_brand?    @relation(fields: [car_brand_id], references: [car_brand_id])
-  vc_province        vc_province?     @relation(fields: [car_province_id], references: [province_id])
-  vc_car_spec        vc_car_spec?     @relation(fields: [car_spec_id], references: [car_spec_id])
-  vc_car_status      vc_car_status?   @relation(fields: [car_status_id], references: [car_status_id])
-  vc_car_type        vc_car_type?     @relation(fields: [car_type_id], references: [car_type_id])
-  vc_type_regis      vc_type_regis?   @relation(fields: [car_type_regis_id], references: [type_regis_id])
-  vc_color           vc_color?        @relation(fields: [color_id], references: [color_id])
-  vc_oil_type        vc_oil_type?     @relation(fields: [oil_type_id], references: [oil_type_id])
-  vc_orgs            vc_orgs?         @relation(fields: [own_div_code], references: [orgid])
-  vc_nt_car          vc_nt_car[]
-  vc_order_item      vc_order_item[]
-  vc_rent_car        vc_rent_car[]
-  vc_replacement     vc_replacement[]
+  car_id              Int                   @id @default(autoincrement())
+  car_number          String?               @db.VarChar(50)
+  car_province_id     Int?
+  car_type_id         Int?
+  car_spec_id         Int?
+  car_brand_id        Int?
+  car_type_regis_id   Int?
+  color_id            Int?
+  oil_type_id         Int?
+  own_div_code        String?               @db.VarChar(50)
+  fiscal_year         Int?
+  start_date          String?               @db.VarChar(50)
+  end_date            String?               @db.VarChar(50)
+  regis_date          String?               @db.VarChar(50)
+  car_status_id       Int?
+  machine_no          String?               @db.VarChar(50)
+  body_no             String?               @db.VarChar(50)
+  cylinder_capacityp  String?               @db.VarChar(50)
+  oil_expense         Float?                @db.Real
+  refund_vat          Int?
+  fleetcard_no        String?               @db.VarChar(50)
+  flag                String?               @db.VarChar(50)
+  cre_by              Int?
+  cre_date            String?               @db.VarChar(50)
+  upd_by              Int?
+  upd_date            String?               @db.VarChar(50)
+  ref_car             String?               @db.VarChar(50)
+  horse_power         String?               @db.VarChar(50)
+  weight              String?               @db.VarChar(50)
+  machine_id          String?               @db.VarChar(50)
+  vc_car_brand        vc_car_brand?         @relation(fields: [car_brand_id], references: [car_brand_id])
+  vc_province         vc_province?          @relation(fields: [car_province_id], references: [province_id])
+  vc_car_spec         vc_car_spec?          @relation(fields: [car_spec_id], references: [car_spec_id])
+  vc_car_status       vc_car_status?        @relation(fields: [car_status_id], references: [car_status_id])
+  vc_car_type         vc_car_type?          @relation(fields: [car_type_id], references: [car_type_id])
+  vc_type_regis       vc_type_regis?        @relation(fields: [car_type_regis_id], references: [type_regis_id])
+  vc_color            vc_color?             @relation(fields: [color_id], references: [color_id])
+  vc_oil_type         vc_oil_type?          @relation(fields: [oil_type_id], references: [oil_type_id])
+  vc_orgs             vc_orgs?              @relation(fields: [own_div_code], references: [orgid])
   vc_maintenance_item vc_maintenance_item[]
+  vc_nt_car           vc_nt_car[]
+  vc_order_item       vc_order_item[]
+  vc_rent_car         vc_rent_car[]
+  vc_replacement      vc_replacement[]
 }
 
 model fleetcard_transactions {
@@ -537,39 +538,38 @@ model vc_menu_role {
 }
 
 model vc_maintenance_cause {
-  cause_id     Int                 @id @default(autoincrement())
-  cause_detail String?             @db.VarChar(200)
-  flag_del     String?             @db.Char(1)
-  cre_by       String?             @db.VarChar(100)
-  cre_date     DateTime?
-  upd_by       String?             @db.VarChar(100)
-  upd_date     DateTime?
+  cause_id            Int                   @id @default(autoincrement())
+  cause_detail        String?               @db.VarChar(200)
+  flag_del            String?               @db.Char(1)
+  cre_by              String?               @db.VarChar(100)
+  cre_date            DateTime?
+  upd_by              String?               @db.VarChar(100)
+  upd_date            DateTime?
   vc_maintenance_item vc_maintenance_item[]
 }
 
 model vc_maintenance_item {
-  maintenance_item_id Int                       @id @default(autoincrement())
-  car_id              Int?
-  maintenance_date    DateTime?                 @db.Date
-  start_time          String?                   @db.VarChar(10)
-  emp_id              Int?
-  station_name        String?                   @db.VarChar(200)
-  cause_id            Int?
-  treat_id            Int?
-  mile_car_in         Int?
-  mile_car_out        Int?
-  finish_date         DateTime?                 @db.Date
-  finish_time         String?                   @db.VarChar(10)
-  vat                 Float?
-  incident_date       DateTime?                 @db.Date
-  incident_time       String?                   @db.VarChar(10)
-  cre_by              String?                   @db.VarChar(100)
-  cre_date            DateTime?
-  upd_by              String?                   @db.VarChar(100)
-  upd_date            DateTime?
-  
-  vc_car_master       vc_car_master?            @relation(fields: [car_id], references: [car_id])
-  vc_maintenance_cause vc_maintenance_cause?     @relation(fields: [cause_id], references: [cause_id])
+  maintenance_item_id       Int                         @id @default(autoincrement())
+  car_id                    Int?
+  maintenance_date          DateTime?                   @db.Date
+  start_time                String?                     @db.VarChar(10)
+  emp_id                    Int?
+  station_name              String?                     @db.VarChar(200)
+  cause_id                  Int?
+  treat_id                  Int?
+  mile_car_in               Int?
+  mile_car_out              Int?
+  finish_date               DateTime?                   @db.Date
+  finish_time               String?                     @db.VarChar(10)
+  vat                       Float?
+  cre_by                    String?                     @db.VarChar(100)
+  cre_date                  DateTime?
+  upd_by                    String?                     @db.VarChar(100)
+  upd_date                  DateTime?
+  incident_date             DateTime?                   @db.Date
+  incident_time             String?                     @db.VarChar(10)
+  vc_car_master             vc_car_master?              @relation(fields: [car_id], references: [car_id])
+  vc_maintenance_cause      vc_maintenance_cause?       @relation(fields: [cause_id], references: [cause_id])
   vc_maintenance_spare_item vc_maintenance_spare_item[]
   vc_maintenance_treat      vc_maintenance_treat[]
 }
@@ -577,35 +577,33 @@ model vc_maintenance_item {
 model vc_maintenance_treat {
   maintenance_item_id Int
   treat_id            Int
-  
   vc_maintenance_item vc_maintenance_item @relation(fields: [maintenance_item_id], references: [maintenance_item_id])
   vc_treat            vc_treat            @relation(fields: [treat_id], references: [treat_id])
-  
+
   @@id([maintenance_item_id, treat_id])
 }
 
 model vc_maintenance_spare_item {
-  spare_item_id       Int                 @id @default(autoincrement())
+  spare_item_id       Int                  @id @default(autoincrement())
   maintenance_item_id Int?
-  spare_item_name     String?             @db.VarChar(100)
+  spare_item_name     String?              @db.VarChar(100)
   spare_amount        Int?
   spare_price         Float?
-  cre_by              String?             @db.VarChar(100)
+  cre_by              String?              @db.VarChar(100)
   cre_date            DateTime?
-  upd_by              String?             @db.VarChar(100)
+  upd_by              String?              @db.VarChar(100)
   upd_date            DateTime?
-  
   vc_maintenance_item vc_maintenance_item? @relation(fields: [maintenance_item_id], references: [maintenance_item_id])
 }
 
 model vc_treat {
-  treat_id     Int                 @id @default(autoincrement())
-  treat_name   String?             @db.VarChar(100)
-  flag_del     String?             @db.Char(1)
-  cre_by       String?             @db.VarChar(100)
-  cre_date     DateTime?
-  upd_by       String?             @db.VarChar(100)
-  upd_date     DateTime?
+  treat_id            Int                    @id @default(autoincrement())
+  treat_name          String?                @db.VarChar(100)
+  flag_del            String?                @db.Char(1)
+  cre_by              String?                @db.VarChar(100)
+  cre_date            DateTime?
+  upd_by              String?                @db.VarChar(100)
+  upd_date            DateTime?
   vc_maintenance_item vc_maintenance_treat[]
 }
 
