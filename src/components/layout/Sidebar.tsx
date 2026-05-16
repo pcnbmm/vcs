@@ -20,6 +20,7 @@ export default function Sidebar() {
       if (result.success) {
         // Define menu order weights
         const menuOrder: { [key: string]: number } = {
+          "ศูนย์ควบคุม (Dashboard)": 5,
           อนุมัติคำขอ: 10,
           จัดรถ: 20,
           คืนรถ: 30,

@@ -125,9 +125,9 @@ const MyPDFDocument = ({ title, columns, data, periodText }: { title: string, co
 const REPORT_TYPES = [
   { id: "summary_performance", name: "รายงานสรุปการปฏิบัติงานพนักงาน", icon: Users, desc: "สรุปจำนวนภารกิจและระยะทางของคนขับ" },
   { id: "fueling", name: "รายงานการเติมน้ำมัน", icon: Fuel, desc: "รายการเบิกจ่ายน้ำมันและจำนวนลิตรทั้งหมด" },
-  { id: "summary_status", name: "รายงานการขอใช้รถตามสถานะ", icon: Activity, desc: "สถิติการจองรถแยกตามสถานะต่างๆ" },
-  { id: "replacement_usage", name: "รายงานการใช้รถทดแทน", icon: Calendar, desc: "ประวัติการนำรถเข้าซ่อมและใช้รถสำรอง" },
   { id: "maintenance_incident", name: "รายงานเหตุรถเสีย", icon: Wrench, desc: "ข้อมูลรถเสียและสาเหตุการเสียรายวัน" },
+  { id: "replacement_usage", name: "รายงานการใช้รถทดแทน", icon: Calendar, desc: "ประวัติการนำรถเข้าซ่อมและใช้รถสำรอง" },
+  { id: "summary_status", name: "รายงานการขอใช้รถตามสถานะ", icon: Activity, desc: "สถิติการจองรถแยกตามสถานะต่างๆ" },
   { id: "regional_booking", name: "รายงานการขอใช้รถส่วนภูมิภาค", icon: MapPin, desc: "สถิติการขอใช้งานรถยนต์ของส่วนภูมิภาค" },
   { id: "central_booking", name: "รายงานการขอใช้รถส่วนกลาง", icon: Building, desc: "สถิติการขอใช้งานรถยนต์ของส่วนกลาง" },
   { id: "journey_causes", name: "รายงานเหตุผลในการขอใช้งานรถยนต์", icon: PieChart, desc: "สรุปจำนวนการขอใช้งานแยกตามเหตุผล" },
