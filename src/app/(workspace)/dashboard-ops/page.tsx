@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import TrendChart from './TrendChart';
 
 export default async function OperationsDashboard() {
   // ==========================================
@@ -12,6 +13,11 @@ export default async function OperationsDashboard() {
   
   // 1. KPI Data
   const totalRequests = await prisma.vc_order_item.count();
+  const regionalRequests = await prisma.vc_order_item.count({
+    where: { is_regional_booking: true }
+  });
+  const centralRequests = totalRequests - regionalRequests;
+
   const pendingRequests = await prisma.vc_order_item.count({
     where: { status_use_id: { in: [1, 2, 3] } }
   });
@@ -123,29 +129,43 @@ export default async function OperationsDashboard() {
   const overdueItems = validOverdueItems.slice(0, 6);
 
   // 8. REAL Trend Data (Months)
+  const currentYear = new Date().getFullYear();
   const allOrdersForTrend = await prisma.vc_order_item.findMany({
-    select: { cre_date: true }
+    where: {
+      cre_date: {
+        gte: new Date(currentYear, 0, 1),
+        lt: new Date(currentYear + 1, 0, 1)
+      }
+    },
+    select: { cre_date: true, is_regional_booking: true }
   });
   
   const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-  const monthlyData: Record<string, number> = {};
+  const monthlyData: Record<string, { central: number, regional: number }> = {};
+  
+  monthNames.forEach(m => monthlyData[m] = { central: 0, regional: 0 });
   
   allOrdersForTrend.forEach(o => {
     if (o.cre_date) {
       const d = new Date(o.cre_date);
       const mName = monthNames[d.getMonth()];
-      monthlyData[mName] = (monthlyData[mName] || 0) + 1;
+      if (o.is_regional_booking) {
+        monthlyData[mName].regional += 1;
+      } else {
+        monthlyData[mName].central += 1;
+      }
     }
   });
 
+  // To keep chart clean, only show up to the current month or months that have data
+  const currentMonthIndex = new Date().getMonth();
   const trendStats = monthNames
-    .filter(m => monthlyData[m] !== undefined)
+    .slice(0, currentMonthIndex + 1)
     .map(m => ({
       month: m,
-      count: monthlyData[m]
+      central: monthlyData[m].central,
+      regional: monthlyData[m].regional
     }));
-  
-  const maxTrend = Math.max(...trendStats.map(t => t.count), 1);
 
   // ==========================================
   // Render UI
@@ -161,11 +181,13 @@ export default async function OperationsDashboard() {
       <div className="flex flex-col gap-8">
         
         {/* ----------------- ROW 1: KPI Cards ----------------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { label: 'คำขอใช้รถทั้งหมด', value: totalRequests, unit: 'รายการ', icon: BarChart3, color: 'text-indigo-600', bg: 'bg-indigo-100', border: 'border-indigo-100' },
+            { label: 'คำขอทั้งหมด', value: totalRequests, unit: 'รายการ', icon: BarChart3, color: 'text-indigo-600', bg: 'bg-indigo-100', border: 'border-indigo-100' },
+            { label: 'คำขอส่วนกลาง', value: centralRequests, unit: 'รายการ', icon: TrendingUp, color: 'text-violet-600', bg: 'bg-violet-100', border: 'border-violet-100' },
+            { label: 'คำขอส่วนภูมิภาค', value: regionalRequests, unit: 'รายการ', icon: Activity, color: 'text-teal-600', bg: 'bg-teal-100', border: 'border-teal-100' },
             { label: 'รออนุมัติ / จัดรถ', value: pendingRequests, unit: 'รายการ', icon: Car, color: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-100' },
-            { label: 'เลยกำหนดคืน (Overdue)', value: overdueReturns, unit: 'คัน', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-100' },
+            { label: 'เลยกำหนดคืน', value: overdueReturns, unit: 'คัน', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-100' },
             { label: 'กำลังซ่อมบำรุง', value: inMaintenance, unit: 'คัน', icon: Wrench, color: 'text-rose-600', bg: 'bg-rose-100', border: 'border-rose-100' }
           ].map((kpi, i) => (
             <div key={i} className={`bg-white rounded-3xl p-6 border ${kpi.border} shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow duration-300`}>
@@ -198,27 +220,11 @@ export default async function OperationsDashboard() {
               </div>
               
               {trendStats.length > 0 ? (
-                <div className="flex-1 flex items-end justify-between border-b-2 border-slate-100 pb-0 relative mt-4">
-                  <div className="w-full flex justify-around items-end h-full">
-                    {trendStats.map((item, i) => {
-                      const heightPct = Math.max((item.count / maxTrend) * 100, 8);
-                      return (
-                        <div key={i} className="flex flex-col items-center justify-end group h-full w-full relative">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-800 text-white text-xs py-1.5 px-3 rounded-lg shadow-lg whitespace-nowrap font-bold z-10">
-                            {item.count} รายการ
-                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
-                          </div>
-                          <div className="w-16 md:w-20 bg-gradient-to-t from-indigo-500 to-blue-400 rounded-t-xl hover:from-indigo-400 hover:to-blue-300 transition-all shadow-md relative overflow-hidden" style={{ height: `${heightPct}%` }}>
-                            <div className="absolute inset-0 bg-white/20 w-full h-1.5"></div>
-                          </div>
-                          <span className="text-sm font-bold text-slate-500 mt-4 mb-2">{item.month}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="flex-1 w-full h-full min-h-[300px] mt-4">
+                  <TrendChart data={trendStats} />
                 </div>
               ) : (
-                <div className="flex-1 flex items-center justify-center text-slate-400 font-medium">ยังไม่มีข้อมูลการขอใช้งาน</div>
+                <div className="flex-1 flex items-center justify-center text-slate-400 font-medium">ยังไม่มีข้อมูลการขอใช้งานในปีนี้</div>
               )}
             </div>
 

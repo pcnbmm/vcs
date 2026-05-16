@@ -37,6 +37,9 @@ import {
   Calendar,
   Filter,
   Wrench,
+  MapPin,
+  Building,
+  PieChart,
 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 
@@ -55,51 +58,54 @@ Font.register({
 });
 
 const styles = StyleSheet.create({
-  page: { padding: 40, fontFamily: "Sarabun", fontSize: 10, color: "#333" },
-  header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, borderBottomWidth: 1, borderBottomColor: "#eee", paddingBottom: 10 },
-  logoPlaceholder: { width: 60, height: 60, backgroundColor: "#f0f0f0", borderRadius: 5, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "#ddd", borderStyle: "dashed" },
-  orgInfo: { textAlign: "right" },
-  orgName: { fontSize: 14, fontWeight: "bold", marginBottom: 4 },
-  printDate: { fontSize: 9, color: "#666" },
-  titleSection: { marginBottom: 25, textAlign: "center" },
-  title: { fontSize: 20, fontWeight: "bold", textDecoration: "underline", marginBottom: 5 },
-  table: { width: "100%", borderStyle: "solid", borderWidth: 1, borderColor: "#000" },
-  tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#000", minHeight: 25, alignItems: "center" },
-  tableColHeader: { backgroundColor: "#f5f5f5", fontWeight: "bold", padding: 5, borderRightWidth: 1, borderRightColor: "#000", justifyContent: "center", textAlign: "center" },
-  tableCol: { padding: 5, borderRightWidth: 1, borderRightColor: "#000", justifyContent: "center" },
-  tableCellHeader: { fontSize: 10, fontWeight: "bold" },
-  tableCell: { fontSize: 9 },
-  signatureSection: { marginTop: 50, flexDirection: "row", justifyContent: "space-around" },
-  signatureBox: { width: "40%", textAlign: "center" },
-  signatureLine: { marginTop: 40, borderBottomWidth: 1, borderBottomColor: "#000", marginBottom: 8 },
-  pageNumber: { position: "absolute", fontSize: 9, bottom: 30, left: 0, right: 0, textAlign: "center", color: "#999" },
+  page: { padding: 30, fontFamily: "Sarabun", fontSize: 10, color: "#334155", lineHeight: 1.5 },
+  header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, borderBottomWidth: 1, borderBottomColor: "#cbd5e1", paddingBottom: 15 },
+  logoPlaceholder: { width: 50, height: 50, backgroundColor: "#f8fafc", borderRadius: 8, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "#e2e8f0" },
+  orgInfo: { textAlign: "right", justifyContent: "center" },
+  orgName: { fontSize: 16, fontWeight: "bold", marginBottom: 4, color: "#0f172a", lineHeight: 1.3 },
+  printDate: { fontSize: 9, color: "#64748b" },
+  titleSection: { marginBottom: 20, textAlign: "center" },
+  title: { fontSize: 18, fontWeight: "bold", color: "#1e293b", marginBottom: 5, lineHeight: 1.3 },
+  table: { width: "100%", borderStyle: "solid", borderWidth: 1, borderColor: "#cbd5e1", borderRadius: 4, overflow: 'hidden' },
+  tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#e2e8f0", minHeight: 28, alignItems: "center" },
+  tableRowEven: { backgroundColor: "#f8fafc" },
+  tableColHeader: { backgroundColor: "#f1f5f9", paddingVertical: 8, paddingHorizontal: 4, borderRightWidth: 1, borderRightColor: "#cbd5e1", justifyContent: "center", alignItems: "center" },
+  tableCol: { paddingVertical: 6, paddingHorizontal: 4, borderRightWidth: 1, borderRightColor: "#e2e8f0", justifyContent: "center" },
+  tableCellHeader: { fontSize: 10, fontWeight: "bold", color: "#334155", textAlign: "center", lineHeight: 1.5 },
+  tableCell: { fontSize: 9, color: "#475569", lineHeight: 1.5 },
+  signatureSection: { marginTop: 60, flexDirection: "row", justifyContent: "space-around" },
+  signatureBox: { width: "35%", textAlign: "center" },
+  signatureLine: { marginTop: 40, borderBottomWidth: 1, borderBottomColor: "#94a3b8", marginBottom: 8 },
+  pageNumber: { position: "absolute", fontSize: 9, bottom: 20, left: 0, right: 0, textAlign: "center", color: "#94a3b8" },
 });
 
-const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[], data: any[] }) => {
+const MyPDFDocument = ({ title, columns, data, periodText }: { title: string, columns: any[], data: any[], periodText?: string }) => {
   const currentDate = new Intl.DateTimeFormat("th-TH", { dateStyle: "long", timeStyle: "short" }).format(new Date());
   return (
     <Document>
-      <Page size="A4" orientation="landscape" style={styles.page}>
+      <Page size="A4" orientation="portrait" style={styles.page}>
         <View style={styles.header}>
-          <View style={styles.logoPlaceholder}><Text style={{ fontSize: 8 }}>LOGO</Text></View>
           <View style={styles.orgInfo}>
             <Text style={styles.orgName}>ระบบจัดการยานพาหนะ (VCS)</Text>
             <Text style={styles.printDate}>วันที่พิมพ์: {currentDate}</Text>
           </View>
         </View>
-        <View style={styles.titleSection}><Text style={styles.title}>{title}</Text></View>
+        <View style={styles.titleSection}>
+          <Text style={styles.title}>{title}</Text>
+          {periodText && <Text style={{ fontSize: 12, color: "#475569", marginTop: 4, lineHeight: 1.5 }}>{periodText}</Text>}
+        </View>
         <View style={styles.table}>
           <View style={styles.tableRow}>
             {columns.map((col, i) => (
-              <View key={i} style={[styles.tableColHeader, { width: `${100 / columns.length}%` }, i === columns.length - 1 ? { borderRightWidth: 0 } : {}]}>
+              <View key={i} style={[styles.tableColHeader, { width: `${col.width}%` }, i === columns.length - 1 ? { borderRightWidth: 0 } : {}]}>
                 <Text style={styles.tableCellHeader}>{col.header}</Text>
               </View>
             ))}
           </View>
           {data.map((item, index) => (
-            <View style={[styles.tableRow, index === data.length - 1 ? { borderBottomWidth: 0 } : {}]} key={index}>
+            <View style={[styles.tableRow, index % 2 !== 0 ? styles.tableRowEven : {}, index === data.length - 1 ? { borderBottomWidth: 0 } : {}]} key={index}>
               {columns.map((col, i) => (
-                <View key={i} style={[styles.tableCol, { width: `${100 / columns.length}%` }, i === columns.length - 1 ? { borderRightWidth: 0 } : {}]}>
+                <View key={i} style={[styles.tableCol, { width: `${col.width}%` }, i === columns.length - 1 ? { borderRightWidth: 0 } : {}]}>
                   <Text style={styles.tableCell}>{item[col.key] || "-"}</Text>
                 </View>
               ))}
@@ -107,8 +113,8 @@ const MyPDFDocument = ({ title, columns, data }: { title: string, columns: any[]
           ))}
         </View>
         <View style={styles.signatureSection} wrap={false}>
-          <View style={styles.signatureBox}><View style={styles.signatureLine} /><Text>(..........................................................)</Text><Text style={{ marginTop: 4 }}>ผู้จัดทำ</Text></View>
-          <View style={styles.signatureBox}><View style={styles.signatureLine} /><Text>(..........................................................)</Text><Text style={{ marginTop: 4 }}>ผู้อนุมัติ</Text></View>
+          <View style={styles.signatureBox}><View style={styles.signatureLine} /><Text>(..........................................................)</Text><Text style={{ marginTop: 10, lineHeight: 1.5 }}>ผู้จัดทำ </Text></View>
+          <View style={styles.signatureBox}><View style={styles.signatureLine} /><Text>(..........................................................)</Text><Text style={{ marginTop: 10, lineHeight: 1.5 }}>ผู้อนุมัติ</Text></View>
         </View>
         <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `หน้า ${pageNumber} / ${totalPages}`} fixed />
       </Page>
@@ -122,11 +128,17 @@ const REPORT_TYPES = [
   { id: "summary_status", name: "รายงานการขอใช้รถตามสถานะ", icon: Activity, desc: "สถิติการจองรถแยกตามสถานะต่างๆ" },
   { id: "replacement_usage", name: "รายงานการใช้รถทดแทน", icon: Calendar, desc: "ประวัติการนำรถเข้าซ่อมและใช้รถสำรอง" },
   { id: "maintenance_incident", name: "รายงานเหตุรถเสีย", icon: Wrench, desc: "ข้อมูลรถเสียและสาเหตุการเสียรายวัน" },
+  { id: "regional_booking", name: "รายงานการขอใช้รถส่วนภูมิภาค", icon: MapPin, desc: "สถิติการขอใช้งานรถยนต์ของส่วนภูมิภาค" },
+  { id: "central_booking", name: "รายงานการขอใช้รถส่วนกลาง", icon: Building, desc: "สถิติการขอใช้งานรถยนต์ของส่วนกลาง" },
+  { id: "journey_causes", name: "รายงานเหตุผลในการขอใช้งานรถยนต์", icon: PieChart, desc: "สรุปจำนวนการขอใช้งานแยกตามเหตุผล" },
 ];
 
 export default function ReportsPage() {
   const [selectedReportId, setSelectedReportId] = useState(REPORT_TYPES[0].id);
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [reportPeriod, setReportPeriod] = useState("all"); // 'all', 'monthly', 'yearly'
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [data, setData] = useState<any[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,7 +150,7 @@ export default function ReportsPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedReportId, selectedStatus]);
+  }, [selectedReportId, selectedStatus, reportPeriod, selectedMonth, selectedYear]);
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -147,6 +159,14 @@ export default function ReportsPage() {
         let url = `/api/reports?type=${selectedReportId}`;
         if (selectedReportId === "summary_status" && selectedStatus !== "all") {
           url += `&statusId=${selectedStatus}`;
+        }
+        if (reportPeriod !== "all") {
+          url += `&period=${reportPeriod}`;
+          if (reportPeriod === "monthly") {
+            url += `&month=${selectedMonth}&year=${selectedYear}`;
+          } else if (reportPeriod === "yearly") {
+            url += `&year=${selectedYear}`;
+          }
         }
         const response = await fetch(url);
         const result = await response.json();
@@ -184,6 +204,29 @@ export default function ReportsPage() {
             { header: "วันที่", key: "date", width: 15 },
             { header: "เวลา", key: "time", width: 10 },
           ];
+        } else if (selectedReportId === "regional_booking") {
+          cols = [
+            { header: "รหัสอ้างอิง", key: "id", width: 10 },
+            { header: "แผนก/หน่วยงาน", key: "department", width: 20 },
+            { header: "จุดเริ่มต้น (ภูมิภาค)", key: "origin", width: 25 },
+            { header: "สถานที่ปลายทาง", key: "detail", width: 25 },
+            { header: "วันที่เดินทาง", key: "date", width: 10 },
+            { header: "สถานะ", key: "status", width: 10 },
+          ];
+        } else if (selectedReportId === "central_booking") {
+          cols = [
+            { header: "รหัสอ้างอิง", key: "id", width: 10 },
+            { header: "แผนก/หน่วยงาน", key: "department", width: 30 },
+            { header: "สถานที่ปลายทาง", key: "detail", width: 35 },
+            { header: "วันที่เดินทาง", key: "date", width: 15 },
+            { header: "สถานะ", key: "status", width: 10 },
+          ];
+        } else if (selectedReportId === "journey_causes") {
+          cols = [
+            { header: "ลำดับ", key: "id", width: 10 },
+            { header: "เหตุผลในการขอใช้งาน", key: "cause", width: 60 },
+            { header: "จำนวนครั้งที่ขอใช้งาน", key: "count", width: 30 },
+          ];
         } else {
           cols = [
             { header: "รหัสอ้างอิง", key: "id", width: 10 },
@@ -202,7 +245,7 @@ export default function ReportsPage() {
       }
     };
     fetchReportData();
-  }, [selectedReportId, selectedStatus]);
+  }, [selectedReportId, selectedStatus, reportPeriod, selectedMonth, selectedYear]);
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -240,8 +283,16 @@ export default function ReportsPage() {
     saveAs(blob, `${selectedReport?.name}.docx`);
   };
 
+  let periodText = "";
+  if (reportPeriod === "monthly") {
+    const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    periodText = `ประจำเดือน ${thaiMonths[selectedMonth - 1]} ${selectedYear + 543}  `;
+  } else if (reportPeriod === "yearly") {
+    periodText = `ประจำปี ${selectedYear + 543}  `;
+  }
+
   const exportToPDF = async () => {
-    const doc = <MyPDFDocument title={selectedReport?.name || ""} columns={columns} data={data} />;
+    const doc = <MyPDFDocument title={selectedReport?.name || ""} columns={columns} data={data} periodText={periodText} />;
     const blob = await pdf(doc).toBlob();
     saveAs(blob, `${selectedReport?.name}.pdf`);
   };
@@ -316,7 +367,7 @@ export default function ReportsPage() {
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 space-y-6">
         {/* Header Section */}
-        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 animate-in slide-in-from-right-4 duration-500">
+        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between gap-4 animate-in slide-in-from-right-4 duration-500">
           <div>
             <nav className="flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">
               <span>รายงาน</span>
@@ -326,16 +377,62 @@ export default function ReportsPage() {
             <h1 className="text-2xl font-black text-slate-900">{selectedReport?.name}</h1>
             <p className="text-sm text-slate-500 font-medium mt-1">{selectedReport?.desc}</p>
           </div>
+        </div>
 
-          <div className="flex items-center gap-4 shrink-0">
-            {selectedReportId === "summary_status" && (
-              <div className="relative group">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all appearance-none cursor-pointer"
-                >
+        {/* Filter Section */}
+        <div className="flex items-center gap-3 flex-wrap justify-end animate-in slide-in-from-right-4 duration-500 delay-75">
+          <div className="relative group">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <select
+              value={reportPeriod}
+              onChange={(e) => setReportPeriod(e.target.value)}
+              className="pl-9 pr-8 py-2.5 bg-white shadow-sm border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all appearance-none cursor-pointer"
+            >
+                <option value="all">ทุกช่วงเวลา</option>
+                <option value="monthly">รายเดือน</option>
+                <option value="yearly">รายปี</option>
+              </select>
+            </div>
+
+          {reportPeriod === "monthly" && (
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              className="px-4 py-2.5 bg-white shadow-sm border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer"
+            >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {new Date(0, i).toLocaleString('th-TH', { month: 'long' })}
+                  </option>
+                ))}
+              </select>
+            )}
+
+          {(reportPeriod === "monthly" || reportPeriod === "yearly") && (
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              className="px-4 py-2.5 bg-white shadow-sm border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer"
+            >
+                {Array.from({ length: 5 }).map((_, i) => {
+                  const y = new Date().getFullYear() - i;
+                  return (
+                    <option key={y} value={y}>
+                      {y + 543}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+
+          {selectedReportId === "summary_status" && (
+            <div className="relative group">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="pl-9 pr-8 py-2.5 bg-white shadow-sm border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all appearance-none cursor-pointer"
+              >
                   <option value="all">สถานะทั้งหมด</option>
                   <option value="1">รออนุมัติ</option>
                   <option value="2">อนุมัติแล้ว</option>
@@ -345,16 +442,15 @@ export default function ReportsPage() {
               </div>
             )}
             
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={16} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ค้นหาข้อมูล..."
-                className="pl-10 pr-6 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold focus:outline-none focus:ring-4 focus:ring-blue-50 focus:bg-white transition-all w-full md:w-64"
-              />
-            </div>
+          <div className="relative group flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={16} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ค้นหาข้อมูล..."
+              className="pl-10 pr-6 py-2.5 bg-white shadow-sm border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-200 transition-all w-full"
+            />
           </div>
         </div>
 
