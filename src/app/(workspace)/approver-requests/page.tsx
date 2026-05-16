@@ -7,7 +7,7 @@ import {
 } from "@/lib/sweetalert";
 import { isBookingExpired } from "@/lib/bookingUtils";
 import { useEffect, useState } from "react";
-import { getMyBookings } from "@/app/actions/bookingActions";
+import { getBookingsForManagement } from "@/app/actions/bookingActions";
 import { updateRequestStatus } from "@/app/actions/requestActions";
 import { Booking } from "@/types";
 
@@ -42,6 +42,8 @@ const mapStatus = (id: number | null): Booking["status"] => {
       return "COMPLETED";
     case 6:
       return "CANCELLED";
+    case 7:
+      return "DISPATCHED_PENDING";
     default:
       return "PENDING";
   }
@@ -85,6 +87,7 @@ function StatusBadge({
     IN_USE: { label: "กำลังใช้งาน", className: "bg-blue-100 text-blue-700 border-blue-200" },
     COMPLETED: { label: "เสร็จสิ้น", className: "bg-slate-100 text-slate-600 border-slate-200" },
     CANCELLED: { label: "ยกเลิกแล้ว", className: "bg-gray-100 text-gray-600 border-gray-200" },
+    DISPATCHED_PENDING: { label: "จัดรถแล้ว (รออนุมัติ)", className: "bg-indigo-100 text-indigo-700 border-indigo-200" },
   };
 
   if (isExpired) {
@@ -142,7 +145,7 @@ export default function ApproverRequestsPage() {
 
   const fetchBookings = async () => {
     setIsLoading(true);
-    const result = await getMyBookings();
+    const result = await getBookingsForManagement();
     if (result.success && result.data) {
       const mapped: Booking[] = result.data.map((b: any) => {
         // Combine Date and Time correctly
@@ -170,7 +173,7 @@ export default function ApproverRequestsPage() {
           department: b.vc_org?.orgname || b.use_div_code || "-",
           objective: b.journey_causes || "-",
           origin:
-            b.vc_start_place?.start_place_name || String(b.start_place || "-"),
+            b.vc_start_place?.start_place_name || b.journey_origin_text || String(b.start_place || "-"),
           destination: b.journey_place || "-",
           requestDate: b.cre_date
             ? b.cre_date.toISOString()
@@ -184,6 +187,7 @@ export default function ApproverRequestsPage() {
           carType: b.vc_car_spec?.car_spec_name || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
           rejectReason: b.reject_reason || null,
+          isRegional: (b as any).isRegional ?? false,
         };
       });
       setBookings(mapped);
@@ -195,11 +199,16 @@ export default function ApproverRequestsPage() {
     fetchBookings();
   }, []);
 
-  const pendingBookings = bookings.filter(
-    (b) =>
-      b.status === "PENDING" &&
-      !isBookingExpired(b.startDateTime ?? "", b.status),
-  );
+  const pendingBookings = bookings.filter((b) => {
+    const isExpired = isBookingExpired(b.startDateTime ?? "", b.status, b.isRegional);
+    // รายการ "รอพิจารณา" สำหรับ Approver:
+    // 1. PENDING / DISPATCHED_PENDING ที่ยังไม่ expire
+    // 2. คำขอภูมิภาคที่จัดรถแล้ว (DISPATCHED_PENDING/IN_USE/COMPLETED) ยังไม่มี approver (อนุมัติย้อนหลัง)
+    if (b.status === "PENDING" && !isExpired) return true;
+    if (b.status === "DISPATCHED_PENDING") return true; // status 7 ไม่ expire สำหรับ regional อยู่แล้ว
+    if (b.isRegional && (b.status === "IN_USE" || b.status === "COMPLETED")) return true;
+    return false;
+  });
   const pendingCount = pendingBookings.length;
 
   const totalPages = Math.ceil(pendingBookings.length / itemsPerPage);
@@ -303,6 +312,17 @@ export default function ApproverRequestsPage() {
         <div>
           <p className="text-sm font-medium text-slate-700">{booking.requesterName}</p>
           <p className="text-xs text-slate-400 mt-0.5">{booking.department}</p>
+          <div className="mt-1">
+            {booking.isRegional ? (
+              <span className="inline-flex items-center rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-bold text-violet-600 border border-violet-100 whitespace-nowrap">
+                🏢 ส่วนภูมิภาค
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-bold text-sky-600 border border-sky-100 whitespace-nowrap">
+                🏛 ส่วนกลาง
+              </span>
+            )}
+          </div>
         </div>
       ),
     },
@@ -319,7 +339,7 @@ export default function ApproverRequestsPage() {
       header: "สถานะ",
       className: "text-center justify-center",
       cell: (booking) => {
-        const isExpired = isBookingExpired(booking.startDateTime ?? "", booking.status);
+        const isExpired = isBookingExpired(booking.startDateTime ?? "", booking.status, booking.isRegional);
         return <StatusBadge status={booking.status} isExpired={isExpired} />;
       },
     },
@@ -381,7 +401,10 @@ export default function ApproverRequestsPage() {
                 ปิดหน้าต่าง
               </button>
               
-              {selectedBooking.status === "PENDING" && !isBookingExpired(selectedBooking.startDateTime, selectedBooking.status) && (
+              {/* ปุ่มอนุมัติ/ปฏิเสธ: แสดงสำหรับ PENDING, DISPATCHED_PENDING และ regional IN_USE/COMPLETED */}
+              {(selectedBooking.status === "PENDING" || selectedBooking.status === "DISPATCHED_PENDING" || 
+                (selectedBooking.isRegional && (selectedBooking.status === "IN_USE" || selectedBooking.status === "COMPLETED"))) &&
+               !isBookingExpired(selectedBooking.startDateTime, selectedBooking.status, selectedBooking.isRegional) && (
                 <>
                   {isRejecting ? (
                     <div className="flex items-center gap-2 animate-in slide-in-from-right-4">
@@ -414,7 +437,9 @@ export default function ApproverRequestsPage() {
                         className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100 transition-all text-xs font-bold"
                       >
                         <CheckCircle2 size={16} />
-                        อนุมัติคำขอ
+                        {(selectedBooking.status === "IN_USE" || selectedBooking.status === "COMPLETED")
+                          ? "อนุมัติย้อนหลัง"
+                          : "อนุมัติคำขอ"}
                       </button>
                     </div>
                   )}
@@ -540,7 +565,7 @@ export default function ApproverRequestsPage() {
                 </div>
               )}
 
-              {isBookingExpired(selectedBooking.startDateTime, selectedBooking.status) && selectedBooking.status === "PENDING" && (
+              {isBookingExpired(selectedBooking.startDateTime, selectedBooking.status, selectedBooking.isRegional) && selectedBooking.status === "PENDING" && (
                 <div className="bg-orange-50 border border-orange-100 rounded-2xl p-5 flex items-center gap-3">
                   <Calendar className="text-orange-500" size={20} />
                   <p className="text-sm font-bold text-orange-700">

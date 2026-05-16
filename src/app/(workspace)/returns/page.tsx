@@ -88,7 +88,7 @@ export default function ReturnsPage() {
   const filteredOrders = returnOrders.filter((order) => {
     let matchFilter = true;
     if (selectedFilter === "กำลังใช้งาน (In Use)")
-      matchFilter = order.status_use_id === 4;
+      matchFilter = order.status_use_id === 4 || order.status_use_id === 7;
     else if (selectedFilter === "คืนแล้ว (Returned)") {
       matchFilter =
         order.status_use_id === 5 && order.vc_use && order.vc_use.length > 0;
@@ -115,8 +115,8 @@ export default function ReturnsPage() {
   });
 
   const sortedOrders = [...filteredOrders].sort((a, b) => {
-    if (a.status_use_id === 4 && b.status_use_id !== 4) return -1;
-    if (a.status_use_id !== 4 && b.status_use_id === 4) return 1;
+    if ((a.status_use_id === 4 || a.status_use_id === 7) && (b.status_use_id !== 4 && b.status_use_id !== 7)) return -1;
+    if ((a.status_use_id !== 4 && a.status_use_id !== 7) && (b.status_use_id === 4 || b.status_use_id === 7)) return 1;
 
     const getJourneyDt = (order: any) => {
       const dateStr = order.journey_date
@@ -128,7 +128,7 @@ export default function ReturnsPage() {
       return isNaN(dt) ? 0 : dt;
     };
 
-    if (a.status_use_id === 4) {
+    if (a.status_use_id === 4 || a.status_use_id === 7) {
       return getJourneyDt(a) - getJourneyDt(b);
     } else {
       return b.request_id - a.request_id;
@@ -365,7 +365,7 @@ export default function ReturnsPage() {
                   ) : (
                     <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase bg-blue-50 text-blue-600 border border-blue-100 italic">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                      กำลังใช้งาน
+                      {item.status_use_id === 7 ? "กำลังใช้งาน (รออนุมัติ)" : "กำลังใช้งาน"}
                     </span>
                   )}
                 </div>

@@ -35,6 +35,46 @@ export async function getMyOrgs() {
   }
 }
 
+/**
+ * ใช้กับหน้า bookinglocal เท่านั้น
+ * ตรวจสอบว่า user มี sectionid ที่อยู่ใน vc_own_div_prop หรือไม่
+ * ถ้ามี → return org ของ section นั้น
+ * ถ้าไม่มี → return null (ไม่มีสิทธิ์เข้าหน้า bookinglocal)
+ */
+export async function getMyLocalBookingSection() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return { authorized: false, org: null };
+
+    const userId = parseInt(session.user.id);
+    const user = await prisma.vc_users.findUnique({
+      where: { userid: userId },
+    });
+
+    if (!user?.sectionid) return { authorized: false, org: null };
+
+    // เช็คว่า sectionid ของ user มีอยู่ใน vc_own_div_prop
+    const ownDivProp = await prisma.vc_own_div_prop.findFirst({
+      where: {
+        own_div_code: user.sectionid,
+        OR: [{ flag_del: "N" }, { flag_del: null }],
+      },
+    });
+
+    if (!ownDivProp) return { authorized: false, org: null };
+
+    // ดึงข้อมูล org ของ section นั้น
+    const org = await prisma.vc_orgs.findFirst({
+      where: { orgid: user.sectionid },
+    });
+
+    return { authorized: true, org };
+  } catch (error) {
+    console.error("Error in getMyLocalBookingSection:", error);
+    return { authorized: false, org: null };
+  }
+}
+
 export async function getOrgsByUserId(userId: number) {
   try {
     const user = await prisma.vc_users.findUnique({

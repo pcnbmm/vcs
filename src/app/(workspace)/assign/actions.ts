@@ -15,9 +15,45 @@ const CAR_FLAG_BUSY = "x";
  */
 export async function getPendingDispatch() {
   try {
+    const session = await getServerSession(authOptions);
+    const sectionid = (session?.user as any)?.sectionid as string | null;
+    const roleIds = ((session?.user as any)?.roles as number[]) || [];
+
+    // \u0e40\u0e0a\u0e47\u0e04\u0e27\u0e48\u0e32\u0e40\u0e1b\u0e47\u0e19 Admin \u0e2b\u0e23\u0e37\u0e2d\u0e40\u0e1b\u0e25\u0e48\u0e32
+    let isAdmin = false;
+    if (roleIds.length > 0) {
+      const roles = await prisma.vc_roles.findMany({
+        where: { roles_id: { in: roleIds } },
+        select: { roles_name: true },
+      });
+      isAdmin = roles.some((r) =>
+        r.roles_name?.toLowerCase().includes("admin"),
+      );
+    }
+
+    // \u0e14\u0e36\u0e07\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14
+    const regionalProps = await prisma.vc_own_div_prop.findMany({
+      where: { OR: [{ flag_del: "N" }, { flag_del: null }] },
+      select: { own_div_code: true },
+    });
+    const regionalDivCodes = regionalProps.map((p) => p.own_div_code).filter(Boolean) as string[];
+
+    const isRegional = sectionid ? regionalDivCodes.includes(sectionid) : false;
+
+    let sectionFilter: any = {};
+
+    if (!isAdmin) {
+      if (isRegional) {
+        sectionFilter = { use_div_code: sectionid };
+      } else {
+        sectionFilter = { is_regional_booking: false };
+      }
+    }
+
     const orders = await prisma.vc_order_item.findMany({
       where: {
-        status_use_id: { in: [2, 3, 4, 5, 6] },
+        status_use_id: { in: [1, 2, 3, 4, 5, 6, 7] },
+        ...sectionFilter,
       },
       include: {
         vc_user: {
@@ -120,6 +156,8 @@ export async function getPendingDispatch() {
         ...o,
 
         department: org?.orgname || o.use_div_code || "ไม่ระบุแผนก",
+
+        isRegional: o.is_regional_booking ?? false,
 
         selfDriveBool:
           o.self_drive === true || o.self_drive === "Y" || o.self_drive === 1,
@@ -278,7 +316,7 @@ export async function assignResource(data: {
       const updateData: any = {
         car_id: data.carId,
         driver_id: data.driverId,
-        status_use_id: 4, // 4 = in_use
+        status_use_id: existingOrder?.status_use_id === 1 ? 7 : 4, // 7 = dispatched_pending, 4 = in_use
         pickup_status: null,
         upd_date: new Date(),
       };
@@ -347,7 +385,7 @@ export async function assignResource(data: {
         startTime: result.journey_time
           ? result.journey_time.slice(0, 5)
           : undefined,
-        startPlace: result.vc_start_place?.start_place_name || undefined,
+        startPlace: result.vc_start_place?.start_place_name || result.journey_origin_text || undefined,
         taxiReason: data.taxiReason,
         isEdit: isEdit,
         carName: carName,

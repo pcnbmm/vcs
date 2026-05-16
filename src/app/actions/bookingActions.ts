@@ -37,6 +37,8 @@ export async function createBooking(formData: FormData) {
     const self_drive = formData.get("self_drive") === "true";
     const driver_id = formData.get("driver_id") ? parseInt(formData.get("driver_id") as string) : null;
     const is_urgent = formData.get("is_urgent") === "true";
+    const journey_origin_text = (formData.get("journey_origin_text") as string) || null;
+    const is_regional_booking = formData.get("is_regional_booking") === "true";
 
     const booking = await prisma.vc_order_item.create({
       data: {
@@ -58,6 +60,8 @@ export async function createBooking(formData: FormData) {
         self_drive,
         driver_id,
         is_urgent,
+        journey_origin_text,
+        is_regional_booking,
         status_use_id: 1, // Default to Pending
         cre_date: new Date(),
       },
@@ -152,6 +156,7 @@ export async function getMyBookings(
       return {
         ...b,
         vc_org: org ?? null,
+        isRegional: b.is_regional_booking ?? false,
         approver: approverUser
           ? { username: approverUser.username, name: formatName(approverUser) }
           : null,
@@ -164,5 +169,147 @@ export async function getMyBookings(
   } catch (error) {
     console.error("Error fetching bookings:", error);
     return { success: false, data: [], error: "Failed to fetch bookings" };
+  }
+}
+
+/**
+ * \u0e14\u0e36\u0e07 bookings \u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a\u0e2b\u0e19\u0e49\u0e32 Approver / Dispatcher
+ * - Admin (\u0e23\u0e2d\u0e25\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e35\u0e04\u0e33\u0e27\u0e48\u0e32 "Admin"): \u0e40\u0e2b\u0e47\u0e19\u0e17\u0e38\u0e01 request
+ * - Approver / Dispatcher \u0e17\u0e35\u0e48\u0e21\u0e35 sectionid: \u0e40\u0e2b\u0e47\u0e19\u0e40\u0e09\u0e1e\u0e32\u0e30 request \u0e17\u0e35\u0e48 use_div_code === sectionid \u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07
+ * - \u0e16\u0e49\u0e32\u0e44\u0e21\u0e48\u0e21\u0e35 sectionid: \u0e40\u0e2b\u0e47\u0e19\u0e17\u0e38\u0e01 request (\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e40\u0e02\u0e49\u0e32\u0e01\u0e31\u0e19\u0e44\u0e14\u0e49\u0e01\u0e31\u0e1a\u0e2b\u0e19\u0e49\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e01\u0e25\u0e32\u0e07)
+ */
+export async function getBookingsForManagement() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return { success: false, data: [] };
+
+    const userId = parseInt(session.user.id);
+    const sectionid = (session.user as any).sectionid as string | null;
+    const roleIds = ((session.user as any).roles as number[]) || [];
+
+    // เช็คว่า user มี role ที่ชื่อมีคำว่า "Admin" หรือเปล่า
+    let isAdmin = false;
+    if (roleIds.length > 0) {
+      const roles = await prisma.vc_roles.findMany({
+        where: { roles_id: { in: roleIds } },
+        select: { roles_name: true },
+      });
+      isAdmin = roles.some((r) =>
+        r.roles_name?.toLowerCase().includes("admin"),
+      );
+    }
+
+    let whereClause: any = undefined;
+
+    if (!isAdmin && sectionid) {
+      // Approver จะเห็นเฉพาะคำขอที่มาจากคนที่อยู่ใน sectionid เดียวกัน
+      whereClause = {
+        vc_user: {
+          sectionid: sectionid,
+        },
+      };
+    }
+
+    const bookings = await prisma.vc_order_item.findMany({
+      where: whereClause,
+      include: {
+        vc_user: true,
+        vc_car_spec: true,
+        vc_start_place: true,
+        vc_use: {},
+      },
+      orderBy: { request_id: "desc" },
+    });
+
+    const orgs = await prisma.vc_orgs.findMany({ where: { status: "X" } });
+
+    const recorderIds = [
+      ...new Set(
+        bookings.flatMap((b) =>
+          b.vc_use.map((u) => u.recorder_id).filter(Boolean),
+        ),
+      ),
+    ] as number[];
+
+    const dispatcherUsers =
+      recorderIds.length > 0
+        ? await prisma.vc_users.findMany({
+            where: { userid: { in: recorderIds } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+              bname: true,
+            },
+          })
+        : [];
+
+    const approveIds = [
+      ...new Set(
+        bookings
+          .map((b) => (b.approve_id ? Number(b.approve_id) : null))
+          .filter((id): id is number => id !== null && !isNaN(id)),
+      ),
+    ];
+
+    const approverUsers =
+      approveIds.length > 0
+        ? await prisma.vc_users.findMany({
+            where: { userid: { in: approveIds } },
+            select: {
+              userid: true,
+              username: true,
+              firstname: true,
+              lastname: true,
+              bname: true,
+            },
+          })
+        : [];
+
+    const formatName = (
+      u: {
+        bname?: string | null;
+        firstname?: string | null;
+        lastname?: string | null;
+      } | null,
+    ) =>
+      u
+        ? `${u.bname ?? ""} ${u.firstname ?? ""} ${u.lastname ?? ""}`.trim()
+        : null;
+
+    const enrichedBookings = bookings.map((b) => {
+      const org = orgs.find((o) => String(o.orgid) === b.use_div_code);
+      const latestUse = b.vc_use[b.vc_use.length - 1];
+      const dispatcherUser = latestUse?.recorder_id
+        ? dispatcherUsers.find((u) => u.userid === latestUse.recorder_id)
+        : null;
+      const approverUser = b.approve_id
+        ? approverUsers.find((u) => u.userid === Number(b.approve_id))
+        : null;
+
+      return {
+        ...b,
+        vc_org: org ?? null,
+        isRegional: b.is_regional_booking ?? false,
+        approver: approverUser
+          ? {
+              username: approverUser.username,
+              name: formatName(approverUser),
+            }
+          : null,
+        dispatcher: dispatcherUser
+          ? {
+              username: dispatcherUser.username,
+              name: formatName(dispatcherUser),
+            }
+          : null,
+      };
+    });
+
+    return { success: true, data: enrichedBookings };
+  } catch (error) {
+    console.error("Error fetching bookings for management:", error);
+    return { success: false, data: [] };
   }
 }

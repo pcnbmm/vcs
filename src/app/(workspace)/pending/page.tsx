@@ -64,7 +64,7 @@ export default function PendingPage() {
           objective: b.journey_causes || "-",
           status: b.status_use_id ? String(b.status_use_id) : "1",
           carType: b.vc_car_spec?.car_spec_name || b.car_spec_id,
-          origin: b.vc_start_place?.start_place_name || String(b.start_place || "-"),
+          origin: b.vc_start_place?.start_place_name || b.journey_origin_text || String(b.start_place || "-"),
           passengers: b.passenger_amount,
           phone: b.user_mobile || "-",
           selfDrive: b.self_drive ? "ขับเอง" : "พนักงานขับ",
@@ -87,6 +87,7 @@ export default function PendingPage() {
             : null,
           pickupMethod: b.pickup_method || null,
           selfDriveBool: b.self_drive || false,
+          isRegional: b.isRegional ?? false,
         }));
         setRequests(formattedList);
       } else {
@@ -106,11 +107,11 @@ export default function PendingPage() {
   }, []);
 
   const filteredRequests = requests.filter((req) => {
-    const expired = isBookingExpired(req.startDateTime ?? "", req.status);
+    const expired = isBookingExpired(req.startDateTime ?? "", req.status, req.isRegional);
     const matchesStatus =
       statusFilter === "ALL" ||
       (statusFilter === "PENDING" && req.status === "1" && !expired) ||
-      (statusFilter === "APPROVED" && (req.status === "2" || req.status === "5" || req.status === "4")) ||
+      (statusFilter === "APPROVED" && (req.status === "2" || req.status === "5" || req.status === "4" || req.status === "7")) ||
       (statusFilter === "REJECTED" && (req.status === "3" || req.status === "6" || (req.status === "1" && expired)));
 
     const q = searchQuery.toLowerCase().trim();
@@ -233,7 +234,7 @@ export default function PendingPage() {
             {
               header: "สถานะ",
               cell: (req) => {
-                const expired = isBookingExpired(req.startDateTime ?? "", req.status);
+                const expired = isBookingExpired(req.startDateTime ?? "", req.status, req.isRegional);
                 const status = Number(req.status);
                 let name = getStatusName(status);
                 let color = getStatusColor(status);
@@ -294,7 +295,7 @@ export default function PendingPage() {
               ดาวน์โหลด PDF
             </button>
             {selectedRequest?.status === "1" &&
-              !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status) && (
+              !isBookingExpired(selectedRequest?.startDateTime ?? "", selectedRequest?.status, selectedRequest?.isRegional) && (
                 <button
                   onClick={() => handleCancel(selectedRequest.id)}
                   className="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-bold text-sm hover:bg-rose-700 shadow-md shadow-rose-100 transition-all"
@@ -378,6 +379,7 @@ const getStatusName = (status: number | string) => {
   if (s === "4") return "กำลังใช้งาน";
   if (s === "5") return "อนุมัติแล้ว";
   if (s === "6") return "ยกเลิกคำขอ";
+  if (s === "7") return "จัดรถแล้ว (รออนุมัติ)";
   return "ไม่ระบุ";
 };
 
@@ -387,5 +389,6 @@ const getStatusColor = (status: number | string) => {
   if (s === "2" || s === "5") return "text-emerald-600 bg-emerald-50 border-emerald-100";
   if (s === "3" || s === "6") return "text-rose-600 bg-rose-50 border-rose-100";
   if (s === "4") return "text-blue-600 bg-blue-50 border-blue-100";
+  if (s === "7") return "text-indigo-600 bg-indigo-50 border-indigo-100";
   return "text-slate-400 bg-slate-50 border-slate-100";
 };
