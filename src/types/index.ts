@@ -17,11 +17,14 @@ export interface Booking {
     | "REJECTED"
     | "IN_USE"
     | "COMPLETED"
-    | "CANCELLED";
+    | "CANCELLED"
+    | "DISPATCHED_PENDING";
   rejectReason?: string;
   vehicleId?: string;
   driverId?: string;
   phone?: string;
   carType?: string;
   selfDrive?: string;
+  /** true = คำขอจากส่วนภูมิภาค (ไม่มีการ expire) */
+  isRegional?: boolean;
 }

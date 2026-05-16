@@ -47,7 +47,10 @@ import BookingPDF from "@/components/pdf/BookingPDF"; // ปรับ path ต�
 type DispatchType = "with_driver" | "self_drive" | "taxi";
 
 // Helper function
-const isAssignExpired = (journeyDate: any, journeyTime: string | null) => {
+const isAssignExpired = (journeyDate: any, journeyTime: string | null, statusId?: number, isRegional?: boolean) => {
+  // Regional status 1 (รออนุมัติ) หรือ 7 (จัดรถแล้วรออนุมัติ) → ไม่ expire
+  if (isRegional && (statusId === 1 || statusId === 7)) return false;
+
   if (!journeyDate) return false;
 
   try {
@@ -109,7 +112,7 @@ export default function AssignPage() {
             ? new Date(order.return_date).toLocaleDateString("th-TH")
             : "-",
           endTime: order.return_time?.slice(0, 5) ?? "-",
-          origin: order.vc_start_place?.start_place_name ?? "-",
+          origin: order.vc_start_place?.start_place_name || order.journey_origin_text || "-",
           destination: order.journey_place ?? "-",
           objective: order.journey_causes ?? "-",
           passengers: order.passenger_amount ?? 1,
@@ -445,9 +448,9 @@ export default function AssignPage() {
 
   const filteredOrders = pendingOrders
     .filter((order) => {
-      const isExpired = isAssignExpired(order.journey_date, order.journey_time);
+      const isExpired = isAssignExpired(order.journey_date, order.journey_time, order.status_use_id, order.isRegional);
       console.log(
-        `REQ#${order.request_id} status=${order.status_use_id} pickup=${order.pickup_status} expired=${isExpired}`,
+        `REQ#${order.request_id} status=${order.status_use_id} pickup=${order.pickup_status} expired=${isExpired} regional=${order.isRegional}`,
       );
       if (filterStatus === "action_required") {
         return (
@@ -590,7 +593,18 @@ export default function AssignPage() {
                     <h3 className="font-bold text-slate-900">
                       {order.journey_place}
                     </h3>
-                    <div className="mt-1">
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {/* Badge ประเภทคำขอ */}
+                      {order.isRegional ? (
+                        <span className="inline-flex items-center rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-bold text-violet-600 border border-violet-100 whitespace-nowrap">
+                          🏢 ส่วนภูมิภาค
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-bold text-sky-600 border border-sky-100 whitespace-nowrap">
+                          🏛 ส่วนกลาง
+                        </span>
+                      )}
+                      {/* Status badge */}
                       {(order.status_use_id === 4 || order.status_use_id === 7) && !order.pickup_status && (
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-tighter whitespace-nowrap">
                           {order.status_use_id === 7 ? "จัดรถแล้ว (รออนุมัติ)" : "จัดรถแล้ว (รอรับรถ)"}
@@ -724,6 +738,8 @@ export default function AssignPage() {
                     ) : isAssignExpired(
                         order.journey_date,
                         order.journey_time,
+                        order.status_use_id,
+                        order.isRegional,
                       ) ? (
                       <button
                         disabled
@@ -738,7 +754,7 @@ export default function AssignPage() {
                       >
                         รับรถ
                       </button>
-                    ) : (
+                    ) : (!order.isRegional && order.status_use_id === 1) ? null : (
                       <button
                         onClick={() => openAssignModal(order)}
                         className={`${order.status_use_id === 1 ? 'bg-amber-600 hover:bg-amber-700' : 'bg-slate-900 hover:bg-blue-600'} text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-md`}
@@ -755,6 +771,8 @@ export default function AssignPage() {
                       !isAssignExpired(
                         order.journey_date,
                         order.journey_time,
+                        order.status_use_id,
+                        order.isRegional,
                       ) && (
                         <div className="flex gap-2">
                           {order.car_id || order.pickup_method === "TAXI" ? (

@@ -37,6 +37,8 @@ export async function createBooking(formData: FormData) {
     const self_drive = formData.get("self_drive") === "true";
     const driver_id = formData.get("driver_id") ? parseInt(formData.get("driver_id") as string) : null;
     const is_urgent = formData.get("is_urgent") === "true";
+    const journey_origin_text = (formData.get("journey_origin_text") as string) || null;
+    const is_regional_booking = formData.get("is_regional_booking") === "true";
 
     const booking = await prisma.vc_order_item.create({
       data: {
@@ -58,6 +60,8 @@ export async function createBooking(formData: FormData) {
         self_drive,
         driver_id,
         is_urgent,
+        journey_origin_text,
+        is_regional_booking,
         status_use_id: 1, // Default to Pending
         cre_date: new Date(),
       },
@@ -152,6 +156,7 @@ export async function getMyBookings(
       return {
         ...b,
         vc_org: org ?? null,
+        isRegional: b.is_regional_booking ?? false,
         approver: approverUser
           ? { username: approverUser.username, name: formatName(approverUser) }
           : null,
@@ -182,7 +187,7 @@ export async function getBookingsForManagement() {
     const sectionid = (session.user as any).sectionid as string | null;
     const roleIds = ((session.user as any).roles as number[]) || [];
 
-    // \u0e40\u0e0a\u0e47\u0e04\u0e27\u0e48\u0e32 user \u0e21\u0e35 role \u0e17\u0e35\u0e48\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e35\u0e04\u0e33\u0e27\u0e48\u0e32 "Admin" \u0e2b\u0e23\u0e37\u0e2d\u0e40\u0e1b\u0e25\u0e48\u0e32
+    // เช็คว่า user มี role ที่ชื่อมีคำว่า "Admin" หรือเปล่า
     let isAdmin = false;
     if (roleIds.length > 0) {
       const roles = await prisma.vc_roles.findMany({
@@ -197,7 +202,7 @@ export async function getBookingsForManagement() {
     let whereClause: any = undefined;
 
     if (!isAdmin && sectionid) {
-      // Approver \u0e08\u0e30\u0e40\u0e2b\u0e47\u0e19\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e04\u0e33\u0e02\u0e2d\u0e17\u0e35\u0e48\u0e21\u0e32\u0e08\u0e32\u0e01\u0e04\u0e19\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19 sectionid \u0e40\u0e14\u0e35\u0e22\u0e27\u0e01\u0e31\u0e19
+      // Approver จะเห็นเฉพาะคำขอที่มาจากคนที่อยู่ใน sectionid เดียวกัน
       whereClause = {
         vc_user: {
           sectionid: sectionid,
@@ -286,6 +291,7 @@ export async function getBookingsForManagement() {
       return {
         ...b,
         vc_org: org ?? null,
+        isRegional: b.is_regional_booking ?? false,
         approver: approverUser
           ? {
               username: approverUser.username,

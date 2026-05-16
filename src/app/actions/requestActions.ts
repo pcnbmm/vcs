@@ -39,7 +39,11 @@ export async function updateRequestStatus(
 
     let targetStatus = status_id;
     if (currentStatus === 7 && status_id === 2) {
-      targetStatus = 4; // หากจัดรถแล้ว (7) แล้วกดอนุมัติ (2) -> ให้เป็นกำลังใช้งาน (4)
+      // จัดรถแล้ว (7) + กดอนุมัติ → ใช้งานได้เลย (4)
+      targetStatus = 4;
+    } else if ((currentStatus === 4 || currentStatus === 5) && status_id === 2) {
+      // IN_USE (4) หรือ COMPLETED (5) + อนุมัติย้อนหลัง → คงสถานะเดิม แค่บันทึก approve_id
+      targetStatus = currentStatus;
     }
 
     // หากปฏิเสธและเคยจัดรถไปแล้ว (Status 7) ต้องคืน Flag รถด้วย

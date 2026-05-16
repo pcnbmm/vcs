@@ -169,6 +169,7 @@ export default function VehicleRequestPage() {
       // ส่งชื่อต้นทางเป็น text ตรงๆ (free text mode)
       dataToSubmit.append("start_place", "1"); // fallback id
       dataToSubmit.append("journey_origin_text", formData.origin);
+      dataToSubmit.append("is_regional_booking", "true");
       dataToSubmit.append("journey_province", formData.province);
       dataToSubmit.append("journey_place", formData.destination);
       dataToSubmit.append("journey_lat", formData.lat.toString());

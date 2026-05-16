@@ -45,8 +45,8 @@ export async function getPendingDispatch() {
     if (!isAdmin) {
       if (isRegional) {
         sectionFilter = { use_div_code: sectionid };
-      } else if (regionalDivCodes.length > 0) {
-        sectionFilter = { use_div_code: { notIn: regionalDivCodes } };
+      } else {
+        sectionFilter = { is_regional_booking: false };
       }
     }
 
@@ -156,6 +156,8 @@ export async function getPendingDispatch() {
         ...o,
 
         department: org?.orgname || o.use_div_code || "ไม่ระบุแผนก",
+
+        isRegional: o.is_regional_booking ?? false,
 
         selfDriveBool:
           o.self_drive === true || o.self_drive === "Y" || o.self_drive === 1,
@@ -383,7 +385,7 @@ export async function assignResource(data: {
         startTime: result.journey_time
           ? result.journey_time.slice(0, 5)
           : undefined,
-        startPlace: result.vc_start_place?.start_place_name || undefined,
+        startPlace: result.vc_start_place?.start_place_name || result.journey_origin_text || undefined,
         taxiReason: data.taxiReason,
         isEdit: isEdit,
         carName: carName,

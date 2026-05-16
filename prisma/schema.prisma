@@ -40,6 +40,8 @@ model vc_order_item {
   pickup_time              String?             @db.VarChar(10)
   reject_reason            String?
   dispatcher_reject_reason String?
+  journey_origin_text      String?             @db.VarChar(500)
+  is_regional_booking      Boolean             @default(false)
   vc_car_master            vc_car_master?      @relation(fields: [car_id], references: [car_id])
   vc_car_spec              vc_car_spec?        @relation(fields: [car_spec_id], references: [car_spec_id])
   vc_driver                vc_driver?          @relation(fields: [driver_id], references: [driver_id])
