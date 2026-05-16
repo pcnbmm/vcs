@@ -201,11 +201,11 @@ export default function VehicleRequestPage() {
       dataToSubmit.append("journey_lat", formData.lat.toString());
       dataToSubmit.append("journey_long", formData.lon.toString());
 
-      const combinedDateTime = `${formData.startDate}T${formData.startTime}:00`;
+      const combinedDateTime = `${formData.startDate}T${formData.startTime}:00+07:00`;
       dataToSubmit.append("journey_date", combinedDateTime);
       dataToSubmit.append("journey_time", formData.startTime);
 
-      const combinedEndDateTime = `${formData.endDate}T${formData.endTime || "00:00"}:00`;
+      const combinedEndDateTime = `${formData.endDate}T${formData.endTime || "00:00"}:00+07:00`;
       dataToSubmit.append("return_date", combinedEndDateTime);
       dataToSubmit.append("return_time", formData.endTime || "00:00");
 
