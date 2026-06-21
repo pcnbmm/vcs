@@ -13,7 +13,7 @@ import flatpickr from "flatpickr";
 import { useRef } from "react";
 import "flatpickr/dist/flatpickr.min.css";
 import {
-  Car,
+  Car, 
   MapPin,
   Calendar,
   Clock,
