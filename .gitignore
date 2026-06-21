@@ -40,3 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dev only (do not commit)
+vcs2_backup.sql
+*.backup.sql
+seed-users.ts
+test-db.ts
+check-hash.ts
+reset-passwords.ts
